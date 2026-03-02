@@ -1,0 +1,1 @@
+SELECT trimRight(toString(Origin)) AS airport, 100.0 * sum(ArrDel15 = 1) / count() AS delayed_arrival_pct, count() AS flights FROM default.ontime WHERE Year = 2021 GROUP BY airport HAVING count() >= 10000 ORDER BY delayed_arrival_pct DESC, flights DESC, airport ASC LIMIT 1

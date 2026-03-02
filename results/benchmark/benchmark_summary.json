@@ -1,0 +1,356 @@
+{
+  "generated_at": "2026-03-02T18:02:35Z",
+  "dataset": "default.ontime on demo.demo.altinity.cloud",
+  "models": [
+    {
+      "key": "openai_gpt5",
+      "vendor": "openai",
+      "runner": "codex",
+      "model": "gpt-5"
+    },
+    {
+      "key": "openai_gpt53codex",
+      "vendor": "openai",
+      "runner": "codex",
+      "model": "gpt-5.3-codex"
+    },
+    {
+      "key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "runner": "claude",
+      "model": "sonnet"
+    },
+    {
+      "key": "anthropic_opus",
+      "vendor": "anthropic",
+      "runner": "claude",
+      "model": "opus"
+    }
+  ],
+  "cases": [
+    {
+      "id": "case1_top_carrier_2019",
+      "question": "Which carrier operated the most flights in 2019? Return carrier and flights."
+    },
+    {
+      "id": "case2_avg_depdelay_delta_atl_2021_07",
+      "question": "What was the average departure delay for Delta flights out of Atlanta in July 2021? Return one rounded value avg_dep_delay."
+    },
+    {
+      "id": "case3_worst_airport_2021",
+      "question": "In 2021, which origin airport had the highest delayed arrival percentage? Use delayed arrivals as ArrDel15=1, require at least 10000 flights. Return airport, delayed_arrival_pct, flights."
+    },
+    {
+      "id": "case4_worst_winter_carrier_airport",
+      "question": "Across winters (December, January, February) from 2019 to 2021, which carrier-airport pair had the highest average departure delay among groups with at least 5000 flights? Return carrier, airport, avg_dep_delay, flights."
+    },
+    {
+      "id": "case5_peak_aa_month",
+      "question": "Between 2018 and 2021, which year-month had the highest average departure delay for AA? Return Year, Month, avg_dep_delay."
+    },
+    {
+      "id": "case6_peak_route_season",
+      "question": "For years 2019-2021, take top 50 routes by flight count (Origin-Dest), then find the route-season with highest average departure delay. Seasons: Winter(12,1,2), Spring(3,4,5), Summer(6,7,8), Fall(9,10,11). Return route, season, avg_dep_delay, flights."
+    }
+  ],
+  "rows": [
+    {
+      "model_key": "openai_gpt5",
+      "vendor": "openai",
+      "model": "gpt-5",
+      "case_id": "case1_top_carrier_2019",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": true,
+      "error": "",
+      "elapsed_sec": 1.1774
+    },
+    {
+      "model_key": "openai_gpt5",
+      "vendor": "openai",
+      "model": "gpt-5",
+      "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.2668
+    },
+    {
+      "model_key": "openai_gpt5",
+      "vendor": "openai",
+      "model": "gpt-5",
+      "case_id": "case3_worst_airport_2021",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.1881
+    },
+    {
+      "model_key": "openai_gpt5",
+      "vendor": "openai",
+      "model": "gpt-5",
+      "case_id": "case4_worst_winter_carrier_airport",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.3827
+    },
+    {
+      "model_key": "openai_gpt5",
+      "vendor": "openai",
+      "model": "gpt-5",
+      "case_id": "case5_peak_aa_month",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.6155
+    },
+    {
+      "model_key": "openai_gpt5",
+      "vendor": "openai",
+      "model": "gpt-5",
+      "case_id": "case6_peak_route_season",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.3016
+    },
+    {
+      "model_key": "openai_gpt53codex",
+      "vendor": "openai",
+      "model": "gpt-5.3-codex",
+      "case_id": "case1_top_carrier_2019",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": true,
+      "error": "",
+      "elapsed_sec": 0.806
+    },
+    {
+      "model_key": "openai_gpt53codex",
+      "vendor": "openai",
+      "model": "gpt-5.3-codex",
+      "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.7836
+    },
+    {
+      "model_key": "openai_gpt53codex",
+      "vendor": "openai",
+      "model": "gpt-5.3-codex",
+      "case_id": "case3_worst_airport_2021",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.7673
+    },
+    {
+      "model_key": "openai_gpt53codex",
+      "vendor": "openai",
+      "model": "gpt-5.3-codex",
+      "case_id": "case4_worst_winter_carrier_airport",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.3122
+    },
+    {
+      "model_key": "openai_gpt53codex",
+      "vendor": "openai",
+      "model": "gpt-5.3-codex",
+      "case_id": "case5_peak_aa_month",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.8284
+    },
+    {
+      "model_key": "openai_gpt53codex",
+      "vendor": "openai",
+      "model": "gpt-5.3-codex",
+      "case_id": "case6_peak_route_season",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.2904
+    },
+    {
+      "model_key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "model": "sonnet",
+      "case_id": "case1_top_carrier_2019",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": true,
+      "error": "",
+      "elapsed_sec": 0.8327
+    },
+    {
+      "model_key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "model": "sonnet",
+      "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.7875
+    },
+    {
+      "model_key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "model": "sonnet",
+      "case_id": "case3_worst_airport_2021",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.908
+    },
+    {
+      "model_key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "model": "sonnet",
+      "case_id": "case4_worst_winter_carrier_airport",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.1774
+    },
+    {
+      "model_key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "model": "sonnet",
+      "case_id": "case5_peak_aa_month",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.8308
+    },
+    {
+      "model_key": "anthropic_sonnet",
+      "vendor": "anthropic",
+      "model": "sonnet",
+      "case_id": "case6_peak_route_season",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.1127
+    },
+    {
+      "model_key": "anthropic_opus",
+      "vendor": "anthropic",
+      "model": "opus",
+      "case_id": "case1_top_carrier_2019",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": true,
+      "error": "",
+      "elapsed_sec": 0.9928
+    },
+    {
+      "model_key": "anthropic_opus",
+      "vendor": "anthropic",
+      "model": "opus",
+      "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.7523
+    },
+    {
+      "model_key": "anthropic_opus",
+      "vendor": "anthropic",
+      "model": "opus",
+      "case_id": "case3_worst_airport_2021",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 0.749
+    },
+    {
+      "model_key": "anthropic_opus",
+      "vendor": "anthropic",
+      "model": "opus",
+      "case_id": "case4_worst_winter_carrier_airport",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 1.1297
+    },
+    {
+      "model_key": "anthropic_opus",
+      "vendor": "anthropic",
+      "model": "opus",
+      "case_id": "case5_peak_aa_month",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": false,
+      "error": "",
+      "elapsed_sec": 6.2106
+    },
+    {
+      "model_key": "anthropic_opus",
+      "vendor": "anthropic",
+      "model": "opus",
+      "case_id": "case6_peak_route_season",
+      "generation_ok": true,
+      "execution_ok": true,
+      "correct": true,
+      "error": "",
+      "elapsed_sec": 1.2364
+    }
+  ],
+  "aggregates": {
+    "openai_gpt5": {
+      "total_cases": 6,
+      "execution_ok": 6,
+      "correct": 1,
+      "execution_rate": 1.0,
+      "correct_rate": 0.1667,
+      "avg_elapsed_sec": 1.322
+    },
+    "openai_gpt53codex": {
+      "total_cases": 6,
+      "execution_ok": 6,
+      "correct": 1,
+      "execution_rate": 1.0,
+      "correct_rate": 0.1667,
+      "avg_elapsed_sec": 0.9647
+    },
+    "anthropic_sonnet": {
+      "total_cases": 6,
+      "execution_ok": 6,
+      "correct": 1,
+      "execution_rate": 1.0,
+      "correct_rate": 0.1667,
+      "avg_elapsed_sec": 0.9415
+    },
+    "anthropic_opus": {
+      "total_cases": 6,
+      "execution_ok": 6,
+      "correct": 2,
+      "execution_rate": 1.0,
+      "correct_rate": 0.3333,
+      "avg_elapsed_sec": 1.8451
+    }
+  }
+}

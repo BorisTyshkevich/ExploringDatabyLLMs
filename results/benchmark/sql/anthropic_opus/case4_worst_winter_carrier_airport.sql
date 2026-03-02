@@ -1,0 +1,1 @@
+SELECT trimRight(toString(Carrier)) AS carrier, trimRight(toString(Origin)) AS airport, avg(DepDelay) AS avg_dep_delay, count() AS flights FROM default.ontime WHERE Month IN (12, 1, 2) AND Year >= 2019 AND Year <= 2021 GROUP BY carrier, airport HAVING flights >= 5000 ORDER BY avg_dep_delay DESC LIMIT 1

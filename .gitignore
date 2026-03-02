@@ -1,0 +1,10 @@
+.env
+.DS_Store
+.idea/
+
+# Keep publication summaries, ignore heavy/ephemeral artifacts
+results/clickhouse/
+results/mcp/
+results/benchmark/raw/
+results/benchmark/exec/
+results/benchmark_blind_partial_incomplete/

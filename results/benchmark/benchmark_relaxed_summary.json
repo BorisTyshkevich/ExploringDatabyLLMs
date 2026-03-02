@@ -1,0 +1,393 @@
+{
+  "models": {
+    "openai_gpt5": {
+      "strict_correct": 1,
+      "relaxed_correct": 6,
+      "total": 6,
+      "strict_rate": 0.1667,
+      "relaxed_rate": 1.0,
+      "details": [
+        {
+          "case_id": "case1_top_carrier_2019",
+          "strict": true,
+          "relaxed": true,
+          "expected": {
+            "carrier": "WN",
+            "flights": 1363946
+          },
+          "got": {
+            "carrier": "WN",
+            "flights": 1363946
+          }
+        },
+        {
+          "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "avg_dep_delay": 12.0433
+          },
+          "got": {
+            "avg_dep_delay": 12.04
+          }
+        },
+        {
+          "case_id": "case3_worst_airport_2021",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "airport": "DAL",
+            "delayed_arrival_pct": 26.34,
+            "flights": 41942
+          },
+          "got": {
+            "airport": "DAL",
+            "delayed_arrival_pct": 26.343522006580518,
+            "flights": 41942
+          }
+        },
+        {
+          "case_id": "case4_worst_winter_carrier_airport",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56,
+            "flights": 6060
+          },
+          "got": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56171617161716,
+            "flights": 6060
+          }
+        },
+        {
+          "case_id": "case5_peak_aa_month",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.51
+          },
+          "got": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.511600829239203
+          }
+        },
+        {
+          "case_id": "case6_peak_route_season",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.86,
+            "flights": 6532
+          },
+          "got": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.85716472749541,
+            "flights": 6532
+          }
+        }
+      ]
+    },
+    "openai_gpt53codex": {
+      "strict_correct": 1,
+      "relaxed_correct": 6,
+      "total": 6,
+      "strict_rate": 0.1667,
+      "relaxed_rate": 1.0,
+      "details": [
+        {
+          "case_id": "case1_top_carrier_2019",
+          "strict": true,
+          "relaxed": true,
+          "expected": {
+            "carrier": "WN",
+            "flights": 1363946
+          },
+          "got": {
+            "carrier": "WN",
+            "flights": 1363946
+          }
+        },
+        {
+          "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "avg_dep_delay": 12.0433
+          },
+          "got": {
+            "avg_dep_delay": 12.04
+          }
+        },
+        {
+          "case_id": "case3_worst_airport_2021",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "airport": "DAL",
+            "delayed_arrival_pct": 26.34,
+            "flights": 41942
+          },
+          "got": {
+            "airport": "DAL",
+            "delayed_arrival_pct": 26.343522006580518,
+            "flights": 41942
+          }
+        },
+        {
+          "case_id": "case4_worst_winter_carrier_airport",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56,
+            "flights": 6060
+          },
+          "got": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56171617161716,
+            "flights": 6060
+          }
+        },
+        {
+          "case_id": "case5_peak_aa_month",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.51
+          },
+          "got": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.511600829239203
+          }
+        },
+        {
+          "case_id": "case6_peak_route_season",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.86,
+            "flights": 6532
+          },
+          "got": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.85716472749541,
+            "flights": 6532
+          }
+        }
+      ]
+    },
+    "anthropic_sonnet": {
+      "strict_correct": 1,
+      "relaxed_correct": 6,
+      "total": 6,
+      "strict_rate": 0.1667,
+      "relaxed_rate": 1.0,
+      "details": [
+        {
+          "case_id": "case1_top_carrier_2019",
+          "strict": true,
+          "relaxed": true,
+          "expected": {
+            "carrier": "WN",
+            "flights": 1363946
+          },
+          "got": {
+            "carrier": "WN",
+            "flights": 1363946
+          }
+        },
+        {
+          "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "avg_dep_delay": 12.0433
+          },
+          "got": {
+            "avg_dep_delay": 12
+          }
+        },
+        {
+          "case_id": "case3_worst_airport_2021",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "airport": "DAL",
+            "delayed_arrival_pct": 26.34,
+            "flights": 41942
+          },
+          "got": {
+            "airport": "DAL\u0000\u0000",
+            "delayed_arrival_pct": 26.34,
+            "flights": 41942
+          }
+        },
+        {
+          "case_id": "case4_worst_winter_carrier_airport",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56,
+            "flights": 6060
+          },
+          "got": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56171617161716,
+            "flights": 6060
+          }
+        },
+        {
+          "case_id": "case5_peak_aa_month",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.51
+          },
+          "got": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.511600829239203
+          }
+        },
+        {
+          "case_id": "case6_peak_route_season",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.86,
+            "flights": 6532
+          },
+          "got": {
+            "Origin": "ORD\u0000\u0000",
+            "Dest": "LGA\u0000\u0000",
+            "season": "Summer",
+            "avg_dep_delay": 20.85716472749541,
+            "flights": 6532
+          }
+        }
+      ]
+    },
+    "anthropic_opus": {
+      "strict_correct": 2,
+      "relaxed_correct": 6,
+      "total": 6,
+      "strict_rate": 0.3333,
+      "relaxed_rate": 1.0,
+      "details": [
+        {
+          "case_id": "case1_top_carrier_2019",
+          "strict": true,
+          "relaxed": true,
+          "expected": {
+            "carrier": "WN",
+            "flights": 1363946
+          },
+          "got": {
+            "carrier": "WN",
+            "flights": 1363946
+          }
+        },
+        {
+          "case_id": "case2_avg_depdelay_delta_atl_2021_07",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "avg_dep_delay": 12.0433
+          },
+          "got": {
+            "avg_dep_delay": 12.04
+          }
+        },
+        {
+          "case_id": "case3_worst_airport_2021",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "airport": "DAL",
+            "delayed_arrival_pct": 26.34,
+            "flights": 41942
+          },
+          "got": {
+            "airport": "DAL\u0000\u0000",
+            "delayed_arrival_pct": 26.34,
+            "flights": 41942
+          }
+        },
+        {
+          "case_id": "case4_worst_winter_carrier_airport",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56,
+            "flights": 6060
+          },
+          "got": {
+            "carrier": "OO",
+            "airport": "ASE",
+            "avg_dep_delay": 25.56171617161716,
+            "flights": 6060
+          }
+        },
+        {
+          "case_id": "case5_peak_aa_month",
+          "strict": false,
+          "relaxed": true,
+          "expected": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.51
+          },
+          "got": {
+            "Year": 2021,
+            "Month": 6,
+            "avg_dep_delay": 19.511600829239203
+          }
+        },
+        {
+          "case_id": "case6_peak_route_season",
+          "strict": true,
+          "relaxed": true,
+          "expected": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.86,
+            "flights": 6532
+          },
+          "got": {
+            "route": "ORD-LGA",
+            "season": "Summer",
+            "avg_dep_delay": 20.86,
+            "flights": 6532
+          }
+        }
+      ]
+    }
+  }
+}
