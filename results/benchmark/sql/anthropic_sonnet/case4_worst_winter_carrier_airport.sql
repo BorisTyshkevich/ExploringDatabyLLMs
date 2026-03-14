@@ -1,1 +1,0 @@
-SELECT trimRight(toString(Carrier)) AS carrier, trimRight(toString(Origin)) AS airport, avg(DepDelay) AS avg_dep_delay, count() AS flights FROM ontime WHERE Year IN (2019, 2020, 2021) AND Month IN (12, 1, 2) GROUP BY Carrier, Origin HAVING flights >= 5000 ORDER BY avg_dep_delay DESC LIMIT 1
