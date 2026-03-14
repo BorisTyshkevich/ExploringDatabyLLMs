@@ -1,0 +1,8 @@
+{
+  "enabledMcpjsonServers": [
+    "github",
+    "clickhouse-docs",
+    "jetbrains"
+  ],
+  "enableAllProjectMcpServers": true
+}
