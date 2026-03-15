@@ -1,0 +1,39 @@
+compare_contract:
+  version: 1
+  row_filter:
+    include_row_types:
+      - carrier_year
+    where:
+      RankInYear:
+        lte: 5
+  key_columns:
+    - Year
+    - Reporting_Airline
+  compare_columns:
+    exact:
+      - RankInYear
+      - CompletedFlights
+      - LeaderReportingAirline
+      - RunnerUpReportingAirline
+      - LeaderChanged
+    numeric:
+      - name: SharePct
+        tolerance_abs: 0.02
+      - name: LeaderShareGapPctPts
+        tolerance_abs: 0.02
+      - name: LeaderShareChangePctPts
+        tolerance_abs: 0.02
+  optional_columns:
+    - PriorYearLeaderReportingAirline
+    - LeaderShareChangePctPts
+  header_aliases: {}
+  normalization:
+    trim_strings: true
+    null_equivalents:
+      - ""
+      - "NULL"
+      - "null"
+  compliance:
+    require_nonempty_rows: true
+    require_unique_keys: true
+    require_reference_match: false

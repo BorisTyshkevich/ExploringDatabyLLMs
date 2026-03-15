@@ -1,0 +1,8 @@
+id: q004
+slug: q004_worst_origin_airport_otp_thresholded
+title: Worst origin airports by departure on-time performance
+dataset: ontime_v2
+artifacts_required: query.sql,report.md,visual.html
+visual_type: html_ranked_dashboard
+tags: airport,otp,departure-delay,ranking,thresholds
+reference_policy: optional

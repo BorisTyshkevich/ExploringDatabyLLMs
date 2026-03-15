@@ -1,0 +1,38 @@
+compare_contract:
+  version: 1
+  row_filter:
+    include_row_types:
+      - hotspot_summary
+      - monthly_trend
+    where: {}
+  key_columns:
+    - RowType
+    - MonthStart
+    - Dest
+    - DepTimeBlk
+    - HotspotRank
+  compare_columns:
+    exact:
+      - QualifyingMonths
+      - CompletedFlights
+    numeric:
+      - name: AvgDepDelayMinutes
+        tolerance_abs: 0.02
+      - name: P90DepDelayMinutes
+        tolerance_abs: 0.02
+      - name: DepDel15Pct
+        tolerance_abs: 0.02
+  optional_columns:
+    - FirstQualifyingMonth
+    - LastQualifyingMonth
+  header_aliases: {}
+  normalization:
+    trim_strings: true
+    null_equivalents:
+      - ""
+      - "NULL"
+      - "null"
+  compliance:
+    require_nonempty_rows: true
+    require_unique_keys: true
+    require_reference_match: false

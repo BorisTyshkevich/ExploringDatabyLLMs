@@ -1,0 +1,7 @@
+runs/
+.tmp/
+datasets/ontime_v2/.cache/
+__pycache__/
+*.swp
+*.swo
+.DS_Store
