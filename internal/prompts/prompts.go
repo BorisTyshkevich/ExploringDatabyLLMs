@@ -21,7 +21,7 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_primary_table":  dataset.PrimaryTable,
+		"dataset_primary_table": dataset.PrimaryTable,
 		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
 	}
 	sections := []string{
@@ -41,13 +41,13 @@ func BuildPresentationPrompt(question model.Question, result model.CanonicalResu
 		return "", err
 	}
 	values := map[string]string{
-		"question_title":      question.Meta.Title,
-		"visual_type":         question.Meta.VisualType,
-		"result_columns_csv":  strings.Join(result.Columns, ", "),
-		"saved_sql":           strings.TrimSpace(savedSQL),
-		"report_prompt_md":    question.ReportPrompt,
-		"visual_prompt_md":    question.VisualPrompt,
-		"report_placeholders": "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
+		"question_title":       question.Meta.Title,
+		"visual_type":          question.Meta.VisualType,
+		"result_columns_csv":   strings.Join(result.Columns, ", "),
+		"saved_sql":            strings.TrimSpace(savedSQL),
+		"report_prompt_md":     question.ReportPrompt,
+		"visual_prompt_md":     question.VisualPrompt,
+		"report_placeholders":  "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
 		renderTemplate(commonPresentation, values),

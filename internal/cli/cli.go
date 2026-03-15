@@ -439,7 +439,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return err
 	}
-	presentationEnabled := false
+	presentationEnabled := question.PresentationEnabled
 	logf(opts.Verbose, "out_dir=%s presentation=%t timeout_sec=%d", outDir, presentationEnabled, commandTimeoutSec)
 	artifacts := runs.DefaultArtifacts(outDir, presentationEnabled)
 	startedAt := time.Now().UTC()
