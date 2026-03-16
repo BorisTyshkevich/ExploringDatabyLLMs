@@ -176,6 +176,7 @@ Flags:
 - `--model`
   - optional, repeatable
   - override the default model for the selected runner
+  - current defaults: `codex -> gpt-5.4`, `claude -> opus`, `gemini -> gemini-3.1-pro-preview`
   - matched positionally with repeated `--runner` flags
   - example:
     - `--runner codex --model gpt-5.4 --runner claude --model opus`
@@ -305,29 +306,49 @@ Flags:
   - default: current local day
 - `--question`
   - optional
-  - restrict compare output to one question id or slug
-- `--out-prefix`
+  - restrict compare to one question id or slug
+  - if omitted, `compare` iterates all questions found for that day and runs one compare pass per question
+- `--runner`
   - optional
-  - output prefix for generated report files
-  - default: `runs/compare`
+  - provider runner used for `compare_report.md`
+  - default: `codex`
+- `--model`
+  - optional
+  - override the default model for the compare report provider
+- `--cli-bin`
+  - optional
+  - override the provider CLI executable for the compare report provider
 - `--mcp-url`
   - optional
-  - explicit MCP URL ending in `/http` for `system.query_log` fetches
+  - explicit MCP URL ending in `/http` for `system.query_log` fetches and any direct validation queries used during report generation
+- `--mcp-server-name`
+  - optional
+  - explicit MCP server name for provider config
+- `--mcp-token`
+  - optional
+  - explicit MCP bearer token
+- `--mcp-token-file`
+  - optional
+  - read MCP token from a file
 - `--verbose`
   - optional
   - print compare progress logs
 
 What `compare` writes:
 
-- `<out-prefix>.json`
-- `<out-prefix>.md`
+- `runs/<day>/<question-slug>/compare/compare.json`
+- `runs/<day>/<question-slug>/compare/analysis.prompt.md`
+- `runs/<day>/<question-slug>/compare/analysis.raw.md`
+- `runs/<day>/<question-slug>/compare_report.md`
 
 What `compare` does:
 
+- resolves one question per compare pass
 - loads `manifest.json` and `result.json` from matching runs
 - fetches deferred performance metrics from `system.query_log` using `log_comment`
-- includes partial runs in the report when possible
-- summarizes status, row counts, and performance metrics
+- writes compact structured compare data to `compare/compare.json`
+- runs one provider call using the shared analysis prompt to generate `compare_report.md`
+- includes partial runs in the structured compare output when possible
 
 ### `qforge inspect-run`
 
@@ -460,14 +481,14 @@ Three-question verification pass:
 ./scripts/qforge run --question q001 --runner claude --verbose
 ./scripts/qforge run --question q002 --runner claude --verbose
 ./scripts/qforge run --question q003 --runner claude --verbose
-./scripts/qforge compare --day "$(date +%F)" --out-prefix runs/qforge-check --verbose
+./scripts/qforge compare --day "$(date +%F)" --verbose
 ```
 
 Multi-provider comparison:
 
 ```bash
 ./scripts/qforge run --question q001 --runner codex --runner claude --verbose
-./scripts/qforge compare --day "$(date +%F)" --question q001 --out-prefix runs/q001-compare --verbose
+./scripts/qforge compare --day "$(date +%F)" --question q001 --runner codex --verbose
 ```
 
 Process presentation for one completed run:

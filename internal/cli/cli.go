@@ -82,7 +82,7 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "  qforge run --question q001 --runner codex --runner claude --verbose")
 	fmt.Fprintln(out, "  qforge run --question q001 --verbose")
 	fmt.Fprintln(out, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --verbose")
-	fmt.Fprintln(out, "  qforge compare --day 2026-03-15 --out-prefix runs/qforge-check --verbose")
+	fmt.Fprintln(out, "  qforge compare --day 2026-03-15 --question q003 --runner codex --verbose")
 	fmt.Fprintln(out)
 	fmt.Fprintln(out, "Use `qforge <command> --help` for detailed subcommand help.")
 }
@@ -243,25 +243,30 @@ func runCompare(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge compare [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Compare existing qforge runs and enrich them with deferred system.query_log metrics.")
+		fmt.Fprintln(os.Stdout, "Compare existing qforge runs one question at a time and generate a rich compare report.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - discovers runs under runs/<day>/...")
-		fmt.Fprintln(os.Stdout, "  - reads manifest.json and result.json when present")
-		fmt.Fprintln(os.Stdout, "  - fetches query performance by saved log_comment")
-		fmt.Fprintln(os.Stdout, "  - writes <out-prefix>.json and <out-prefix>.md")
+		fmt.Fprintln(os.Stdout, "  - when --question is set, compares only that question for the selected day")
+		fmt.Fprintln(os.Stdout, "  - when --question is omitted, iterates over each question found for the selected day")
+		fmt.Fprintln(os.Stdout, "  - writes compare/compare.json and compare_report.md under each question directory")
+		fmt.Fprintln(os.Stdout, "  - performs one provider call per question to write the rich compare report")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Flags:")
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Examples:")
 		fmt.Fprintln(os.Stdout, "  qforge compare --day 2026-03-15")
-		fmt.Fprintln(os.Stdout, "  qforge compare --day 2026-03-15 --question q001 --out-prefix runs/q001-compare --verbose")
+		fmt.Fprintln(os.Stdout, "  qforge compare --day 2026-03-15 --question q001 --runner codex --verbose")
 	}
 	questionRef := fs.String("question", "", "Restrict compare output to one question id or slug")
 	day := fs.String("day", time.Now().Format("2006-01-02"), "Run day in YYYY-MM-DD")
-	outPrefix := fs.String("out-prefix", "runs/compare", "Output prefix for .json and .md compare artifacts")
 	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http for query_log fetches")
+	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
+	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
+	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
+	runner := fs.String("runner", "codex", "Provider runner for compare_report.md: codex, claude, or gemini")
+	modelName := fs.String("model", "", "Model override for the compare report provider")
+	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	verbose := fs.Bool("verbose", false, "Print compare progress logs")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
@@ -273,11 +278,156 @@ func runCompare(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
-	if *verbose {
-		fmt.Printf("[qforge] compare day=%s question=%s out=%s\n", *day, *questionRef, *outPrefix)
+	token := *mcpToken
+	if *mcpTokenFile != "" && token == "" {
+		bytes, err := os.ReadFile(*mcpTokenFile)
+		if err != nil {
+			return err
+		}
+		token = strings.TrimSpace(string(bytes))
 	}
-	_, err = compare.Generate(ctx, root, filepath.Join(root, *outPrefix), *day, *questionRef, *mcpURL)
-	return err
+	if *modelName == "" {
+		*modelName, err = defaultModelForRunner(*runner)
+		if err != nil {
+			return err
+		}
+	}
+
+	var questionRefs []string
+	if *questionRef != "" {
+		questionRefs = []string{*questionRef}
+	} else {
+		questionRefs, err = compare.DiscoverQuestionRefs(root, *day)
+		if err != nil {
+			return err
+		}
+	}
+	if len(questionRefs) == 0 {
+		return fmt.Errorf("no question runs found for %s", *day)
+	}
+
+	var errs []string
+	for _, ref := range questionRefs {
+		if *verbose {
+			fmt.Printf("[qforge] compare day=%s question=%s runner=%s model=%s\n", *day, ref, *runner, *modelName)
+		}
+		if err := executeCompare(ctx, compareOptions{
+			QuestionRef: ref,
+			Day:         *day,
+			Runner:      *runner,
+			Model:       *modelName,
+			MCPURL:      *mcpURL,
+			MCPServer:   *mcpServer,
+			MCPToken:    token,
+			CLIBin:      *cliBin,
+			Verbose:     *verbose,
+		}); err != nil {
+			errs = append(errs, err.Error())
+		}
+	}
+	if len(errs) > 0 {
+		return errors.New(strings.Join(errs, "\n"))
+	}
+	return nil
+}
+
+type compareOptions struct {
+	QuestionRef string
+	Day         string
+	Runner      string
+	Model       string
+	MCPURL      string
+	MCPServer   string
+	MCPToken    string
+	CLIBin      string
+	Verbose     bool
+}
+
+func executeCompare(ctx context.Context, opts compareOptions) error {
+	root, err := repoRoot()
+	if err != nil {
+		return err
+	}
+	question, err := questions.Resolve(root, opts.QuestionRef)
+	if err != nil {
+		return err
+	}
+	cfg, err := datasets.Load(root, question.Meta.Dataset)
+	if err != nil {
+		return err
+	}
+	paths := compare.ArtifactPathsForQuestion(root, opts.Day, question.Meta.Slug)
+	report, err := compare.Generate(ctx, root, paths.Dir, opts.Day, question.Meta.ID, opts.MCPURL, opts.MCPToken)
+	if err != nil {
+		return err
+	}
+	prompt, err := compare.BuildAnalysisPrompt(root, question, report, paths.JSON)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(paths.PromptMD, []byte(prompt), 0o644); err != nil {
+		return err
+	}
+
+	mcpURL, token, err := compareResolveMCPURL(cfg, opts.MCPURL, opts.MCPToken)
+	if err != nil {
+		return err
+	}
+	req := model.ProviderRequest{
+		Question:      question,
+		Dataset:       cfg,
+		Prompt:        prompt,
+		OutDir:        paths.Dir,
+		Model:         opts.Model,
+		MCPURL:        mcpURL,
+		MCPServerName: datasets.ResolveMCPServerName(cfg, opts.MCPServer),
+		MCPToken:      token,
+		CLIBin:        opts.CLIBin,
+		Verbose:       opts.Verbose,
+	}
+	provider, err := providers.New(opts.Runner)
+	if err != nil {
+		return err
+	}
+	resp, providerErr := provider.GeneratePresentation(ctx, req)
+	_ = os.WriteFile(paths.RawAnalysis, []byte(resp.RawOutput), 0o644)
+	if providerErr != nil {
+		return fmt.Errorf("compare report generation for %s: %w", question.Meta.ID, providerErr)
+	}
+	reportMD, err := extractCompareMarkdown(resp.RawOutput)
+	if err != nil {
+		return fmt.Errorf("extract compare report for %s: %w", question.Meta.ID, err)
+	}
+	return os.WriteFile(paths.ReportMD, []byte(reportMD+"\n"), 0o644)
+}
+
+func compareResolveMCPURL(cfg model.DatasetConfig, explicitURL, explicitToken string) (string, string, error) {
+	if explicitToken != "" && explicitURL == "" {
+		baseURL := cfg.MCPBaseURL
+		if baseURL == "" {
+			baseURL = "https://mcp.demo.altinity.cloud"
+		}
+		return fmt.Sprintf("%s/%s/http", strings.TrimRight(baseURL, "/"), explicitToken), explicitToken, nil
+	}
+	url, token, err := datasets.ResolveMCPURL(cfg, explicitURL)
+	if err != nil {
+		return "", "", err
+	}
+	if explicitToken != "" {
+		token = explicitToken
+	}
+	return url, token, nil
+}
+
+func extractCompareMarkdown(raw string) (string, error) {
+	if block, err := extract.Block(raw, "markdown"); err == nil {
+		return block, nil
+	}
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return "", errors.New("empty compare report output")
+	}
+	return trimmed, nil
 }
 
 func runProcessVisual(ctx context.Context, args []string) error {
@@ -419,15 +569,9 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		token = opts.MCPToken
 	}
 	if opts.Model == "" {
-		switch opts.Runner {
-		case "codex":
-			opts.Model = "gpt-5.4"
-		case "claude":
-			opts.Model = "opus"
-		case "gemini":
-			opts.Model = "gemini-3-flash-preview"
-		default:
-			return fmt.Errorf("no default model for %s", opts.Runner)
+		opts.Model, err = defaultModelForRunner(opts.Runner)
+		if err != nil {
+			return err
 		}
 	}
 	commandTimeoutSec := question.Meta.CommandTimeoutSec
@@ -570,13 +714,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	defer cancelPresentation()
 	presentationResponse, presentationErr := provider.GeneratePresentation(presentationCtx, req)
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
-	reportTemplate, err := extract.Block(presentationResponse.RawOutput, "report")
-	if err != nil {
-		manifest.Status = model.RunStatusPartial
-		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
-		return err
-	}
-	htmlTemplate, err := extract.Block(presentationResponse.RawOutput, "html")
+	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(presentationResponse.RawOutput, outDir)
 	if err != nil {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
@@ -742,14 +880,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", providerErr.Error())
 	}
-	reportTemplate, err := extract.Block(resp.RawOutput, "report")
-	if err != nil {
-		manifest.Status = model.RunStatusPartial
-		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
-		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
-		return err
-	}
-	htmlTemplate, err := extract.Block(resp.RawOutput, "html")
+	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(resp.RawOutput, runDir)
 	if err != nil {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
@@ -783,4 +914,42 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func defaultModelForRunner(runner string) (string, error) {
+	switch runner {
+	case "codex":
+		return "gpt-5.4", nil
+	case "claude":
+		return "opus", nil
+	case "gemini":
+		return "gemini-3.1-pro-preview", nil
+	default:
+		return "", fmt.Errorf("no default model for %s", runner)
+	}
+}
+
+func loadPresentationArtifacts(rawOutput, outDir string) (string, string, error) {
+	reportTemplate, reportErr := extract.Block(rawOutput, "report")
+	htmlTemplate, htmlErr := extract.Block(rawOutput, "html")
+	if reportErr == nil && htmlErr == nil {
+		return reportTemplate, htmlTemplate, nil
+	}
+
+	reportPath := filepath.Join(outDir, "report.md")
+	htmlPath := filepath.Join(outDir, "visual.html")
+	reportBytes, readReportErr := os.ReadFile(reportPath)
+	htmlBytes, readHTMLErr := os.ReadFile(htmlPath)
+	if readReportErr == nil && readHTMLErr == nil {
+		reportTemplate = strings.TrimSpace(string(reportBytes))
+		if fencedReport, err := extract.Block(reportTemplate, "report"); err == nil {
+			reportTemplate = fencedReport
+		}
+		return reportTemplate, strings.TrimSpace(string(htmlBytes)), nil
+	}
+
+	if reportErr != nil {
+		return "", "", reportErr
+	}
+	return "", "", htmlErr
 }
