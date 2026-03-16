@@ -1,8 +1,7 @@
-Using `default.ontime_v2`, determine which `Reporting_Airline` flew the most completed flights in each calendar year, and identify where leadership changed most sharply.
+Determine which `Reporting_Airline` flew the most completed flights in each calendar year, and identify where leadership changed most sharply.
 
 Definitions and rules:
 
-- Use only `default.ontime_v2`.
 - A completed flight is a row with `Cancelled = 0`.
 - Group first by `Year` and `Reporting_Airline`.
 - For each year, compute completed flights and carrier share of that year's completed flights.
@@ -45,7 +44,6 @@ Implementation expectations:
 
 - Use CTEs to separate annual totals, annual carrier counts, per-year ranking, and yearly leader transitions.
 - Make the result deterministic.
-- Do not reference any table other than `default.ontime_v2`.
 
 In `report.md`, summarize:
 

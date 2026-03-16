@@ -1,8 +1,7 @@
-Using `default.ontime_v2`, find which Delta departures out of ATL have the worst sustained departure delays at the `(Dest, DepTimeBlk)` level.
+Find which Delta departures out of ATL have the worst sustained departure delays at the `(Dest, DepTimeBlk)` level.
 
 Definitions and filters:
 
-- Use only `default.ontime_v2`.
 - Filter to `IATA_CODE_Reporting_Airline = 'DL'`.
 - Filter to `Origin = 'ATL'`.
 - Restrict to completed flights with `Cancelled = 0`.
@@ -64,5 +63,4 @@ Implementation expectations:
 
 - Use CTEs for monthly qualification, final rollup, and extraction of monthly trend rows for the top-ranked hotspot cells.
 - Exclude low-volume monthly cells before final ranking.
-- Keep field names exactly from `default.ontime_v2`.
 - Verify that the final top-20 `(Dest, DepTimeBlk)` ranking is based on hotspot metrics recomputed over all qualifying raw flights.

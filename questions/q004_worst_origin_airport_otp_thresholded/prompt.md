@@ -1,8 +1,7 @@
-Using `default.ontime_v2`, identify which origin airports have the worst departure on-time performance after excluding low-volume airports.
+Identify which origin airports have the worst departure on-time performance after excluding low-volume airports.
 
 Definitions and rules:
 
-- Use only `default.ontime_v2`.
 - Restrict to completed flights with `Cancelled = 0`.
 - Departure on-time performance is the share of flights with `DepDel15 = 0`.
 - Aggregate at the `Origin` level.

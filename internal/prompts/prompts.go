@@ -10,28 +10,38 @@ import (
 )
 
 const (
+	commonPromptFile             = "common.md"
 	commonSQLPromptFile          = "common_sql.md"
 	commonPresentationPromptFile = "common_presentation.md"
 	commonVisualPromptFile       = "common_visual_dynamic.md"
 )
 
 func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (string, error) {
-	common, err := loadCommonPrompt(question, commonSQLPromptFile)
+	common, err := loadCommonPrompt(question, commonPromptFile)
+	if err != nil {
+		return "", err
+	}
+	commonSQL, err := loadCommonPrompt(question, commonSQLPromptFile)
 	if err != nil {
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_primary_table": dataset.PrimaryTable,
+		"dataset_primary_table":  dataset.PrimaryTable,
 		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
 	}
 	sections := []string{
 		renderTemplate(common, values),
+		renderTemplate(commonSQL, values),
 		question.Prompt,
 	}
 	return joinSections(sections), nil
 }
 
-func BuildPresentationPrompt(question model.Question, result model.CanonicalResult, savedSQL string) (string, error) {
+func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL string) (string, error) {
+	common, err := loadCommonPrompt(question, commonPromptFile)
+	if err != nil {
+		return "", err
+	}
 	commonPresentation, err := loadCommonPrompt(question, commonPresentationPromptFile)
 	if err != nil {
 		return "", err
@@ -41,15 +51,18 @@ func BuildPresentationPrompt(question model.Question, result model.CanonicalResu
 		return "", err
 	}
 	values := map[string]string{
-		"question_title":       question.Meta.Title,
-		"visual_type":          question.Meta.VisualType,
-		"result_columns_csv":   strings.Join(result.Columns, ", "),
-		"saved_sql":            strings.TrimSpace(savedSQL),
-		"report_prompt_md":     question.ReportPrompt,
-		"visual_prompt_md":     question.VisualPrompt,
-		"report_placeholders":  "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
+		"dataset_primary_table":  dataset.PrimaryTable,
+		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
+		"question_title":         question.Meta.Title,
+		"visual_type":            question.Meta.VisualType,
+		"result_columns_csv":     strings.Join(result.Columns, ", "),
+		"saved_sql":              strings.TrimSpace(savedSQL),
+		"report_prompt_md":       question.ReportPrompt,
+		"visual_prompt_md":       question.VisualPrompt,
+		"report_placeholders":    "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
+		renderTemplate(common, values),
 		renderTemplate(commonPresentation, values),
 		renderTemplate(commonVisual, values),
 	}

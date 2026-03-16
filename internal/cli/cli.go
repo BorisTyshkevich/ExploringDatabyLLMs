@@ -558,7 +558,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return fmt.Errorf("read query.sql for presentation prompt: %w", err)
 	}
-	prompt, err := prompts.BuildPresentationPrompt(question, result, string(querySQL))
+	prompt, err := prompts.BuildPresentationPrompt(question, cfg, result, string(querySQL))
 	if err != nil {
 		return err
 	}
@@ -707,7 +707,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return fmt.Errorf("process-visual requires query.sql: %w", err)
 	}
-	prompt, err := prompts.BuildPresentationPrompt(question, result, string(querySQL))
+	prompt, err := prompts.BuildPresentationPrompt(question, cfg, result, string(querySQL))
 	if err != nil {
 		return err
 	}

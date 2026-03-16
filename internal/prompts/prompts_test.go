@@ -22,8 +22,11 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "You are running inside qforge.") {
-		t.Fatalf("expected common SQL scaffold, got: %s", got)
+	if !strings.Contains(got, "Stay within the configured dataset scope.") {
+		t.Fatalf("expected shared core scaffold, got: %s", got)
+	}
+	if !strings.Contains(got, "Inspect the live schema first") {
+		t.Fatalf("expected SQL-specific scaffold, got: %s", got)
 	}
 	if !strings.Contains(got, "Question-specific SQL guidance.") {
 		t.Fatalf("expected question prompt section, got: %s", got)
@@ -44,15 +47,31 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 		Columns:     []string{"RowType", "Dest"},
 		GeneratedAt: time.Now(),
 	}
-	got, err := BuildPresentationPrompt(question, result, "SELECT *\nFROM default.ontime_v2")
+	dataset := model.DatasetConfig{
+		PrimaryTable:    "default.ontime_v2",
+		ForbiddenTables: "default.ontime",
+	}
+	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT *\nFROM default.ontime_v2")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "Stay within the configured dataset scope.") {
+		t.Fatalf("expected shared core scaffold, got: %s", got)
+	}
+	if !strings.Contains(got, "default.ontime_v2") || !strings.Contains(got, "default.ontime") {
+		t.Fatalf("expected dataset substitutions, got: %s", got)
+	}
+	if !strings.Contains(got, "The report is a Markdown template") {
+		t.Fatalf("expected presentation-specific scaffold, got: %s", got)
 	}
 	if !strings.Contains(got, "ontime-analyst-dashboard") {
 		t.Fatalf("expected skill reference, got: %s", got)
 	}
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM default.ontime_v2") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)
+	}
+	if strings.Contains(got, "Return exactly this fenced section:") {
+		t.Fatalf("did not expect SQL-only fenced section instructions in presentation prompt, got: %s", got)
 	}
 	if strings.Contains(got, "qforge-result-data") || strings.Contains(got, "__QFORGE_DEFAULT_SQL__") {
 		t.Fatalf("did not expect legacy injected JSON contract, got: %s", got)

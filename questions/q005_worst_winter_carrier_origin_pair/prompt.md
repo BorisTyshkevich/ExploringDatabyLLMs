@@ -1,8 +1,7 @@
-Using `default.ontime_v2`, determine which `(Reporting_Airline, Origin)` pairs perform worst in winter after applying a minimum flight threshold.
+Determine which `(Reporting_Airline, Origin)` pairs perform worst in winter after applying a minimum flight threshold.
 
 Definitions and filters:
 
-- Use only `default.ontime_v2`.
 - Winter is `Month IN (12, 1, 2)`.
 - Restrict to completed flights with `Cancelled = 0`.
 - Aggregate at `(Reporting_Airline, Origin)`.

@@ -29,6 +29,23 @@ The model should not emit result rows directly.
 
 The harness always executes the final SQL itself and writes `result.json`.
 
+## Prompt Assets
+
+Prompt assembly is split into shared and phase-specific assets under [`/Users/bvt/work/ExploringDatabyLLMs/questions`](/Users/bvt/work/ExploringDatabyLLMs/questions):
+
+- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common.md)
+  - shared qforge and dataset-scope guidance used by both SQL and presentation phases
+- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common_sql.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common_sql.md)
+  - SQL-only rules such as schema inspection, self-verification, and the fenced `sql` output contract
+- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common_presentation.md)
+  - report/template rules for the presentation phase
+- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common_visual_dynamic.md)
+  - dynamic `visual.html` requirements
+
+Question-specific files such as `questions/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
+
+Template variables, prompt composition, and dataset mapping are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md).
+
 ## Setup
 
 Set the demo JWE token:
@@ -420,7 +437,6 @@ This is why performance metrics are not fetched during `run` itself.
 Important caveats:
 
 - The repository still contains older Bash and Python harness code and old docs; those are not the primary path documented here.
-- Some question prompts still contain legacy assumptions about TSV or model-authored presentation content.
 - Provider behavior varies. Some providers can spend a long time in self-verification loops before returning SQL.
 - Presentation is a separate explicit step by default. Use `run --with-visual` if you want `run` to also make the follow-up presentation call.
 

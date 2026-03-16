@@ -1,8 +1,7 @@
-Using `default.ontime_v2`, find American Airlines' worst network-wide month for departure delays, then identify which origins and routes contributed most to that peak.
+Find American Airlines' worst network-wide month for departure delays, then identify which origins and routes contributed most to that peak.
 
 Definitions and filters:
 
-- Use only `default.ontime_v2`.
 - Filter to `IATA_CODE_Reporting_Airline = 'AA'`.
 - Restrict to completed flights with `Cancelled = 0`.
 - Aggregate months using `toStartOfMonth(FlightDate)`.
@@ -56,5 +55,4 @@ In `report.md`, include:
 Implementation expectations:
 
 - Use one query that emits the monthly summary and the selected-month contribution rows together.
-- Ensure the SQL and report reference `default.ontime_v2` only.
 - Make the peak-month selection deterministic.
