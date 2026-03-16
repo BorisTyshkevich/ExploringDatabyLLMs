@@ -7,7 +7,7 @@ Use this skill for OnTime `visual.html` artifacts and dashboard generation.
 
 ## When to use
 
-- Any question under `questions/` that requires `visual.html`
+- Any prompt under `prompts/` that requires `visual.html`
 - Static benchmark artifacts with embedded CSV data
 - Live browser dashboards that fetch from the MCP OpenAPI endpoint
 - Geographic reports involving airports, routes, itineraries, hubs, or spillovers

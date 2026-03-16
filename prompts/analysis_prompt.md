@@ -28,6 +28,14 @@ Query SQL files:
 
 {{query_sql_paths_md}}
 
+Report Markdown files:
+
+{{report_md_paths_md}}
+
+Visual HTML files:
+
+{{visual_html_paths_md}}
+
 Result JSON files:
 
 {{result_json_paths_md}}
@@ -44,6 +52,7 @@ Your job:
 - quantify differences when they exist
 - mention performance differences only from verified query-log metrics
 - describe SQL-shape differences only when supported by the actual `query.sql` files
+- cite `report.md` and `visual.html` artifacts when discussing presentation outputs
 - prefer links to local artifacts instead of long pasted SQL
 - keep the note concise but complete enough for a blog-style benchmark write-up
 
@@ -57,8 +66,9 @@ Required sections:
 6. `## Full SQL artifacts`
 7. `## Real output differences`
 8. `## SQL comparison`
-9. `## Execution stats`
-10. `## Takeaway`
+9. `## Presentation artifacts`
+10. `## Execution stats`
+11. `## Takeaway`
 
 Rules:
 

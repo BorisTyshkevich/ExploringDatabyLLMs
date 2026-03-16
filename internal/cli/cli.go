@@ -97,7 +97,7 @@ func runListQuestions(args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge list-questions")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "List question metadata discovered under questions/.")
+		fmt.Fprintln(os.Stdout, "List question metadata discovered under prompts/.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Prints tab-separated columns:")
 		fmt.Fprintln(os.Stdout, "  question_id, question_slug, title, dataset, presentation_enabled")

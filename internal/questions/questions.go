@@ -13,7 +13,7 @@ import (
 )
 
 func LoadAll(repoRoot string) ([]model.Question, error) {
-	root := filepath.Join(repoRoot, "questions")
+	root := filepath.Join(repoRoot, "prompts")
 	entries, err := os.ReadDir(root)
 	if err != nil {
 		return nil, err

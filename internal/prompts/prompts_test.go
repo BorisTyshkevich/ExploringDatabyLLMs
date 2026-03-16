@@ -11,7 +11,7 @@ import (
 
 func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
-		Dir:    filepath.Join("..", "..", "questions", "q003_delta_atl_departure_delay_hotspots"),
+		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Prompt: "Question-specific SQL guidance.",
 	}
 	dataset := model.DatasetConfig{
@@ -38,7 +38,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 
 func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
-		Dir:          filepath.Join("..", "..", "questions", "q003_delta_atl_departure_delay_hotspots"),
+		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Meta:         model.QuestionMeta{ID: "q003", Title: "Delta ATL", VisualType: "html_heatmap"},
 		ReportPrompt: "Report guidance.",
 		VisualPrompt: "Visual guidance.",

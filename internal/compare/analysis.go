@@ -12,7 +12,7 @@ import (
 const analysisPromptFile = "analysis_prompt.md"
 
 func BuildAnalysisPrompt(repoRoot string, question model.Question, report Report, compareJSONPath string) (string, error) {
-	templatePath := filepath.Join(repoRoot, "questions", analysisPromptFile)
+	templatePath := filepath.Join(repoRoot, "prompts", analysisPromptFile)
 	data, err := os.ReadFile(templatePath)
 	if err != nil {
 		return "", fmt.Errorf("load analysis prompt %s: %w", templatePath, err)
@@ -29,6 +29,8 @@ func BuildAnalysisPrompt(repoRoot string, question model.Question, report Report
 		"compare_contract_path": optionalPath(filepath.Join(question.Dir, "compare.yaml")),
 		"run_dirs_md":           bulletList(runDirs(report.Runs)),
 		"query_sql_paths_md":    bulletList(querySQLPaths(report.Runs)),
+		"report_md_paths_md":    bulletList(reportMDPaths(report.Runs)),
+		"visual_html_paths_md":  bulletList(visualHTMLPaths(report.Runs)),
 		"result_json_paths_md":  bulletList(resultJSONPaths(report.Runs)),
 		"compare_summary_md":    renderMarkdown(report),
 	}
@@ -81,6 +83,22 @@ func resultJSONPaths(items []RunSummary) []string {
 	out := make([]string, 0, len(items))
 	for _, item := range items {
 		out = append(out, filepath.Join(item.RunDir, "result.json"))
+	}
+	return out
+}
+
+func reportMDPaths(items []RunSummary) []string {
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		out = append(out, filepath.Join(item.RunDir, "report.md"))
+	}
+	return out
+}
+
+func visualHTMLPaths(items []RunSummary) []string {
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		out = append(out, filepath.Join(item.RunDir, "visual.html"))
 	}
 	return out
 }

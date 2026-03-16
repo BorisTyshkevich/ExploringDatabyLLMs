@@ -4,18 +4,18 @@ This document describes how qforge assembles shared prompt assets and which temp
 
 ## Prompt Assets
 
-Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/questions`](/Users/bvt/work/ExploringDatabyLLMs/questions):
+Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](/Users/bvt/work/ExploringDatabyLLMs/prompts):
 
-- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common_sql.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common_sql.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md)
   - SQL-only rules such as schema inspection, self-verification, and the fenced `sql` output contract
-- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common_presentation.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
   - report/template rules for the presentation phase
-- [`/Users/bvt/work/ExploringDatabyLLMs/questions/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/questions/common_visual_dynamic.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
 
-Question-specific files such as `questions/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
+Question-specific files such as `prompts/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
 
 ## Prompt Composition
 
@@ -88,4 +88,3 @@ Current values:
 
 - `Use default.ontime_v2 as the primary fact table.`
 - `Do not reference default.ontime.`
-

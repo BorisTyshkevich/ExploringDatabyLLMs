@@ -106,3 +106,59 @@ func TestArtifactPathsForQuestion(t *testing.T) {
 		t.Fatalf("unexpected compare report path: %s", got.ReportMD)
 	}
 }
+
+func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
+	repoRoot := t.TempDir()
+	promptDir := filepath.Join(repoRoot, "prompts")
+	if err := os.MkdirAll(promptDir, 0o755); err != nil {
+		t.Fatalf("mkdir prompts: %v", err)
+	}
+	template := strings.Join([]string{
+		"SQL:",
+		"{{query_sql_paths_md}}",
+		"REPORT:",
+		"{{report_md_paths_md}}",
+		"VISUAL:",
+		"{{visual_html_paths_md}}",
+	}, "\n")
+	if err := os.WriteFile(filepath.Join(promptDir, analysisPromptFile), []byte(template), 0o644); err != nil {
+		t.Fatalf("write analysis prompt: %v", err)
+	}
+
+	questionDir := filepath.Join(repoRoot, "prompts", "q003_delta_atl_departure_delay_hotspots")
+	if err := os.MkdirAll(questionDir, 0o755); err != nil {
+		t.Fatalf("mkdir question dir: %v", err)
+	}
+	question := model.Question{
+		Dir: questionDir,
+		Meta: model.QuestionMeta{
+			ID:    "q003",
+			Slug:  "q003_delta_atl_departure_delay_hotspots",
+			Title: "Delta ATL departure delay hotspots",
+		},
+	}
+	report := Report{
+		Day: "2026-03-16",
+		Runs: []RunSummary{
+			{RunDir: "/tmp/claude/opus/run-001"},
+			{RunDir: "/tmp/gemini/gemini-3.1-pro-preview/run-001"},
+		},
+	}
+
+	got, err := BuildAnalysisPrompt(repoRoot, question, report, "/tmp/compare.json")
+	if err != nil {
+		t.Fatalf("BuildAnalysisPrompt returned error: %v", err)
+	}
+
+	for _, want := range []string{
+		"/tmp/claude/opus/run-001/query.sql",
+		"/tmp/claude/opus/run-001/report.md",
+		"/tmp/claude/opus/run-001/visual.html",
+		"/tmp/gemini/gemini-3.1-pro-preview/run-001/report.md",
+		"/tmp/gemini/gemini-3.1-pro-preview/run-001/visual.html",
+	} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)
+		}
+	}
+}
