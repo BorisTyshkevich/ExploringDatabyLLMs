@@ -5,14 +5,15 @@ The page must:
 - be a complete browser-openable HTML document
 - use a scalable slippy-map approach with Leaflet and realistic remote basemap tiles
 - include a map container plus JavaScript that initializes the map
-- show the full itinerary for the highest-hop itinerary returned by the query
-- highlight the single longest leg within that itinerary as the primary emphasized route
-- render the map in a realistic atlas-like style using the basemap for state borders and labels
-- place leg numbers (`1`, `2`, ...) directly on the map for each segment
-- include a headline, a short subtitle, and KPI cards for tail number, flight number, date, hop count, and longest-leg distance
-- include a legend and a route table below the map
-- embed itinerary-leg data and airport-coordinate data as CSV inside `<script type="text/csv">` tags
-- parse the embedded CSV with a small inline parser written in plain JavaScript
-- derive the longest leg in JavaScript from the embedded data, not by hardcoding the highlighted segment
-- add airport markers with tooltips or popups that show airport code, city, and departure context
+- treat the saved SQL as the primary analytical query and keep it visible in the query controls
+- show the lead itinerary returned by the primary query and parse its `Route` string in JavaScript for downstream rendering
+- derive hop count, stop sequence, and repeated-route comparisons in JavaScript from the saved result set
+- because the primary query lacks coordinates, run an explicit airport-coordinate enrichment query against `default.airports_bts` using airport codes parsed from the lead/top route strings
+- show a visible query ledger that lists the primary query and the airport enrichment query with purpose, role, status, target table, and row count
+- label the map as airport-coordinate enrichment rather than implying the primary query already contained map geometry
+- use the enrichment query results to place airport markers and route lines for the lead itinerary when coordinates are available
+- render the primary visual from fields present in the fetched data; do not invent coordinates or geocode city names
+- include a headline, a short subtitle, and KPI cards for tail number, flight number, date, hop count, and route repetition context
+- include a legend and a route table or route sequence panel below the map
+- if airport-coordinate enrichment fails or returns insufficient rows, keep the route-centric overview, report the degraded map in the ledger, and continue rendering the non-map analysis
 - remote JS/CSS libraries and remote tile URLs are allowed for this map artifact

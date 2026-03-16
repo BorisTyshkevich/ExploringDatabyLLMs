@@ -1,6 +1,6 @@
 # Dynamic Mode
 
-Use dynamic mode for browser dashboards that fetch live data from the MCP OpenAPI interface.
+Use dynamic mode for browser dashboards that fetch the saved SQL result from the MCP OpenAPI interface and may run explicit enrichment queries.
 
 ## Endpoint and auth
 
@@ -22,10 +22,12 @@ Use dynamic mode for browser dashboards that fetch live data from the MCP OpenAP
 
 - Header remains visible before data loads
 - Main dashboard content hidden before successful fetch
+- The saved SQL textarea is the primary analytical query source for the page
 - The JWE/SQL control form must live in its own separate block at the very end of the page
 - That control block is a footer-style utility panel, not part of the hero or empty-state layout
 - After data loads, the control block must still remain at the bottom of the document, below the analytical content
 - Do not place the JWE/SQL controls inside the hero, KPI strip, or main analytical card grid
+- Provide a visible query ledger or provenance section that lists the primary query and any enrichment queries
 - Provide:
   - JWE token input field (allow to enter new and show locally stored as ***)
   - forget stored token button
@@ -41,14 +43,17 @@ Use dynamic mode for browser dashboards that fetch live data from the MCP OpenAP
 3. Validate both are non-empty
 4. Persist the JWE token to `localStorage` after every successful token entry so subsequent dashboards can reuse it
 5. Optionally persist the current SQL by dashboard id
-6. Call endpoint with `fetch`
+6. Call endpoint with `fetch` using the saved SQL shown in the textarea
 7. Parse JSON payload with `columns` and `rows`
 8. Treat empty results as valid when `count = 0`, even if `rows` is returned as `null`
 9. Convert row arrays into objects
 10. Run through the same normalization pipeline as static mode
-11. Show content and render dashboard while keeping the control block at the bottom
+11. Normalize temporal fields before UI formatting, grouping, filtering, or comparison logic
+12. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
+13. Show content and render dashboard while keeping the control block at the bottom
 
-Do not embed analytical result rows as CSV or JSON in dynamic mode. The browser should fetch the active dataset live after the user supplies JWE and SQL.
+Do not embed analytical result rows as CSV or JSON in dynamic mode. The browser should fetch the primary saved SQL result after the user supplies JWE and SQL, then derive visuals from that result set and any explicit enrichment queries.
+If the page uses cloned card templates, keep DOM lookups scoped to each live card instance. Do not duplicate fixed global `id` values inside templates and then access them with `document.getElementById(...)`.
 
 ## Error handling
 
@@ -57,6 +62,7 @@ Do not embed analytical result rows as CSV or JSON in dynamic mode. The browser 
 - On malformed payload, report that `columns`/`rows` were not usable
 - Never print or echo the token in status messages
 - If the result set is empty, keep KPI/chart containers stable and show a clear warning panel instead of a broken dashboard
+- If an enrichment query fails, report the failed query in the ledger, explain which visual degraded, and continue rendering the rest of the page
 
 ## Payload rules
 
@@ -67,6 +73,24 @@ Do not embed analytical result rows as CSV or JSON in dynamic mode. The browser 
   - `count`
 - Do not require `rows` to be an array in the empty-result case.
 - If `columns` is present and `count = 0` and `rows` is `null`, treat it as an empty dataset, not as a malformed payload.
+- Do not assume ClickHouse `Date` columns will always arrive as bare `YYYY-MM-DD` strings; MCP/OpenAPI payloads may surface ISO datetime strings such as `2024-12-01T00:00:00Z`.
+
+## Query contract
+
+- Dynamic dashboards default to one primary query: the saved SQL prefilled into the page.
+- Additional browser queries are allowed for enrichment or drill-down when they materially improve the visualization and remain within dataset policy.
+- Every query must be listed in a visible query ledger with a label, role (`primary`, `enrichment`, `drill-down`), status, and row count when available.
+- Do not generate hidden follow-up SQL or alternate result shapes without surfacing them to the user.
+- Prefer dataset-native dimensions and lookup tables rather than inferred or geocoded data when enrichment is needed.
+- Prefer `data-role` selectors or stored element references for card internals so map/chart initialization always targets the rendered node rather than inert template content.
+- For Leaflet maps, prefer delayed initialization after the dashboard or map card becomes visible. If the map must be created before final layout settles, call `invalidateSize()` after reveal.
+
+## Temporal normalization rules
+
+- Add a small helper that normalizes date-like values once, for example by deriving `flightDateKey = String(value ?? '').slice(0, 10)` when the source may be ISO-like.
+- Use the normalized key for filtering, grouping, comparisons, and display helpers that expect a date-only value.
+- Keep the original raw value only when the exact source timestamp is analytically meaningful.
+- Never append `T00:00:00` blindly to a value that may already contain a time component.
 
 ## Security
 

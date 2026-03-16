@@ -2,7 +2,7 @@ WITH airport_offsets AS (
     SELECT
         IATA,
         toInt32(round(Timezone * 60)) AS utc_offset_minutes
-    FROM default.airports
+    FROM default.airports_bts
     WHERE IATA != ''
 ),
 legs AS (

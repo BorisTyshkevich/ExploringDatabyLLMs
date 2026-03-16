@@ -1,85 +1,54 @@
 # Report Patterns
 
-Use these defaults for current OnTime report families.
+Use these defaults for common dashboard shapes.
 
-## Leadership and market-share reports
-
-Examples:
-- yearly carrier leadership
+## Ranking and leaderboard reports
 
 Default layout:
 - KPI strip
-- bump chart or rank trend
-- share chart
-- transition table
+- rank chart or ordered bars
+- supporting comparison chart
+- detail table
 
 Good filters:
-- carrier subset
-- year range
+- entity subset
+- date or period range
 
 Map:
-- discouraged
+- discouraged unless geography is part of the analytical question
 
-## Hotspot heatmaps
-
-Examples:
-- ATL destination/time-block hotspot
-- route-season matrices
+## Heatmap and matrix reports
 
 Default layout:
 - KPI strip
-- heatmap
+- heatmap or matrix
 - supporting trend or leaderboard
 - detail table
 
 Good filters:
-- season
-- airport
-- carrier
+- time bucket
+- category or segment
 
 Map:
 - optional secondary only
 
-## Ranked airport or carrier tables
-
-Examples:
-- worst origin airport OTP
-- worst winter carrier-origin pair
-- chronic schedule stress
+## Composition and decomposition reports
 
 Default layout:
 - KPI strip
-- horizontal leaderboard
-- scatter or composition chart
-- detail table
+- time series or stacked bars
+- contributor breakdown
+- supporting table
 
 Map:
-- optional only when airport geography matters
+- optional only when place or route context adds signal
 
-## Peak-period decomposition
-
-Examples:
-- peak AA delay month
-
-Default layout:
-- KPI strip
-- time series with annotation
-- contributor bars
-- route or origin table
-
-Map:
-- optional route overview
-
-## Network and spillover analyses
-
-Examples:
-- hub disruption spillovers
-- multi-leg itineraries
+## Network and route reports
 
 Default layout:
 - KPI strip
 - map or network visual as primary
-- supporting trend or ranked table
+- supporting summary panel
 - detail table
 
 Map:
@@ -89,15 +58,9 @@ Map:
 
 Prefer 4 compact KPIs:
 
-- primary severity or best/worst value
-- affected entity
-- volume
-- period or stability signal
+- primary value or headline finding
+- affected entity or leading category
+- volume or scale
+- period, stability, or repetition signal
 
-Keep KPI labels domain-specific, for example:
-
-- `Worst OTP`
-- `Peak Month`
-- `Top Route`
-- `Spillover Delta`
-- `Qualifying Flights`
+Keep KPI labels tied to the question’s analytical language rather than generic dashboard jargon.

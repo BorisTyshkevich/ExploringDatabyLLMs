@@ -49,6 +49,8 @@ After parsing:
 - numeric metrics should be coerced with `Number(...)` and guarded with `Number.isFinite`
 - never assume a column exists
 - if required fields are missing, show a visible warning panel in the dashboard
+- normalize temporal fields once before downstream use; if a date may be serialized as ISO datetime, derive a stable `YYYY-MM-DD` key and reuse it for display and joins
+- never build display strings or query predicates by blindly appending time fragments to unknown date values
 
 ## Dashboard behavior
 

@@ -89,37 +89,37 @@ List questions:
 Run one question:
 
 ```bash
-./scripts/qforge run --question q001 --runner claude --verbose
+./scripts/qforge run -q q001 -r claude -v
 ```
 
 Run one question and immediately follow with a separate presentation call:
 
 ```bash
-./scripts/qforge run --question q001 --runner claude --with-visual --verbose
+./scripts/qforge run -q q001 -r claude --with-visual -v
 ```
 
 Run one question across all default providers:
 
 ```bash
-./scripts/qforge run --question q001 --verbose
+./scripts/qforge run -q q001 -v
 ```
 
 Run one question across selected providers:
 
 ```bash
-./scripts/qforge run --question q001 --runner codex --runner claude --verbose
+./scripts/qforge run -q q001 -r codex -r claude -v
 ```
 
 Process report and visual for an existing run:
 
 ```bash
-./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --verbose
+./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```
 
 Compare runs for a day:
 
 ```bash
-./scripts/qforge compare --day "$(date +%F)" --verbose
+./scripts/qforge compare -v
 ```
 
 Inspect one run directory:
@@ -161,7 +161,7 @@ Behavior:
 Usage:
 
 ```bash
-./scripts/qforge run --question <id|slug> [--runner <codex|claude|gemini> ...] [flags]
+./scripts/qforge run [--question|-q <id|slug>] [--runner|-r <codex|claude|gemini> ...] [flags]
 ```
 
 Flags:
@@ -169,9 +169,13 @@ Flags:
 - `--question`
   - required
   - question id, slug, or folder name
+- `-q`
+  - shorthand for `--question`
 - `--runner`
   - optional, repeatable
   - provider runner: `codex`, `claude`, or `gemini`
+- `-r`
+  - shorthand for `--runner`
   - default when omitted: `codex`, `claude`, `gemini`
 - `--model`
   - optional, repeatable
@@ -201,6 +205,8 @@ Flags:
 - `--verbose`
   - optional
   - print phase-level progress logs and provider subprocess timing
+- `-v`
+  - shorthand for `--verbose`
 - `--with-visual`
   - optional
   - after SQL succeeds, make a second independent provider call for `report.md` and `visual.html`
@@ -304,14 +310,19 @@ Flags:
   - optional
   - run day in `YYYY-MM-DD`
   - default: current local day
+- omitting `--day` compares runs for today
 - `--question`
   - optional
   - restrict compare to one question id or slug
   - if omitted, `compare` iterates all questions found for that day and runs one compare pass per question
+- `-q`
+  - shorthand for `--question`
 - `--runner`
   - optional
   - provider runner used for `compare_report.md`
   - default: `codex`
+- `-r`
+  - shorthand for `--runner`
 - `--model`
   - optional
   - override the default model for the compare report provider
@@ -333,6 +344,8 @@ Flags:
 - `--verbose`
   - optional
   - print compare progress logs
+- `-v`
+  - shorthand for `--verbose`
 
 What `compare` writes:
 
@@ -466,33 +479,33 @@ Important caveats:
 SQL/JSON verification only:
 
 ```bash
-./scripts/qforge run --question q001 --runner claude --verbose
+./scripts/qforge run -q q001 -r claude -v
 ```
 
 Single command with SQL plus follow-up report/visual generation:
 
 ```bash
-./scripts/qforge run --question q003 --runner claude --with-visual --verbose
+./scripts/qforge run -q q003 -r claude --with-visual -v
 ```
 
 Three-question verification pass:
 
 ```bash
-./scripts/qforge run --question q001 --runner claude --verbose
-./scripts/qforge run --question q002 --runner claude --verbose
-./scripts/qforge run --question q003 --runner claude --verbose
-./scripts/qforge compare --day "$(date +%F)" --verbose
+./scripts/qforge run -q q001 -r claude -v
+./scripts/qforge run -q q002 -r claude -v
+./scripts/qforge run -q q003 -r claude -v
+./scripts/qforge compare -v
 ```
 
 Multi-provider comparison:
 
 ```bash
-./scripts/qforge run --question q001 --runner codex --runner claude --verbose
-./scripts/qforge compare --day "$(date +%F)" --question q001 --runner codex --verbose
+./scripts/qforge run -q q001 -r codex -r claude -v
+./scripts/qforge compare -q q001 -r codex -v
 ```
 
 Process presentation for one completed run:
 
 ```bash
-./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --verbose
+./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```

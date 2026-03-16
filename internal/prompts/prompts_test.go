@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"qforge/internal/model"
+	"qforge/internal/questions"
 )
 
 func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
@@ -67,6 +68,21 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "ontime-analyst-dashboard") {
 		t.Fatalf("expected skill reference, got: %s", got)
 	}
+	if !strings.Contains(got, "primary analytical query") {
+		t.Fatalf("expected primary-query contract in presentation prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "visible query ledger") {
+		t.Fatalf("expected query ledger guidance in presentation prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "Additional browser queries are allowed") {
+		t.Fatalf("expected explicit multi-query allowance in presentation prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "avoid duplicated fixed `id` values inside cloned template content") {
+		t.Fatalf("expected scoped DOM guidance for cloned templates, got: %s", got)
+	}
+	if !strings.Contains(got, "prefer initializing the map only after the visible container is in layout") {
+		t.Fatalf("expected Leaflet visibility guidance in presentation prompt, got: %s", got)
+	}
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM default.ontime_v2") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)
 	}
@@ -78,5 +94,49 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 	if !strings.Contains(got, "Report guidance.") || !strings.Contains(got, "Visual guidance.") {
 		t.Fatalf("expected question prompt sections, got: %s", got)
+	}
+}
+
+func TestBuildPresentationPromptQ001UsesVisibleEnrichmentContract(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	question, err := questions.Resolve(repoRoot, "q001")
+	if err != nil {
+		t.Fatalf("Resolve returned error: %v", err)
+	}
+	result := model.CanonicalResult{
+		Columns: []string{
+			"Tail_Number",
+			"Flight_Number_Reporting_Airline",
+			"IATA_CODE_Reporting_Airline",
+			"FlightDate",
+			"Route",
+		},
+		GeneratedAt: time.Now(),
+	}
+	dataset := model.DatasetConfig{
+		PrimaryTable:    "default.ontime_v2",
+		ForbiddenTables: "default.ontime",
+	}
+	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT 1")
+	if err != nil {
+		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "visible query ledger") {
+		t.Fatalf("expected q001 prompt to require a visible query ledger, got: %s", got)
+	}
+	if !strings.Contains(got, "default.airports_bts") {
+		t.Fatalf("expected q001 prompt to mention airport enrichment, got: %s", got)
+	}
+	if !strings.Contains(got, "airport-coordinate enrichment") {
+		t.Fatalf("expected q001 prompt to label map enrichment clearly, got: %s", got)
+	}
+	if !strings.Contains(got, "run an explicit airport-coordinate enrichment query") {
+		t.Fatalf("expected q001 prompt to require airport enrichment, got: %s", got)
+	}
+	if !strings.Contains(got, "avoid duplicated fixed `id` values inside cloned template content") {
+		t.Fatalf("expected q001 prompt to inherit scoped DOM guidance, got: %s", got)
+	}
+	if !strings.Contains(got, "prefer initializing the map only after the visible container is in layout") {
+		t.Fatalf("expected q001 prompt to inherit Leaflet visibility guidance, got: %s", got)
 	}
 }

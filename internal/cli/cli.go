@@ -77,12 +77,12 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out)
 	fmt.Fprintln(out, "Examples:")
 	fmt.Fprintln(out, "  qforge list-questions")
-	fmt.Fprintln(out, "  qforge run --question q001 --runner claude --verbose")
-	fmt.Fprintln(out, "  qforge run --question q001 --runner claude --with-visual --verbose")
-	fmt.Fprintln(out, "  qforge run --question q001 --runner codex --runner claude --verbose")
-	fmt.Fprintln(out, "  qforge run --question q001 --verbose")
-	fmt.Fprintln(out, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --verbose")
-	fmt.Fprintln(out, "  qforge compare --day 2026-03-15 --question q003 --runner codex --verbose")
+	fmt.Fprintln(out, "  qforge run -q q001 -r claude -v")
+	fmt.Fprintln(out, "  qforge run -q q001 -r claude --with-visual -v")
+	fmt.Fprintln(out, "  qforge run -q q001 -r codex -r claude -v")
+	fmt.Fprintln(out, "  qforge run -q q001 -v")
+	fmt.Fprintln(out, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+	fmt.Fprintln(out, "  qforge compare --question q003 -r codex -v")
 	fmt.Fprintln(out)
 	fmt.Fprintln(out, "Use `qforge <command> --help` for detailed subcommand help.")
 }
@@ -129,7 +129,7 @@ func runRun(ctx context.Context, args []string) error {
 	fs := flag.NewFlagSet("run", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stdout, "Usage: qforge run --question <id|slug> [--runner <codex|claude|gemini> ...] [flags]")
+		fmt.Fprintln(os.Stdout, "Usage: qforge run [--question|-q <id|slug>] [--runner|-r <codex|claude|gemini> ...] [flags]")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Run one question through one or more providers.")
 		fmt.Fprintln(os.Stdout)
@@ -151,15 +151,16 @@ func runRun(ctx context.Context, args []string) error {
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Examples:")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q001 --runner claude")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q001 --runner claude --with-visual")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q001 --runner codex --runner claude")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q001")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q002 --runner claude --verbose")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q003 --runner codex --model gpt-5.4 --mcp-url https://.../http")
-		fmt.Fprintln(os.Stdout, "  qforge run --question q003 --runner codex --model gpt-5.4 --runner claude --model opus --verbose")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r claude")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r claude --with-visual")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r codex -r claude")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q001")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q002 -r claude -v")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q003 -r codex --model gpt-5.4 --mcp-url https://.../http")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q003 -r codex --model gpt-5.4 -r claude --model opus -v")
 	}
 	questionRef := fs.String("question", "", "Question id, slug, or folder name")
+	fs.StringVar(questionRef, "q", "", "Question id, slug, or folder name (shorthand)")
 	datasetName := fs.String("dataset", "", "Override the dataset from question metadata")
 	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http")
 	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
@@ -168,9 +169,11 @@ func runRun(ctx context.Context, args []string) error {
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	withVisual := fs.Bool("with-visual", false, "After SQL succeeds, make a separate presentation call for report.md and visual.html")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
+	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	var runners multiFlag
 	var models multiFlag
 	fs.Var(&runners, "runner", "Runner to include; repeat for multiple providers; default: codex, claude, gemini")
+	fs.Var(&runners, "r", "Runner to include; repeat for multiple providers; default: codex, claude, gemini (shorthand)")
 	fs.Var(&models, "model", "Model override aligned positionally with repeated --runner values")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
@@ -255,19 +258,22 @@ func runCompare(ctx context.Context, args []string) error {
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Examples:")
-		fmt.Fprintln(os.Stdout, "  qforge compare --day 2026-03-15")
-		fmt.Fprintln(os.Stdout, "  qforge compare --day 2026-03-15 --question q001 --runner codex --verbose")
+		fmt.Fprintln(os.Stdout, "  qforge compare")
+		fmt.Fprintln(os.Stdout, "  qforge compare -q q001 -r codex -v")
 	}
 	questionRef := fs.String("question", "", "Restrict compare output to one question id or slug")
+	fs.StringVar(questionRef, "q", "", "Restrict compare output to one question id or slug (shorthand)")
 	day := fs.String("day", time.Now().Format("2006-01-02"), "Run day in YYYY-MM-DD")
 	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http for query_log fetches")
 	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	runner := fs.String("runner", "codex", "Provider runner for compare_report.md: codex, claude, or gemini")
+	fs.StringVar(runner, "r", "codex", "Provider runner for compare_report.md: codex, claude, or gemini (shorthand)")
 	modelName := fs.String("model", "", "Model override for the compare report provider")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	verbose := fs.Bool("verbose", false, "Print compare progress logs")
+	fs.BoolVar(verbose, "v", false, "Print compare progress logs (shorthand)")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -448,7 +454,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Example:")
-		fmt.Fprintln(os.Stdout, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --verbose")
+		fmt.Fprintln(os.Stdout, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	}
 	runDir := fs.String("run-dir", "", "Path to an existing qforge run directory")
 	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http")
@@ -457,6 +463,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
+	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
 			return nil
@@ -712,9 +719,10 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	req.Prompt = prompt
 	presentationCtx, cancelPresentation := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancelPresentation()
+	presentationStartedAt := time.Now()
 	presentationResponse, presentationErr := provider.GeneratePresentation(presentationCtx, req)
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
-	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(presentationResponse.RawOutput, outDir)
+	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(presentationResponse.RawOutput, outDir, presentationStartedAt)
 	if err != nil {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
@@ -875,12 +883,13 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	logf(opts.Verbose, "phase=presentation_generation status=started")
 	presentationCtx, cancel := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancel()
+	presentationStartedAt := time.Now()
 	resp, providerErr := provider.GeneratePresentation(presentationCtx, req)
 	_ = os.WriteFile(manifest.Artifacts.AnswerPresentationRaw, []byte(resp.RawOutput), 0o644)
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", providerErr.Error())
 	}
-	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(resp.RawOutput, runDir)
+	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(resp.RawOutput, runDir, presentationStartedAt)
 	if err != nil {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
@@ -929,7 +938,7 @@ func defaultModelForRunner(runner string) (string, error) {
 	}
 }
 
-func loadPresentationArtifacts(rawOutput, outDir string) (string, string, error) {
+func loadPresentationArtifacts(rawOutput, outDir string, notBefore time.Time) (string, string, error) {
 	reportTemplate, reportErr := extract.Block(rawOutput, "report")
 	htmlTemplate, htmlErr := extract.Block(rawOutput, "html")
 	if reportErr == nil && htmlErr == nil {
@@ -938,9 +947,12 @@ func loadPresentationArtifacts(rawOutput, outDir string) (string, string, error)
 
 	reportPath := filepath.Join(outDir, "report.md")
 	htmlPath := filepath.Join(outDir, "visual.html")
+	reportInfo, reportStatErr := os.Stat(reportPath)
+	htmlInfo, htmlStatErr := os.Stat(htmlPath)
 	reportBytes, readReportErr := os.ReadFile(reportPath)
 	htmlBytes, readHTMLErr := os.ReadFile(htmlPath)
-	if readReportErr == nil && readHTMLErr == nil {
+	if reportStatErr == nil && htmlStatErr == nil && readReportErr == nil && readHTMLErr == nil &&
+		!reportInfo.ModTime().Before(notBefore) && !htmlInfo.ModTime().Before(notBefore) {
 		reportTemplate = strings.TrimSpace(string(reportBytes))
 		if fencedReport, err := extract.Block(reportTemplate, "report"); err == nil {
 			reportTemplate = fencedReport

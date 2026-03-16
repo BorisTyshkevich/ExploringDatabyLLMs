@@ -4,25 +4,14 @@ Human-oriented overview for the `ontime-analyst-dashboard` skill.
 
 ## What this skill is for
 
-This skill standardizes how `visual.html` artifacts are built for the OnTime reporting questions in this repository.
+This skill standardizes how `visual.html` artifacts are built for analytics questions in this repository.
 
 It is intended to give all dashboards:
 
 - one coherent aviation-oriented corporate design
 - one consistent data-handling model
 - one clear split between static benchmark artifacts and live browser dashboards
-- optional map support for the report types where geography is part of the analysis
-
-The skill is designed for the OnTime question set already in this repo, including:
-
-- carrier leadership and market-share shifts
-- airport and carrier delay rankings
-- hotspot heatmaps
-- seasonality analysis
-- peak-month contribution analysis
-- chronic schedule stress reports
-- hub spillover and network effects
-- itinerary and route maps
+- optional map support for report types where geography is part of the analysis
 
 ## Design goals
 
@@ -76,8 +65,8 @@ Maps are part of this skill. They are **not** split into a separate map skill.
 
 Why:
 
-- many OnTime reports mix charts, tables, and geography
-- route, itinerary, spillover, and hub analyses benefit from a shared visual system
+- many analytics questions mix charts, tables, and geography
+- route, network, and location-aware analyses benefit from a shared visual system
 - splitting maps out would duplicate theme, auth, loader, and layout guidance
 
 Important constraint:
@@ -133,22 +122,20 @@ This keeps layouts and queries isolated per dashboard while sharing a single aut
 
 ### Best fit for standard dashboards
 
-- yearly carrier leadership
-- worst origin airport OTP
-- winter carrier-origin rankings
-- peak delay month contribution analysis
-- chronic schedule stress
+- ranking or leaderboard analysis
+- trend and decomposition analysis
+- compact KPI-plus-table reporting
 
 ### Best fit for heatmap-style dashboards
 
-- Delta ATL destination/time-block hotspots
-- route-season delay analysis
+- matrix-style hotspot analysis
+- two-dimensional concentration views
 
 ### Best fit for map-enabled dashboards
 
-- q001 itinerary/hops map
-- hub disruption spillovers
-- route-heavy analyses where geography materially improves understanding
+- route or sequence analysis
+- network or spillover analysis
+- geography-first investigations where location materially improves understanding
 
 ## Why this skill exists
 
@@ -161,9 +148,9 @@ The older `alert-analyst-dashboard` skill proved the value of:
 
 But it is still centered on alerts and severity concepts, and it assumes library patterns that do not cleanly fit the current non-map validator rules.
 
-This new skill keeps the useful ideas, but adapts them for:
+This skill keeps the useful ideas, but adapts them for:
 
-- OnTime aviation analytics
+- repository analytics workflows
 - current `visual.html` validation constraints
 - live MCP OpenAPI access
 - mixed map and non-map reporting
@@ -183,18 +170,18 @@ This new skill keeps the useful ideas, but adapts them for:
 - `references/edit-mode.md`
   native edit-mode layout rules
 - `references/patterns.md`
-  recommended dashboard shapes for the current OnTime reports
+  recommended dashboard shapes for common report structures
 
 ## Practical summary
 
-Use this skill whenever an OnTime question needs `visual.html`.
+Use this skill whenever a dashboard-style question in this repository needs `visual.html`.
 
 Think of it as:
 
 - one dashboard system
 - two data modes
 - optional map support
-- one unified aviation design language
+- one unified transport-analytics design language
 
 If the artifact is for benchmark validation, prefer static mode.  
 If the artifact is for exploratory browser use, dynamic mode is appropriate.  

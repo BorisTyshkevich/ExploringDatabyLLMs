@@ -44,6 +44,12 @@ Typical map dashboards need:
 - Use popups or tooltips for details
 - Keep routes semi-transparent unless highlighted
 - Make markers clickable or hoverable
+- Do not place narrative cards, KPI summaries, or lead-itinerary copy as overlays on top of the map surface; keep that content in normal panels adjacent to or below the map
+- Check dataset-native coordinate and lookup tables first when the primary query lacks lat/lon
+- Coordinate enrichment queries are acceptable when they are explicit, user-visible, and tied to the map
+- If the map card is cloned from a template, initialize Leaflet against a live scoped element reference, not a duplicated global `id` that may still exist inside the template
+- Prefer initializing Leaflet only after the map container is visible in layout; do not create the map while its parent region is hidden if delayed init is practical
+- If layout or visibility changes after map creation, call `invalidateSize()` after reveal and after major layout moves as a safety fallback
 
 ## Styling rules
 
@@ -58,10 +64,6 @@ Typical map dashboards need:
 If coordinates are missing:
 
 - render KPIs, table, and supporting chart anyway
-- replace the map with a visible warning card explaining which coordinates are missing
-
-## Good fit for current OnTime reports
-
-- `q001_hops_per_day`
-- `q007_highest_delay_route_season_top50` as an optional secondary view
-- `q009_hub_disruption_spillover_days`
+- attempt an explicit enrichment query against dataset-native lookup tables from the allowed dataset scope before degrading
+- replace the map with a visible warning card explaining which coordinates are missing only if enrichment is unavailable or fails
+- do not keep a slippy map only to place summary text on top of it
