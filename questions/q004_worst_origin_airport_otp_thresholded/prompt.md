@@ -40,9 +40,3 @@ Implementation expectations:
 - Use a threshold CTE before final ranking.
 - Keep the ranking deterministic.
 - Use `quantile` logic for p90 rather than approximating in prose.
-
-In `report.md`, summarize:
-
-- the worst-performing airport,
-- the spread between the worst and median airport in the ranked set,
-- and whether the bottom of the list is dominated by large hubs or mixed airport types.

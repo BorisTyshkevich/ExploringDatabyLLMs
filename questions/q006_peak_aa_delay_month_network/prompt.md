@@ -45,13 +45,6 @@ Required output:
 - For `month_summary` rows, leave `Origin`, `Dest`, and `ContributionRank` empty.
 - For drilldown rows, keep `IsPeakMonth = 1`.
 
-In `report.md`, include:
-
-- the worst month,
-- the top 10 contributing origins in that month,
-- the top 10 contributing routes in that month,
-- and a short explanation of whether the peak was broad-based or concentrated.
-
 Implementation expectations:
 
 - Use one query that emits the monthly summary and the selected-month contribution rows together.

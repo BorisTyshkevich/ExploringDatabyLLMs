@@ -44,10 +44,3 @@ Implementation expectations:
 
 - Use CTEs to separate annual totals, annual carrier counts, per-year ranking, and yearly leader transitions.
 - Make the result deterministic.
-
-In `report.md`, summarize:
-
-- the long-run leader frequency by year,
-- every leadership transition,
-- the single sharpest leadership swing,
-- and any periods of stable dominance.

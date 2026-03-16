@@ -45,9 +45,3 @@ Implementation expectations:
 - Use separate CTEs for winter performance and delay-cause decomposition.
 - Handle missing cause minutes safely.
 - Keep season logic explicit in SQL.
-
-In `report.md`, describe:
-
-- the worst winter pair,
-- whether weather or operational causes dominate among the worst offenders,
-- and any notable concentration by carrier or airport.
