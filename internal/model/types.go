@@ -65,6 +65,7 @@ type ArtifactPaths struct {
 	PromptSQLRaw          string `json:"prompt_sql_raw"`
 	AnswerSQLRaw          string `json:"answer_sql_raw"`
 	QuerySQL              string `json:"query_sql"`
+	ResultTSV             string `json:"result_tsv,omitempty"`
 	ResultJSON            string `json:"result_json"`
 	ManifestJSON          string `json:"manifest_json"`
 	StdoutLog             string `json:"stdout_log"`
