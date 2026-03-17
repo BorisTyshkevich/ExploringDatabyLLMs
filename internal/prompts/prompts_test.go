@@ -71,17 +71,14 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Visual mode: `dynamic`") {
 		t.Fatalf("expected visual mode in prompt, got: %s", got)
 	}
-	if !strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
-		t.Fatalf("expected dynamic storage contract, got: %s", got)
+	if !strings.Contains(got, "Execute the embedded saved SQL in the browser as the primary query.") {
+		t.Fatalf("expected dynamic primary-query contract, got: %s", got)
 	}
-	if !strings.Contains(got, "single query ledger") {
+	if !strings.Contains(got, "visible query ledger") {
 		t.Fatalf("expected dynamic ledger contract, got: %s", got)
 	}
-	if !strings.Contains(got, "footer control block") {
-		t.Fatalf("expected footer control contract, got: %s", got)
-	}
-	if !strings.Contains(got, "Do not assume non-OK responses are JSON") {
-		t.Fatalf("expected plain-text error handling guidance, got: %s", got)
+	if !strings.Contains(got, "Do not embed the primary analytical dataset") {
+		t.Fatalf("expected no-embedded-dataset contract, got: %s", got)
 	}
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM default.ontime_v2") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)

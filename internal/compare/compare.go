@@ -32,6 +32,8 @@ type RunMetrics struct {
 
 type RunSummary struct {
 	RunDir        string          `json:"run_dir"`
+	RunID         string          `json:"run_id,omitempty"`
+	RunNumber     int             `json:"run_number,omitempty"`
 	QuestionID    string          `json:"question_id"`
 	QuestionSlug  string          `json:"question_slug"`
 	QuestionTitle string          `json:"question_title"`
@@ -47,6 +49,7 @@ type RunSummary struct {
 	RowCount      int             `json:"row_count"`
 	Columns       []string        `json:"columns,omitempty"`
 	Metrics       *RunMetrics     `json:"metrics,omitempty"`
+	Artifacts     ArtifactLinks   `json:"artifacts,omitempty"`
 	Warnings      []string        `json:"warnings,omitempty"`
 }
 
@@ -132,13 +135,22 @@ func Generate(ctx context.Context, repoRoot, outDir, day, questionFilter, explic
 	}
 
 	sort.Slice(items, func(i, j int) bool {
-		if items[i].Status != items[j].Status {
-			return statusRank(items[i].Status) < statusRank(items[j].Status)
+		if items[i].Runner != items[j].Runner {
+			return items[i].Runner < items[j].Runner
 		}
 		if items[i].Runner == items[j].Runner {
-			return items[i].Model < items[j].Model
+			if items[i].Model != items[j].Model {
+				return items[i].Model < items[j].Model
+			}
+			if items[i].RunNumber > 0 && items[j].RunNumber > 0 && items[i].RunNumber != items[j].RunNumber {
+				return items[i].RunNumber < items[j].RunNumber
+			}
+			if items[i].RunID != items[j].RunID {
+				return items[i].RunID < items[j].RunID
+			}
+			return items[i].StartedAt.Before(items[j].StartedAt)
 		}
-		return items[i].Runner < items[j].Runner
+		return false
 	})
 
 	report := Report{
@@ -165,6 +177,7 @@ func summarizeRun(ctx context.Context, repoRoot, runDir, explicitMCPURL, explici
 
 	item := RunSummary{
 		RunDir:        runDir,
+		RunID:         filepath.Base(runDir),
 		QuestionID:    manifest.QuestionID,
 		QuestionSlug:  manifest.QuestionSlug,
 		QuestionTitle: manifest.QuestionTitle,
@@ -179,6 +192,10 @@ func summarizeRun(ctx context.Context, repoRoot, runDir, explicitMCPURL, explici
 		QuerySHA256:   manifest.QuerySHA256,
 		RowCount:      manifest.ResultRowCount,
 	}
+	if strings.HasPrefix(item.RunID, "run-") {
+		fmt.Sscanf(item.RunID, "run-%d", &item.RunNumber)
+	}
+	item.Artifacts = buildRunArtifactLinks(repoRoot, runDir)
 	var warnings []string
 
 	resultPath := filepath.Join(runDir, "result.json")
@@ -314,8 +331,8 @@ func renderMarkdown(report Report) string {
 	md.WriteString("\n\n")
 	md.WriteString(renderQuestionSummary(report.Runs))
 	md.WriteString("\n")
-	md.WriteString("| runner | model | status | rows | duration | read rows | memory | warnings |\n")
-	md.WriteString("| --- | --- | --- | ---: | ---: | ---: | ---: | ---: |\n")
+	md.WriteString("| runner | model | run | status | rows | duration | read rows | memory | warnings |\n")
+	md.WriteString("| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |\n")
 	for _, item := range report.Runs {
 		duration := "n/a"
 		readRows := "n/a"
@@ -325,9 +342,10 @@ func renderMarkdown(report Report) string {
 			readRows = formatInt(item.Metrics.ReadRows)
 			memory = formatBytes(item.Metrics.MemoryUsage)
 		}
-		md.WriteString(fmt.Sprintf("| %s | %s | %s | %d | %s | %s | %s | %d |\n",
+		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %d | %s | %s | %s | %d |\n",
 			item.Runner,
 			item.Model,
+			valueOrNA(item.RunID),
 			item.Status,
 			item.RowCount,
 			duration,
@@ -489,22 +507,10 @@ func dedupeStrings(values []string) []string {
 	return out
 }
 
-func statusRank(status model.RunStatus) int {
-	switch status {
-	case model.RunStatusOK:
-		return 0
-	case model.RunStatusPartial:
-		return 1
-	case model.RunStatusAuthFailed:
-		return 2
-	case model.RunStatusFailed:
-		return 3
-	default:
-		return 4
-	}
-}
-
 func runID(item RunSummary) string {
+	if item.RunID != "" {
+		return item.Runner + "/" + item.Model + "/" + item.RunID
+	}
 	return item.Runner + "/" + item.Model
 }
 
@@ -560,6 +566,13 @@ func formatBytes(v int64) string {
 	value := float64(v) / math.Pow(unit, float64(exp))
 	suffixes := []string{"B", "KiB", "MiB", "GiB", "TiB"}
 	return fmt.Sprintf("%.1f %s", value, suffixes[exp])
+}
+
+func valueOrNA(value string) string {
+	if strings.TrimSpace(value) == "" {
+		return "n/a"
+	}
+	return value
 }
 
 func resolveMCPAccess(cfg model.DatasetConfig, explicitURL, explicitToken string) (string, string, error) {

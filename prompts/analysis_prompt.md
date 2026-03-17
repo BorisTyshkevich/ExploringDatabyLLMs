@@ -11,14 +11,19 @@ Question context:
 
 Primary structured compare artifact:
 
-- `{{compare_json_path}}`
+- Local path: `{{compare_json_path}}`
+- Published URL: `{{compare_json_url}}`
 
 Question files:
 
-- SQL question prompt: `{{question_prompt_path}}`
-- Report prompt: `{{report_prompt_path}}`
-- Visual prompt: `{{visual_prompt_path}}`
-- Compare contract: `{{compare_contract_path}}`
+- SQL question prompt: `{{question_prompt_path}}` (`{{question_prompt_url}}`)
+- Report prompt: `{{report_prompt_path}}` (`{{report_prompt_url}}`)
+- Visual prompt: `{{visual_prompt_path}}` (`{{visual_prompt_url}}`)
+- Compare contract: `{{compare_contract_path}}` (`{{compare_contract_url}}`)
+
+Published run artifact links to use in the final Markdown:
+
+{{published_run_artifacts_md}}
 
 Run directories:
 
@@ -54,6 +59,11 @@ Your job:
 - describe SQL-shape differences only when supported by the actual `query.sql` files
 - cite `report.md` and `visual.html` artifacts when discussing presentation outputs
 - prefer links to local artifacts instead of long pasted SQL
+- use only the published URLs provided above in the final Markdown for run artifacts; never emit absolute filesystem paths
+- for `report.md`, use the provided `md.html?file=...` URL
+- for `query.sql` and `result.json`, use the provided GitHub blob URL
+- for `visual.html`, use the provided GitHub Pages file URL
+- in sections 6, 9, and 10, group content by provider/model and then by run id
 - keep the note concise but complete enough for a blog-style benchmark write-up
 
 Required sections:
@@ -76,6 +86,7 @@ Rules:
 - If differences are localized to one field or row type, say that precisely.
 - Do not use vague judgments like “better” or “worse” without concrete evidence.
 - Do not mention files that you did not verify.
+- In sections 6, 9, and 10, prefer short provider-grouped subsections with per-run bullets.
 - Return only one fenced Markdown block.
 
 Return exactly this fenced section:
