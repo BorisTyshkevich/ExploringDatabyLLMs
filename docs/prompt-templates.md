@@ -12,8 +12,12 @@ Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](
   - SQL-only rules such as schema inspection, self-verification, and the fenced `sql` output contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
   - report/template rules for the presentation phase
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
+  - shared visual rules used by all presentation prompts
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
+  - static `visual.html` requirements
 
 Question-specific files such as `prompts/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
 
@@ -24,7 +28,7 @@ Prompt builders are implemented in [`/Users/bvt/work/ExploringDatabyLLMs/interna
 Current composition order:
 
 - SQL phase: `common.md` + `common_sql.md` + question `prompt.md`
-- Presentation phase: `common.md` + `common_presentation.md` + `common_visual_dynamic.md`
+- Presentation phase: `common.md` + `common_presentation.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
 
 The shared `common.md` file is rendered in both phases, so any template variables used there must be available to both builders.
 
@@ -47,6 +51,8 @@ Presentation/report variables:
   - Source: `question.Meta.Title`.
 - `{{visual_type}}`
   - Source: `question.Meta.VisualType`.
+- `{{visual_mode}}`
+  - Source: `question.Meta.VisualMode`.
 - `{{result_columns_csv}}`
   - Source: `strings.Join(result.Columns, ", ")`.
 - `{{saved_sql}}`

@@ -39,10 +39,23 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
   - SQL-only rules such as schema inspection, self-verification, and the fenced `sql` output contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
   - report/template rules for the presentation phase
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
+  - shared `visual.html` rules
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
+  - static `visual.html` requirements
 
 Question-specific files such as `prompts/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
+
+Question metadata may also declare `visual_mode`:
+
+- `dynamic`
+  - live browser dashboard that uses saved SQL plus browser-side MCP fetch
+- `static`
+  - self-contained benchmark artifact with embedded analytical data
+
+If `visual_mode` is absent, qforge treats the question as `dynamic` for backward compatibility.
 
 Template variables, prompt composition, and dataset mapping are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md).
 

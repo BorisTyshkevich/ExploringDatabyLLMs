@@ -3,6 +3,7 @@ slug: q006_peak_aa_delay_month_network
 title: American Airlines peak network delay month and contributors
 dataset: ontime_v2
 artifacts_required: query.sql,report.md,visual.html
+visual_mode: dynamic
 visual_type: html_contribution_dashboard
 tags: american-airlines,monthly,network,contribution,drilldown
 reference_policy: optional

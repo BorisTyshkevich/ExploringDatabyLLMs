@@ -1,5 +1,6 @@
 You are running inside qforge.
 
+Generate valid ClickHouse SQL.
 Use the configured MCP server for all data access.
 Do not construct raw OpenAPI URLs manually.
 Stay within the configured dataset scope.

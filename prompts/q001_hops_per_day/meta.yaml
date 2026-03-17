@@ -3,6 +3,7 @@ slug: q001_hops_per_day
 title: Highest daily hops for one aircraft on one flight number
 dataset: ontime_v2
 artifacts_required: query.sql,result.tsv,report.md,visual.html
+visual_mode: dynamic
 visual_type: html_map
 tags: itinerary,hops,ranking
 reference_policy: optional

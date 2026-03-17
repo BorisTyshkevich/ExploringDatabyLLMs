@@ -46,6 +46,7 @@ type QuestionMeta struct {
 	Title             string `yaml:"title" json:"title"`
 	Dataset           string `yaml:"dataset" json:"dataset"`
 	ArtifactsRequired string `yaml:"artifacts_required" json:"artifacts_required"`
+	VisualMode        string `yaml:"visual_mode" json:"visual_mode"`
 	VisualType        string `yaml:"visual_type" json:"visual_type"`
 	Tags              string `yaml:"tags" json:"tags"`
 	ReferencePolicy   string `yaml:"reference_policy" json:"reference_policy"`

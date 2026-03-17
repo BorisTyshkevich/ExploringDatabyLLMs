@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestValidateVisualHTML_ValidHTML(t *testing.T) {
+func TestValidateVisualHTML_DynamicValidHTML(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
@@ -45,326 +45,240 @@ func TestValidateVisualHTML_ValidHTML(t *testing.T) {
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
 	if !result.Valid {
-		t.Errorf("expected Valid=true, got false with errors: %v", result.Errors)
-	}
-	if len(result.Errors) > 0 {
-		t.Errorf("expected no errors, got: %v", result.Errors)
+		t.Fatalf("expected Valid=true, got errors: %v", result.Errors)
 	}
 	if len(result.Warnings) > 0 {
-		t.Errorf("expected no warnings, got: %v", result.Warnings)
+		t.Fatalf("expected no warnings, got: %v", result.Warnings)
 	}
 }
 
-func TestValidateVisualHTML_MissingLeafletWithMap(t *testing.T) {
-	// Dashboard with map content but no Leaflet should fail
+func TestValidateVisualHTML_DynamicMissingLedgerFails(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
     <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="query-ledger"></div>
-    <input type="password"><textarea id="sql"></textarea>
-    <script>
-        localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');
-        const map = L.map('map');
-    </script>
-</body>
-</html>`
-
-	result := ValidateVisualHTML(html)
-
-	if result.Valid {
-		t.Error("expected Valid=false for missing Leaflet with map content")
-	}
-	if len(result.Errors) != 1 {
-		t.Errorf("expected 1 error, got %d: %v", len(result.Errors), result.Errors)
-	}
-	if !strings.Contains(result.Errors[0], "Leaflet") {
-		t.Errorf("expected Leaflet error, got: %s", result.Errors[0])
-	}
-}
-
-func TestValidateVisualHTML_NoLeafletNoMap(t *testing.T) {
-	// Dashboard without map content doesn't need Leaflet
-	html := `<!DOCTYPE html>
-<html>
-<head>
-    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
-</head>
-<body>
-    <div id="heatmap"></div>
-    <div id="query-ledger"></div>
-    <input type="password"><textarea id="sql"></textarea>
+    <main>dashboard</main>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+    </footer>
     <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
-	if !result.Valid {
-		t.Errorf("non-map dashboard should be valid without Leaflet: %v", result.Errors)
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
+	if result.Valid {
+		t.Fatal("expected missing ledger to fail validation")
 	}
+	assertContains(t, result.Errors, "missing query ledger")
 }
 
-func TestValidateVisualHTML_EmbeddedJWT(t *testing.T) {
-	// Simulated JWT token in HTML
+func TestValidateVisualHTML_DynamicMissingLocalStorageKeyFails(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
 </head>
 <body>
     <div id="query-ledger"></div>
-    <input type="password"><textarea id="sql"></textarea>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+    </footer>
+</body>
+</html>`
+
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
+	if result.Valid {
+		t.Fatal("expected missing localStorage key to fail validation")
+	}
+	assertContains(t, result.Errors, "OnTimeAnalystDashboard::auth::jwe")
+}
+
+func TestValidateVisualHTML_DynamicMissingFooterControlsFail(t *testing.T) {
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
+</head>
+<body>
+    <div id="query-ledger"></div>
+    <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
+</body>
+</html>`
+
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
+	if result.Valid {
+		t.Fatal("expected missing footer controls to fail validation")
+	}
+	assertContains(t, result.Errors, "missing footer control block")
+}
+
+func TestValidateVisualHTML_DynamicMissingLeafletWithMapFails(t *testing.T) {
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
+</head>
+<body>
+    <div id="query-ledger"></div>
+    <div id="map"></div>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+    </footer>
+    <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe'); L.map('map');</script>
+</body>
+</html>`
+
+	result := ValidateVisualHTML(html, "dynamic", "html_map")
+	if result.Valid {
+		t.Fatal("expected map without Leaflet to fail validation")
+	}
+	assertContains(t, result.Errors, "Leaflet")
+}
+
+func TestValidateVisualHTML_DynamicEmbeddedTokenFails(t *testing.T) {
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
+</head>
+<body>
+    <div id="query-ledger"></div>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+    </footer>
     <script>
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
         localStorage.setItem('OnTimeAnalystDashboard::auth::jwe', token);
     </script>
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
 	if result.Valid {
-		t.Error("expected Valid=false for embedded token")
+		t.Fatal("expected embedded token to fail validation")
 	}
-	foundTokenError := false
-	for _, err := range result.Errors {
-		if strings.Contains(err, "embedded") || strings.Contains(err, "JWE") {
-			foundTokenError = true
-			break
-		}
-	}
-	if !foundTokenError {
-		t.Errorf("expected embedded token error, got: %v", result.Errors)
-	}
+	assertContains(t, result.Errors, "embedded JWE/JWT token")
 }
 
-func TestValidateVisualHTML_MissingThemeTokens(t *testing.T) {
+func TestValidateVisualHTML_DynamicWarningsRemainAdvisory(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>:root { --navy: #0e3a52; }</style>
-</head>
-<body>
-    <div id="query-ledger"></div>
-    <input type="password"><textarea id="sql"></textarea>
-    <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
-</body>
-</html>`
-
-	result := ValidateVisualHTML(html)
-
-	if !result.Valid {
-		t.Errorf("missing theme tokens should be warning, not error: %v", result.Errors)
-	}
-	if len(result.Warnings) == 0 {
-		t.Error("expected warnings for missing theme tokens")
-	}
-
-	foundThemeWarning := false
-	for _, warn := range result.Warnings {
-		if strings.Contains(warn, "theme tokens") {
-			foundThemeWarning = true
-			if !strings.Contains(warn, "--sky") || !strings.Contains(warn, "--teal") || !strings.Contains(warn, "--amber") {
-				t.Errorf("expected missing tokens in warning, got: %s", warn)
-			}
-			break
-		}
-	}
-	if !foundThemeWarning {
-		t.Errorf("expected theme token warning, got: %v", result.Warnings)
-	}
-}
-
-func TestValidateVisualHTML_MissingLedger(t *testing.T) {
-	html := `<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
-</head>
-<body>
-    <div id="main-content"></div>
-    <input type="password"><textarea id="sql"></textarea>
-    <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
-</body>
-</html>`
-
-	result := ValidateVisualHTML(html)
-
-	if !result.Valid {
-		t.Errorf("missing ledger should be warning, not error: %v", result.Errors)
-	}
-
-	foundLedgerWarning := false
-	for _, warn := range result.Warnings {
-		if strings.Contains(warn, "no query ledger element") {
-			foundLedgerWarning = true
-			break
-		}
-	}
-	if !foundLedgerWarning {
-		t.Errorf("expected ledger warning, got: %v", result.Warnings)
-	}
-}
-
-func TestValidateVisualHTML_LedgerWithoutExpandableSQL(t *testing.T) {
-	// Ledger exists but lacks expandable SQL structure
-	html := `<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
 </head>
 <body>
     <div id="query-ledger">
-        <div>Primary Query | OK | 10</div>
+        <div>Primary Query</div>
     </div>
-    <input type="password"><textarea id="sql"></textarea>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+    </footer>
     <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
 	if !result.Valid {
-		t.Errorf("missing expandable SQL should be warning, not error: %v", result.Errors)
+		t.Fatalf("expected warnings-only case to remain valid, got errors: %v", result.Errors)
 	}
-
-	foundExpandableWarning := false
-	for _, warn := range result.Warnings {
-		if strings.Contains(warn, "expandable SQL") {
-			foundExpandableWarning = true
-			break
-		}
-	}
-	if !foundExpandableWarning {
-		t.Errorf("expected expandable SQL warning, got: %v", result.Warnings)
-	}
+	assertContains(t, result.Warnings, "missing theme tokens")
+	assertContains(t, result.Warnings, "expandable SQL")
 }
 
-func TestValidateVisualHTML_MissingLocalStorageKey(t *testing.T) {
+func TestValidateVisualHTML_StaticNonMapRejectsRemoteAssets(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.example.com/chart.js"></script>
     <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
 </head>
 <body>
-    <div id="query-ledger"></div>
-    <input type="password"><textarea id="sql"></textarea>
-    <script>localStorage.getItem('some-other-key');</script>
+    <script type="application/json" id="result-data">{"rows":[{"carrier":"AA"}]}</script>
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
-	if !result.Valid {
-		t.Errorf("missing localStorage key should be warning, not error: %v", result.Errors)
+	result := ValidateVisualHTML(html, "static", "html_ranked_dashboard")
+	if result.Valid {
+		t.Fatal("expected static non-map remote assets to fail validation")
 	}
-
-	foundKeyWarning := false
-	for _, warn := range result.Warnings {
-		if strings.Contains(warn, "OnTimeAnalystDashboard::auth::jwe") {
-			foundKeyWarning = true
-			break
-		}
-	}
-	if !foundKeyWarning {
-		t.Errorf("expected localStorage key warning, got: %v", result.Warnings)
-	}
+	assertContains(t, result.Errors, "remote scripts")
 }
 
-func TestValidateVisualHTML_MissingFooterControls(t *testing.T) {
+func TestValidateVisualHTML_StaticRequiresEmbeddedData(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
 </head>
 <body>
-    <div id="query-ledger"></div>
-    <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
+    <main>No embedded data</main>
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
-	if !result.Valid {
-		t.Errorf("missing footer controls should be warning, not error: %v", result.Errors)
+	result := ValidateVisualHTML(html, "static", "html_ranked_dashboard")
+	if result.Valid {
+		t.Fatal("expected static dashboard without embedded data to fail validation")
 	}
-
-	foundTokenInputWarning := false
-	foundSQLTextareaWarning := false
-	for _, warn := range result.Warnings {
-		if strings.Contains(warn, "token input") {
-			foundTokenInputWarning = true
-		}
-		if strings.Contains(warn, "SQL textarea") {
-			foundSQLTextareaWarning = true
-		}
-	}
-	if !foundTokenInputWarning {
-		t.Errorf("expected token input warning, got: %v", result.Warnings)
-	}
-	if !foundSQLTextareaWarning {
-		t.Errorf("expected SQL textarea warning, got: %v", result.Warnings)
-	}
+	assertContains(t, result.Errors, "embedded analytical data block")
 }
 
-func TestValidateVisualHTML_LeafletVariants(t *testing.T) {
-	variants := []string{
-		`<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>`,
-		`<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>`,
-		`<script src="/vendor/leaflet.js"></script>`,
-		`<link href="leaflet.min.js">`,
-	}
-
-	baseHTML := `<!DOCTYPE html><html><head>%s
-<style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
-</head><body><div id="query-ledger"></div>
-<input type="password"><textarea id="sql"></textarea>
-<script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script></body></html>`
-
-	for _, variant := range variants {
-		html := strings.Replace(baseHTML, "%s", variant, 1)
-		result := ValidateVisualHTML(html)
-		if !result.Valid {
-			t.Errorf("Leaflet variant should be valid: %s, errors: %v", variant, result.Errors)
-		}
-	}
-}
-
-func TestValidateVisualHTML_MultipleErrors(t *testing.T) {
-	// Map content without Leaflet and has embedded token
+func TestValidateVisualHTML_StaticRejectsLiveRuntimeDependencies(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
 <head>
-    <style>:root { --navy: #0e3a52; }</style>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
 </head>
 <body>
-    <div id="map"></div>
+    <script type="application/json" id="result-data">{"rows":[]}</script>
     <script>
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
-        L.map('map');
+        localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');
+        fetch('https://mcp.demo.altinity.cloud/token/openapi/execute_query?query=SELECT+1');
     </script>
 </body>
 </html>`
 
-	result := ValidateVisualHTML(html)
-
+	result := ValidateVisualHTML(html, "static", "html_ranked_dashboard")
 	if result.Valid {
-		t.Error("expected Valid=false with multiple errors")
+		t.Fatal("expected static dashboard with live runtime dependencies to fail validation")
 	}
-	if len(result.Errors) < 2 {
-		t.Errorf("expected at least 2 errors, got %d: %v", len(result.Errors), result.Errors)
+	assertContains(t, result.Errors, "must not depend on live MCP fetch")
+}
+
+func TestValidateVisualHTML_StaticMapAllowsLeafletWithEmbeddedData(t *testing.T) {
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
+</head>
+<body>
+    <div id="map"></div>
+    <script type="application/json" id="airports-data">{"rows":[{"code":"ATL","lat":33.64,"lon":-84.42}]}</script>
+</body>
+</html>`
+
+	result := ValidateVisualHTML(html, "static", "html_map")
+	if !result.Valid {
+		t.Fatalf("expected static map with embedded data to be valid, got errors: %v", result.Errors)
 	}
+}
+
+func assertContains(t *testing.T, values []string, fragment string) {
+	t.Helper()
+	for _, value := range values {
+		if strings.Contains(value, fragment) {
+			return
+		}
+	}
+	t.Fatalf("expected %q in %v", fragment, values)
 }

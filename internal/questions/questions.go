@@ -62,6 +62,9 @@ func Load(dir string) (model.Question, error) {
 	if err := yaml.Unmarshal(metaBytes, &meta); err != nil {
 		return model.Question{}, fmt.Errorf("parse %s: %w", metaPath, err)
 	}
+	if strings.TrimSpace(meta.VisualMode) == "" {
+		meta.VisualMode = "dynamic"
+	}
 	promptBytes, err := os.ReadFile(promptPath)
 	if err != nil {
 		return model.Question{}, err

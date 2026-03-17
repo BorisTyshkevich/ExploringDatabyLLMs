@@ -1,6 +1,4 @@
-Use the `ontime-analyst-dashboard` skill in dynamic mode.
-
-Build a final `visual.html` page for this question that:
+Build a dashboard that:
 
 - shows KPI cards for peak month, peak average departure delay, peak `% DepDel15`, and completed flights in the peak month
 - renders a monthly time-series chart of average `DepDelayMinutes` across all AA months

@@ -15,8 +15,6 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
   `OnTimeAnalystDashboard::auth::jwe`
 - layout key pattern:
   `OnTimeAnalystDashboard::<dashboardId>::layout`
-- optional query key pattern:
-  `OnTimeAnalystDashboard::<dashboardId>::query`
 
 ## Required UI
 
@@ -42,9 +40,9 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
 2. Read token and SQL from inputs
 3. Validate both are non-empty
 4. Persist the JWE token to `localStorage` after every successful token entry so subsequent dashboards can reuse it
-5. Optionally persist the current SQL by dashboard id
-6. Call endpoint with `fetch` using the saved SQL shown in the textarea
-7. Parse JSON payload with `columns` and `rows`
+5. Call endpoint with `fetch` using the saved SQL shown in the textarea
+6. If `response.ok` is false, read the response text and surface that API error directly instead of trying to parse it as JSON first
+7. Parse JSON payload with `columns` and `rows` only for successful responses
 8. Treat empty results as valid when `count = 0`, even if `rows` is returned as `null`
 9. Convert row arrays into objects
 10. Run through the same normalization pipeline as static mode
@@ -57,7 +55,7 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 
 ## Error handling
 
-- On HTTP failure, show status with response code or API error text
+- On HTTP failure, show status with response code or API error text from the plain-text response body when present
 - On empty result set, show a visible warning instead of a blank page
 - On malformed payload, report that `columns`/`rows` were not usable
 - Never print or echo the token in status messages
@@ -89,7 +87,11 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 ## Query execution contract
 
 - Dynamic dashboards default to one primary query: the saved SQL prefilled into the page.
+- The embedded saved SQL is authoritative for the artifact; browser storage must not silently replace it.
 - Additional browser queries are allowed for enrichment or drill-down when they materially improve the visualization and remain within dataset policy.
+- Primary-query success must be enough to render the main dashboard shell and any visuals driven directly by the primary result set.
+- Enrichment and drill-down queries upgrade dependent visuals or details; they must not gate whether the dashboard shell renders at all.
+- If a secondary query fails, degrade only the dependent component, keep the primary-query analysis visible, and record the failure in both status text and the query ledger.
 - Do not generate hidden follow-up SQL or alternate result shapes without surfacing them to the user.
 - Prefer dataset-native dimensions and lookup tables rather than inferred or geocoded data when enrichment is needed.
 - Prefer `data-role` selectors or stored element references for card internals so map/chart initialization always targets the rendered node rather than inert template content.

@@ -1,6 +1,6 @@
 # Map Support
 
-Maps belong inside this skill. Do not create a separate map skill unless the repo later adopts a separate geospatial stack.
+Use maps when geography adds analytical value.
 
 ## When to use a map
 
@@ -15,15 +15,11 @@ Use maps when geography is part of the reasoning:
 
 Do not use a map as the primary visual for purely temporal or purely ranked questions unless geography adds real signal.
 
-## Validator split
+## Allowed assets
 
-- If `visual_type` is `html_map`:
-  - Leaflet is allowed
-  - remote basemap tiles are allowed
-  - remote Leaflet CSS/JS is allowed under current repo validation
-- If `visual_type` is not `html_map`:
-  - keep maps out, or use inline SVG geography only
-  - no remote assets
+- For `html_map`, Leaflet JS/CSS from CDN is allowed
+- Remote basemap tiles are allowed for `html_map`
+- Non-map dashboards should not pull in Leaflet or map tiles just because the library is available
 
 ## Required data blocks
 
@@ -38,6 +34,7 @@ Typical map dashboards need:
 
 ## Standard map behavior
 
+- For `html_map`, the map card and map container must be present in the initial HTML structure. Do not create or reveal the map section only after enrichment succeeds.
 - Fit bounds to displayed points
 - Provide legend
 - Highlight the single most important route, airport, or event
@@ -65,5 +62,5 @@ If coordinates are missing:
 
 - render KPIs, table, and supporting chart anyway
 - attempt an explicit enrichment query against dataset-native lookup tables from the allowed dataset scope before degrading
-- replace the map with a visible warning card explaining which coordinates are missing only if enrichment is unavailable or fails
+- keep the map card visible and degrade the map state with a visible warning or placeholder message if enrichment is unavailable or fails
 - do not keep a slippy map only to place summary text on top of it

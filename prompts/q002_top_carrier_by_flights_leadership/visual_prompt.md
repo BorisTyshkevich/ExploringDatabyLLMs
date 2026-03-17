@@ -1,6 +1,4 @@
-Use the `ontime-analyst-dashboard` skill in dynamic mode.
-
-Build a final `visual.html` page for this question that:
+Build a dashboard that:
 
 - shows KPI cards for total years analyzed, distinct annual leaders, largest leader share gap, and the sharpest leadership transition
 - renders a bump chart for yearly carrier rank among the top carriers

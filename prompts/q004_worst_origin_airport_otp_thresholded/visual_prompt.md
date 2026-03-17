@@ -1,6 +1,4 @@
-Use the `ontime-analyst-dashboard` skill in dynamic mode.
-
-Build a final `visual.html` page for this question that:
+Build a dashboard that:
 
 - shows KPI cards for worst airport, worst OTP, highest average departure delay among ranked airports, and qualifying airport count
 - renders a ranked horizontal bar or lollipop chart for the worst 25 airports by departure OTP

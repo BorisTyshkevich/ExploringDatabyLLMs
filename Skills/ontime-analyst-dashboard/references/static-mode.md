@@ -1,80 +1,28 @@
 # Static Mode
 
-Use static mode for benchmark artifacts and any self-contained `visual.html`.
+Use static mode for self-contained benchmark artifacts and any `visual.html` that must render without browser-side MCP access.
 
 ## Required constraints
 
-- Inline CSS only
-- Inline JS only
-- For non-map dashboards, inline SVG only
-- No remote scripts or stylesheets
-- Data must be embedded in the page
+- Inline CSS and inline JavaScript
+- Analytical data embedded directly in the page
+- No live MCP fetches, no token flow, and no dependency on browser `localStorage`
+- For non-map dashboards, no remote scripts or stylesheets
+- For `html_map`, Leaflet and basemap assets are allowed, but the analytical dataset itself must still be embedded
 
 ## Data embedding
 
-Embed CSV in `<script type="text/csv">` tags.
-
-Example:
-
-```html
-<script type="text/csv" id="summaryCsv">
-label,value
-Flights,1200
-DelayPct,18.4
-</script>
-```
-
-## Parsing pattern
-
-Use a small built-in CSV parser in plain JS. Keep it simple and deterministic.
-
-Minimum behavior:
-
-- split header row
-- support quoted values
-- trim cells
-- skip empty trailing rows
-- return array of objects
-
-After parsing:
-
-- drop fully empty rows
-- coerce obvious numerics
-- preserve strings for labels and IDs
-- normalize null-like values to `null` or `''` consistently
+Embed analytical rows in `<script type="application/json">` or `<script type="text/csv">` blocks and parse them in browser code.
 
 ## Normalization rules
 
-- `row[key] = row[key] ?? ''` for string fields before string operations
-- numeric metrics should be coerced with `Number(...)` and guarded with `Number.isFinite`
-- never assume a column exists
-- if required fields are missing, show a visible warning panel in the dashboard
-- normalize temporal fields once before downstream use; if a date may be serialized as ISO datetime, derive a stable `YYYY-MM-DD` key and reuse it for display and joins
-- never build display strings or query predicates by blindly appending time fragments to unknown date values
+- Normalize parsed rows before deriving KPIs, filters, charts, or tables
+- Guard optional fields with `?.` / `??`
+- If a date may be serialized as an ISO datetime, derive a stable `YYYY-MM-DD` key once and reuse it
+- Show a clear warning panel when required fields are missing or no rows remain after parsing
 
 ## Dashboard behavior
 
-- derive KPIs from parsed data, never from hardcoded literals
-- derive filter options from current data
-- export currently filtered rows as CSV
-- if multiple CSV blocks exist, name them by role:
-  - `summaryCsv`
-  - `trendCsv`
-  - `detailCsv`
-  - `lookupCsv`
-  - `airportsCsv`
-  - `routesCsv`
-
-## Recommended visuals
-
-- ranking: horizontal SVG bar chart
-- time series: SVG line/area chart
-- heatmap: SVG matrix with text labels and legend
-- scatter: SVG circles with scales derived in JS
-- tables: semantic HTML table, not SVG
-
-## Empty and error states
-
-- If no rows remain after parsing, keep header visible and render a clear “No data available” panel
-- If required columns are missing, explain which fields are absent
-- Do not let a broken chart suppress the table and KPI sections
+- Derive visuals from the embedded data only
+- Keep export behavior local to the current embedded/filtered row set
+- If maps are present, render them from embedded coordinates or route geometry rather than browser-side enrichment fetches

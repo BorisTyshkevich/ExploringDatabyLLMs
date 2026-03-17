@@ -1,6 +1,4 @@
-Use the `ontime-analyst-dashboard` skill in dynamic mode.
-
-Build a final `visual.html` page for this question that:
+Build a dashboard that:
 
 - shows KPI cards for worst winter pair, worst OTP, average delay of the worst pair, and total qualifying pairs
 - renders a ranked chart for the worst winter `(Reporting_Airline, Origin)` pairs

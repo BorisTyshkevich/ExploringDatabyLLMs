@@ -140,22 +140,22 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 	report := Report{
 		Day: "2026-03-16",
 		Runs: []RunSummary{
-			{RunDir: "/tmp/claude/opus/run-001"},
-			{RunDir: "/tmp/gemini/gemini-3.1-pro-preview/run-001"},
+			{RunDir: filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "claude", "opus", "run-001")},
+			{RunDir: filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "gemini", "gemini-3.1-pro-preview", "run-001")},
 		},
 	}
 
-	got, err := BuildAnalysisPrompt(repoRoot, question, report, "/tmp/compare.json")
+	got, err := BuildAnalysisPrompt(repoRoot, question, report, filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "compare", "compare.json"))
 	if err != nil {
 		t.Fatalf("BuildAnalysisPrompt returned error: %v", err)
 	}
 
 	for _, want := range []string{
-		"/tmp/claude/opus/run-001/query.sql",
-		"/tmp/claude/opus/run-001/report.md",
-		"/tmp/claude/opus/run-001/visual.html",
-		"/tmp/gemini/gemini-3.1-pro-preview/run-001/report.md",
-		"/tmp/gemini/gemini-3.1-pro-preview/run-001/visual.html",
+		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
+		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/report.md",
+		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
+		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/report.md",
+		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/visual.html",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)

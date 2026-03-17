@@ -13,70 +13,65 @@ type VisualValidationResult struct {
 }
 
 var (
-	// themeTokens are the CSS custom properties required by the design system.
 	themeTokens = []string{"--navy", "--sky", "--teal", "--amber"}
 
-	// jwePattern matches hardcoded JWE/JWT tokens (dot-separated base64url segments).
-	// JWE compact format: header.encryptedKey.iv.ciphertext.tag (5 parts)
-	// JWT format: header.payload.signature (3 parts)
-	// We look for long base64url strings in quotes starting with eyJ (base64 for {"...).
+	// JWE compact format has 5 parts; JWT has 3 parts.
 	jwePattern = regexp.MustCompile(`["']eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+`)
 )
 
-// ValidateVisualHTML checks a visual.html file against the skill contract.
-// Errors indicate contract violations that should fail the run.
-// Warnings indicate deviations that are recorded but don't fail the run.
-func ValidateVisualHTML(html string) VisualValidationResult {
+// ValidateVisualHTML checks a visual.html file against the selected skill contract.
+func ValidateVisualHTML(html, visualMode, visualType string) VisualValidationResult {
 	result := VisualValidationResult{Valid: true}
 
-	// Error checks
-	checkLeafletCDN(html, &result)
 	checkNoEmbeddedTokens(html, &result)
-
-	// Warning checks
 	checkThemeTokens(html, &result)
-	checkQueryLedger(html, &result)
-	checkLocalStorageKey(html, &result)
-	checkFooterControls(html, &result)
+
+	mode := strings.ToLower(strings.TrimSpace(visualMode))
+	if mode == "" {
+		mode = "dynamic"
+	}
+	isMap := strings.EqualFold(strings.TrimSpace(visualType), "html_map")
+
+	switch mode {
+	case "static":
+		checkStaticHTML(html, isMap, &result)
+	default:
+		checkDynamicHTML(html, isMap, &result)
+	}
 
 	return result
 }
 
-// checkLeafletCDN verifies Leaflet library is loaded from CDN when the dashboard uses maps.
-// If no map-related content is detected, missing Leaflet is a warning instead of an error.
-func checkLeafletCDN(html string, result *VisualValidationResult) {
+func checkDynamicHTML(html string, isMap bool, result *VisualValidationResult) {
+	checkLeaflet(html, isMap, result)
+	checkQueryLedger(html, true, result)
+	checkLocalStorageKey(html, true, result)
+	checkFooterControls(html, true, result)
+}
+
+func checkStaticHTML(html string, isMap bool, result *VisualValidationResult) {
+	checkLeaflet(html, isMap, result)
+	checkStaticRemoteAssets(html, isMap, result)
+	checkStaticEmbeddedData(html, result)
+	checkStaticRuntimeDependencies(html, result)
+}
+
+func checkLeaflet(html string, isMap bool, result *VisualValidationResult) {
+	if !isMap {
+		return
+	}
 	lower := strings.ToLower(html)
 	hasLeaflet := strings.Contains(lower, "leaflet@") ||
 		strings.Contains(lower, "leaflet.js") ||
 		strings.Contains(lower, "leaflet.min.js") ||
 		strings.Contains(lower, "unpkg.com/leaflet") ||
 		strings.Contains(lower, "cdnjs.cloudflare.com/ajax/libs/leaflet")
-
-	if hasLeaflet {
-		return
-	}
-
-	// Check if the dashboard appears to use maps
-	usesMap := strings.Contains(lower, `id="map"`) ||
-		strings.Contains(lower, `id="map-`) ||
-		strings.Contains(lower, `class="map"`) ||
-		strings.Contains(lower, `class="map-`) ||
-		strings.Contains(html, "L.map") ||
-		strings.Contains(html, "L.marker") ||
-		strings.Contains(html, "L.tileLayer") ||
-		strings.Contains(lower, "latitude") ||
-		strings.Contains(lower, "longitude") ||
-		strings.Contains(html, "LatLng")
-
-	if usesMap {
-		// Map content without Leaflet is an error
+	if !hasLeaflet {
 		result.Valid = false
-		result.Errors = append(result.Errors, "map content detected but missing Leaflet CDN reference")
+		result.Errors = append(result.Errors, "map dashboard missing Leaflet asset")
 	}
-	// Non-map dashboards don't require Leaflet - no warning needed
 }
 
-// checkNoEmbeddedTokens ensures no hardcoded JWE/JWT tokens appear in the HTML.
 func checkNoEmbeddedTokens(html string, result *VisualValidationResult) {
 	if jwePattern.MatchString(html) {
 		result.Valid = false
@@ -84,7 +79,6 @@ func checkNoEmbeddedTokens(html string, result *VisualValidationResult) {
 	}
 }
 
-// checkThemeTokens verifies the dashboard uses the required design system tokens.
 func checkThemeTokens(html string, result *VisualValidationResult) {
 	var missing []string
 	for _, token := range themeTokens {
@@ -97,54 +91,106 @@ func checkThemeTokens(html string, result *VisualValidationResult) {
 	}
 }
 
-// checkQueryLedger verifies the presence of a query ledger element with expandable SQL support.
-func checkQueryLedger(html string, result *VisualValidationResult) {
-	// Look for common ledger patterns
+func checkQueryLedger(html string, required bool, result *VisualValidationResult) {
+	lower := strings.ToLower(html)
 	hasLedger := strings.Contains(html, `id="ledger`) ||
 		strings.Contains(html, `id="query-ledger`) ||
 		strings.Contains(html, `id="queryLedger`) ||
 		strings.Contains(html, `class="ledger`) ||
-		strings.Contains(strings.ToLower(html), "query ledger")
-
+		strings.Contains(lower, "query ledger")
 	if !hasLedger {
-		result.Warnings = append(result.Warnings, "no query ledger element found (expected id containing 'ledger')")
+		if required {
+			result.Valid = false
+			result.Errors = append(result.Errors, "missing query ledger element")
+		} else {
+			result.Warnings = append(result.Warnings, "no query ledger element found")
+		}
 		return
 	}
 
-	// Check for expandable SQL structure (new contract)
 	hasExpandableSQL := strings.Contains(html, "ledger-entry") ||
 		strings.Contains(html, "toggleLedgerEntry") ||
 		strings.Contains(html, "ledger-sql") ||
 		strings.Contains(html, "toggle-icon")
-
 	if !hasExpandableSQL {
-		result.Warnings = append(result.Warnings, "query ledger may not have expandable SQL (expected ledger-entry or toggleLedgerEntry)")
+		result.Warnings = append(result.Warnings, "query ledger may not have expandable SQL")
 	}
 }
 
-// checkLocalStorageKey verifies the correct localStorage key is used for JWE.
-func checkLocalStorageKey(html string, result *VisualValidationResult) {
-	if !strings.Contains(html, "OnTimeAnalystDashboard::auth::jwe") {
-		result.Warnings = append(result.Warnings, "missing localStorage key 'OnTimeAnalystDashboard::auth::jwe'")
+func checkLocalStorageKey(html string, required bool, result *VisualValidationResult) {
+	if strings.Contains(html, "OnTimeAnalystDashboard::auth::jwe") {
+		return
 	}
+	if required {
+		result.Valid = false
+		result.Errors = append(result.Errors, "missing localStorage key 'OnTimeAnalystDashboard::auth::jwe'")
+		return
+	}
+	result.Warnings = append(result.Warnings, "missing localStorage key 'OnTimeAnalystDashboard::auth::jwe'")
 }
 
-// checkFooterControls verifies the presence of token input and SQL textarea controls.
-func checkFooterControls(html string, result *VisualValidationResult) {
+func checkFooterControls(html string, required bool, result *VisualValidationResult) {
 	lower := strings.ToLower(html)
+	footerStart := strings.LastIndex(lower, "<footer")
+	if footerStart < 0 {
+		footerStart = strings.LastIndex(lower, `data-role="controls"`)
+	}
+	if footerStart < 0 {
+		if required {
+			result.Valid = false
+			result.Errors = append(result.Errors, "missing footer control block")
+		} else {
+			result.Warnings = append(result.Warnings, "missing footer control block")
+		}
+		return
+	}
 
-	// Check for token input
-	hasTokenInput := strings.Contains(lower, `type="password"`) ||
-		strings.Contains(lower, "token") && strings.Contains(lower, "<input")
-
-	// Check for SQL textarea
-	hasSQLTextarea := strings.Contains(lower, "<textarea") &&
-		(strings.Contains(lower, "sql") || strings.Contains(lower, "query"))
+	footerHTML := lower[footerStart:]
+	hasTokenInput := strings.Contains(footerHTML, `type="password"`) ||
+		(strings.Contains(footerHTML, "token") && strings.Contains(footerHTML, "<input"))
+	hasSQLTextarea := strings.Contains(footerHTML, "<textarea") &&
+		(strings.Contains(footerHTML, "sql") || strings.Contains(footerHTML, "query"))
 
 	if !hasTokenInput {
-		result.Warnings = append(result.Warnings, "no token input control found in footer")
+		result.Valid = false
+		result.Errors = append(result.Errors, "missing token input control in footer")
 	}
 	if !hasSQLTextarea {
-		result.Warnings = append(result.Warnings, "no SQL textarea control found in footer")
+		result.Valid = false
+		result.Errors = append(result.Errors, "missing SQL textarea control in footer")
+	}
+}
+
+func checkStaticRemoteAssets(html string, isMap bool, result *VisualValidationResult) {
+	lower := strings.ToLower(html)
+	if isMap {
+		return
+	}
+	if strings.Contains(lower, "<script src=") {
+		result.Valid = false
+		result.Errors = append(result.Errors, "static non-map dashboard must not load remote scripts")
+	}
+	if strings.Contains(lower, "<link") {
+		result.Valid = false
+		result.Errors = append(result.Errors, "static non-map dashboard must not load remote stylesheets")
+	}
+}
+
+func checkStaticEmbeddedData(html string, result *VisualValidationResult) {
+	lower := strings.ToLower(html)
+	hasEmbeddedJSON := strings.Contains(lower, `type="application/json"`)
+	hasEmbeddedCSV := strings.Contains(lower, `type="text/csv"`)
+	if hasEmbeddedJSON || hasEmbeddedCSV {
+		return
+	}
+	result.Valid = false
+	result.Errors = append(result.Errors, "static dashboard missing embedded analytical data block")
+}
+
+func checkStaticRuntimeDependencies(html string, result *VisualValidationResult) {
+	lower := strings.ToLower(html)
+	if strings.Contains(lower, "openapi/execute_query") || strings.Contains(lower, "mcp.demo.altinity.cloud") || strings.Contains(lower, "localstorage") {
+		result.Valid = false
+		result.Errors = append(result.Errors, "static dashboard must not depend on live MCP fetch or localStorage token flow")
 	}
 }

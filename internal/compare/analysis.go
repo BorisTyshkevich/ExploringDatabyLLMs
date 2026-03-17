@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"qforge/internal/model"
+	"qforge/internal/prompts"
 )
 
 const analysisPromptFile = "analysis_prompt.md"
@@ -22,34 +23,45 @@ func BuildAnalysisPrompt(repoRoot string, question model.Question, report Report
 		"question_slug":         question.Meta.Slug,
 		"question_title":        question.Meta.Title,
 		"compare_day":           report.Day,
-		"compare_json_path":     compareJSONPath,
-		"question_prompt_path":  filepath.Join(question.Dir, "prompt.md"),
-		"report_prompt_path":    optionalPath(filepath.Join(question.Dir, "report_prompt.md")),
-		"visual_prompt_path":    optionalPath(filepath.Join(question.Dir, "visual_prompt.md")),
-		"compare_contract_path": optionalPath(filepath.Join(question.Dir, "compare.yaml")),
-		"run_dirs_md":           bulletList(runDirs(report.Runs)),
-		"query_sql_paths_md":    bulletList(querySQLPaths(report.Runs)),
-		"report_md_paths_md":    bulletList(reportMDPaths(report.Runs)),
-		"visual_html_paths_md":  bulletList(visualHTMLPaths(report.Runs)),
-		"result_json_paths_md":  bulletList(resultJSONPaths(report.Runs)),
+		"compare_json_path":     publishPath(repoRoot, compareJSONPath),
+		"question_prompt_path":  publishPath(repoRoot, filepath.Join(question.Dir, "prompt.md")),
+		"report_prompt_path":    optionalPath(repoRoot, filepath.Join(question.Dir, "report_prompt.md")),
+		"visual_prompt_path":    optionalPath(repoRoot, filepath.Join(question.Dir, "visual_prompt.md")),
+		"compare_contract_path": optionalPath(repoRoot, filepath.Join(question.Dir, "compare.yaml")),
+		"run_dirs_md":           bulletList(publishPaths(repoRoot, runDirs(report.Runs))),
+		"query_sql_paths_md":    bulletList(publishPaths(repoRoot, querySQLPaths(report.Runs))),
+		"report_md_paths_md":    bulletList(publishPaths(repoRoot, reportMDPaths(report.Runs))),
+		"visual_html_paths_md":  bulletList(publishPaths(repoRoot, visualHTMLPaths(report.Runs))),
+		"result_json_paths_md":  bulletList(publishPaths(repoRoot, resultJSONPaths(report.Runs))),
 		"compare_summary_md":    renderMarkdown(report),
 	}
-	return renderTemplate(string(data), values), nil
+	return prompts.RenderTemplate(string(data), values), nil
 }
 
-func renderTemplate(template string, values map[string]string) string {
-	replacements := make([]string, 0, len(values)*2)
-	for key, value := range values {
-		replacements = append(replacements, "{{"+key+"}}", strings.TrimSpace(value))
-	}
-	return strings.TrimSpace(strings.NewReplacer(replacements...).Replace(template))
-}
-
-func optionalPath(path string) string {
+func optionalPath(repoRoot, path string) string {
 	if _, err := os.Stat(path); err == nil {
-		return path
+		return publishPath(repoRoot, path)
 	}
 	return "(not present)"
+}
+
+func publishPaths(repoRoot string, values []string) []string {
+	out := make([]string, 0, len(values))
+	for _, value := range values {
+		out = append(out, publishPath(repoRoot, value))
+	}
+	return out
+}
+
+func publishPath(repoRoot, path string) string {
+	if path == "" {
+		return path
+	}
+	rel, err := filepath.Rel(repoRoot, path)
+	if err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return filepath.ToSlash(rel)
+	}
+	return path
 }
 
 func bulletList(values []string) string {
