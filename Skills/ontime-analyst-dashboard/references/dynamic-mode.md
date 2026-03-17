@@ -75,11 +75,21 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 - If `columns` is present and `count = 0` and `rows` is `null`, treat it as an empty dataset, not as a malformed payload.
 - Do not assume ClickHouse `Date` columns will always arrive as bare `YYYY-MM-DD` strings; MCP/OpenAPI payloads may surface ISO datetime strings such as `2024-12-01T00:00:00Z`.
 
-## Query contract
+## Query ledger contract
+
+- Every query (primary and enrichment) must appear in a single unified ledger
+- Each ledger entry must include: label, role, status, rows, and the full SQL text
+- SQL text is hidden by default with a clickable row to expand/reveal
+- Use ▶/▼ toggle icons for expand/collapse affordance
+- Do not show the primary query SQL only in the footer—include it in the ledger
+- The footer SQL textarea remains for editing and re-running queries
+- Ledger entries should be added immediately (Pending status) and updated on completion
+- On status update, also update the SQL field if it wasn't known at registration time
+
+## Query execution contract
 
 - Dynamic dashboards default to one primary query: the saved SQL prefilled into the page.
 - Additional browser queries are allowed for enrichment or drill-down when they materially improve the visualization and remain within dataset policy.
-- Every query must be listed in a visible query ledger with a label, role (`primary`, `enrichment`, `drill-down`), status, and row count when available.
 - Do not generate hidden follow-up SQL or alternate result shapes without surfacing them to the user.
 - Prefer dataset-native dimensions and lookup tables rather than inferred or geocoded data when enrichment is needed.
 - Prefer `data-role` selectors or stored element references for card internals so map/chart initialization always targets the rendered node rather than inert template content.

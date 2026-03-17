@@ -80,3 +80,14 @@ When maps are used, reuse the same colors and panel styling:
 - highlighted airport or route: `--red`
 - secondary routes: `--sky`
 - contextual fills: muted blue/gray
+
+## Query ledger style
+
+- Ledger entries are collapsible rows with expand/collapse toggle
+- Toggle icon: ▶ collapsed, ▼ expanded (monospace font)
+- Row hover: `var(--panel-alt)` background
+- Row click: expands/collapses the SQL block
+- SQL block: monospace, `var(--panel-alt)` background, `var(--radius-sm)` corners
+- SQL text: `pre` with word-wrap for long lines
+- Status colors: OK=`--teal`, Pending=`--amber`, Failed=`--red`
+- Grid columns: toggle (1em), label (flex), role (6em), status (5em), rows (4em)
