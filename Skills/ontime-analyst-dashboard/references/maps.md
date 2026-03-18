@@ -44,9 +44,13 @@ Typical map dashboards need:
 - Do not place narrative cards, KPI summaries, or lead-itinerary copy as overlays on top of the map surface; keep that content in normal panels adjacent to or below the map
 - Check dataset-native coordinate and lookup tables first when the primary query lacks lat/lon
 - Coordinate enrichment queries are acceptable when they are explicit, user-visible, and tied to the map
+- Cache coordinate enrichment results and reuse them for selection changes instead of issuing new per-click queries
 - If the map card is cloned from a template, initialize Leaflet against a live scoped element reference, not a duplicated global `id` that may still exist inside the template
 - Prefer initializing Leaflet only after the map container is visible in layout; do not create the map while its parent region is hidden if delayed init is practical
 - If layout or visibility changes after map creation, call `invalidateSize()` after reveal and after major layout moves as a safety fallback
+- Compute bounds from raw lat/lon arrays or concrete marker/polyline layers; do not compute map bounds from parent layer-group containers
+- Row-selection redraws must update the selected route or its degraded state without throwing uncaught JS errors
+- If a selected route cannot be plotted after the map already exists, replace the current route with a visible degraded message instead of leaving stale content or a blank map surface
 
 ## Styling rules
 

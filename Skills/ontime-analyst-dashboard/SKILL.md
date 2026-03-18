@@ -26,6 +26,10 @@ Use this skill for `visual.html` artifacts and dashboard generation in this repo
 - Prefer dataset-native dimensions and lookup tables when enrichment fields are needed
 - Use optional chaining (`?.`) and nullish coalescing (`??`) in client-side JS
 - Normalize temporal fields explicitly; if a ClickHouse `Date` arrives as ISO timestamp, derive `YYYY-MM-DD` in JS
+- Keep implementation detail in the skill and references, not in question prompts
+- Treat question prompts as business intent and analytical behavior, then supply HTML structure and rendering details from this skill
+- Keep runtime failures scoped to the component that failed; a map-render failure must not be reported as a primary-query failure
+- If a dashboard supports row/table drill-down, keep selection state explicit and redraw only the dependent detail/map panels while leaving top-level summary KPIs anchored unless the prompt says otherwise
 
 ## Presentation guidance
 

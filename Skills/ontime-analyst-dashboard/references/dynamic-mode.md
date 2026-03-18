@@ -21,7 +21,7 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
 - Header remains visible before data loads
 - Main dashboard content hidden before successful fetch
 - The saved SQL textarea is the primary analytical query source for the page
-- The JWE/SQL control form must live in its own separate block at the very end of the page
+- The JWE/SQL control form must live in a real `<footer>` block at the very end of the page
 - That control block is a footer-style utility panel, not part of the hero or empty-state layout
 - After data loads, the control block must still remain at the bottom of the document, below the analytical content
 - Do not place the JWE/SQL controls inside the hero, KPI strip, or main analytical card grid
@@ -37,18 +37,21 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
 ## Fetch flow
 
 1. On page load, read the stored JWE token from `localStorage` and prefill the token field if present
-2. Read token and SQL from inputs
-3. Validate both are non-empty
-4. Persist the JWE token to `localStorage` after every successful token entry so subsequent dashboards can reuse it
-5. Call endpoint with `fetch` using the saved SQL shown in the textarea
-6. If `response.ok` is false, read the response text and surface that API error directly instead of trying to parse it as JSON first
-7. Parse JSON payload with `columns` and `rows` only for successful responses
-8. Treat empty results as valid when `count = 0`, even if `rows` is returned as `null`
-9. Convert row arrays into objects
-10. Run through the same normalization pipeline as static mode
-11. Normalize temporal fields before UI formatting, grouping, filtering, or comparison logic
-12. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
-13. Show content and render dashboard while keeping the control block at the bottom
+2. If the page auto-runs when a stored token is present, use the same guarded run path as the manual fetch action
+3. While a run is active, disable the fetch button, show it in an inactive state, and ignore additional manual clicks
+4. Read token and SQL from inputs
+5. Validate both are non-empty
+6. Persist the JWE token to `localStorage` after every successful token entry so subsequent dashboards can reuse it
+7. Call endpoint with `fetch` using the saved SQL shown in the textarea
+8. If `response.ok` is false, read the response text and surface that API error directly instead of trying to parse it as JSON first
+9. Parse JSON payload with `columns` and `rows` only for successful responses
+10. Treat empty results as valid when `count = 0`, even if `rows` is returned as `null`
+11. Convert row arrays into objects
+12. Run through the same normalization pipeline as static mode
+13. Normalize temporal fields before UI formatting, grouping, filtering, or comparison logic
+14. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
+15. Re-enable the fetch button only after the active run has finished or failed
+16. Show content and render dashboard while keeping the control block at the bottom
 
 Do not use `payload.rows` directly in rendering logic. Always convert MCP `columns` + `rows` into object rows first, even if a provider sometimes returns object rows already.
 
@@ -63,6 +66,8 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 - Never print or echo the token in status messages
 - If the result set is empty, keep KPI/chart containers stable and show a clear warning panel instead of a broken dashboard
 - If an enrichment query fails, report the failed query in the ledger, explain which visual degraded, and continue rendering the rest of the page
+- Surface empty, failed, and degraded states in visible page UI, not only in console output or logs
+- Keep primary-query failures separate from secondary-render failures; a component error must degrade that component instead of being reported as a primary-query failure
 
 ## Payload rules
 
@@ -98,6 +103,9 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 - Prefer dataset-native dimensions and lookup tables rather than inferred or geocoded data when enrichment is needed.
 - Prefer `data-role` selectors or stored element references for card internals so map/chart initialization always targets the rendered node rather than inert template content.
 - For Leaflet maps, prefer delayed initialization after the dashboard or map card becomes visible. If the map must be created before final layout settles, call `invalidateSize()` after reveal.
+- When interactive drill-down is present, keep a clear selected-row or selected-item state and update only the dependent detail/map panels from that selection.
+- Keep explicit run state such as `isRunning` or `activeRunId` so auto-load, manual fetch, and async completions cannot overlap or duplicate ledger entries.
+- Ignore or cancel stale async completions from earlier runs once a newer run has started.
 
 ## Temporal normalization rules
 
