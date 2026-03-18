@@ -265,6 +265,7 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 	err = cmd.Run()
 	if err != nil {
 		logf(req.Verbose, "provider=claude phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+		logProviderDetails(req.Verbose, "claude", stdout.String(), stderr.String())
 		return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
 	}
 	logf(req.Verbose, "provider=claude phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
@@ -290,6 +291,7 @@ func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, p
 	err := cmd.Run()
 	if err != nil {
 		logf(req.Verbose, "provider=gemini phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+		logProviderDetails(req.Verbose, "gemini", stdout.String(), stderr.String())
 		return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
 	}
 	logf(req.Verbose, "provider=gemini phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
@@ -301,4 +303,74 @@ func logf(verbose bool, format string, args ...any) {
 		return
 	}
 	fmt.Printf("[qforge] "+format+"\n", args...)
+}
+
+func logProviderDetails(verbose bool, providerName, stdoutText, stderrText string) {
+	if !verbose {
+		return
+	}
+	if summary := summarizeProviderFailure(stderrText, stdoutText); summary != "" {
+		fmt.Printf("[qforge] provider=%s detail=%q\n", providerName, summary)
+	}
+}
+
+func summarizeProviderFailure(parts ...string) string {
+	for _, part := range parts {
+		s := strings.TrimSpace(part)
+		if s == "" {
+			continue
+		}
+		lower := strings.ToLower(s)
+		switch {
+		case strings.Contains(lower, "terminalquotaerror"):
+			return firstMatchingLine(s, "TerminalQuotaError")
+		case strings.Contains(lower, "quota will reset"):
+			return firstMatchingLine(s, "quota will reset")
+		case strings.Contains(lower, "quota"):
+			return firstMatchingLine(s, "quota")
+		case strings.Contains(lower, "rate limit"):
+			return firstMatchingLine(s, "rate limit")
+		case strings.Contains(lower, "authentication"):
+			return firstMatchingLine(s, "authentication")
+		case strings.Contains(lower, "unauthorized"):
+			return firstMatchingLine(s, "unauthorized")
+		case strings.Contains(lower, "forbidden"):
+			return firstMatchingLine(s, "forbidden")
+		case strings.Contains(lower, "error when talking to"):
+			return firstMatchingLine(s, "Error when talking to")
+		}
+
+		for _, line := range strings.Split(s, "\n") {
+			line = strings.TrimSpace(line)
+			if line == "" {
+				continue
+			}
+			l := strings.ToLower(line)
+			if strings.Contains(l, "yolo mode is enabled") || strings.Contains(l, "loaded cached credentials") {
+				continue
+			}
+			return truncate(line, 240)
+		}
+	}
+	return ""
+}
+
+func firstMatchingLine(s, needle string) string {
+	for _, line := range strings.Split(s, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		if strings.Contains(strings.ToLower(line), strings.ToLower(needle)) {
+			return truncate(line, 240)
+		}
+	}
+	return truncate(strings.TrimSpace(s), 240)
+}
+
+func truncate(s string, limit int) string {
+	if len(s) <= limit {
+		return s
+	}
+	return s[:limit] + "...(truncated)"
 }

@@ -731,6 +731,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
 	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(presentationResponse.RawOutput, outDir, presentationStartedAt)
 	if err != nil {
+		logPresentationFailure(opts.Verbose, err, presentationResponse)
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
 		return err
@@ -831,6 +832,77 @@ func logf(verbose bool, format string, args ...any) {
 	fmt.Printf("[qforge] "+format+"\n", args...)
 }
 
+func logPresentationFailure(verbose bool, err error, resp model.ProviderResponse) {
+	if !verbose {
+		return
+	}
+	logf(true, "phase=presentation_generation status=failed reason=%q", err.Error())
+	if summary := summarizeProviderFailure(resp.Stderr, resp.Stdout, resp.RawOutput); summary != "" {
+		logf(true, "presentation_provider_detail=%q", summary)
+	}
+}
+
+func summarizeProviderFailure(parts ...string) string {
+	for _, part := range parts {
+		s := strings.TrimSpace(part)
+		if s == "" {
+			continue
+		}
+		lower := strings.ToLower(s)
+		switch {
+		case strings.Contains(lower, "terminalquotaerror"):
+			return firstMatchingLine(s, "TerminalQuotaError")
+		case strings.Contains(lower, "quota will reset"):
+			return firstMatchingLine(s, "quota will reset")
+		case strings.Contains(lower, "quota"):
+			return firstMatchingLine(s, "quota")
+		case strings.Contains(lower, "rate limit"):
+			return firstMatchingLine(s, "rate limit")
+		case strings.Contains(lower, "authentication"):
+			return firstMatchingLine(s, "authentication")
+		case strings.Contains(lower, "unauthorized"):
+			return firstMatchingLine(s, "unauthorized")
+		case strings.Contains(lower, "forbidden"):
+			return firstMatchingLine(s, "forbidden")
+		case strings.Contains(lower, "error when talking to"):
+			return firstMatchingLine(s, "Error when talking to")
+		}
+
+		for _, line := range strings.Split(s, "\n") {
+			line = strings.TrimSpace(line)
+			if line == "" {
+				continue
+			}
+			l := strings.ToLower(line)
+			if strings.Contains(l, "yolo mode is enabled") || strings.Contains(l, "loaded cached credentials") {
+				continue
+			}
+			return truncate(line, 240)
+		}
+	}
+	return ""
+}
+
+func firstMatchingLine(s, needle string) string {
+	for _, line := range strings.Split(s, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		if strings.Contains(strings.ToLower(line), strings.ToLower(needle)) {
+			return truncate(line, 240)
+		}
+	}
+	return truncate(strings.TrimSpace(s), 240)
+}
+
+func truncate(s string, limit int) string {
+	if len(s) <= limit {
+		return s
+	}
+	return s[:limit] + "...(truncated)"
+}
+
 func processVisual(ctx context.Context, opts processVisualOptions) error {
 	root, err := repoRoot()
 	if err != nil {
@@ -922,6 +994,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	}
 	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(resp.RawOutput, runDir, presentationStartedAt)
 	if err != nil {
+		logPresentationFailure(opts.Verbose, err, resp)
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
 		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
