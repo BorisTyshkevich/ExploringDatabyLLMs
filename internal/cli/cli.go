@@ -23,7 +23,6 @@ import (
 	"qforge/internal/questions"
 	"qforge/internal/render"
 	"qforge/internal/runs"
-	"qforge/internal/validate"
 )
 
 const defaultCommandTimeoutSec = 900
@@ -169,7 +168,8 @@ func runRun(ctx context.Context, args []string) error {
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	withVisual := fs.Bool("with-visual", false, "After SQL succeeds, make a separate presentation call for report.md and visual.html")
-	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip HTML validation for visual.html")
+	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
+	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
 	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	var runners multiFlag
@@ -213,6 +213,7 @@ func runRun(ctx context.Context, args []string) error {
 			CLIBin:               *cliBin,
 			WithVisual:           *withVisual,
 			SkipVisualValidation: *skipVisualValidation,
+			SkipBrowserLiveFetch: *skipBrowserLiveFetch,
 			Verbose:              *verbose,
 		}
 		wg.Add(1)
@@ -465,7 +466,8 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
-	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip HTML validation for visual.html")
+	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
+	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
 	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	if err := fs.Parse(args); err != nil {
@@ -485,6 +487,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 		MCPTokenFile:         *mcpTokenFile,
 		CLIBin:               *cliBin,
 		SkipVisualValidation: *skipVisualValidation,
+		SkipBrowserLiveFetch: *skipBrowserLiveFetch,
 		Verbose:              *verbose,
 	})
 }
@@ -537,6 +540,7 @@ type runOptions struct {
 	CLIBin               string
 	WithVisual           bool
 	SkipVisualValidation bool
+	SkipBrowserLiveFetch bool
 	Verbose              bool
 }
 
@@ -548,6 +552,7 @@ type processVisualOptions struct {
 	MCPTokenFile         string
 	CLIBin               string
 	SkipVisualValidation bool
+	SkipBrowserLiveFetch bool
 	Verbose              bool
 }
 
@@ -752,27 +757,25 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		return err
 	}
 
-	if opts.SkipVisualValidation {
-		manifest.Metadata = addMetadata(manifest.Metadata, "visual_validation", "skipped")
-		logf(opts.Verbose, "phase=visual_validation status=skipped")
-	} else {
-		validationResult := validate.ValidateVisualHTML(htmlTemplate, question.Meta.VisualMode, question.Meta.VisualType)
-		if !validationResult.Valid {
-			manifest.Status = model.RunStatusPartial
-			manifest.Phases.PresentationRender = model.PhaseStatusFailed
-			manifest.Metadata = addMetadata(manifest.Metadata, "visual_validation_errors", strings.Join(validationResult.Errors, "; "))
-			logf(opts.Verbose, "phase=visual_validation status=failed errors=%q", strings.Join(validationResult.Errors, "; "))
-		} else {
-			logf(opts.Verbose, "phase=visual_validation status=ok")
-		}
-		if len(validationResult.Warnings) > 0 {
-			manifest.Metadata = addMetadata(manifest.Metadata, "visual_validation_warnings", strings.Join(validationResult.Warnings, "; "))
-			logf(opts.Verbose, "visual_validation_warnings=%q", strings.Join(validationResult.Warnings, "; "))
-		}
-		if !validationResult.Valid {
-			logf(opts.Verbose, "run status=partial presentation=validation_failed mode=with-visual")
-			return nil
-		}
+	validationResult := validatePresentationHTML(ctx, presentationValidationOptions{
+		RunDir:               outDir,
+		HTMLPath:             artifacts.VisualHTML,
+		HTML:                 htmlTemplate,
+		VisualMode:           question.Meta.VisualMode,
+		VisualType:           question.Meta.VisualType,
+		Token:                token,
+		SkipVisualValidation: opts.SkipVisualValidation,
+		SkipBrowserLiveFetch: opts.SkipBrowserLiveFetch,
+		Verbose:              opts.Verbose,
+	})
+	for key, value := range validationResult.Metadata {
+		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
+	}
+	if !validationResult.Valid {
+		manifest.Status = model.RunStatusPartial
+		manifest.Phases.PresentationRender = model.PhaseStatusFailed
+		logf(opts.Verbose, "run status=partial presentation=validation_failed mode=with-visual")
+		return nil
 	}
 
 	manifest.Phases.PresentationRender = model.PhaseStatusOK
@@ -1013,27 +1016,25 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		return err
 	}
 
-	if opts.SkipVisualValidation {
-		manifest.Metadata = addMetadata(manifest.Metadata, "visual_validation", "skipped")
-		logf(opts.Verbose, "phase=visual_validation status=skipped")
-	} else {
-		validationResult := validate.ValidateVisualHTML(htmlTemplate, question.Meta.VisualMode, question.Meta.VisualType)
-		if !validationResult.Valid {
-			manifest.Status = model.RunStatusPartial
-			manifest.Phases.PresentationRender = model.PhaseStatusFailed
-			manifest.Metadata = addMetadata(manifest.Metadata, "visual_validation_errors", strings.Join(validationResult.Errors, "; "))
-			logf(opts.Verbose, "phase=visual_validation status=failed errors=%q", strings.Join(validationResult.Errors, "; "))
-		} else {
-			logf(opts.Verbose, "phase=visual_validation status=ok")
-		}
-		if len(validationResult.Warnings) > 0 {
-			manifest.Metadata = addMetadata(manifest.Metadata, "visual_validation_warnings", strings.Join(validationResult.Warnings, "; "))
-			logf(opts.Verbose, "visual_validation_warnings=%q", strings.Join(validationResult.Warnings, "; "))
-		}
-		if !validationResult.Valid {
-			logf(opts.Verbose, "phase=presentation_render status=failed")
-			return runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
-		}
+	validationResult := validatePresentationHTML(ctx, presentationValidationOptions{
+		RunDir:               runDir,
+		HTMLPath:             manifest.Artifacts.VisualHTML,
+		HTML:                 htmlTemplate,
+		VisualMode:           question.Meta.VisualMode,
+		VisualType:           question.Meta.VisualType,
+		Token:                token,
+		SkipVisualValidation: opts.SkipVisualValidation,
+		SkipBrowserLiveFetch: opts.SkipBrowserLiveFetch,
+		Verbose:              opts.Verbose,
+	})
+	for key, value := range validationResult.Metadata {
+		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
+	}
+	if !validationResult.Valid {
+		manifest.Status = model.RunStatusPartial
+		manifest.Phases.PresentationRender = model.PhaseStatusFailed
+		logf(opts.Verbose, "phase=presentation_render status=failed")
+		return runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 	}
 
 	manifest.Phases.PresentationRender = model.PhaseStatusOK

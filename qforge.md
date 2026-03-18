@@ -23,6 +23,7 @@ This repository still contains historical Bash and Python benchmark code, but th
    - the model writes final `html` and template-style `report`
    - the final `report.md` is rendered as Markdown from the template plus JSON-derived sections
    - `visual.html` is model-authored final output and is not patched by `qforge`
+   - `visual.html` is validated first against the visual contract and then in a headless browser via `chromedp`
    - this can be done later with `process-visual` or immediately with `run --with-visual`
 
 The model should not emit result rows directly.
@@ -111,6 +112,12 @@ Run one question and immediately follow with a separate presentation call:
 ./scripts/qforge run -q q001 -r claude --with-visual -v
 ```
 
+Run one question with presentation generation but skip only the live browser fetch step:
+
+```bash
+./scripts/qforge run -q q001 -r claude --with-visual --skip-browser-live-fetch -v
+```
+
 Run one question across all default providers:
 
 ```bash
@@ -127,6 +134,12 @@ Process report and visual for an existing run:
 
 ```bash
 ./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
+
+Process report and visual but skip all visual validation:
+
+```bash
+./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --skip-visual-validation -v
 ```
 
 Compare runs for a day:
@@ -224,6 +237,12 @@ Flags:
   - optional
   - after SQL succeeds, make a second independent provider call for `report.md` and `visual.html`
   - this is equivalent in behavior to running `process-visual` after a successful run
+- `--skip-visual-validation`
+  - optional
+  - skip both contract validation and browser validation for `visual.html`
+- `--skip-browser-live-fetch`
+  - optional
+  - keep contract validation and browser smoke checks, but skip the token-entry and live fetch interaction
 
 What `run` does:
 
@@ -275,6 +294,12 @@ Flags:
 - `--cli-bin`
   - optional
   - override the provider CLI executable
+- `--skip-visual-validation`
+  - optional
+  - skip both contract validation and browser validation for `visual.html`
+- `--skip-browser-live-fetch`
+  - optional
+  - keep browser smoke checks but skip the live token-entry and fetch step
 - `--verbose`
   - optional
   - print phase-level progress logs
@@ -286,6 +311,10 @@ What `process-visual` does:
 - invokes the original provider again for `report` and `html`
 - fills report placeholders from `result.json`
 - injects Markdown data sections from `result.json`
+- validates `visual.html` in two stages unless `--skip-visual-validation` is set:
+  - contract validation against the shared visual rules
+  - browser validation using `chromedp`
+- for dynamic dashboards, browser validation automatically attempts the live MCP fetch path when a token is available unless `--skip-browser-live-fetch` is set
 - writes:
   - `prompt.presentation.md`
   - `answer.presentation.raw.md`
@@ -447,6 +476,29 @@ When presentation is processed later with `qforge process-visual`:
 - `report.template.md`
 - `report.md`
 - `visual.html`
+
+## Browser Validation
+
+Generated `visual.html` artifacts now go through a headless browser check with `chromedp`.
+
+What this browser phase verifies:
+
+- the page opens and reaches a ready DOM state
+- required dashboard controls exist
+- runtime exceptions and fatal console errors are absent
+- dynamic dashboards can accept the JWE token through the page UI, click the footer action button, issue the expected MCP request, and settle without obvious failure UI
+
+Token behavior:
+
+- the browser phase reuses the same resolved JWE token that `qforge` already uses for SQL execution
+- `--skip-browser-live-fetch` keeps the browser load/runtime checks but skips the real fetch interaction
+- `--skip-visual-validation` skips both contract validation and browser validation
+
+Failure behavior:
+
+- contract validation failures mark presentation as partial/failed
+- browser validation failures also mark presentation as partial/failed
+- `manifest.json` records browser validation details under `browser_validation*` metadata keys
 
 ## Canonical Output
 
