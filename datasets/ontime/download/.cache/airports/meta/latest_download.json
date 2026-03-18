@@ -1,7 +1,0 @@
-{
-  "csv_name": "T_MASTER_CORD.csv",
-  "downloaded_at": "2026-03-18T14:43:24.816077+00:00",
-  "source_url": "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FLL&QO_fu146_anzr=N8vn6v10+f722146+gnoyr5",
-  "table_info_url": "https://www.transtats.bts.gov/Fields.asp?gnoyr_VQ=FLL",
-  "zip_path": "/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime_v2/download/.cache/airports/downloads/T_MASTER_CORD_20260318_144317.zip"
-}

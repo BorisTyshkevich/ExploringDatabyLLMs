@@ -2,8 +2,8 @@
 /runs/
 .tmp/
 .claude/
-datasets/ontime_v2/.cache/
-datasets/ontime_v2/download/.cache/
+datasets/ontime/.cache/
+datasets/ontime/download/.cache/
 __pycache__/
 *.swp
 *.swo
