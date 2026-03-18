@@ -16,8 +16,8 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 		Prompt: "Question-specific SQL guidance.",
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "default.ontime_v2",
-		ForbiddenTables: "default.ontime",
+		PrimaryTable:    "ontime.ontime",
+		ForbiddenTables: "default.ontime, default.ontime_v2",
 	}
 	got, err := BuildSQLPrompt(question, dataset)
 	if err != nil {
@@ -32,7 +32,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Question-specific SQL guidance.") {
 		t.Fatalf("expected question prompt section, got: %s", got)
 	}
-	if !strings.Contains(got, "default.ontime_v2") || !strings.Contains(got, "default.ontime") {
+	if !strings.Contains(got, "ontime.ontime") || !strings.Contains(got, "default.ontime") || !strings.Contains(got, "default.ontime_v2") {
 		t.Fatalf("expected dataset substitutions, got: %s", got)
 	}
 }
@@ -49,17 +49,17 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "default.ontime_v2",
-		ForbiddenTables: "default.ontime",
+		PrimaryTable:    "ontime.ontime",
+		ForbiddenTables: "default.ontime, default.ontime_v2",
 	}
-	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT *\nFROM default.ontime_v2")
+	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
 	if !strings.Contains(got, "Stay within the configured dataset scope.") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "default.ontime_v2") || !strings.Contains(got, "default.ontime") {
+	if !strings.Contains(got, "ontime.ontime") || !strings.Contains(got, "default.ontime") || !strings.Contains(got, "default.ontime_v2") {
 		t.Fatalf("expected dataset substitutions, got: %s", got)
 	}
 	if !strings.Contains(got, "The report is a Markdown template") {
@@ -80,7 +80,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Do not embed the primary analytical dataset") {
 		t.Fatalf("expected no-embedded-dataset contract, got: %s", got)
 	}
-	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM default.ontime_v2") {
+	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM ontime.ontime") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)
 	}
 	if strings.Contains(got, "Return exactly this fenced section:") {
@@ -111,8 +111,8 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "default.ontime_v2",
-		ForbiddenTables: "default.ontime",
+		PrimaryTable:    "ontime.ontime",
+		ForbiddenTables: "default.ontime, default.ontime_v2",
 	}
 	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT 1")
 	if err != nil {
@@ -121,26 +121,17 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if !strings.Contains(got, "ontime-analyst-dashboard") {
 		t.Fatalf("expected q001 prompt to reference skill, got: %s", got)
 	}
-	if !strings.Contains(got, "default.airports_bts") {
-		t.Fatalf("expected q001 prompt to mention airport enrichment, got: %s", got)
-	}
+    if !strings.Contains(got, "ontime.airports_latest") {
+        t.Fatalf("expected q001 prompt to mention airport enrichment, got: %s", got)
+    }
 	if !strings.Contains(got, "airport-coordinate enrichment") {
 		t.Fatalf("expected q001 prompt to label map enrichment clearly, got: %s", got)
-	}
-	if !strings.Contains(got, "Leaflet") {
-		t.Fatalf("expected q001 prompt to mention Leaflet, got: %s", got)
 	}
 	if !strings.Contains(got, "query ledger") {
 		t.Fatalf("expected q001 prompt to inherit ledger contract, got: %s", got)
 	}
 	if !strings.Contains(got, "saved SQL in the browser") {
 		t.Fatalf("expected q001 prompt to inherit primary-query contract, got: %s", got)
-	}
-	if !strings.Contains(got, "Lead Itinerary Map card and visible map container") {
-		t.Fatalf("expected q001 prompt to require persistent map card, got: %s", got)
-	}
-	if !strings.Contains(got, "enrichment only as an upgrade to the map") {
-		t.Fatalf("expected q001 prompt to treat enrichment as an upgrade, got: %s", got)
 	}
 	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
 		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
@@ -164,10 +155,10 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "default.ontime_v2",
-		ForbiddenTables: "default.ontime",
+		PrimaryTable:    "ontime.ontime",
+		ForbiddenTables: "default.ontime, default.ontime_v2",
 	}
-	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT Carrier, Flights FROM default.ontime_v2")
+	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}

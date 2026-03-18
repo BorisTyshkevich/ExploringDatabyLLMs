@@ -83,14 +83,14 @@ These placeholders are not expanded when the prompt is built. They are passed th
 
 ## Example Dataset Mapping
 
-For `ontime_v2`, the source config is [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime_v2/mcp.yaml`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime_v2/mcp.yaml).
+For `ontime`, the source config is [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml).
 
 Current values:
 
-- `primary_table: default.ontime_v2`
-- `forbidden_tables: default.ontime`
+- `primary_table: ontime.ontime`
+- `forbidden_tables: default.ontime, default.ontime_v2`
 
 `{{dataset_constraints_md}}` is rendered from that config into Markdown bullets such as:
 
-- `Use default.ontime_v2 as the primary fact table.`
+- `Use ontime.ontime as the primary fact table.`
 - `Do not reference default.ontime.`

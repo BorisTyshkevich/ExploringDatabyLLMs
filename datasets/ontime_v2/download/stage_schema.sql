@@ -1,11 +1,11 @@
-CREATE TABLE IF NOT EXISTS default.ontime_v2_stage
+CREATE TABLE IF NOT EXISTS ontime.ontime_stage
 (
     `FlightDate` Date COMMENT 'Flight Date (yyyymmdd)' CODEC(DoubleDelta, ZSTD(1)),
-    `Year` UInt16 ALIAS toYear(FlightDate) COMMENT 'Calendar year for the flight date. In ontime_v2 this is a derived alias computed from FlightDate rather than a separately stored source field.',
-    `Quarter` UInt8 ALIAS toQuarter(FlightDate) COMMENT 'Calendar quarter for the flight date, numbered 1 through 4. In ontime_v2 this is a derived alias computed from FlightDate.',
-    `Month` UInt8 ALIAS toMonth(FlightDate) COMMENT 'Calendar month for the flight date, numbered 1 through 12. In ontime_v2 this is a derived alias computed from FlightDate.',
-    `DayofMonth` UInt8 ALIAS toDayOfMonth(FlightDate) COMMENT 'Day of the month for the flight date, numbered 1 through 31. In ontime_v2 this is a derived alias computed from FlightDate.',
-    `DayOfWeek` UInt8 ALIAS toDayOfWeek(FlightDate) COMMENT 'Day of week for the flight date. In ontime_v2 this is a derived alias computed from FlightDate using ClickHouse toDayOfWeek semantics.',
+    `Year` UInt16 ALIAS toYear(FlightDate) COMMENT 'Calendar year for the flight date. In ontime.ontime this is a derived alias computed from FlightDate rather than a separately stored source field.',
+    `Quarter` UInt8 ALIAS toQuarter(FlightDate) COMMENT 'Calendar quarter for the flight date, numbered 1 through 4. In ontime.ontime this is a derived alias computed from FlightDate.',
+    `Month` UInt8 ALIAS toMonth(FlightDate) COMMENT 'Calendar month for the flight date, numbered 1 through 12. In ontime.ontime this is a derived alias computed from FlightDate.',
+    `DayofMonth` UInt8 ALIAS toDayOfMonth(FlightDate) COMMENT 'Day of the month for the flight date, numbered 1 through 31. In ontime.ontime this is a derived alias computed from FlightDate.',
+    `DayOfWeek` UInt8 ALIAS toDayOfWeek(FlightDate) COMMENT 'Day of week for the flight date. In ontime.ontime this is a derived alias computed from FlightDate using ClickHouse toDayOfWeek semantics.',
     `Reporting_Airline` LowCardinality(String) COMMENT 'Unique Carrier Code. When the same code has been used by multiple carriers, a numeric suffix is used for earlier users, for example, PA, PA(1), PA(2). Use this field for analysis across a range of years.',
     `UniqueCarrier` LowCardinality(String) ALIAS Reporting_Airline COMMENT 'Legacy compatibility alias for Reporting_Airline. This exposes the BTS unique carrier code under the historical ontime column name for cross-year airline analysis.',
     `DOT_ID_Reporting_Airline` UInt32 COMMENT 'An identification number assigned by US DOT to identify a unique airline (carrier). A unique airline (carrier) is defined as one holding and reporting under the same DOT certificate regardless of its Code, Name, or holding company/corporation.' CODEC(ZSTD(1)),
@@ -118,4 +118,3 @@ CREATE TABLE IF NOT EXISTS default.ontime_v2_stage
 ENGINE = MergeTree
 PARTITION BY toYear(FlightDate)
 ORDER BY (FlightDate, Reporting_Airline, OriginAirportID, DestAirportID, Flight_Number_Reporting_Airline, Tail_Number)
-SETTINGS index_granularity = 8192

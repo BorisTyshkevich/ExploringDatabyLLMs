@@ -443,7 +443,7 @@ Example:
 
 ```text
 [qforge] run question=q002 runners=claude
-[qforge] run question=q002 runner=claude model=opus dataset=ontime_v2
+[qforge] run question=q002 runner=claude model=opus dataset=ontime
 [qforge] out_dir=... presentation=false timeout_sec=900
 [qforge] phase=sql_generation status=started
 [qforge] provider=claude phase=start ...

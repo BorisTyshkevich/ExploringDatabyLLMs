@@ -1,7 +1,7 @@
 id: q001
 slug: q001_hops_per_day
 title: Highest daily hops for one aircraft on one flight number
-dataset: ontime_v2
+dataset: ontime
 artifacts_required: query.sql,result.tsv,report.md,visual.html
 visual_mode: dynamic
 visual_type: html_map

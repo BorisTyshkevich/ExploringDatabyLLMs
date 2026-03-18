@@ -1,7 +1,7 @@
 id: q003
 slug: q003_delta_atl_departure_delay_hotspots
 title: Delta ATL departure delay hotspots by destination and time block
-dataset: ontime_v2
+dataset: ontime
 artifacts_required: query.sql,report.md,visual.html
 visual_mode: dynamic
 visual_type: html_heatmap

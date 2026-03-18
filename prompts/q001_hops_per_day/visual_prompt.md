@@ -3,7 +3,7 @@ The page must:
 - show a lead-itinerary map that remains present even before airport-coordinate enrichment succeeds
 - treat the first row returned by the primary query as the default selected itinerary on initial load
 - derive hop count, stop sequence, and repeated-route comparisons from the result set
-- run an explicit airport-coordinate enrichment query against `default.airports_bts` using airport codes parsed from the route strings
+- run an explicit airport-coordinate enrichment query against `ontime.airports_latest` using airport codes parsed from the route strings
 - label the map as airport-coordinate enrichment in the query ledger
 - reuse the enrichment results for any itinerary selected from the primary result set without issuing a new per-click enrichment query
 - include KPI cards for tail number, flight number, date, hop count, and route repetition context, with the date shown as its own visible KPI value

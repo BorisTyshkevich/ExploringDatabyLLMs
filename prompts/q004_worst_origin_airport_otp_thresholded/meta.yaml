@@ -1,7 +1,7 @@
 id: q004
 slug: q004_worst_origin_airport_otp_thresholded
 title: Worst origin airports by departure on-time performance
-dataset: ontime_v2
+dataset: ontime
 artifacts_required: query.sql,report.md,visual.html
 visual_mode: dynamic
 visual_type: html_ranked_dashboard

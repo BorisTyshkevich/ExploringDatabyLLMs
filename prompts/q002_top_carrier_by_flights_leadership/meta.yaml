@@ -1,7 +1,7 @@
 id: q002
 slug: q002_top_carrier_by_flights_leadership
 title: Yearly carrier leadership by completed flights
-dataset: ontime_v2
+dataset: ontime
 artifacts_required: query.sql,report.md,visual.html
 visual_mode: dynamic
 visual_type: html_timeseries

@@ -1,7 +1,7 @@
 id: q005
 slug: q005_worst_winter_carrier_origin_pair
 title: Worst winter carrier-origin pairs by departure performance
-dataset: ontime_v2
+dataset: ontime
 artifacts_required: query.sql,report.md,visual.html
 visual_mode: dynamic
 visual_type: html_seasonal_dashboard

@@ -23,7 +23,7 @@ from pathlib import Path
 BASE_DOWNLOAD_URL = "https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FLL&QO_fu146_anzr=N8vn6v10+f722146+gnoyr5"
 BASE_INFO_URL = "https://www.transtats.bts.gov/Fields.asp?gnoyr_VQ=FLL"
 SCRIPT_DIR = Path(__file__).resolve().parent
-CACHE_DIR = SCRIPT_DIR / ".cache" / "airports_bts"
+CACHE_DIR = SCRIPT_DIR / ".cache" / "airports"
 DOWNLOAD_DIR = CACHE_DIR / "downloads"
 META_DIR = CACHE_DIR / "meta"
 DEBUG = False
@@ -62,6 +62,29 @@ EXPECTED_COLUMNS = [
     "AIRPORT_THRU_DATE",
     "AIRPORT_IS_CLOSED",
     "AIRPORT_IS_LATEST",
+]
+
+TARGET_COLUMNS = [
+    "code",
+    "airport_id",
+    "airport_seq_id",
+    "name",
+    "city_name",
+    "city_market_id",
+    "city_market_name",
+    "wac",
+    "country_name",
+    "country_code_iso",
+    "state_name",
+    "state_code",
+    "state_fips",
+    "latitude",
+    "longitude",
+    "utc_local_time_variation",
+    "start_date",
+    "thru_date",
+    "is_closed",
+    "is_latest",
 ]
 
 STRING_COLUMNS = {
@@ -112,6 +135,41 @@ NULLABLE_FLOAT_COLUMNS = {
 DATE_COLUMNS = {
     "AIRPORT_START_DATE",
     "AIRPORT_THRU_DATE",
+}
+
+TARGET_STRING_COLUMNS = {
+    "code",
+    "name",
+    "city_name",
+    "city_market_name",
+    "country_name",
+    "country_code_iso",
+    "state_name",
+    "state_code",
+    "state_fips",
+    "utc_local_time_variation",
+}
+
+TARGET_UINT_COLUMNS = {
+    "airport_id",
+    "airport_seq_id",
+    "is_closed",
+    "is_latest",
+}
+
+TARGET_ZERO_UINT_COLUMNS = {
+    "city_market_id",
+    "wac",
+}
+
+TARGET_ZERO_FLOAT_COLUMNS = {
+    "latitude",
+    "longitude",
+}
+
+TARGET_DATE_COLUMNS = {
+    "start_date",
+    "thru_date",
 }
 
 
@@ -283,6 +341,13 @@ def run_clickhouse(connection: str, query: str | None = None, query_file: Path |
 
 
 def create_tables(connection: str) -> None:
+    for query in (
+        "DROP VIEW IF EXISTS ontime.airports_latest",
+        "DROP TABLE IF EXISTS ontime.airports",
+    ):
+        result = run_clickhouse(connection, query=query)
+        if result.returncode != 0:
+            raise RuntimeError(f"failed to apply setup query {query!r}: {result.stderr.strip()}")
     for sql_file in (SCRIPT_DIR / "airports_bts_schema.sql", SCRIPT_DIR / "airports_bts_latest_view.sql"):
         result = run_clickhouse(connection, query_file=sql_file)
         if result.returncode != 0:
@@ -339,12 +404,58 @@ def normalize_value(column: str, raw: str) -> str:
     raise RuntimeError(f"unclassified column {column}")
 
 
+def transform_row(row: dict[str, str]) -> dict[str, str]:
+    code = normalize_value("AIRPORT", row.get("AIRPORT", ""))
+    if len(code) != 3:
+        raise RuntimeError(f"AIRPORT must be exactly 3 characters, got {code!r}")
+
+    return {
+        "code": code,
+        "airport_id": normalize_value("AIRPORT_ID", row.get("AIRPORT_ID", "")),
+        "airport_seq_id": normalize_value("AIRPORT_SEQ_ID", row.get("AIRPORT_SEQ_ID", "")),
+        "name": normalize_value("DISPLAY_AIRPORT_NAME", row.get("DISPLAY_AIRPORT_NAME", "")),
+        "city_name": normalize_value("DISPLAY_AIRPORT_CITY_NAME_FULL", row.get("DISPLAY_AIRPORT_CITY_NAME_FULL", "")),
+        "city_market_id": normalize_value("CITY_MARKET_ID", row.get("CITY_MARKET_ID", "")),
+        "city_market_name": normalize_value("DISPLAY_CITY_MARKET_NAME_FULL", row.get("DISPLAY_CITY_MARKET_NAME_FULL", "")),
+        "wac": normalize_value("AIRPORT_WAC", row.get("AIRPORT_WAC", "")),
+        "country_name": normalize_value("AIRPORT_COUNTRY_NAME", row.get("AIRPORT_COUNTRY_NAME", "")),
+        "country_code_iso": normalize_value("AIRPORT_COUNTRY_CODE_ISO", row.get("AIRPORT_COUNTRY_CODE_ISO", "")),
+        "state_name": normalize_value("AIRPORT_STATE_NAME", row.get("AIRPORT_STATE_NAME", "")),
+        "state_code": normalize_value("AIRPORT_STATE_CODE", row.get("AIRPORT_STATE_CODE", "")),
+        "state_fips": normalize_value("AIRPORT_STATE_FIPS", row.get("AIRPORT_STATE_FIPS", "")),
+        "latitude": normalize_value("LATITUDE", row.get("LATITUDE", "")),
+        "longitude": normalize_value("LONGITUDE", row.get("LONGITUDE", "")),
+        "utc_local_time_variation": normalize_value("UTC_LOCAL_TIME_VARIATION", row.get("UTC_LOCAL_TIME_VARIATION", "")),
+        "start_date": normalize_value("AIRPORT_START_DATE", row.get("AIRPORT_START_DATE", "")),
+        "thru_date": normalize_value("AIRPORT_THRU_DATE", row.get("AIRPORT_THRU_DATE", "")),
+        "is_closed": normalize_value("AIRPORT_IS_CLOSED", row.get("AIRPORT_IS_CLOSED", "")),
+        "is_latest": normalize_value("AIRPORT_IS_LATEST", row.get("AIRPORT_IS_LATEST", "")),
+    }
+
+
+def serialize_target_value(column: str, raw: str) -> str:
+    value = raw.strip()
+    if column in TARGET_STRING_COLUMNS:
+        return value
+    if column in TARGET_UINT_COLUMNS:
+        if not value:
+            raise RuntimeError(f"{column} is required")
+        return to_uint(value, column)
+    if column in TARGET_ZERO_UINT_COLUMNS:
+        return "0" if not value or value == r"\N" else to_uint(value, column)
+    if column in TARGET_ZERO_FLOAT_COLUMNS:
+        return "0" if not value or value == r"\N" else to_float(value, column)
+    if column in TARGET_DATE_COLUMNS:
+        return "1970-01-01" if not value or value == r"\N" else value
+    raise RuntimeError(f"unclassified target column {column}")
+
+
 def load_export(connection: str, artifact: DownloadArtifact, inspection: dict[str, object]) -> dict[str, int]:
-    truncate = run_clickhouse(connection, query="TRUNCATE TABLE default.airports_bts")
+    truncate = run_clickhouse(connection, query="TRUNCATE TABLE ontime.airports")
     if truncate.returncode != 0:
         raise RuntimeError(truncate.stderr.strip())
 
-    insert_query = f"INSERT INTO default.airports_bts ({', '.join(EXPECTED_COLUMNS)}) FORMAT TabSeparated"
+    insert_query = f"INSERT INTO ontime.airports ({', '.join(TARGET_COLUMNS)}) FORMAT TabSeparated"
     proc = subprocess.Popen(
         ["clickhouse-client", "--connection", connection, "--query", insert_query],
         stdin=subprocess.PIPE,
@@ -360,7 +471,8 @@ def load_export(connection: str, artifact: DownloadArtifact, inspection: dict[st
             raise RuntimeError(f"unexpected BTS header during load: {reader.fieldnames}")
         for line_no, row in enumerate(reader, start=2):
             try:
-                normalized = [normalize_value(column, row.get(column, "")) for column in EXPECTED_COLUMNS]
+                transformed = transform_row(row)
+                normalized = [serialize_target_value(column, transformed.get(column, "")) for column in TARGET_COLUMNS]
             except RuntimeError as exc:
                 raise RuntimeError(f"{artifact.csv_name}: line {line_no}: {exc}") from exc
             proc.stdin.write("\t".join(normalized))
@@ -372,7 +484,7 @@ def load_export(connection: str, artifact: DownloadArtifact, inspection: dict[st
     if return_code != 0:
         raise RuntimeError(f"clickhouse insert failed with exit code {return_code}")
 
-    counted = run_clickhouse(connection, query="SELECT count() FROM default.airports_bts")
+    counted = run_clickhouse(connection, query="SELECT count() FROM ontime.airports")
     if counted.returncode != 0:
         raise RuntimeError(counted.stderr.strip())
     counted_rows = int(counted.stdout.strip() or "0")
@@ -405,9 +517,9 @@ def verify(connection: str) -> dict[str, object]:
         connection,
         """
         SELECT
-            (SELECT count() FROM default.airports_bts),
-            (SELECT count() FROM default.airports_bts_latest),
-            (SELECT count() FROM default.airports_bts_latest WHERE AIRPORT_IS_LATEST != 1)
+            (SELECT count() FROM ontime.airports),
+            (SELECT count() FROM ontime.airports_latest),
+            (SELECT count() FROM ontime.airports_latest WHERE is_latest != 1)
         """.strip(),
     )[0]
 
@@ -416,10 +528,10 @@ def verify(connection: str) -> dict[str, object]:
         """
         SELECT
             countDistinctIf(o.OriginAirportID, o.OriginAirportID != 0),
-            countDistinctIf(o.OriginAirportID, o.OriginAirportID != 0 AND a.AIRPORT_ID IS NOT NULL)
-        FROM default.ontime_v2 AS o
-        LEFT JOIN default.airports_bts_latest AS a
-            ON o.OriginAirportID = a.AIRPORT_ID
+            countDistinctIf(o.OriginAirportID, o.OriginAirportID != 0 AND a.airport_id IS NOT NULL)
+        FROM ontime.ontime AS o
+        LEFT JOIN ontime.airports_latest AS a
+            ON o.OriginAirportID = a.airport_id
         """.strip(),
     )[0]
     dest_coverage = query_tsv(
@@ -427,10 +539,10 @@ def verify(connection: str) -> dict[str, object]:
         """
         SELECT
             countDistinctIf(o.DestAirportID, o.DestAirportID != 0),
-            countDistinctIf(o.DestAirportID, o.DestAirportID != 0 AND a.AIRPORT_ID IS NOT NULL)
-        FROM default.ontime_v2 AS o
-        LEFT JOIN default.airports_bts_latest AS a
-            ON o.DestAirportID = a.AIRPORT_ID
+            countDistinctIf(o.DestAirportID, o.DestAirportID != 0 AND a.airport_id IS NOT NULL)
+        FROM ontime.ontime AS o
+        LEFT JOIN ontime.airports_latest AS a
+            ON o.DestAirportID = a.airport_id
         """.strip(),
     )[0]
 
@@ -441,11 +553,11 @@ def verify(connection: str) -> dict[str, object]:
             toString(o.OriginAirportID),
             any(replaceAll(toString(o.Origin), '\\0', '')),
             toString(count())
-        FROM default.ontime_v2 AS o
-        LEFT JOIN default.airports_bts_latest AS a
-            ON o.OriginAirportID = a.AIRPORT_ID
+        FROM ontime.ontime AS o
+        LEFT JOIN ontime.airports_latest AS a
+            ON o.OriginAirportID = a.airport_id
         WHERE o.OriginAirportID != 0
-          AND a.AIRPORT_ID IS NULL
+          AND a.airport_id IS NULL
         GROUP BY o.OriginAirportID
         ORDER BY count() DESC, o.OriginAirportID
         LIMIT 20
@@ -459,11 +571,11 @@ def verify(connection: str) -> dict[str, object]:
             toString(o.DestAirportID),
             any(replaceAll(toString(o.Dest), '\\0', '')),
             toString(count())
-        FROM default.ontime_v2 AS o
-        LEFT JOIN default.airports_bts_latest AS a
-            ON o.DestAirportID = a.AIRPORT_ID
+        FROM ontime.ontime AS o
+        LEFT JOIN ontime.airports_latest AS a
+            ON o.DestAirportID = a.airport_id
         WHERE o.DestAirportID != 0
-          AND a.AIRPORT_ID IS NULL
+          AND a.airport_id IS NULL
         GROUP BY o.DestAirportID
         ORDER BY count() DESC, o.DestAirportID
         LIMIT 20
@@ -476,39 +588,28 @@ def verify(connection: str) -> dict[str, object]:
         SELECT
             replaceAll(toString(o.Origin), '\\0', '') AS Origin,
             toString(any(o.OriginAirportID)),
-            toString(any(a.AIRPORT_ID)),
-            any(a.DISPLAY_AIRPORT_NAME),
-            any(a.UTC_LOCAL_TIME_VARIATION),
-            toString(any(a.LATITUDE)),
-            toString(any(a.LONGITUDE))
-        FROM default.ontime_v2 AS o
-        INNER JOIN default.airports_bts_latest AS a
-            ON o.OriginAirportID = a.AIRPORT_ID
+            toString(any(a.airport_id)),
+            any(a.name),
+            any(a.utc_local_time_variation),
+            toString(any(a.latitude)),
+            toString(any(a.longitude))
+        FROM ontime.ontime AS o
+        INNER JOIN ontime.airports_latest AS a
+            ON o.OriginAirportID = a.airport_id
         GROUP BY Origin
         ORDER BY Origin
         LIMIT 10
         """.strip(),
     )
 
-    current_airports_id_misjoin = query_tsv(
-        connection,
-        """
-        SELECT count()
-        FROM default.ontime_v2 AS o
-        INNER JOIN default.airports AS a
-            ON toString(o.OriginAirportID) = a.AirportID
-        """.strip(),
-    )[0][0]
-
     bts_meta = {
-        "airports_bts_rows": int(row_counts[0]),
-        "airports_bts_latest_rows": int(row_counts[1]),
+        "airports_rows": int(row_counts[0]),
+        "airports_latest_rows": int(row_counts[1]),
         "latest_view_non_latest_rows": int(row_counts[2]),
         "origin_distinct_airport_ids": int(origin_coverage[0]),
         "origin_matched_airport_ids": int(origin_coverage[1]),
         "dest_distinct_airport_ids": int(dest_coverage[0]),
         "dest_matched_airport_ids": int(dest_coverage[1]),
-        "legacy_airports_id_join_rows": int(current_airports_id_misjoin),
         "unmatched_origins": unmatched_origins,
         "unmatched_dests": unmatched_dests,
         "matched_sample": matched_sample,

@@ -1,6 +1,6 @@
 # OnTime V2
 
-This module rebuilds the BTS Reporting Carrier On-Time dataset into a new ClickHouse table, `default.ontime_v2`, without touching the legacy `default.ontime` table.
+This module rebuilds the BTS Reporting Carrier On-Time dataset into a new ClickHouse table, `ontime.ontime`, without touching the legacy `default.ontime` table.
 
 ## Source
 
@@ -21,17 +21,17 @@ Official BTS airport dimension source:
 
 ## Tables
 
-- `default.ontime_v2`
-- `default.ontime_v2_stage`
-- `default.airports_bts`
-- `default.airports_bts_latest`
+- `ontime.ontime`
+- `ontime.ontime_stage`
+- `ontime.airports`
+- `ontime.airports_latest`
 
 Both use yearly partitions. The stage table is rebuilt for a target year and then published with:
 
 ```sql
-ALTER TABLE default.ontime_v2
+ALTER TABLE ontime.ontime
 REPLACE PARTITION <year>
-FROM default.ontime_v2_stage
+FROM ontime.ontime_stage
 ```
 
 ## Loader Commands
@@ -84,9 +84,9 @@ python3 datasets/ontime_v2/analyze_existing_ontime.py --connection demo
 
 ## BTS Airport Dimension
 
-The official airport dimension is loaded separately from `default.airports`. It preserves the BTS `Master Coordinate` history in `default.airports_bts` and exposes `default.airports_bts_latest` as a latest-only helper view filtered to `AIRPORT_IS_LATEST = 1`.
+The official airport dimension is loaded separately from `default.airports`. It preserves BTS `Master Coordinate` history in `ontime.airports`, remodels the export into a simpler analytics-facing schema, and exposes `ontime.airports_latest` as a latest-only helper view filtered to `is_latest = 1`.
 
-Create the BTS table and latest view:
+Create the airport table and latest view:
 
 ```bash
 python3 datasets/ontime_v2/download/load_airports_bts.py create-tables --connection demo
@@ -110,18 +110,18 @@ Verify table counts and OnTime join coverage:
 python3 datasets/ontime_v2/download/load_airports_bts.py verify --connection demo
 ```
 
-Example join using the latest BTS airport attributes:
+Example join using the latest airport attributes:
 
 ```sql
 SELECT
     replaceAll(toString(o.Origin), '\0', '') AS Origin,
-    any(a.DISPLAY_AIRPORT_NAME) AS AirportName,
-    any(a.LATITUDE) AS Latitude,
-    any(a.LONGITUDE) AS Longitude,
-    any(a.UTC_LOCAL_TIME_VARIATION) AS UtcLocalTimeVariation
-FROM default.ontime_v2 AS o
-LEFT JOIN default.airports_bts_latest AS a
-    ON o.OriginAirportID = a.AIRPORT_ID
+    any(a.name) AS AirportName,
+    any(a.latitude) AS Latitude,
+    any(a.longitude) AS Longitude,
+    any(a.utc_local_time_variation) AS UtcLocalTimeVariation
+FROM ontime.ontime AS o
+LEFT JOIN ontime.airports_latest AS a
+    ON o.OriginAirportID = a.airport_id
 GROUP BY Origin
 ORDER BY Origin
 LIMIT 20

@@ -1,38 +1,26 @@
-CREATE TABLE IF NOT EXISTS default.airports_bts
+CREATE TABLE IF NOT EXISTS ontime.airports
 (
-    `AIRPORT_SEQ_ID` UInt32,
-    `AIRPORT_ID` UInt32,
-    `AIRPORT` String,
-    `DISPLAY_AIRPORT_NAME` String,
-    `DISPLAY_AIRPORT_CITY_NAME_FULL` String,
-    `AIRPORT_WAC_SEQ_ID2` Nullable(UInt32),
-    `AIRPORT_WAC` Nullable(UInt16),
-    `AIRPORT_COUNTRY_NAME` String,
-    `AIRPORT_COUNTRY_CODE_ISO` String,
-    `AIRPORT_STATE_NAME` String,
-    `AIRPORT_STATE_CODE` String,
-    `AIRPORT_STATE_FIPS` String,
-    `CITY_MARKET_SEQ_ID` Nullable(UInt32),
-    `CITY_MARKET_ID` Nullable(UInt32),
-    `DISPLAY_CITY_MARKET_NAME_FULL` String,
-    `CITY_MARKET_WAC_SEQ_ID2` Nullable(UInt32),
-    `CITY_MARKET_WAC` Nullable(UInt16),
-    `LAT_DEGREES` Nullable(Int16),
-    `LAT_HEMISPHERE` String,
-    `LAT_MINUTES` Nullable(Int16),
-    `LAT_SECONDS` Nullable(Int16),
-    `LATITUDE` Nullable(Float64),
-    `LON_DEGREES` Nullable(Int16),
-    `LON_HEMISPHERE` String,
-    `LON_MINUTES` Nullable(Int16),
-    `LON_SECONDS` Nullable(Int16),
-    `LONGITUDE` Nullable(Float64),
-    `UTC_LOCAL_TIME_VARIATION` String,
-    `AIRPORT_START_DATE` Nullable(Date),
-    `AIRPORT_THRU_DATE` Nullable(Date),
-    `AIRPORT_IS_CLOSED` UInt8,
-    `AIRPORT_IS_LATEST` UInt8
+    `code` FixedString(3) COMMENT 'Three-letter airport code from the BTS Master Coordinate export.',
+    `airport_id` UInt32 COMMENT 'Stable DOT airport identifier used by ontime.ontime OriginAirportID and DestAirportID.',
+    `airport_seq_id` UInt32 COMMENT 'Time-specific DOT airport sequence identifier for this version of the airport record.',
+    `name` String COMMENT 'Airport display name from the BTS Master Coordinate export.',
+    `city_name` String COMMENT 'Full city name associated with the airport record in the BTS export.',
+    `city_market_id` UInt32 COMMENT 'DOT city market identifier used to group airports serving the same market. Zero means missing in the source export.',
+    `city_market_name` String COMMENT 'Full city market display name from the BTS export.',
+    `wac` UInt16 COMMENT 'World area code for the airport. Zero means missing in the source export.',
+    `country_name` String COMMENT 'Country name for the airport record.',
+    `country_code_iso` String COMMENT 'ISO country code for the airport record.',
+    `state_name` String COMMENT 'State or province name for the airport record.',
+    `state_code` String COMMENT 'State or province code for the airport record.',
+    `state_fips` String COMMENT 'State FIPS code for the airport record when present.',
+    `latitude` Float64 COMMENT 'Airport latitude in decimal degrees. Zero means missing in the source export.',
+    `longitude` Float64 COMMENT 'Airport longitude in decimal degrees. Zero means missing in the source export.',
+    `utc_local_time_variation` String COMMENT 'UTC offset string from BTS, for example -0500.',
+    `start_date` Date COMMENT 'Start date when this airport record version became effective. 1970-01-01 means missing in the source export.',
+    `thru_date` Date COMMENT 'End date when this airport record version stopped being effective. 1970-01-01 means missing in the source export.',
+    `is_closed` UInt8 COMMENT 'Closure flag from BTS where 1 means the airport record is closed.',
+    `is_latest` UInt8 COMMENT 'Latest-record flag from BTS where 1 marks the current record for the airport code.'
 )
 ENGINE = MergeTree
-ORDER BY (`AIRPORT_ID`, `AIRPORT_SEQ_ID`, ifNull(`AIRPORT_START_DATE`, toDate('1900-01-01')))
-SETTINGS index_granularity = 8192
+ORDER BY (`code`, `airport_id`, `is_latest`)
+COMMENT 'Simplified airport dimension modeled from the BTS Master Coordinate history export.'

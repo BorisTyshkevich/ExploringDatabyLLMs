@@ -1,9 +1,13 @@
 WITH airport_offsets AS (
     SELECT
-        IATA,
-        toInt32(round(Timezone * 60)) AS utc_offset_minutes
-    FROM default.airports_bts
-    WHERE IATA != ''
+        code,
+        multiIf(
+            utc_local_time_variation = '', 0,
+            startsWith(utc_local_time_variation, '-'),
+                -1 * ((toInt32OrZero(substring(utc_local_time_variation, 2, 2)) * 60) + toInt32OrZero(substring(utc_local_time_variation, 4, 2))),
+            (toInt32OrZero(substring(utc_local_time_variation, 2, 2)) * 60) + toInt32OrZero(substring(utc_local_time_variation, 4, 2))
+        ) AS utc_offset_minutes
+    FROM ontime.airports_latest
 ),
 legs AS (
     SELECT
@@ -16,9 +20,9 @@ legs AS (
         assumeNotNull(DepTime) AS DepTime,
         (toDateTime(FlightDate) + toIntervalHour(intDiv(DepTime, 100)) + toIntervalMinute(DepTime % 100))
             - toIntervalMinute(coalesce(ao.utc_offset_minutes, 0)) AS dep_ts_utc
-    FROM default.ontime_v2 AS o
+    FROM ontime.ontime AS o
     LEFT JOIN airport_offsets AS ao
-        ON replaceAll(toString(o.Origin), '\0', '') = ao.IATA
+        ON replaceAll(toString(o.Origin), '\0', '') = ao.code
     WHERE Tail_Number != ''
       AND Flight_Number_Reporting_Airline != ''
       AND Cancelled = 0

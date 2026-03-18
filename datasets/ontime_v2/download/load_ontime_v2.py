@@ -558,7 +558,7 @@ def load_year(
         raise RuntimeError(f"no source months available for {year}")
 
     log(f"load year start: {year} months={len(target_months)}")
-    truncate = run_clickhouse(connection, query="TRUNCATE TABLE default.ontime_v2_stage")
+    truncate = run_clickhouse(connection, query="TRUNCATE TABLE ontime.ontime_stage")
     if truncate.returncode != 0:
         raise RuntimeError(truncate.stderr.strip())
 
@@ -569,7 +569,7 @@ def load_year(
         inspected = inspect_archive(archive, strict)
         inserted_rows, skipped_rows = insert_month(
             connection,
-            "default.ontime_v2_stage",
+            "ontime.ontime_stage",
             archive,
             inspected,
             max_bad_rows_per_month,
@@ -588,7 +588,7 @@ def load_year(
         year_rows += inserted_rows
         log(f"month done: {month_ref.stem} rows={inserted_rows} skipped={skipped_rows}")
 
-    count_query = f"SELECT count() FROM default.ontime_v2_stage WHERE Year = {year}"
+    count_query = f"SELECT count() FROM ontime.ontime_stage WHERE Year = {year}"
     counted = run_clickhouse(connection, query=count_query)
     if counted.returncode != 0:
         raise RuntimeError(counted.stderr.strip())
@@ -599,13 +599,13 @@ def load_year(
 
     replace = run_clickhouse(
         connection,
-        query=f"ALTER TABLE default.ontime_v2 REPLACE PARTITION {year} FROM default.ontime_v2_stage",
+        query=f"ALTER TABLE ontime.ontime REPLACE PARTITION {year} FROM ontime.ontime_stage",
     )
     if replace.returncode != 0:
         raise RuntimeError(replace.stderr.strip())
     log(f"publish done: year={year}")
 
-    cleanup = run_clickhouse(connection, query="TRUNCATE TABLE default.ontime_v2_stage")
+    cleanup = run_clickhouse(connection, query="TRUNCATE TABLE ontime.ontime_stage")
     if cleanup.returncode != 0:
         raise RuntimeError(cleanup.stderr.strip())
     log(f"stage cleanup done: year={year}")
@@ -614,7 +614,7 @@ def load_year(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Load BTS On-Time Reporting Carrier data into ontime_v2. "
+            "Load BTS On-Time Reporting Carrier data into ontime.ontime. "
             "Typical year controls: load-year --year YYYY, "
             "or backfill --start-year YYYY --end-year YYYY."
         )

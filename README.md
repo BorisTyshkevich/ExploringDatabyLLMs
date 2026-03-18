@@ -6,7 +6,7 @@ This repository contains two main active areas:
   - the Go-based benchmark harness for LLM-generated analytics workflows
   - covers prompt assembly, SQL execution, report and visual generation, compare runs, and CLI usage
 - [`datasets/ontime_v2/download`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime_v2/download/README.md)
-  - the dataset rebuild and loading workflow for `default.ontime_v2`
+  - the dataset rebuild and loading workflow for `ontime.ontime`
   - covers source archives, table layout, loader commands, and schema rules
 
 Related repo areas:
