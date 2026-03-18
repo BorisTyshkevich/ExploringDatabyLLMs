@@ -27,10 +27,10 @@ func Load(repoRoot, name string) (model.DatasetConfig, error) {
 	if cfg.MCPJWETokenEnv == "" {
 		cfg.MCPJWETokenEnv = "MCP_JWE_TOKEN"
 	}
-	discoveryPath := filepath.Join(repoRoot, "datasets", name, "semantic_prompt.md")
-	discoveryBytes, err := os.ReadFile(discoveryPath)
+	semanticLayerPath := filepath.Join(repoRoot, "datasets", name, "semantic_layer.md")
+	semanticLayerBytes, err := os.ReadFile(semanticLayerPath)
 	if err == nil {
-		cfg.DiscoveryPrompt = strings.TrimSpace(string(discoveryBytes))
+		cfg.SemanticLayer = strings.TrimSpace(string(semanticLayerBytes))
 	} else if !os.IsNotExist(err) {
 		return model.DatasetConfig{}, err
 	}
@@ -77,19 +77,4 @@ func resolveTokenFromURLOrEnv(mcpURL string, cfg model.DatasetConfig) string {
 		}
 	}
 	return os.Getenv(cfg.MCPJWETokenEnv)
-}
-
-func ForbiddenTables(cfg model.DatasetConfig) []string {
-	if cfg.ForbiddenTables == "" {
-		return nil
-	}
-	parts := strings.Split(cfg.ForbiddenTables, ",")
-	var out []string
-	for _, part := range parts {
-		part = strings.TrimSpace(part)
-		if part != "" {
-			out = append(out, strings.ToLower(part))
-		}
-	}
-	return out
 }

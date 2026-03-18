@@ -28,9 +28,10 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_primary_table":  dataset.PrimaryTable,
-		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
-		"dataset_discovery_md":   datasetDiscoveryMarkdown(dataset),
+		"dataset_semantic_layer_md": datasetSemanticLayerMarkdown(dataset),
+		"question_title":            question.Meta.Title,
+		"report_prompt_md":          question.ReportPrompt,
+		"report_placeholders":       "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
 		RenderTemplate(common, values),
@@ -41,6 +42,10 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 }
 
 func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL string) (string, error) {
+	return BuildVisualPrompt(question, dataset, result, savedSQL, "")
+}
+
+func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, reportTemplate string) (string, error) {
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
@@ -62,24 +67,20 @@ func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfi
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_primary_table":  dataset.PrimaryTable,
-		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
-		"dataset_discovery_md":   datasetDiscoveryMarkdown(dataset),
-		"question_title":         question.Meta.Title,
-		"visual_mode":            strings.TrimSpace(question.Meta.VisualMode),
-		"visual_type":            question.Meta.VisualType,
-		"result_columns_csv":     strings.Join(result.Columns, ", "),
-		"saved_sql":              strings.TrimSpace(savedSQL),
-		"report_prompt_md":       question.ReportPrompt,
-		"visual_prompt_md":       question.VisualPrompt,
-		"report_placeholders":    "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
+		"dataset_semantic_layer_md": datasetSemanticLayerMarkdown(dataset),
+		"question_title":            question.Meta.Title,
+		"visual_mode":               strings.TrimSpace(question.Meta.VisualMode),
+		"visual_type":               question.Meta.VisualType,
+		"result_columns_csv":        strings.Join(result.Columns, ", "),
+		"saved_sql":                 strings.TrimSpace(savedSQL),
+		"saved_report_template":     strings.TrimSpace(reportTemplate),
+		"visual_prompt_md":          question.VisualPrompt,
 	}
 	sections := []string{
 		RenderTemplate(common, values),
 		RenderTemplate(commonPresentation, values),
 		RenderTemplate(commonVisual, values),
 		RenderTemplate(modeVisual, values),
-		question.VisualPrompt,
 	}
 	return joinSections(sections), nil
 }
@@ -94,26 +95,11 @@ func loadCommonPrompt(question model.Question, name string) (string, error) {
 	return strings.TrimSpace(string(data)), nil
 }
 
-func datasetConstraintsMarkdown(dataset model.DatasetConfig) string {
-	var lines []string
-	if dataset.PrimaryTable != "" {
-		lines = append(lines, fmt.Sprintf("- Use `%s` as the primary fact table.", dataset.PrimaryTable))
-	}
-	for _, forbidden := range strings.Split(dataset.ForbiddenTables, ",") {
-		forbidden = strings.TrimSpace(forbidden)
-		if forbidden == "" {
-			continue
-		}
-		lines = append(lines, fmt.Sprintf("- Do not reference `%s`.", forbidden))
-	}
-	return strings.Join(lines, "\n")
-}
-
-func datasetDiscoveryMarkdown(dataset model.DatasetConfig) string {
-	if strings.TrimSpace(dataset.DiscoveryPrompt) == "" {
+func datasetSemanticLayerMarkdown(dataset model.DatasetConfig) string {
+	if strings.TrimSpace(dataset.SemanticLayer) == "" {
 		return ""
 	}
-	return "Dataset discovery:\n\n" + strings.TrimSpace(dataset.DiscoveryPrompt)
+	return "Dataset semantic layer:\n\n" + strings.TrimSpace(dataset.SemanticLayer)
 }
 
 // RenderTemplate substitutes {{key}} placeholders with values from the map.

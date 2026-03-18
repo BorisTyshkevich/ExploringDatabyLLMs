@@ -41,11 +41,11 @@ type cliProvider struct {
 }
 
 func (p cliProvider) GenerateSQL(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexSQLComplete)
+	return p.run(ctx, req, req.Prompt, codexAnalysisComplete)
 }
 
 func (p cliProvider) GeneratePresentation(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexPresentationComplete)
+	return p.run(ctx, req, req.Prompt, codexVisualComplete)
 }
 
 func (p cliProvider) run(ctx context.Context, req model.ProviderRequest, prompt string, codexComplete func(string) bool) (model.ProviderResponse, error) {
@@ -81,6 +81,7 @@ func (p cliProvider) runCodex(ctx context.Context, req model.ProviderRequest, pr
 	startedAt := time.Now()
 	cmd := exec.CommandContext(ctx, bin, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	cmd.Dir = req.OutDir
 	cmd.Stdin = strings.NewReader(prompt)
 	stdoutFile, err := os.CreateTemp("", "qforge-codex-stdout-*")
 	if err != nil {
@@ -199,15 +200,15 @@ func readFileText(path string) string {
 	return string(data)
 }
 
-func codexSQLComplete(raw string) bool {
-	_, err := extract.Block(raw, "sql")
-	return err == nil
+func codexAnalysisComplete(raw string) bool {
+	_, sqlErr := extract.Block(raw, "sql")
+	_, reportErr := extract.Block(raw, "report")
+	return sqlErr == nil && reportErr == nil
 }
 
-func codexPresentationComplete(raw string) bool {
-	_, reportErr := extract.Block(raw, "report")
+func codexVisualComplete(raw string) bool {
 	_, htmlErr := extract.Block(raw, "html")
-	return reportErr == nil && htmlErr == nil
+	return htmlErr == nil
 }
 
 func terminateProcess(proc *os.Process) {
@@ -260,6 +261,7 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 	startedAt := time.Now()
 	cmd := exec.CommandContext(ctx, bin, args...)
 	var stdout, stderr bytes.Buffer
+	cmd.Dir = req.OutDir
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	err = cmd.Run()

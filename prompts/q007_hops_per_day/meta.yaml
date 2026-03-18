@@ -1,10 +1,10 @@
 id: q007
 slug: q007_hops_per_day_semantic_discovery
-title: Highest daily hops for one aircraft on one flight number (semantic discovery)
+title: Highest daily hops for one aircraft on one flight number
 dataset: ontime
 artifacts_required: query.sql,result.tsv,report.md,visual.html
 visual_mode: dynamic
 visual_type: html_map
-tags: itinerary,hops,ranking,semantic-discovery
+tags: itinerary,hops,ranking
 reference_policy: optional
 command_timeout_sec: 1000

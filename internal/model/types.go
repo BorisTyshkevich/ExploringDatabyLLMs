@@ -35,10 +35,8 @@ type DatasetConfig struct {
 	MCPJWETokenEnv       string `yaml:"mcp_jwe_token_env" json:"mcp_jwe_token_env"`
 	AuthMode             string `yaml:"auth_mode" json:"auth_mode"`
 	DefaultDatabase      string `yaml:"default_database" json:"default_database"`
-	PrimaryTable         string `yaml:"primary_table" json:"primary_table"`
-	ForbiddenTables      string `yaml:"forbidden_tables" json:"forbidden_tables"`
 	Notes                string `yaml:"notes" json:"notes"`
-	DiscoveryPrompt      string `yaml:"-" json:"discovery_prompt"`
+	SemanticLayer        string `yaml:"-" json:"semantic_layer"`
 }
 
 type QuestionMeta struct {
@@ -61,6 +59,8 @@ type Question struct {
 	ReportPrompt        string       `json:"report_prompt"`
 	VisualPrompt        string       `json:"visual_prompt"`
 	PresentationEnabled bool         `json:"presentation_enabled"`
+	ReportEnabled       bool         `json:"report_enabled"`
+	VisualEnabled       bool         `json:"visual_enabled"`
 }
 
 type ArtifactPaths struct {

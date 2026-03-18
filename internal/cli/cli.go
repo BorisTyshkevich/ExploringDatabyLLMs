@@ -66,7 +66,7 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "Commands:")
 	fmt.Fprintln(out, "  list-questions   List available benchmark questions")
 	fmt.Fprintln(out, "  run              Run one question for one or more providers")
-	fmt.Fprintln(out, "  process-visual   Generate report/html for an existing run directory")
+	fmt.Fprintln(out, "  process-visual   Generate visual.html for an existing run directory")
 	fmt.Fprintln(out, "  compare          Compare runs and fetch query_log metrics")
 	fmt.Fprintln(out, "  inspect-run      Print one run manifest")
 	fmt.Fprintln(out)
@@ -135,15 +135,15 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
 		fmt.Fprintln(os.Stdout, "  - loads question and dataset metadata")
-		fmt.Fprintln(os.Stdout, "  - prompts each selected provider for final SQL only")
-		fmt.Fprintln(os.Stdout, "  - enforces forbidden-table policy")
+		fmt.Fprintln(os.Stdout, "  - prompts each selected provider for final SQL and a report template")
 		fmt.Fprintln(os.Stdout, "  - executes SQL itself and writes result.json")
+		fmt.Fprintln(os.Stdout, "  - renders final report.md from the saved report template")
 		fmt.Fprintln(os.Stdout, "  - runs providers concurrently when more than one is selected")
-		fmt.Fprintln(os.Stdout, "  - optionally performs a separate follow-up provider call for report/html")
+		fmt.Fprintln(os.Stdout, "  - optionally performs a separate follow-up provider call for visual.html only")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Important:")
-		fmt.Fprintln(os.Stdout, "  Presentation is handled separately by `qforge process-visual`, or by `--with-visual`.")
-		fmt.Fprintln(os.Stdout, "  `--with-visual` makes a second independent provider call after SQL execution succeeds.")
+		fmt.Fprintln(os.Stdout, "  Visual generation is handled separately by `qforge process-visual`, or by `--with-visual`.")
+		fmt.Fprintln(os.Stdout, "  `--with-visual` makes a second independent provider call after SQL execution and report rendering succeed.")
 		fmt.Fprintln(os.Stdout, "  If --runner is omitted, qforge runs codex, claude, and gemini.")
 		fmt.Fprintln(os.Stdout, "  Repeated --model flags are matched positionally to repeated --runner flags.")
 		fmt.Fprintln(os.Stdout)
@@ -167,7 +167,7 @@ func runRun(ctx context.Context, args []string) error {
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
-	withVisual := fs.Bool("with-visual", false, "After SQL succeeds, make a separate presentation call for report.md and visual.html")
+	withVisual := fs.Bool("with-visual", false, "After SQL and report rendering succeed, make a separate presentation call for visual.html")
 	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
 	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
@@ -446,13 +446,13 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-visual --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Generate report/html artifacts for an existing run that already has result.json.")
+		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has query.sql, report.template.md, report.md, and result.json.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - loads manifest.json and result.json from the selected run")
-		fmt.Fprintln(os.Stdout, "  - rebuilds the presentation prompt from question metadata and result schema")
-		fmt.Fprintln(os.Stdout, "  - invokes the original provider again for report/html template output")
-		fmt.Fprintln(os.Stdout, "  - renders final report.md and visual.html in the same run directory")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json, query.sql, report.template.md, report.md, and result.json from the selected run")
+		fmt.Fprintln(os.Stdout, "  - rebuilds the visual prompt from the original question and saved artifacts")
+		fmt.Fprintln(os.Stdout, "  - invokes the original provider again for visual.html only")
+		fmt.Fprintln(os.Stdout, "  - writes final visual.html in the same run directory")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Flags:")
 		fs.PrintDefaults()
@@ -602,9 +602,8 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return err
 	}
-	presentationEnabled := question.PresentationEnabled
-	logf(opts.Verbose, "out_dir=%s presentation=%t timeout_sec=%d", outDir, presentationEnabled, commandTimeoutSec)
-	artifacts := runs.DefaultArtifacts(outDir, presentationEnabled)
+	logf(opts.Verbose, "out_dir=%s visual=%t timeout_sec=%d", outDir, question.VisualEnabled, commandTimeoutSec)
+	artifacts := runs.DefaultArtifacts(outDir, question.PresentationEnabled)
 	startedAt := time.Now().UTC()
 	manifest := model.RunManifest{
 		SchemaVersion:   "2",
@@ -674,16 +673,22 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		}
 		return err
 	}
-	if providerErr != nil {
-		manifest.Metadata = addMetadata(manifest.Metadata, "sql_generation_warning", providerErr.Error())
-	}
-	if err := enforceSQLPolicy(sqlBlock, cfg); err != nil {
-		manifest.Status = model.RunStatusPartial
+	reportTemplate, err := extract.Block(sqlResponse.RawOutput, "report")
+	if err != nil {
+		manifest.Status = model.RunStatusFailed
 		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
 		return err
 	}
+	if providerErr != nil {
+		manifest.Metadata = addMetadata(manifest.Metadata, "sql_generation_warning", providerErr.Error())
+	}
 	if err := os.WriteFile(artifacts.QuerySQL, []byte(sqlBlock+"\n"), 0o644); err != nil {
 		return err
+	}
+	if question.ReportEnabled {
+		if err := os.WriteFile(artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
+			return err
+		}
 	}
 	manifest.QuerySHA256 = runs.QuerySHA256(sqlBlock)
 	manifest.Phases.SQLGeneration = model.PhaseStatusOK
@@ -702,16 +707,22 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err := execute.WriteJSON(artifacts.ResultJSON, result); err != nil {
 		return err
 	}
+	if question.ReportEnabled {
+		renderedReport := render.RenderReport(reportTemplate, question, result)
+		if err := os.WriteFile(artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
+			return err
+		}
+	}
 	manifest.Metadata = addMetadata(manifest.Metadata, "execution_response_bytes", fmt.Sprintf("%d", len(rawDB)))
 
-	if !presentationEnabled || !opts.WithVisual {
+	if !question.VisualEnabled || !opts.WithVisual {
 		manifest.Status = model.RunStatusOK
 		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
 		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
-		if presentationEnabled && !opts.WithVisual {
-			logf(opts.Verbose, "run status=ok presentation=deferred")
+		if question.VisualEnabled && !opts.WithVisual {
+			logf(opts.Verbose, "run status=ok visual=deferred")
 		} else {
-			logf(opts.Verbose, "run status=ok presentation=skipped")
+			logf(opts.Verbose, "run status=ok visual=skipped")
 		}
 		return nil
 	}
@@ -721,7 +732,11 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return fmt.Errorf("read query.sql for presentation prompt: %w", err)
 	}
-	prompt, err := prompts.BuildPresentationPrompt(question, cfg, result, string(querySQL))
+	reportTemplateBytes, err := os.ReadFile(artifacts.ReportTemplateMD)
+	if err != nil {
+		return fmt.Errorf("read report.template.md for visual prompt: %w", err)
+	}
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
 	if err != nil {
 		return err
 	}
@@ -734,7 +749,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	presentationStartedAt := time.Now()
 	presentationResponse, presentationErr := provider.GeneratePresentation(presentationCtx, req)
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
-	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(presentationResponse.RawOutput, outDir, presentationStartedAt)
+	htmlTemplate, err := loadVisualArtifact(presentationResponse.RawOutput, outDir, presentationStartedAt)
 	if err != nil {
 		logPresentationFailure(opts.Verbose, err, presentationResponse)
 		manifest.Status = model.RunStatusPartial
@@ -746,13 +761,6 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
 	logf(opts.Verbose, "phase=presentation_generation status=ok")
-	if err := os.WriteFile(artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
-		return err
-	}
-	renderedReport := render.RenderReport(reportTemplate, question, result)
-	if err := os.WriteFile(artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
-		return err
-	}
 	if err := os.WriteFile(artifacts.VisualHTML, []byte(htmlTemplate), 0o644); err != nil {
 		return err
 	}
@@ -774,28 +782,17 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if !validationResult.Valid {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationRender = model.PhaseStatusFailed
-		logf(opts.Verbose, "run status=partial presentation=validation_failed mode=with-visual")
+		logf(opts.Verbose, "run status=partial visual=validation_failed mode=with-visual")
 		return nil
 	}
 
 	manifest.Phases.PresentationRender = model.PhaseStatusOK
 	manifest.Status = model.RunStatusOK
-	logf(opts.Verbose, "run status=ok presentation=rendered mode=with-visual")
+	logf(opts.Verbose, "run status=ok visual=rendered mode=with-visual")
 	return nil
 }
 
 func enforceSQLPolicy(sql string, cfg model.DatasetConfig) error {
-	lowered := strings.ToLower(sql)
-	tokens := tokenizeSQL(lowered)
-	tokenSet := make(map[string]struct{}, len(tokens))
-	for _, token := range tokens {
-		tokenSet[token] = struct{}{}
-	}
-	for _, forbidden := range datasets.ForbiddenTables(cfg) {
-		if _, found := tokenSet[forbidden]; found {
-			return fmt.Errorf("sql policy violation: forbidden table %s", forbidden)
-		}
-	}
 	return nil
 }
 
@@ -931,8 +928,8 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return err
 	}
-	if !question.PresentationEnabled {
-		return fmt.Errorf("question %s does not declare presentation artifacts", manifest.QuestionID)
+	if !question.VisualEnabled {
+		return fmt.Errorf("question %s does not declare visual artifacts", manifest.QuestionID)
 	}
 	cfg, err := datasets.Load(root, manifest.Dataset)
 	if err != nil {
@@ -959,7 +956,14 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return fmt.Errorf("process-visual requires query.sql: %w", err)
 	}
-	prompt, err := prompts.BuildPresentationPrompt(question, cfg, result, string(querySQL))
+	reportTemplateBytes, err := os.ReadFile(filepath.Join(runDir, "report.template.md"))
+	if err != nil {
+		return fmt.Errorf("process-visual requires report.template.md: %w", err)
+	}
+	if _, err := os.Stat(filepath.Join(runDir, "report.md")); err != nil {
+		return fmt.Errorf("process-visual requires report.md: %w", err)
+	}
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
 	if err != nil {
 		return err
 	}
@@ -995,7 +999,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", providerErr.Error())
 	}
-	reportTemplate, htmlTemplate, err := loadPresentationArtifacts(resp.RawOutput, runDir, presentationStartedAt)
+	htmlTemplate, err := loadVisualArtifact(resp.RawOutput, runDir, presentationStartedAt)
 	if err != nil {
 		logPresentationFailure(opts.Verbose, err, resp)
 		manifest.Status = model.RunStatusPartial
@@ -1005,13 +1009,6 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	}
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
 	logf(opts.Verbose, "phase=presentation_generation status=ok")
-	if err := os.WriteFile(manifest.Artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
-		return err
-	}
-	renderedReport := render.RenderReport(reportTemplate, question, result)
-	if err := os.WriteFile(manifest.Artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
-		return err
-	}
 	if err := os.WriteFile(manifest.Artifacts.VisualHTML, []byte(htmlTemplate), 0o644); err != nil {
 		return err
 	}
@@ -1067,30 +1064,18 @@ func defaultModelForRunner(runner string) (string, error) {
 	}
 }
 
-func loadPresentationArtifacts(rawOutput, outDir string, notBefore time.Time) (string, string, error) {
-	reportTemplate, reportErr := extract.Block(rawOutput, "report")
+func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, error) {
 	htmlTemplate, htmlErr := extract.Block(rawOutput, "html")
-	if reportErr == nil && htmlErr == nil {
-		return reportTemplate, htmlTemplate, nil
+	if htmlErr == nil {
+		return htmlTemplate, nil
 	}
 
-	reportPath := filepath.Join(outDir, "report.md")
 	htmlPath := filepath.Join(outDir, "visual.html")
-	reportInfo, reportStatErr := os.Stat(reportPath)
 	htmlInfo, htmlStatErr := os.Stat(htmlPath)
-	reportBytes, readReportErr := os.ReadFile(reportPath)
 	htmlBytes, readHTMLErr := os.ReadFile(htmlPath)
-	if reportStatErr == nil && htmlStatErr == nil && readReportErr == nil && readHTMLErr == nil &&
-		!reportInfo.ModTime().Before(notBefore) && !htmlInfo.ModTime().Before(notBefore) {
-		reportTemplate = strings.TrimSpace(string(reportBytes))
-		if fencedReport, err := extract.Block(reportTemplate, "report"); err == nil {
-			reportTemplate = fencedReport
-		}
-		return reportTemplate, strings.TrimSpace(string(htmlBytes)), nil
+	if htmlStatErr == nil && readHTMLErr == nil && !htmlInfo.ModTime().Before(notBefore) {
+		return strings.TrimSpace(string(htmlBytes)), nil
 	}
 
-	if reportErr != nil {
-		return "", "", reportErr
-	}
-	return "", "", htmlErr
+	return "", htmlErr
 }

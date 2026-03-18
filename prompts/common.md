@@ -1,13 +1,6 @@
-You are running inside qforge.
-
-Generate valid ClickHouse SQL.
+Generate only the artifacts requested in this prompt.
 Use the configured MCP server for all data access.
 Do not construct raw OpenAPI URLs manually.
 Stay within the configured dataset scope.
-Do not reference tables outside the allowed dataset constraints.
 
-Dataset constraints:
-
-{{dataset_constraints_md}}
-
-{{dataset_discovery_md}}
+{{dataset_semantic_layer_md}}

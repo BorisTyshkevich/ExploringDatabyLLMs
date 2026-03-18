@@ -16,9 +16,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 		Prompt: "Question-specific SQL guidance.",
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "ontime.ontime",
-		ForbiddenTables: "default.ontime, default.ontime_v2",
-		DiscoveryPrompt: "Inspect `ontime_semantic.active_joins` before choosing joins.",
+		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
 	got, err := BuildSQLPrompt(question, dataset)
 	if err != nil {
@@ -33,11 +31,14 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Question-specific SQL guidance.") {
 		t.Fatalf("expected question prompt section, got: %s", got)
 	}
-	if !strings.Contains(got, "ontime.ontime") || !strings.Contains(got, "default.ontime") || !strings.Contains(got, "default.ontime_v2") {
-		t.Fatalf("expected dataset substitutions, got: %s", got)
+	if !strings.Contains(got, "Dataset semantic layer:") || !strings.Contains(got, "ontime.airports_latest") {
+		t.Fatalf("expected dataset semantic layer guidance, got: %s", got)
 	}
-	if !strings.Contains(got, "Dataset discovery:") || !strings.Contains(got, "ontime_semantic.active_joins") {
-		t.Fatalf("expected dataset discovery guidance, got: %s", got)
+	if !strings.Contains(got, "```sql") || !strings.Contains(got, "```report") {
+		t.Fatalf("expected combined sql/report contract, got: %s", got)
+	}
+	if strings.Contains(got, "dataset constraints") || strings.Contains(got, "ontime_semantic") {
+		t.Fatalf("did not expect legacy dataset constraints or semantic db references, got: %s", got)
 	}
 }
 
@@ -53,21 +54,16 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "ontime.ontime",
-		ForbiddenTables: "default.ontime, default.ontime_v2",
-		DiscoveryPrompt: "Inspect `ontime_semantic.active_enrichment_rules` before adding enrichment queries.",
+		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime", "# Report\n{{data_overview_md}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
 	if !strings.Contains(got, "Stay within the configured dataset scope.") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "ontime.ontime") || !strings.Contains(got, "default.ontime") || !strings.Contains(got, "default.ontime_v2") {
-		t.Fatalf("expected dataset substitutions, got: %s", got)
-	}
-	if !strings.Contains(got, "The report is a Markdown template") {
+	if !strings.Contains(got, "Generate only the visual artifact.") {
 		t.Fatalf("expected presentation-specific scaffold, got: %s", got)
 	}
 	if !strings.Contains(got, "ontime-analyst-dashboard") {
@@ -88,17 +84,17 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM ontime.ontime") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)
 	}
-	if strings.Contains(got, "Return exactly this fenced section:") {
-		t.Fatalf("did not expect SQL-only fenced section instructions in presentation prompt, got: %s", got)
+	if !strings.Contains(got, "```html") || strings.Contains(got, "```report\nUse placeholders only") {
+		t.Fatalf("expected html-only output contract in presentation prompt, got: %s", got)
 	}
 	if strings.Contains(got, "qforge-result-data") || strings.Contains(got, "__QFORGE_DEFAULT_SQL__") {
 		t.Fatalf("did not expect legacy injected JSON contract, got: %s", got)
 	}
-	if !strings.Contains(got, "Report guidance.") || !strings.Contains(got, "Visual guidance.") {
-		t.Fatalf("expected question prompt sections, got: %s", got)
+	if !strings.Contains(got, "saved report template") && !strings.Contains(strings.ToLower(got), "saved report template") {
+		t.Fatalf("expected saved report template context, got: %s", got)
 	}
-	if !strings.Contains(got, "Dataset discovery:") || !strings.Contains(got, "ontime_semantic.active_enrichment_rules") {
-		t.Fatalf("expected dataset discovery guidance, got: %s", got)
+	if !strings.Contains(got, "Dataset semantic layer:") || !strings.Contains(got, "ontime.airports_latest") {
+		t.Fatalf("expected inlined semantic-layer guidance, got: %s", got)
 	}
 }
 
@@ -119,19 +115,18 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "ontime.ontime",
-		ForbiddenTables: "default.ontime, default.ontime_v2",
+		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT 1")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
 	if !strings.Contains(got, "ontime-analyst-dashboard") {
 		t.Fatalf("expected q001 prompt to reference skill, got: %s", got)
 	}
-    if !strings.Contains(got, "ontime.airports_latest") {
-        t.Fatalf("expected q001 prompt to mention airport enrichment, got: %s", got)
-    }
+	if !strings.Contains(got, "ontime.airports_latest") {
+		t.Fatalf("expected q001 prompt to mention airport enrichment, got: %s", got)
+	}
 	if !strings.Contains(got, "airport-coordinate enrichment") {
 		t.Fatalf("expected q001 prompt to label map enrichment clearly, got: %s", got)
 	}
@@ -144,12 +139,12 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
 		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
 	}
-	if strings.Contains(got, "Dataset discovery:") {
-		t.Fatalf("did not expect dataset discovery guidance when discovery prompt is empty, got: %s", got)
+	if !strings.Contains(got, "Dataset semantic layer:") {
+		t.Fatalf("expected semantic layer heading when semantic guidance is present, got: %s", got)
 	}
 }
 
-func TestBuildPresentationPromptQ007UsesDatasetDiscoveryInsteadOfLocalAirportInstruction(t *testing.T) {
+func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	question, err := questions.Resolve(repoRoot, "q007")
 	if err != nil {
@@ -169,16 +164,14 @@ func TestBuildPresentationPromptQ007UsesDatasetDiscoveryInsteadOfLocalAirportIns
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "ontime.ontime",
-		ForbiddenTables: "default.ontime, default.ontime_v2",
-		DiscoveryPrompt: "Inspect `ontime_semantic.active_joins` and `ontime_semantic.active_enrichment_rules` before choosing joins or enrichment queries.",
+		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT 1")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "Dataset discovery:") || !strings.Contains(got, "ontime_semantic.active_enrichment_rules") {
-		t.Fatalf("expected q007 prompt to include semantic discovery guidance, got: %s", got)
+	if strings.Contains(got, "ontime_semantic") || strings.Contains(got, "Dataset discovery:") {
+		t.Fatalf("did not expect semantic discovery guidance, got: %s", got)
 	}
 	if strings.Contains(got, "run an explicit airport-coordinate enrichment query against `ontime.airports_latest` using airport codes parsed from the route strings") {
 		t.Fatalf("did not expect q007 built prompt to include the old explicit airport instruction, got: %s", got)
@@ -202,10 +195,9 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 		GeneratedAt: time.Now(),
 	}
 	dataset := model.DatasetConfig{
-		PrimaryTable:    "ontime.ontime",
-		ForbiddenTables: "default.ontime, default.ontime_v2",
+		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime", "# Report\n{{data_overview_md}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}

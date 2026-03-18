@@ -235,7 +235,7 @@ Flags:
   - shorthand for `--verbose`
 - `--with-visual`
   - optional
-  - after SQL succeeds, make a second independent provider call for `report.md` and `visual.html`
+  - after SQL succeeds and `report.md` is rendered, make a second independent provider call for `visual.html`
   - this is equivalent in behavior to running `process-visual` after a successful run
 - `--skip-visual-validation`
   - optional
@@ -250,17 +250,17 @@ What `run` does:
 2. selects one or more providers
 3. builds the SQL prompt for each selected provider
 4. invokes those providers, concurrently when more than one is selected
-5. extracts fenced SQL
-6. enforces the dataset table policy
-7. executes SQL directly against the OpenAPI endpoint
-8. writes canonical `result.json`
+5. extracts fenced SQL and fenced report template
+6. executes SQL directly against the OpenAPI endpoint
+7. writes canonical `result.json`
+8. renders `report.md` from the saved report template
 9. writes `manifest.json`
-10. optionally makes a second independent provider call for `report.md` and `visual.html` when `--with-visual` is set
+10. optionally makes a second independent provider call for `visual.html` when `--with-visual` is set
 
 What `run` does not do:
 
-- it does not produce `report.md` or `visual.html`
-- use `qforge process-visual` for Markdown report and HTML generation later
+- it does not produce `visual.html` unless `--with-visual` is set
+- use `qforge process-visual` for HTML generation later
 
 Exception:
 
@@ -306,11 +306,9 @@ Flags:
 
 What `process-visual` does:
 
-- loads `manifest.json` and `result.json` from an existing run
-- rebuilds the presentation prompt from question metadata and the JSON schema
-- invokes the original provider again for `report` and `html`
-- fills report placeholders from `result.json`
-- injects Markdown data sections from `result.json`
+- loads `manifest.json`, `query.sql`, `report.template.md`, `report.md`, and `result.json` from an existing run
+- rebuilds the presentation prompt from question metadata and the saved artifacts
+- invokes the original provider again for `html`
 - validates `visual.html` in two stages unless `--skip-visual-validation` is set:
   - contract validation against the shared visual rules
   - browser validation using `chromedp`
@@ -473,8 +471,6 @@ When presentation is processed later with `qforge process-visual`:
 
 - `prompt.presentation.md`
 - `answer.presentation.raw.md`
-- `report.template.md`
-- `report.md`
 - `visual.html`
 
 ## Browser Validation

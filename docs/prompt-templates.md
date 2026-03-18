@@ -85,14 +85,8 @@ These placeholders are not expanded when the prompt is built. They are passed th
 
 For `ontime`, the source config is [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml).
 
-Dataset discovery guidance is loaded from [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_prompt.md`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_prompt.md) when present.
+Dataset semantic-layer guidance is loaded from [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_layer.md`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_layer.md) when present.
 
-Current values:
+That content is injected directly into the shared prompt scaffold as `{{dataset_semantic_layer_md}}`.
 
-- `primary_table: ontime.ontime`
-- `forbidden_tables: default.ontime, default.ontime_v2`
-
-`{{dataset_constraints_md}}` is rendered from that config into Markdown bullets such as:
-
-- `Use ontime.ontime as the primary fact table.`
-- `Do not reference default.ontime.`
+Current OnTime semantic-layer guidance names the main tables and joins directly rather than sending the model to a separate semantic catalog.

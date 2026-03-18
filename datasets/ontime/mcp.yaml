@@ -5,6 +5,4 @@ mcp_base_url: https://mcp.demo.altinity.cloud
 mcp_jwe_token_env: MCP_JWE_TOKEN
 auth_mode: bearer_token_optional
 default_database: ontime
-primary_table: ontime.ontime
-forbidden_tables: default.ontime, default.ontime_v2
 notes: OnTime benchmark dataset via MCP server

@@ -71,13 +71,17 @@ func Load(dir string) (model.Question, error) {
 	}
 	reportPromptBytes, _ := os.ReadFile(reportPromptPath)
 	visualPromptBytes, _ := os.ReadFile(visualPromptPath)
+	reportEnabled := requiresArtifact(meta.ArtifactsRequired, "report.md")
+	visualEnabled := requiresArtifact(meta.ArtifactsRequired, "visual.html")
 	return model.Question{
 		Dir:                 dir,
 		Meta:                meta,
 		Prompt:              strings.TrimSpace(string(promptBytes)),
 		ReportPrompt:        strings.TrimSpace(string(reportPromptBytes)),
 		VisualPrompt:        strings.TrimSpace(string(visualPromptBytes)),
-		PresentationEnabled: requiresArtifact(meta.ArtifactsRequired, "report.md") || requiresArtifact(meta.ArtifactsRequired, "visual.html"),
+		PresentationEnabled: reportEnabled || visualEnabled,
+		ReportEnabled:       reportEnabled,
+		VisualEnabled:       visualEnabled,
 	}, nil
 }
 
