@@ -50,6 +50,8 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
 12. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
 13. Show content and render dashboard while keeping the control block at the bottom
 
+Do not use `payload.rows` directly in rendering logic. Always convert MCP `columns` + `rows` into object rows first, even if a provider sometimes returns object rows already.
+
 Do not embed analytical result rows as CSV or JSON in dynamic mode. The browser should fetch the primary saved SQL result after the user supplies JWE and SQL, then derive visuals from that result set and any explicit enrichment queries.
 If the page uses cloned card templates, keep DOM lookups scoped to each live card instance. Do not duplicate fixed global `id` values inside templates and then access them with `document.getElementById(...)`.
 
