@@ -27,6 +27,13 @@ func Load(repoRoot, name string) (model.DatasetConfig, error) {
 	if cfg.MCPJWETokenEnv == "" {
 		cfg.MCPJWETokenEnv = "MCP_JWE_TOKEN"
 	}
+	discoveryPath := filepath.Join(repoRoot, "datasets", name, "semantic_prompt.md")
+	discoveryBytes, err := os.ReadFile(discoveryPath)
+	if err == nil {
+		cfg.DiscoveryPrompt = strings.TrimSpace(string(discoveryBytes))
+	} else if !os.IsNotExist(err) {
+		return model.DatasetConfig{}, err
+	}
 	return cfg, nil
 }
 

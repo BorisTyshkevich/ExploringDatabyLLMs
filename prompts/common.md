@@ -9,3 +9,5 @@ Do not reference tables outside the allowed dataset constraints.
 Dataset constraints:
 
 {{dataset_constraints_md}}
+
+{{dataset_discovery_md}}

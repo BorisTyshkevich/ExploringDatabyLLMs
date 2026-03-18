@@ -30,6 +30,7 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 	values := map[string]string{
 		"dataset_primary_table":  dataset.PrimaryTable,
 		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
+		"dataset_discovery_md":   datasetDiscoveryMarkdown(dataset),
 	}
 	sections := []string{
 		RenderTemplate(common, values),
@@ -63,6 +64,7 @@ func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfi
 	values := map[string]string{
 		"dataset_primary_table":  dataset.PrimaryTable,
 		"dataset_constraints_md": datasetConstraintsMarkdown(dataset),
+		"dataset_discovery_md":   datasetDiscoveryMarkdown(dataset),
 		"question_title":         question.Meta.Title,
 		"visual_mode":            strings.TrimSpace(question.Meta.VisualMode),
 		"visual_type":            question.Meta.VisualType,
@@ -105,6 +107,13 @@ func datasetConstraintsMarkdown(dataset model.DatasetConfig) string {
 		lines = append(lines, fmt.Sprintf("- Do not reference `%s`.", forbidden))
 	}
 	return strings.Join(lines, "\n")
+}
+
+func datasetDiscoveryMarkdown(dataset model.DatasetConfig) string {
+	if strings.TrimSpace(dataset.DiscoveryPrompt) == "" {
+		return ""
+	}
+	return "Dataset discovery:\n\n" + strings.TrimSpace(dataset.DiscoveryPrompt)
 }
 
 // RenderTemplate substitutes {{key}} placeholders with values from the map.

@@ -39,31 +39,31 @@ FROM ontime.ontime_stage
 Create tables:
 
 ```bash
-python3 datasets/ontime_v2/load_ontime_v2.py create-tables --connection demo
+python3 datasets/ontime/download/load_ontime_v2.py create-tables --connection demo
 ```
 
 List available months from TranStats:
 
 ```bash
-python3 datasets/ontime_v2/load_ontime_v2.py list-available
+python3 datasets/ontime/download/load_ontime_v2.py list-available
 ```
 
 Load one year:
 
 ```bash
-python3 datasets/ontime_v2/load_ontime_v2.py load-year --year 2025 --connection demo
+python3 datasets/ontime/download/load_ontime_v2.py load-year --year 2025 --connection demo
 ```
 
 Backfill a range:
 
 ```bash
-python3 datasets/ontime_v2/load_ontime_v2.py backfill --start-year 1987 --end-year 2025 --connection demo
+python3 datasets/ontime/download/load_ontime_v2.py backfill --start-year 1987 --end-year 2025 --connection demo
 ```
 
 Allow new unknown source columns temporarily:
 
 ```bash
-python3 datasets/ontime_v2/load_ontime_v2.py load-year --year 2025 --allow-new-columns
+python3 datasets/ontime/download/load_ontime_v2.py load-year --year 2025 --allow-new-columns
 ```
 
 ## Type Rules
@@ -79,7 +79,7 @@ python3 datasets/ontime_v2/load_ontime_v2.py load-year --year 2025 --allow-new-c
 Generate a markdown report describing the current live `ontime` table and historical repo references:
 
 ```bash
-python3 datasets/ontime_v2/analyze_existing_ontime.py --connection demo
+python3 datasets/ontime/download/analyze_existing_ontime.py --connection demo
 ```
 
 ## BTS Airport Dimension
@@ -89,25 +89,25 @@ The official airport dimension is loaded separately from `default.airports`. It 
 Create the airport table and latest view:
 
 ```bash
-python3 datasets/ontime_v2/download/load_airports_bts.py create-tables --connection demo
+python3 datasets/ontime/download/load_airports_bts.py create-tables --connection demo
 ```
 
 Download and inspect the current official export:
 
 ```bash
-python3 datasets/ontime_v2/download/load_airports_bts.py download --connection demo
+python3 datasets/ontime/download/load_airports_bts.py download --connection demo
 ```
 
 Load the current official export into ClickHouse:
 
 ```bash
-python3 datasets/ontime_v2/download/load_airports_bts.py load --connection demo
+python3 datasets/ontime/download/load_airports_bts.py load --connection demo
 ```
 
 Verify table counts and OnTime join coverage:
 
 ```bash
-python3 datasets/ontime_v2/download/load_airports_bts.py verify --connection demo
+python3 datasets/ontime/download/load_airports_bts.py verify --connection demo
 ```
 
 Example join using the latest airport attributes:

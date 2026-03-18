@@ -38,6 +38,7 @@ type DatasetConfig struct {
 	PrimaryTable         string `yaml:"primary_table" json:"primary_table"`
 	ForbiddenTables      string `yaml:"forbidden_tables" json:"forbidden_tables"`
 	Notes                string `yaml:"notes" json:"notes"`
+	DiscoveryPrompt      string `yaml:"-" json:"discovery_prompt"`
 }
 
 type QuestionMeta struct {

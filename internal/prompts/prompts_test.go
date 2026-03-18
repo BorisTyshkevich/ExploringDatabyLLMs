@@ -18,6 +18,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	dataset := model.DatasetConfig{
 		PrimaryTable:    "ontime.ontime",
 		ForbiddenTables: "default.ontime, default.ontime_v2",
+		DiscoveryPrompt: "Inspect `ontime_semantic.active_joins` before choosing joins.",
 	}
 	got, err := BuildSQLPrompt(question, dataset)
 	if err != nil {
@@ -35,6 +36,9 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "ontime.ontime") || !strings.Contains(got, "default.ontime") || !strings.Contains(got, "default.ontime_v2") {
 		t.Fatalf("expected dataset substitutions, got: %s", got)
 	}
+	if !strings.Contains(got, "Dataset discovery:") || !strings.Contains(got, "ontime_semantic.active_joins") {
+		t.Fatalf("expected dataset discovery guidance, got: %s", got)
+	}
 }
 
 func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
@@ -51,6 +55,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	dataset := model.DatasetConfig{
 		PrimaryTable:    "ontime.ontime",
 		ForbiddenTables: "default.ontime, default.ontime_v2",
+		DiscoveryPrompt: "Inspect `ontime_semantic.active_enrichment_rules` before adding enrichment queries.",
 	}
 	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime")
 	if err != nil {
@@ -91,6 +96,9 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 	if !strings.Contains(got, "Report guidance.") || !strings.Contains(got, "Visual guidance.") {
 		t.Fatalf("expected question prompt sections, got: %s", got)
+	}
+	if !strings.Contains(got, "Dataset discovery:") || !strings.Contains(got, "ontime_semantic.active_enrichment_rules") {
+		t.Fatalf("expected dataset discovery guidance, got: %s", got)
 	}
 }
 
@@ -135,6 +143,45 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	}
 	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
 		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
+	}
+	if strings.Contains(got, "Dataset discovery:") {
+		t.Fatalf("did not expect dataset discovery guidance when discovery prompt is empty, got: %s", got)
+	}
+}
+
+func TestBuildPresentationPromptQ007UsesDatasetDiscoveryInsteadOfLocalAirportInstruction(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	question, err := questions.Resolve(repoRoot, "q007")
+	if err != nil {
+		t.Fatalf("Resolve returned error: %v", err)
+	}
+	if strings.Contains(question.VisualPrompt, "ontime.airports_latest") {
+		t.Fatalf("did not expect q007 local visual prompt to hardcode airport enrichment source: %s", question.VisualPrompt)
+	}
+	result := model.CanonicalResult{
+		Columns: []string{
+			"Tail_Number",
+			"Flight_Number_Reporting_Airline",
+			"IATA_CODE_Reporting_Airline",
+			"FlightDate",
+			"Route",
+		},
+		GeneratedAt: time.Now(),
+	}
+	dataset := model.DatasetConfig{
+		PrimaryTable:    "ontime.ontime",
+		ForbiddenTables: "default.ontime, default.ontime_v2",
+		DiscoveryPrompt: "Inspect `ontime_semantic.active_joins` and `ontime_semantic.active_enrichment_rules` before choosing joins or enrichment queries.",
+	}
+	got, err := BuildPresentationPrompt(question, dataset, result, "SELECT 1")
+	if err != nil {
+		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "Dataset discovery:") || !strings.Contains(got, "ontime_semantic.active_enrichment_rules") {
+		t.Fatalf("expected q007 prompt to include semantic discovery guidance, got: %s", got)
+	}
+	if strings.Contains(got, "run an explicit airport-coordinate enrichment query against `ontime.airports_latest` using airport codes parsed from the route strings") {
+		t.Fatalf("did not expect q007 built prompt to include the old explicit airport instruction, got: %s", got)
 	}
 }
 

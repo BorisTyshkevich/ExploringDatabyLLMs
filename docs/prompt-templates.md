@@ -85,6 +85,8 @@ These placeholders are not expanded when the prompt is built. They are passed th
 
 For `ontime`, the source config is [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml).
 
+Dataset discovery guidance is loaded from [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_prompt.md`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_prompt.md) when present.
+
 Current values:
 
 - `primary_table: ontime.ontime`

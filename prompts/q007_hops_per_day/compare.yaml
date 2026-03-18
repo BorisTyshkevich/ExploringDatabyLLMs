@@ -1,0 +1,41 @@
+compare_contract:
+  version: 1
+  row_filter:
+    include_row_types: []
+    where: {}
+  key_columns:
+    - Aircraft ID
+    - Flight Number
+    - Carrier
+    - Date
+  compare_columns:
+    exact:
+      - Hops
+      - Route
+    numeric: []
+  optional_columns: []
+  header_aliases:
+    Aircraft ID:
+      - TailNum
+      - Tail_Number
+      - TailNumber
+    Flight Number:
+      - FlightNum
+      - Flight_Number_Reporting_Airline
+      - FlightNumber
+    Carrier:
+      - Carrier
+      - IATA_CODE_Reporting_Airline
+      - Reporting_Airline
+    Date:
+      - FlightDate
+  normalization:
+    trim_strings: true
+    null_equivalents:
+      - ""
+      - "NULL"
+      - "null"
+  compliance:
+    require_nonempty_rows: true
+    require_unique_keys: true
+    require_reference_match: false
