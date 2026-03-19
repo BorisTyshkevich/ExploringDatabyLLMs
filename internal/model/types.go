@@ -66,6 +66,8 @@ type Question struct {
 type ArtifactPaths struct {
 	PromptSQLRaw          string `json:"prompt_sql_raw"`
 	AnswerSQLRaw          string `json:"answer_sql_raw"`
+	AnswerRawJSON         string `json:"answer_raw_json,omitempty"`
+	AnalysisJSON          string `json:"analysis_json,omitempty"`
 	QuerySQL              string `json:"query_sql"`
 	ResultTSV             string `json:"result_tsv,omitempty"`
 	ResultJSON            string `json:"result_json"`
@@ -136,6 +138,18 @@ type ProviderResponse struct {
 	Stdout    string
 	Stderr    string
 	CLIBin    string
+}
+
+type AnalysisMetrics struct {
+	SummaryFacts []string            `json:"summary_facts,omitempty"`
+	NamedValues  map[string]string   `json:"named_values,omitempty"`
+	NamedLists   map[string][]string `json:"named_lists,omitempty"`
+}
+
+type AnalysisArtifact struct {
+	SQL            string          `json:"sql"`
+	ReportMarkdown string          `json:"report_markdown"`
+	Metrics        AnalysisMetrics `json:"metrics"`
 }
 
 type NumericColumnSpec struct {

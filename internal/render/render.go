@@ -2,23 +2,69 @@ package render
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 
 	"qforge/internal/model"
 )
 
-func RenderReport(template string, question model.Question, result model.CanonicalResult) string {
+var reportPlaceholderPattern = regexp.MustCompile(`\{\{\s*([a-zA-Z0-9_.]+)\s*\}\}`)
+
+var allowedReportPlaceholders = map[string]struct{}{
+	"row_count":        {},
+	"generated_at":     {},
+	"columns_csv":      {},
+	"question_title":   {},
+	"data_overview_md": {},
+	"result_table_md":  {},
+}
+
+func ValidateReportTemplate(template string, metrics model.AnalysisMetrics) error {
+	matches := reportPlaceholderPattern.FindAllStringSubmatch(template, -1)
+	var unknown []string
+	for _, match := range matches {
+		name := match[1]
+		if strings.HasPrefix(name, "metric.") {
+			metricName := strings.TrimPrefix(name, "metric.")
+			if metricName == "" {
+				unknown = appendUnique(unknown, name)
+				continue
+			}
+			if _, ok := metrics.NamedValues[metricName]; !ok {
+				unknown = appendUnique(unknown, name)
+			}
+			continue
+		}
+		if _, ok := allowedReportPlaceholders[name]; !ok {
+			unknown = appendUnique(unknown, name)
+		}
+	}
+	if len(unknown) > 0 {
+		sort.Strings(unknown)
+		return fmt.Errorf("report template uses unsupported placeholders: %s", strings.Join(unknown, ", "))
+	}
+	if strings.Count(template, "{{result_table_md}}") > 1 {
+		return fmt.Errorf("report template may include {{result_table_md}} at most once")
+	}
+	return nil
+}
+
+func RenderReport(template string, question model.Question, result model.CanonicalResult, metrics model.AnalysisMetrics) string {
 	dataOverviewMD := renderDataOverviewMarkdown(result)
 	resultTableMD := renderResultTableMarkdown(result, 20)
-	replacer := strings.NewReplacer(
+	replacements := []string{
 		"{{row_count}}", fmt.Sprintf("%d", result.RowCount),
 		"{{generated_at}}", result.GeneratedAt.Format("2006-01-02T15:04:05Z"),
 		"{{columns_csv}}", strings.Join(result.Columns, ", "),
 		"{{question_title}}", question.Meta.Title,
 		"{{data_overview_md}}", dataOverviewMD,
 		"{{result_table_md}}", resultTableMD,
-	)
+	}
+	for key, value := range metrics.NamedValues {
+		replacements = append(replacements, "{{metric."+key+"}}", value)
+	}
+	replacer := strings.NewReplacer(replacements...)
 	rendered := replacer.Replace(template)
 	if !strings.Contains(template, "{{data_overview_md}}") && !strings.Contains(template, "{{result_table_md}}") {
 		rendered = strings.TrimRight(rendered, "\n") + "\n\n## Data Overview\n\n" + dataOverviewMD + "\n\n## Result Rows\n\n" + resultTableMD + "\n"
@@ -138,4 +184,13 @@ func minInt(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func appendUnique(items []string, value string) []string {
+	for _, item := range items {
+		if item == value {
+			return items
+		}
+	}
+	return append(items, value)
 }

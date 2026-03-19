@@ -41,7 +41,7 @@ type cliProvider struct {
 }
 
 func (p cliProvider) GenerateSQL(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexAnalysisComplete)
+	return p.run(ctx, req, req.Prompt, codexAnalysisComplete(req.OutDir))
 }
 
 func (p cliProvider) GeneratePresentation(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
@@ -143,12 +143,17 @@ func (p cliProvider) runCodex(ctx context.Context, req model.ProviderRequest, pr
 				completedAt = time.Time{}
 				continue
 			}
+			if completedAt.IsZero() {
+				completedRaw = raw
+				completedAt = time.Now()
+				continue
+			}
 			if raw != completedRaw {
 				completedRaw = raw
 				completedAt = time.Now()
 				continue
 			}
-			if completedAt.IsZero() || time.Since(completedAt) < 2*time.Second {
+			if time.Since(completedAt) < 2*time.Second {
 				continue
 			}
 			logf(req.Verbose, "provider=codex phase=completion-file status=stable elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
@@ -200,10 +205,19 @@ func readFileText(path string) string {
 	return string(data)
 }
 
-func codexAnalysisComplete(raw string) bool {
-	_, sqlErr := extract.Block(raw, "sql")
-	_, reportErr := extract.Block(raw, "report")
-	return sqlErr == nil && reportErr == nil
+func codexAnalysisComplete(outDir string) func(string) bool {
+	answerPath := filepath.Join(outDir, "answer.raw.json")
+	return func(string) bool {
+		data, err := os.ReadFile(answerPath)
+		if err != nil {
+			return false
+		}
+		var artifact model.AnalysisArtifact
+		if err := json.Unmarshal(data, &artifact); err != nil {
+			return false
+		}
+		return strings.TrimSpace(artifact.SQL) != "" && strings.TrimSpace(artifact.ReportMarkdown) != ""
+	}
 }
 
 func codexVisualComplete(raw string) bool {

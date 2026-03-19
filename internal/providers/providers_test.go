@@ -66,9 +66,12 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 }
 
 func TestCodexCompletionChecks(t *testing.T) {
-	analysisRaw := "```sql\nSELECT 1\n```\n\n```report\n{{data_overview_md}}\n```"
-	if !codexAnalysisComplete(analysisRaw) {
-		t.Fatalf("expected analysis completion checker to accept fenced sql/report")
+	tmpDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Title\\n\\n{{data_overview_md}}\"}"), 0o644); err != nil {
+		t.Fatalf("write answer.raw.json: %v", err)
+	}
+	if !codexAnalysisComplete(tmpDir)("") {
+		t.Fatalf("expected analysis completion checker to accept answer.raw.json")
 	}
 
 	presentationRaw := "```html\n<!doctype html>\n<html></html>\n```"
@@ -76,11 +79,55 @@ func TestCodexCompletionChecks(t *testing.T) {
 		t.Fatalf("expected presentation completion checker to accept fenced html")
 	}
 
-	if codexAnalysisComplete("```sql\nSELECT 1\n```") {
-		t.Fatalf("did not expect analysis checker to accept sql without report")
+	if codexAnalysisComplete(t.TempDir())("") {
+		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
 	if codexVisualComplete("```report\nonly report\n```") {
 		t.Fatalf("did not expect visual checker to accept non-html output")
+	}
+}
+
+func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "fake-codex.sh")
+	script := "#!/usr/bin/env bash\n" +
+		"set -euo pipefail\n" +
+		"while [[ $# -gt 0 ]]; do shift; done\n" +
+		"cat >/dev/null\n" +
+		"cat > answer.raw.json <<'EOF'\n" +
+		"{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Title\\n\\n{{data_overview_md}}\",\"metrics\":{\"named_values\":{\"max_hops\":\"8\"}}}\n" +
+		"EOF\n" +
+		"echo 'analysis artifact written'\n" +
+		"sleep 30\n"
+	if err := os.WriteFile(scriptPath, []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake codex: %v", err)
+	}
+
+	req := model.ProviderRequest{
+		OutDir:        tmpDir,
+		Model:         "gpt-5.4",
+		MCPURL:        "https://example.invalid/http",
+		MCPServerName: "altinity_ontime_demo",
+		CLIBin:        scriptPath,
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	start := time.Now()
+	resp, err := cliProvider{name: "codex", defaultBin: scriptPath}.GenerateSQL(ctx, req)
+	elapsed := time.Since(start)
+	if err != nil {
+		t.Fatalf("GenerateSQL returned error: %v", err)
+	}
+	if elapsed > 8*time.Second {
+		t.Fatalf("expected recovery before context timeout, elapsed=%s", elapsed)
+	}
+	if _, err := os.Stat(filepath.Join(tmpDir, "answer.raw.json")); err != nil {
+		t.Fatalf("expected answer.raw.json in outDir: %v", err)
+	}
+	if !strings.Contains(resp.Stdout, "analysis artifact written") {
+		t.Fatalf("unexpected stdout: %q", resp.Stdout)
 	}
 }
 

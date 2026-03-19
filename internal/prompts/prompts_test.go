@@ -34,8 +34,17 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Dataset semantic layer:") || !strings.Contains(got, "ontime.airports_latest") {
 		t.Fatalf("expected dataset semantic layer guidance, got: %s", got)
 	}
-	if !strings.Contains(got, "```sql") || !strings.Contains(got, "```report") {
-		t.Fatalf("expected combined sql/report contract, got: %s", got)
+	if !strings.Contains(got, "answer.raw.json") || !strings.Contains(got, "\"sql\"") || !strings.Contains(got, "\"report_markdown\"") || !strings.Contains(got, "\"metrics\"") {
+		t.Fatalf("expected file-based single json analysis contract, got: %s", got)
+	}
+	if !strings.Contains(got, "plain JSON bytes only") || !strings.Contains(got, "ignore stdout") {
+		t.Fatalf("expected strict answer.raw.json file rules, got: %s", got)
+	}
+	if !strings.Contains(got, "{{metric.<name>}}") || !strings.Contains(got, "Do not invent any placeholder") {
+		t.Fatalf("expected explicit metric placeholder guidance, got: %s", got)
+	}
+	if strings.Contains(got, "CLE -> BNA -> PNS") || strings.Contains(got, "\"max_hops\": \"8\"") {
+		t.Fatalf("did not expect question-specific example values in shared analysis prompt, got: %s", got)
 	}
 	if strings.Contains(got, "dataset constraints") || strings.Contains(got, "ontime_semantic") {
 		t.Fatalf("did not expect legacy dataset constraints or semantic db references, got: %s", got)
@@ -56,7 +65,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime", "# Report\n{{data_overview_md}}", "{\"sql\":\"SELECT * FROM ontime.ontime\",\"report_markdown\":\"# Report\\n\\n{{data_overview_md}}\",\"metrics\":{\"named_values\":{\"max_hops\":\"8\"}}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -93,6 +102,9 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "saved report template") && !strings.Contains(strings.ToLower(got), "saved report template") {
 		t.Fatalf("expected saved report template context, got: %s", got)
 	}
+	if !strings.Contains(got, "Saved analysis artifact:") || !strings.Contains(got, "\"report_markdown\"") {
+		t.Fatalf("expected saved analysis json context, got: %s", got)
+	}
 	if !strings.Contains(got, "Dataset semantic layer:") || !strings.Contains(got, "ontime.airports_latest") {
 		t.Fatalf("expected inlined semantic-layer guidance, got: %s", got)
 	}
@@ -117,7 +129,7 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}", "{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Report\\n\\n{{data_overview_md}}\",\"metrics\":{\"named_values\":{\"max_hops\":\"8\"}}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -166,7 +178,7 @@ func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) 
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}", "{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Report\\n\\n{{data_overview_md}}\",\"metrics\":{\"named_values\":{\"max_hops\":\"8\"}}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -197,7 +209,7 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime", "# Report\n{{data_overview_md}}", "{\"sql\":\"SELECT Carrier, Flights FROM ontime.ontime\",\"report_markdown\":\"# Report\\n\\n{{data_overview_md}}\",\"metrics\":{\"named_values\":{\"max_hops\":\"8\"}}}")
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}

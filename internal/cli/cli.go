@@ -446,10 +446,10 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-visual --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has query.sql, report.template.md, report.md, and result.json.")
+		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has analysis.json, query.sql, report.template.md, report.md, and result.json.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - loads manifest.json, query.sql, report.template.md, report.md, and result.json from the selected run")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json, analysis.json, query.sql, report.template.md, report.md, and result.json from the selected run")
 		fmt.Fprintln(os.Stdout, "  - rebuilds the visual prompt from the original question and saved artifacts")
 		fmt.Fprintln(os.Stdout, "  - invokes the original provider again for visual.html only")
 		fmt.Fprintln(os.Stdout, "  - writes final visual.html in the same run directory")
@@ -662,20 +662,21 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	_ = os.WriteFile(artifacts.AnswerSQLRaw, []byte(sqlResponse.RawOutput), 0o644)
 	_ = os.WriteFile(artifacts.StdoutLog, []byte(sqlResponse.Stdout), 0o644)
 	_ = os.WriteFile(artifacts.StderrLog, []byte(sqlResponse.Stderr), 0o644)
-	sqlBlock, err := extract.Block(sqlResponse.RawOutput, "sql")
+	analysisArtifact, err := loadAnalysisArtifact(artifacts.AnswerRawJSON)
 	if err != nil {
 		manifest.Status = model.RunStatusFailed
 		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		if sqlResponse.RawOutput == "" {
+		if _, statErr := os.Stat(artifacts.AnswerRawJSON); statErr != nil {
 			if providerErr != nil {
 				return fmt.Errorf("provider %s sql generation: %w", opts.Runner, providerErr)
 			}
 		}
 		return err
 	}
-	reportTemplate, err := extract.Block(sqlResponse.RawOutput, "report")
-	if err != nil {
-		manifest.Status = model.RunStatusFailed
+	sqlBlock := analysisArtifact.SQL
+	reportTemplate := analysisArtifact.ReportMarkdown
+	if err := render.ValidateReportTemplate(reportTemplate, analysisArtifact.Metrics); err != nil {
+		manifest.Status = model.RunStatusPartial
 		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
 		return err
 	}
@@ -683,6 +684,13 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		manifest.Metadata = addMetadata(manifest.Metadata, "sql_generation_warning", providerErr.Error())
 	}
 	if err := os.WriteFile(artifacts.QuerySQL, []byte(sqlBlock+"\n"), 0o644); err != nil {
+		return err
+	}
+	analysisJSON, err := json.MarshalIndent(analysisArtifact, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(artifacts.AnalysisJSON, analysisJSON, 0o644); err != nil {
 		return err
 	}
 	if question.ReportEnabled {
@@ -708,7 +716,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		return err
 	}
 	if question.ReportEnabled {
-		renderedReport := render.RenderReport(reportTemplate, question, result)
+		renderedReport := render.RenderReport(reportTemplate, question, result, analysisArtifact.Metrics)
 		if err := os.WriteFile(artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
 			return err
 		}
@@ -736,7 +744,11 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return fmt.Errorf("read report.template.md for visual prompt: %w", err)
 	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
+	analysisJSONBytes, err := os.ReadFile(artifacts.AnalysisJSON)
+	if err != nil {
+		return fmt.Errorf("read analysis.json for visual prompt: %w", err)
+	}
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes), string(analysisJSONBytes))
 	if err != nil {
 		return err
 	}
@@ -960,10 +972,14 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return fmt.Errorf("process-visual requires report.template.md: %w", err)
 	}
+	analysisJSONBytes, err := os.ReadFile(filepath.Join(runDir, "analysis.json"))
+	if err != nil {
+		return fmt.Errorf("process-visual requires analysis.json: %w", err)
+	}
 	if _, err := os.Stat(filepath.Join(runDir, "report.md")); err != nil {
 		return fmt.Errorf("process-visual requires report.md: %w", err)
 	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes), string(analysisJSONBytes))
 	if err != nil {
 		return err
 	}
@@ -1078,4 +1094,24 @@ func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, 
 	}
 
 	return "", htmlErr
+}
+
+func loadAnalysisArtifact(path string) (model.AnalysisArtifact, error) {
+	payload, err := os.ReadFile(path)
+	if err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("read answer.raw.json: %w", err)
+	}
+	var artifact model.AnalysisArtifact
+	if err := json.Unmarshal(payload, &artifact); err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("invalid analysis json: %w", err)
+	}
+	artifact.SQL = strings.TrimSpace(artifact.SQL)
+	artifact.ReportMarkdown = strings.TrimSpace(artifact.ReportMarkdown)
+	if artifact.SQL == "" {
+		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty sql")
+	}
+	if artifact.ReportMarkdown == "" {
+		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty report_markdown")
+	}
+	return artifact, nil
 }

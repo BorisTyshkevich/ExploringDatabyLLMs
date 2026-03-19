@@ -42,10 +42,10 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 }
 
 func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL string) (string, error) {
-	return BuildVisualPrompt(question, dataset, result, savedSQL, "")
+	return BuildVisualPrompt(question, dataset, result, savedSQL, "", "")
 }
 
-func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, reportTemplate string) (string, error) {
+func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, reportTemplate, savedAnalysisJSON string) (string, error) {
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
@@ -74,6 +74,7 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		"result_columns_csv":        strings.Join(result.Columns, ", "),
 		"saved_sql":                 strings.TrimSpace(savedSQL),
 		"saved_report_template":     strings.TrimSpace(reportTemplate),
+		"saved_analysis_json":       strings.TrimSpace(savedAnalysisJSON),
 		"visual_prompt_md":          question.VisualPrompt,
 	}
 	sections := []string{
