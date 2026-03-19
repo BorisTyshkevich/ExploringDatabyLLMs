@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS ontime.airports
+CREATE TABLE IF NOT EXISTS ontime.airports_bts
 (
     `code` FixedString(3) COMMENT 'Three-letter airport code from the BTS Master Coordinate export.',
     `airport_id` UInt32 COMMENT 'Stable DOT airport identifier used by ontime.ontime OriginAirportID and DestAirportID.',
@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS ontime.airports
     `start_date` Date COMMENT 'Start date when this airport record version became effective. 1970-01-01 means missing in the source export.',
     `thru_date` Date COMMENT 'End date when this airport record version stopped being effective. 1970-01-01 means missing in the source export.',
     `is_closed` UInt8 COMMENT 'Closure flag from BTS where 1 means the airport record is closed.',
-    `is_latest` UInt8 COMMENT 'Latest-record flag from BTS where 1 marks the current record for the airport code.'
+    `is_latest` UInt8 COMMENT 'Loader-computed latest-record flag where 1 marks the single selected current row for an airport code.'
 )
 ENGINE = MergeTree
 ORDER BY (`code`, `airport_id`, `is_latest`)
-COMMENT 'Simplified airport dimension modeled from the BTS Master Coordinate history export.'
+COMMENT 'Simplified airport dimension modeled from the BTS Master Coordinate history export, with a cleaned latest flag per code.'

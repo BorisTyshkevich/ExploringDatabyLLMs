@@ -23,7 +23,7 @@ Official BTS airport dimension source:
 
 - `ontime.ontime`
 - `ontime.ontime_stage`
-- `ontime.airports`
+- `ontime.airports_bts`
 - `ontime.airports_latest`
 
 Both use yearly partitions. The stage table is rebuilt for a target year and then published with:
@@ -84,7 +84,7 @@ python3 datasets/ontime/download/analyze_existing_ontime.py --connection demo
 
 ## BTS Airport Dimension
 
-The official airport dimension is loaded separately from `default.airports`. It preserves BTS `Master Coordinate` history in `ontime.airports`, remodels the export into a simpler analytics-facing schema, and exposes `ontime.airports_latest` as a latest-only helper view filtered to `is_latest = 1`.
+The official airport dimension is loaded separately from `default.airports`. It preserves BTS `Master Coordinate` history in `ontime.airports_bts` and exposes `ontime.airports_latest` as the cleaned semantic airport view with a single latest row per airport code.
 
 Create the airport table and latest view:
 
@@ -104,7 +104,7 @@ Load the current official export into ClickHouse:
 python3 datasets/ontime/download/load_airports_bts.py load --connection demo
 ```
 
-Verify table counts and OnTime join coverage:
+Verify table counts, uniqueness, and OnTime join coverage:
 
 ```bash
 python3 datasets/ontime/download/load_airports_bts.py verify --connection demo
@@ -125,4 +125,17 @@ LEFT JOIN ontime.airports_latest AS a
 GROUP BY Origin
 ORDER BY Origin
 LIMIT 20
+```
+
+Example code-based lookup using the cleaned latest airport view:
+
+```sql
+SELECT
+    code,
+    name,
+    latitude,
+    longitude
+FROM ontime.airports_latest
+WHERE code IN ('ISP', 'BWI', 'SEA')
+ORDER BY code
 ```

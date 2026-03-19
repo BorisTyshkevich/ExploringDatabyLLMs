@@ -136,9 +136,6 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if !strings.Contains(got, "ontime-analyst-dashboard") {
 		t.Fatalf("expected q001 prompt to reference skill, got: %s", got)
 	}
-	if !strings.Contains(got, "ontime.airports_latest") {
-		t.Fatalf("expected q001 prompt to mention airport enrichment, got: %s", got)
-	}
 	if !strings.Contains(got, "airport-coordinate enrichment") {
 		t.Fatalf("expected q001 prompt to label map enrichment clearly, got: %s", got)
 	}
@@ -165,6 +162,9 @@ func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) 
 	if strings.Contains(question.VisualPrompt, "ontime.airports_latest") {
 		t.Fatalf("did not expect q007 local visual prompt to hardcode airport enrichment source: %s", question.VisualPrompt)
 	}
+	if strings.Contains(question.Prompt, "ontime.airports_latest") {
+		t.Fatalf("did not expect q007 local prompt to hardcode airport enrichment source: %s", question.Prompt)
+	}
 	result := model.CanonicalResult{
 		Columns: []string{
 			"Tail_Number",
@@ -185,7 +185,7 @@ func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) 
 	if strings.Contains(got, "ontime_semantic") || strings.Contains(got, "Dataset discovery:") {
 		t.Fatalf("did not expect semantic discovery guidance, got: %s", got)
 	}
-	if strings.Contains(got, "run an explicit airport-coordinate enrichment query against `ontime.airports_latest` using airport codes parsed from the route strings") {
+	if strings.Contains(got, "run an explicit airport-coordinate enrichment query against") {
 		t.Fatalf("did not expect q007 built prompt to include the old explicit airport instruction, got: %s", got)
 	}
 }

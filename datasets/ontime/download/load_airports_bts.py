@@ -342,13 +342,18 @@ def run_clickhouse(connection: str, query: str | None = None, query_file: Path |
 
 def create_tables(connection: str) -> None:
     for query in (
+        "DROP VIEW IF EXISTS ontime.airports_latest_by_code",
         "DROP VIEW IF EXISTS ontime.airports_latest",
+        "DROP TABLE IF EXISTS ontime.airports_bts",
         "DROP TABLE IF EXISTS ontime.airports",
     ):
         result = run_clickhouse(connection, query=query)
         if result.returncode != 0:
             raise RuntimeError(f"failed to apply setup query {query!r}: {result.stderr.strip()}")
-    for sql_file in (SCRIPT_DIR / "airports_bts_schema.sql", SCRIPT_DIR / "airports_bts_latest_view.sql"):
+    for sql_file in (
+        SCRIPT_DIR / "airports_bts_schema.sql",
+        SCRIPT_DIR / "airports_bts_latest_view.sql",
+    ):
         result = run_clickhouse(connection, query_file=sql_file)
         if result.returncode != 0:
             raise RuntimeError(f"failed to apply {sql_file.name}: {result.stderr.strip()}")
@@ -433,6 +438,30 @@ def transform_row(row: dict[str, str]) -> dict[str, str]:
     }
 
 
+def semantic_latest_rank(transformed: dict[str, str]) -> tuple[int, str, int]:
+    return (
+        -int(transformed["is_closed"]),
+        transformed["start_date"],
+        int(transformed["airport_id"]),
+    )
+
+
+def apply_semantic_latest(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    winners: dict[str, tuple[int, str, int]] = {}
+    for row in rows:
+        rank = semantic_latest_rank(row)
+        code = row["code"]
+        if code not in winners or rank > winners[code]:
+            winners[code] = rank
+
+    cleaned: list[dict[str, str]] = []
+    for row in rows:
+        updated = dict(row)
+        updated["is_latest"] = "1" if semantic_latest_rank(row) == winners[row["code"]] else "0"
+        cleaned.append(updated)
+    return cleaned
+
+
 def serialize_target_value(column: str, raw: str) -> str:
     value = raw.strip()
     if column in TARGET_STRING_COLUMNS:
@@ -451,11 +480,11 @@ def serialize_target_value(column: str, raw: str) -> str:
 
 
 def load_export(connection: str, artifact: DownloadArtifact, inspection: dict[str, object]) -> dict[str, int]:
-    truncate = run_clickhouse(connection, query="TRUNCATE TABLE ontime.airports")
+    truncate = run_clickhouse(connection, query="TRUNCATE TABLE ontime.airports_bts")
     if truncate.returncode != 0:
         raise RuntimeError(truncate.stderr.strip())
 
-    insert_query = f"INSERT INTO ontime.airports ({', '.join(TARGET_COLUMNS)}) FORMAT TabSeparated"
+    insert_query = f"INSERT INTO ontime.airports_bts ({', '.join(TARGET_COLUMNS)}) FORMAT TabSeparated"
     proc = subprocess.Popen(
         ["clickhouse-client", "--connection", connection, "--query", insert_query],
         stdin=subprocess.PIPE,
@@ -463,7 +492,7 @@ def load_export(connection: str, artifact: DownloadArtifact, inspection: dict[st
     )
     assert proc.stdin is not None
 
-    inserted_rows = 0
+    transformed_rows: list[dict[str, str]] = []
     with zipfile.ZipFile(artifact.zip_path) as archive, archive.open(artifact.csv_name) as raw:
         text = io.TextIOWrapper(raw, encoding="utf-8", newline="")
         reader = csv.DictReader(text)
@@ -472,19 +501,23 @@ def load_export(connection: str, artifact: DownloadArtifact, inspection: dict[st
         for line_no, row in enumerate(reader, start=2):
             try:
                 transformed = transform_row(row)
-                normalized = [serialize_target_value(column, transformed.get(column, "")) for column in TARGET_COLUMNS]
             except RuntimeError as exc:
                 raise RuntimeError(f"{artifact.csv_name}: line {line_no}: {exc}") from exc
-            proc.stdin.write("\t".join(normalized))
-            proc.stdin.write("\n")
-            inserted_rows += 1
+            transformed_rows.append(transformed)
+
+    inserted_rows = 0
+    for transformed in apply_semantic_latest(transformed_rows):
+        normalized = [serialize_target_value(column, transformed.get(column, "")) for column in TARGET_COLUMNS]
+        proc.stdin.write("\t".join(normalized))
+        proc.stdin.write("\n")
+        inserted_rows += 1
 
     proc.stdin.close()
     return_code = proc.wait()
     if return_code != 0:
         raise RuntimeError(f"clickhouse insert failed with exit code {return_code}")
 
-    counted = run_clickhouse(connection, query="SELECT count() FROM ontime.airports")
+    counted = run_clickhouse(connection, query="SELECT count() FROM ontime.airports_bts")
     if counted.returncode != 0:
         raise RuntimeError(counted.stderr.strip())
     counted_rows = int(counted.stdout.strip() or "0")
@@ -517,9 +550,11 @@ def verify(connection: str) -> dict[str, object]:
         connection,
         """
         SELECT
-            (SELECT count() FROM ontime.airports),
+            (SELECT count() FROM ontime.airports_bts),
             (SELECT count() FROM ontime.airports_latest),
-            (SELECT count() FROM ontime.airports_latest WHERE is_latest != 1)
+            (SELECT count() FROM ontime.airports_latest WHERE is_latest != 1),
+            (SELECT countDistinct(code) FROM ontime.airports_latest),
+            (SELECT count() - countDistinct(code) FROM ontime.airports_latest)
         """.strip(),
     )[0]
 
@@ -603,9 +638,11 @@ def verify(connection: str) -> dict[str, object]:
     )
 
     bts_meta = {
-        "airports_rows": int(row_counts[0]),
+        "airports_bts_rows": int(row_counts[0]),
         "airports_latest_rows": int(row_counts[1]),
         "latest_view_non_latest_rows": int(row_counts[2]),
+        "airports_latest_distinct_codes": int(row_counts[3]),
+        "latest_duplicate_codes": int(row_counts[4]),
         "origin_distinct_airport_ids": int(origin_coverage[0]),
         "origin_matched_airport_ids": int(origin_coverage[1]),
         "dest_distinct_airport_ids": int(dest_coverage[0]),
