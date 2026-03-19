@@ -1,6 +1,7 @@
 /runs
 /runs/
 .tmp/
+.gocache/
 .claude/
 datasets/ontime/.cache/
 datasets/ontime/download/.cache/
