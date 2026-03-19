@@ -41,6 +41,9 @@ Rules:
 - Prefer `{{data_overview_md}}` and `{{result_table_md}}` for JSON-derived sections.
 - Keep the report concise and analytical.
 - Use placeholders only where data is needed.
+- Derive SQL, metrics, and report claims only from the current question and the current query result shape.
+- Do not rely on prior qforge runs, prior question ids, or previously observed values.
+- Do not mention other question ids such as `q001` in the artifact unless the current prompt explicitly asks for cross-question comparison.
 - Allowed built-in placeholders: {{report_placeholders}}
 - Allowed metric placeholders use this pattern only: `{{metric.<name>}}`
 - Do not invent any placeholder outside the built-in list and `{{metric.<name>}}`.

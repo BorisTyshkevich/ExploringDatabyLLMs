@@ -8,5 +8,7 @@ Definitions and rules:
 
 - Do not invent column aliases 
 - Build each itinerary in chronological leg order using the actual departure timestamps.
+- Use actual `DepTime` values only. Exclude rows where actual departure time is missing; do not fall back to `CRSDepTime`.
 - The textual `Route` must include every leg and the final destination airport.
 - If `Hops = N`, the route must contain exactly `N` legs or `N + 1` airport codes.
+- If you enrich airports inside SQL for this question, use `OriginAirportID` and `DestAirportID` joins to `ontime.airports_latest.airport_id`, not code joins.

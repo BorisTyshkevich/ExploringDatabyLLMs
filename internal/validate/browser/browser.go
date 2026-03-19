@@ -138,16 +138,18 @@ func Validate(ctx context.Context, opts Options) Result {
 		return result
 	}
 
-	controls, err := discoverControls(browserCtx)
-	if err != nil {
-		result.Valid = false
-		result.Errors = append(result.Errors, classifyError("control_discovery", err))
-		return result
-	}
-	result.MissingControls = append(result.MissingControls, controls.Missing...)
-	if len(controls.Missing) > 0 {
-		result.Valid = false
-		result.Errors = append(result.Errors, "browser validation missing required controls: "+strings.Join(controls.Missing, ", "))
+	if strings.EqualFold(strings.TrimSpace(opts.VisualMode), "dynamic") {
+		controls, err := discoverControls(browserCtx)
+		if err != nil {
+			result.Valid = false
+			result.Errors = append(result.Errors, classifyError("control_discovery", err))
+			return result
+		}
+		result.MissingControls = append(result.MissingControls, controls.Missing...)
+		if len(controls.Missing) > 0 {
+			result.Valid = false
+			result.Errors = append(result.Errors, "browser validation missing required controls: "+strings.Join(controls.Missing, ", "))
+		}
 	}
 
 	initialState, err := collectPageState(browserCtx)

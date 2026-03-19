@@ -90,6 +90,29 @@ func TestValidateFailsWhenControlsMissing(t *testing.T) {
 	}
 }
 
+func TestValidateStaticModeDoesNotRequireDynamicControls(t *testing.T) {
+	srv := newFixtureServer(http.StatusOK, `{"columns":["value"],"rows":[[1]],"count":1}`, false, true)
+	defer srv.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	result := Validate(ctx, Options{
+		BaseURL:                  srv.URL + "/visual.html",
+		VisualMode:               "static",
+		Token:                    "public-token",
+		ExpectedRequestSubstring: "/api/test",
+	})
+	if !result.Valid {
+		t.Fatalf("expected static mode to skip dynamic controls, got %+v", result)
+	}
+	if len(result.MissingControls) != 0 {
+		t.Fatalf("did not expect missing dynamic controls for static mode, got %+v", result.MissingControls)
+	}
+	if !result.LiveFetchSkipped || result.SkipReason != "non_dynamic_mode" {
+		t.Fatalf("expected static mode live fetch skip, got %+v", result)
+	}
+}
+
 func TestValidatePublicLiveFetch(t *testing.T) {
 	token := strings.TrimSpace(os.Getenv("MCP_JWE_TOKEN"))
 	if token == "" {
