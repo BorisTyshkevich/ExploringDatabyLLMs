@@ -1,6 +1,6 @@
 id: q007
-slug: q007_hops_per_day_semantic_discovery
-title: Highest daily hops for one aircraft on one flight number
+slug: q007_hops_per_day_static
+title: Highest daily hops ... - q001 copy but with static artifact
 dataset: ontime
 artifacts_required: query.sql,result.tsv,report.md,visual.html
 visual_mode: static

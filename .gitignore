@@ -2,6 +2,8 @@
 /runs/
 .tmp/
 .gocache/
+.air/
+.mcp.json
 .claude/
 datasets/ontime/.cache/
 datasets/ontime/download/.cache/

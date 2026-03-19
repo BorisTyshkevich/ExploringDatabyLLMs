@@ -446,10 +446,10 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-visual --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has analysis.json, query.sql, report.template.md, report.md, and result.json.")
+		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has query.sql, report.template.md, report.md, and result.json.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - loads manifest.json, analysis.json, query.sql, report.template.md, report.md, and result.json from the selected run")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json, query.sql, report.template.md, report.md, and result.json from the selected run")
 		fmt.Fprintln(os.Stdout, "  - rebuilds the visual prompt from the original question and saved artifacts")
 		fmt.Fprintln(os.Stdout, "  - invokes the original provider again for visual.html only")
 		fmt.Fprintln(os.Stdout, "  - writes final visual.html in the same run directory")
@@ -744,11 +744,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return fmt.Errorf("read report.template.md for visual prompt: %w", err)
 	}
-	analysisJSONBytes, err := os.ReadFile(artifacts.AnalysisJSON)
-	if err != nil {
-		return fmt.Errorf("read analysis.json for visual prompt: %w", err)
-	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes), string(analysisJSONBytes))
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
 	if err != nil {
 		return err
 	}
@@ -972,14 +968,10 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return fmt.Errorf("process-visual requires report.template.md: %w", err)
 	}
-	analysisJSONBytes, err := os.ReadFile(filepath.Join(runDir, "analysis.json"))
-	if err != nil {
-		return fmt.Errorf("process-visual requires analysis.json: %w", err)
-	}
 	if _, err := os.Stat(filepath.Join(runDir, "report.md")); err != nil {
 		return fmt.Errorf("process-visual requires report.md: %w", err)
 	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes), string(analysisJSONBytes))
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
 	if err != nil {
 		return err
 	}
