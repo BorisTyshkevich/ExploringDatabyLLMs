@@ -2,7 +2,7 @@
 
 This repository contains two main active areas:
 
-- [`qforge`](/Users/bvt/work/ExploringDatabyLLMs/qforge.md)
+- [`qforge`](/Users/bvt/work/ExploringDatabyLLMs/docs/qforge.md)
   - the Go-based benchmark harness for LLM-generated analytics workflows
   - covers prompt assembly, SQL execution, report and visual generation, compare runs, and CLI usage
 - [`datasets/ontime/download`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/download/README.md)
@@ -18,5 +18,5 @@ Related repo areas:
 - [`internal`](/Users/bvt/work/ExploringDatabyLLMs/internal)
   - harness implementation packages
 
-Start with [`qforge.md`](/Users/bvt/work/ExploringDatabyLLMs/qforge.md) if you want to run benchmarks or compare providers.
+Start with [`qforge.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/qforge.md) if you want to run benchmarks or compare providers.
 Start with [`datasets/ontime/download/README.md`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/download/README.md) if you want to rebuild or inspect the OnTime dataset.

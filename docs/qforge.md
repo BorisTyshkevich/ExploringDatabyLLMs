@@ -17,11 +17,12 @@ This repository still contains historical Bash and Python benchmark code, but th
 `qforge` uses a two-phase design:
 
 1. SQL generation
-   - the model is prompted to inspect schema and self-verify its SQL before returning it
-   - the model emits only a fenced `sql` block
+   - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
+   - the model writes `answer.raw.json` in the run directory
+   - `answer.raw.json` contains the analysis artifact with `sql`, `report_markdown`, and `metrics`
 2. Optional presentation generation
-   - the model writes final `html` and template-style `report`
-   - the final `report.md` is rendered as Markdown from the template plus JSON-derived sections
+   - the model writes final `html`
+   - the final `report.md` is rendered by the harness from the saved analysis artifact plus JSON-derived sections
    - `visual.html` is model-authored final output and is not patched by `qforge`
    - `visual.html` is validated first against the visual contract and then in a headless browser via `chromedp`
    - this can be done later with `process-visual` or immediately with `run --with-visual`
@@ -37,7 +38,7 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md)
-  - SQL-only rules such as schema inspection, self-verification, and the fenced `sql` output contract
+  - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` analysis-artifact contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
   - report/template rules for the presentation phase
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
@@ -59,6 +60,8 @@ Question metadata may also declare `visual_mode`:
 If `visual_mode` is absent, qforge treats the question as `dynamic` for backward compatibility.
 
 Template variables, prompt composition, and dataset mapping are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md).
+
+End-to-end phase behavior and artifact ownership are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/processing-logic.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/processing-logic.md).
 
 ## Setup
 
@@ -306,7 +309,7 @@ Flags:
 
 What `process-visual` does:
 
-- loads `manifest.json`, `query.sql`, `report.template.md`, `report.md`, and `result.json` from an existing run
+- loads `manifest.json`, `analysis.json`, `query.sql`, `report.template.md`, `report.md`, and `result.json` from an existing run
 - rebuilds the presentation prompt from question metadata and the saved artifacts
 - invokes the original provider again for `html`
 - validates `visual.html` in two stages unless `--skip-visual-validation` is set:
@@ -461,6 +464,7 @@ Typical SQL-only run artifacts:
 
 - `prompt.sql.md`
 - `answer.sql.raw.md`
+- `answer.raw.json`
 - `query.sql`
 - `result.json`
 - `manifest.json`
@@ -472,6 +476,13 @@ When presentation is processed later with `qforge process-visual`:
 - `prompt.presentation.md`
 - `answer.presentation.raw.md`
 - `visual.html`
+
+Typical analysis-phase artifacts now include:
+
+- `analysis.json`
+- `query.sql`
+- `report.template.md`
+- `report.md`
 
 ## Browser Validation
 
