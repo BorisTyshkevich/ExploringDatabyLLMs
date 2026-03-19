@@ -99,18 +99,19 @@ func TestWriteOutputsWritesCompactJSON(t *testing.T) {
 }
 
 func TestArtifactPathsForQuestion(t *testing.T) {
-	got := ArtifactPathsForQuestion("/repo", "2026-03-16", "q003_delta_atl_departure_delay_hotspots")
-	if got.JSON != "/repo/runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/compare/compare.json" {
+	got := ArtifactPathsForQuestion("/repo-runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots")
+	if got.JSON != "/repo-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/compare/compare.json" {
 		t.Fatalf("unexpected compare json path: %s", got.JSON)
 	}
-	if got.ReportMD != "/repo/runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/compare_report.md" {
+	if got.ReportMD != "/repo-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/compare_report.md" {
 		t.Fatalf("unexpected compare report path: %s", got.ReportMD)
 	}
 }
 
 func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
-	repoRoot := t.TempDir()
-	promptDir := filepath.Join(repoRoot, "prompts")
+	codeRoot := t.TempDir()
+	runsRoot := t.TempDir()
+	promptDir := filepath.Join(codeRoot, "prompts")
 	if err := os.MkdirAll(promptDir, 0o755); err != nil {
 		t.Fatalf("mkdir prompts: %v", err)
 	}
@@ -128,7 +129,7 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		t.Fatalf("write analysis prompt: %v", err)
 	}
 
-	questionDir := filepath.Join(repoRoot, "prompts", "q003_delta_atl_departure_delay_hotspots")
+	questionDir := filepath.Join(codeRoot, "prompts", "q003_delta_atl_departure_delay_hotspots")
 	if err := os.MkdirAll(questionDir, 0o755); err != nil {
 		t.Fatalf("mkdir question dir: %v", err)
 	}
@@ -144,18 +145,18 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		Day: "2026-03-16",
 		Runs: []RunSummary{
 			{
-				RunDir:    filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "claude", "opus", "run-001"),
+				RunDir:    filepath.Join(runsRoot, "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "claude", "opus", "run-001"),
 				RunID:     "run-001",
 				Runner:    "claude",
 				Model:     "opus",
-				Artifacts: buildRunArtifactLinks(repoRoot, filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "claude", "opus", "run-001")),
+				Artifacts: buildRunArtifactLinks(runsRoot, filepath.Join(runsRoot, "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "claude", "opus", "run-001")),
 			},
 			{
-				RunDir:    filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "gemini", "gemini-3.1-pro-preview", "run-001"),
+				RunDir:    filepath.Join(runsRoot, "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "gemini", "gemini-3.1-pro-preview", "run-001"),
 				RunID:     "run-001",
 				Runner:    "gemini",
 				Model:     "gemini-3.1-pro-preview",
-				Artifacts: buildRunArtifactLinks(repoRoot, filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "gemini", "gemini-3.1-pro-preview", "run-001")),
+				Artifacts: buildRunArtifactLinks(runsRoot, filepath.Join(runsRoot, "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "gemini", "gemini-3.1-pro-preview", "run-001")),
 			},
 		},
 	}
@@ -172,20 +173,20 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 			}
 		}
 	}
-	report.Runs[0].Artifacts = buildRunArtifactLinks(repoRoot, report.Runs[0].RunDir)
-	report.Runs[1].Artifacts = buildRunArtifactLinks(repoRoot, report.Runs[1].RunDir)
+	report.Runs[0].Artifacts = buildRunArtifactLinks(runsRoot, report.Runs[0].RunDir)
+	report.Runs[1].Artifacts = buildRunArtifactLinks(runsRoot, report.Runs[1].RunDir)
 
-	got, err := BuildAnalysisPrompt(repoRoot, question, report, filepath.Join(repoRoot, "runs", "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "compare", "compare.json"))
+	got, err := BuildAnalysisPrompt(codeRoot, runsRoot, question, report, filepath.Join(runsRoot, "2026-03-16", "q003_delta_atl_departure_delay_hotspots", "compare", "compare.json"))
 	if err != nil {
 		t.Fatalf("BuildAnalysisPrompt returned error: %v", err)
 	}
 
 	for _, want := range []string{
-		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
-		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/report.md",
-		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
-		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/report.md",
-		"runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/visual.html",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/report.md",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/report.md",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/visual.html",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freport.md",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
@@ -197,16 +198,16 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 }
 
 func TestPublishedRelativePathAndURLs(t *testing.T) {
-	repoRoot := t.TempDir()
-	local := filepath.Join(repoRoot, "runs", "2026-03-17", "q001_hops_per_day", "codex", "gpt-5.4", "run-003", "report.md")
+	runsRoot := t.TempDir()
+	local := filepath.Join(runsRoot, "2026-03-17", "q001_hops_per_day", "codex", "gpt-5.4", "run-003", "report.md")
 	if err := os.MkdirAll(filepath.Dir(local), 0o755); err != nil {
 		t.Fatalf("mkdir report dir: %v", err)
 	}
 	if err := os.WriteFile(local, []byte("x"), 0o644); err != nil {
 		t.Fatalf("write report: %v", err)
 	}
-	got := buildArtifactRef(repoRoot, local, "md")
-	if got.LocalPath != "runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md" {
+	got := buildArtifactRef(runsRoot, local, "md")
+	if got.LocalPath != "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md" {
 		t.Fatalf("unexpected local path: %s", got.LocalPath)
 	}
 	if got.PublishedPath != "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md" {

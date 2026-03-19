@@ -6,10 +6,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -275,10 +277,14 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 	startedAt := time.Now()
 	cmd := exec.CommandContext(ctx, bin, args...)
 	var stdout, stderr bytes.Buffer
+	liveStdout := newLiveLogWriter(req.Verbose, "claude", "stdout", os.Stdout)
+	liveStderr := newLiveLogWriter(req.Verbose, "claude", "stderr", os.Stderr)
 	cmd.Dir = req.OutDir
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
+	cmd.Stdout = io.MultiWriter(&stdout, liveStdout)
+	cmd.Stderr = io.MultiWriter(&stderr, liveStderr)
 	err = cmd.Run()
+	liveStdout.Flush()
+	liveStderr.Flush()
 	if err != nil {
 		logf(req.Verbose, "provider=claude phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 		logProviderDetails(req.Verbose, "claude", stdout.String(), stderr.String())
@@ -312,9 +318,13 @@ func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, p
 	cmd := exec.CommandContext(ctx, bin, args...)
 	cmd.Dir = req.OutDir
 	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
+	liveStdout := newLiveLogWriter(req.Verbose, "gemini", "stdout", os.Stdout)
+	liveStderr := newLiveLogWriter(req.Verbose, "gemini", "stderr", os.Stderr)
+	cmd.Stdout = io.MultiWriter(&stdout, liveStdout)
+	cmd.Stderr = io.MultiWriter(&stderr, liveStderr)
 	err := cmd.Run()
+	liveStdout.Flush()
+	liveStderr.Flush()
 	if err != nil {
 		logf(req.Verbose, "provider=gemini phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 		logProviderDetails(req.Verbose, "gemini", stdout.String(), stderr.String())
@@ -422,4 +432,56 @@ func truncate(s string, limit int) string {
 		return s
 	}
 	return s[:limit] + "...(truncated)"
+}
+
+type liveLogWriter struct {
+	enabled  bool
+	provider string
+	stream   string
+	target   io.Writer
+	mu       sync.Mutex
+	buf      bytes.Buffer
+}
+
+func newLiveLogWriter(enabled bool, provider, stream string, target io.Writer) *liveLogWriter {
+	return &liveLogWriter{
+		enabled:  enabled,
+		provider: provider,
+		stream:   stream,
+		target:   target,
+	}
+}
+
+func (w *liveLogWriter) Write(p []byte) (int, error) {
+	if !w.enabled {
+		return len(p), nil
+	}
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if _, err := w.buf.Write(p); err != nil {
+		return 0, err
+	}
+	for {
+		line, err := w.buf.ReadString('\n')
+		if err != nil {
+			w.buf.WriteString(line)
+			return len(p), nil
+		}
+		if _, err := fmt.Fprintf(w.target, "[qforge] provider=%s stream=%s %s", w.provider, w.stream, line); err != nil {
+			return 0, err
+		}
+	}
+}
+
+func (w *liveLogWriter) Flush() {
+	if !w.enabled {
+		return
+	}
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if w.buf.Len() == 0 {
+		return
+	}
+	_, _ = fmt.Fprintf(w.target, "[qforge] provider=%s stream=%s %s\n", w.provider, w.stream, w.buf.String())
+	w.buf.Reset()
 }

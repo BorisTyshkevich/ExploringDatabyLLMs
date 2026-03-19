@@ -74,8 +74,8 @@ type resultSummary struct {
 	RowCount int      `json:"row_count"`
 }
 
-func ArtifactPathsForQuestion(repoRoot, day, questionSlug string) ArtifactPaths {
-	baseDir := filepath.Join(repoRoot, "runs", day, questionSlug)
+func ArtifactPathsForQuestion(runsRoot, day, questionSlug string) ArtifactPaths {
+	baseDir := filepath.Join(runsRoot, day, questionSlug)
 	compareDir := filepath.Join(baseDir, "compare")
 	return ArtifactPaths{
 		Dir:         compareDir,
@@ -86,8 +86,8 @@ func ArtifactPathsForQuestion(repoRoot, day, questionSlug string) ArtifactPaths 
 	}
 }
 
-func DiscoverQuestionRefs(repoRoot, day string) ([]string, error) {
-	runDirs, err := discoverRunDirs(repoRoot, day, "")
+func DiscoverQuestionRefs(runsRoot, day string) ([]string, error) {
+	runDirs, err := discoverRunDirs(runsRoot, day, "")
 	if err != nil {
 		return nil, err
 	}
@@ -115,8 +115,8 @@ func DiscoverQuestionRefs(repoRoot, day string) ([]string, error) {
 	return refs, nil
 }
 
-func Generate(ctx context.Context, repoRoot, outDir, day, questionFilter, explicitMCPURL, explicitMCPToken string) (Report, error) {
-	runDirs, err := discoverRunDirs(repoRoot, day, questionFilter)
+func Generate(ctx context.Context, codeRoot, runsRoot, outDir, day, questionFilter, explicitMCPURL, explicitMCPToken string) (Report, error) {
+	runDirs, err := discoverRunDirs(runsRoot, day, questionFilter)
 	if err != nil {
 		return Report{}, err
 	}
@@ -124,7 +124,7 @@ func Generate(ctx context.Context, repoRoot, outDir, day, questionFilter, explic
 	items := make([]RunSummary, 0, len(runDirs))
 	var reportWarnings []string
 	for _, runDir := range runDirs {
-		item, warnings, err := summarizeRun(ctx, repoRoot, runDir, explicitMCPURL, explicitMCPToken)
+		item, warnings, err := summarizeRun(ctx, codeRoot, runsRoot, runDir, explicitMCPURL, explicitMCPToken)
 		if err != nil {
 			return Report{}, err
 		}
@@ -161,7 +161,7 @@ func Generate(ctx context.Context, repoRoot, outDir, day, questionFilter, explic
 		Runs:        items,
 	}
 	if len(items) == 0 {
-		report.Warnings = append(report.Warnings, fmt.Sprintf("no runs found under runs/%s for %s", day, questionFilter))
+		report.Warnings = append(report.Warnings, fmt.Sprintf("no runs found under %s for %s", day, questionFilter))
 	}
 	if err := writeOutputs(outDir, report); err != nil {
 		return Report{}, err
@@ -169,7 +169,7 @@ func Generate(ctx context.Context, repoRoot, outDir, day, questionFilter, explic
 	return report, nil
 }
 
-func summarizeRun(ctx context.Context, repoRoot, runDir, explicitMCPURL, explicitMCPToken string) (RunSummary, []string, error) {
+func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPURL, explicitMCPToken string) (RunSummary, []string, error) {
 	manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
 	if err != nil {
 		return RunSummary{}, nil, err
@@ -195,7 +195,7 @@ func summarizeRun(ctx context.Context, repoRoot, runDir, explicitMCPURL, explici
 	if strings.HasPrefix(item.RunID, "run-") {
 		fmt.Sscanf(item.RunID, "run-%d", &item.RunNumber)
 	}
-	item.Artifacts = buildRunArtifactLinks(repoRoot, runDir)
+	item.Artifacts = buildRunArtifactLinks(runsRoot, runDir)
 	var warnings []string
 
 	resultPath := filepath.Join(runDir, "result.json")
@@ -221,7 +221,7 @@ func summarizeRun(ctx context.Context, repoRoot, runDir, explicitMCPURL, explici
 	}
 
 	if manifest.LogComment != "" {
-		cfg, err := datasets.Load(repoRoot, manifest.Dataset)
+		cfg, err := datasets.Load(codeRoot, manifest.Dataset)
 		if err != nil {
 			warnings = append(warnings, fmt.Sprintf("%s: failed to load dataset config for metrics: %v", runID(item), err))
 		} else {
@@ -255,8 +255,8 @@ func summarizeRun(ctx context.Context, repoRoot, runDir, explicitMCPURL, explici
 	return item, item.Warnings, nil
 }
 
-func discoverRunDirs(repoRoot, day, questionFilter string) ([]string, error) {
-	root := filepath.Join(repoRoot, "runs", day)
+func discoverRunDirs(runsRoot, day, questionFilter string) ([]string, error) {
+	root := filepath.Join(runsRoot, day)
 	var runDirs []string
 	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
@@ -289,7 +289,7 @@ func discoverRunDirs(repoRoot, day, questionFilter string) ([]string, error) {
 
 func writeOutputs(outDir string, report Report) error {
 	if outDir == "" {
-		outDir = "runs/compare"
+		outDir = "compare"
 	}
 	if err := os.MkdirAll(outDir, 0o755); err != nil {
 		return err

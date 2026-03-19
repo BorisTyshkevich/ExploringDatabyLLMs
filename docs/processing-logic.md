@@ -147,7 +147,7 @@ Dynamic visuals may also perform live browser-side fetches using the same MCP to
 
 ## Artifact Summary
 
-Typical run artifacts under `runs/YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
+Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 
 - `prompt.sql.md`
 - `answer.sql.raw.md`

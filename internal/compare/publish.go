@@ -27,22 +27,22 @@ type ArtifactLinks struct {
 	VisualHTML ArtifactRef `json:"visual_html,omitempty"`
 }
 
-func buildRunArtifactLinks(repoRoot, runDir string) ArtifactLinks {
+func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
 	return ArtifactLinks{
-		QuerySQL:   buildArtifactRef(repoRoot, filepath.Join(runDir, "query.sql"), "sql"),
-		ReportMD:   buildArtifactRef(repoRoot, filepath.Join(runDir, "report.md"), "md"),
-		ResultJSON: buildArtifactRef(repoRoot, filepath.Join(runDir, "result.json"), "json"),
-		VisualHTML: buildArtifactRef(repoRoot, filepath.Join(runDir, "visual.html"), "html"),
+		QuerySQL:   buildArtifactRef(runsRoot, filepath.Join(runDir, "query.sql"), "sql"),
+		ReportMD:   buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
+		ResultJSON: buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
+		VisualHTML: buildArtifactRef(runsRoot, filepath.Join(runDir, "visual.html"), "html"),
 	}
 }
 
-func buildArtifactRef(repoRoot, localPath, kind string) ArtifactRef {
+func buildArtifactRef(runsRoot, localPath, kind string) ArtifactRef {
 	if _, err := os.Stat(localPath); err != nil {
 		return ArtifactRef{}
 	}
 	ref := ArtifactRef{
-		LocalPath:     repoRelativePath(repoRoot, localPath),
-		PublishedPath: publishedRelativePath(repoRoot, localPath),
+		LocalPath:     repoRelativePath(runsRoot, localPath),
+		PublishedPath: publishedRelativePath(runsRoot, localPath),
 	}
 	switch kind {
 	case "md":
@@ -70,8 +70,7 @@ func publishedRelativePath(repoRoot, path string) string {
 	if path == "" {
 		return path
 	}
-	runsRoot := filepath.Join(repoRoot, "runs")
-	rel, err := filepath.Rel(runsRoot, path)
+	rel, err := filepath.Rel(repoRoot, path)
 	if err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
 		return filepath.ToSlash(rel)
 	}

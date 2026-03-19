@@ -12,8 +12,8 @@ import (
 
 const analysisPromptFile = "analysis_prompt.md"
 
-func BuildAnalysisPrompt(repoRoot string, question model.Question, report Report, compareJSONPath string) (string, error) {
-	templatePath := filepath.Join(repoRoot, "prompts", analysisPromptFile)
+func BuildAnalysisPrompt(codeRoot, runsRoot string, question model.Question, report Report, compareJSONPath string) (string, error) {
+	templatePath := filepath.Join(codeRoot, "prompts", analysisPromptFile)
 	data, err := os.ReadFile(templatePath)
 	if err != nil {
 		return "", fmt.Errorf("load analysis prompt %s: %w", templatePath, err)
@@ -23,21 +23,21 @@ func BuildAnalysisPrompt(repoRoot string, question model.Question, report Report
 		"question_slug":              question.Meta.Slug,
 		"question_title":             question.Meta.Title,
 		"compare_day":                report.Day,
-		"compare_json_path":          repoRelativePath(repoRoot, compareJSONPath),
-		"compare_json_url":           publishedBlobURL(publishedRelativePath(repoRoot, compareJSONPath)),
-		"question_prompt_path":       repoRelativePath(repoRoot, filepath.Join(question.Dir, "prompt.md")),
-		"question_prompt_url":        qforgeRepoURL(repoRoot, filepath.Join(question.Dir, "prompt.md")),
-		"report_prompt_path":         optionalPath(repoRoot, filepath.Join(question.Dir, "report_prompt.md")),
-		"report_prompt_url":          optionalURL(repoRoot, filepath.Join(question.Dir, "report_prompt.md")),
-		"visual_prompt_path":         optionalPath(repoRoot, filepath.Join(question.Dir, "visual_prompt.md")),
-		"visual_prompt_url":          optionalURL(repoRoot, filepath.Join(question.Dir, "visual_prompt.md")),
-		"compare_contract_path":      optionalPath(repoRoot, filepath.Join(question.Dir, "compare.yaml")),
-		"compare_contract_url":       optionalURL(repoRoot, filepath.Join(question.Dir, "compare.yaml")),
-		"run_dirs_md":                bulletList(repoRelativePaths(repoRoot, runDirs(report.Runs))),
-		"query_sql_paths_md":         bulletList(repoRelativePaths(repoRoot, querySQLPaths(report.Runs))),
-		"report_md_paths_md":         bulletList(repoRelativePaths(repoRoot, reportMDPaths(report.Runs))),
-		"visual_html_paths_md":       bulletList(repoRelativePaths(repoRoot, visualHTMLPaths(report.Runs))),
-		"result_json_paths_md":       bulletList(repoRelativePaths(repoRoot, resultJSONPaths(report.Runs))),
+		"compare_json_path":          repoRelativePath(runsRoot, compareJSONPath),
+		"compare_json_url":           publishedBlobURL(publishedRelativePath(runsRoot, compareJSONPath)),
+		"question_prompt_path":       repoRelativePath(codeRoot, filepath.Join(question.Dir, "prompt.md")),
+		"question_prompt_url":        qforgeRepoURL(codeRoot, filepath.Join(question.Dir, "prompt.md")),
+		"report_prompt_path":         optionalPath(codeRoot, filepath.Join(question.Dir, "report_prompt.md")),
+		"report_prompt_url":          optionalURL(codeRoot, filepath.Join(question.Dir, "report_prompt.md")),
+		"visual_prompt_path":         optionalPath(codeRoot, filepath.Join(question.Dir, "visual_prompt.md")),
+		"visual_prompt_url":          optionalURL(codeRoot, filepath.Join(question.Dir, "visual_prompt.md")),
+		"compare_contract_path":      optionalPath(codeRoot, filepath.Join(question.Dir, "compare.yaml")),
+		"compare_contract_url":       optionalURL(codeRoot, filepath.Join(question.Dir, "compare.yaml")),
+		"run_dirs_md":                bulletList(repoRelativePaths(runsRoot, runDirs(report.Runs))),
+		"query_sql_paths_md":         bulletList(repoRelativePaths(runsRoot, querySQLPaths(report.Runs))),
+		"report_md_paths_md":         bulletList(repoRelativePaths(runsRoot, reportMDPaths(report.Runs))),
+		"visual_html_paths_md":       bulletList(repoRelativePaths(runsRoot, visualHTMLPaths(report.Runs))),
+		"result_json_paths_md":       bulletList(repoRelativePaths(runsRoot, resultJSONPaths(report.Runs))),
 		"published_run_artifacts_md": renderPublishedRunArtifacts(report.Runs),
 		"compare_summary_md":         renderMarkdown(report),
 	}

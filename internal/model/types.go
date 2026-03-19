@@ -1,5 +1,7 @@
 package model
 
+import "encoding/json"
+
 import "time"
 
 type Phase string
@@ -89,26 +91,28 @@ type RunPhases struct {
 }
 
 type RunManifest struct {
-	SchemaVersion   string            `json:"schema_version"`
-	Status          RunStatus         `json:"status"`
-	QuestionID      string            `json:"question_id"`
-	QuestionSlug    string            `json:"question_slug"`
-	QuestionTitle   string            `json:"question_title"`
-	Dataset         string            `json:"dataset"`
-	Runner          string            `json:"runner"`
-	Model           string            `json:"model"`
-	CLIBin          string            `json:"cli_bin"`
-	MCPServerName   string            `json:"mcp_server_name"`
-	MCPConfigSource string            `json:"mcp_config_source"`
-	StartedAt       time.Time         `json:"started_at"`
-	FinishedAt      time.Time         `json:"finished_at"`
-	DurationSec     int64             `json:"duration_sec"`
-	LogComment      string            `json:"log_comment"`
-	QuerySHA256     string            `json:"query_sha256"`
-	ResultRowCount  int               `json:"result_row_count"`
-	Phases          RunPhases         `json:"phases"`
-	Artifacts       ArtifactPaths     `json:"artifacts"`
-	Metadata        map[string]string `json:"metadata,omitempty"`
+	SchemaVersion                    string            `json:"schema_version"`
+	Status                           RunStatus         `json:"status"`
+	QuestionID                       string            `json:"question_id"`
+	QuestionSlug                     string            `json:"question_slug"`
+	QuestionTitle                    string            `json:"question_title"`
+	Dataset                          string            `json:"dataset"`
+	Runner                           string            `json:"runner"`
+	Model                            string            `json:"model"`
+	CLIBin                           string            `json:"cli_bin"`
+	MCPServerName                    string            `json:"mcp_server_name"`
+	MCPConfigSource                  string            `json:"mcp_config_source"`
+	StartedAt                        time.Time         `json:"started_at"`
+	FinishedAt                       time.Time         `json:"finished_at"`
+	DurationSec                      int64             `json:"duration_sec"`
+	SQLGenerationProviderDurationMs  int64             `json:"sql_generation_provider_duration_ms,omitempty"`
+	PresentationProviderDurationMs   int64             `json:"presentation_provider_duration_ms,omitempty"`
+	LogComment                       string            `json:"log_comment"`
+	QuerySHA256                      string            `json:"query_sha256"`
+	ResultRowCount                   int               `json:"result_row_count"`
+	Phases                           RunPhases         `json:"phases"`
+	Artifacts                        ArtifactPaths     `json:"artifacts"`
+	Metadata                         map[string]string `json:"metadata,omitempty"`
 }
 
 type CanonicalResult struct {
@@ -144,6 +148,46 @@ type AnalysisMetrics struct {
 	SummaryFacts []string            `json:"summary_facts,omitempty"`
 	NamedValues  map[string]string   `json:"named_values,omitempty"`
 	NamedLists   map[string][]string `json:"named_lists,omitempty"`
+}
+
+func (m *AnalysisMetrics) UnmarshalJSON(data []byte) error {
+	type rawMetrics struct {
+		SummaryFacts []string          `json:"summary_facts,omitempty"`
+		NamedValues  map[string]any    `json:"named_values,omitempty"`
+		NamedLists   map[string][]string `json:"named_lists,omitempty"`
+	}
+	var raw rawMetrics
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	m.SummaryFacts = raw.SummaryFacts
+	m.NamedLists = raw.NamedLists
+	if len(raw.NamedValues) > 0 {
+		m.NamedValues = make(map[string]string, len(raw.NamedValues))
+		for key, value := range raw.NamedValues {
+			switch v := value.(type) {
+			case nil:
+				m.NamedValues[key] = ""
+			case string:
+				m.NamedValues[key] = v
+			default:
+				bytes, err := json.Marshal(v)
+				if err != nil {
+					return err
+				}
+				if len(bytes) >= 2 && bytes[0] == '"' && bytes[len(bytes)-1] == '"' {
+					var decoded string
+					if err := json.Unmarshal(bytes, &decoded); err != nil {
+						return err
+					}
+					m.NamedValues[key] = decoded
+				} else {
+					m.NamedValues[key] = string(bytes)
+				}
+			}
+		}
+	}
+	return nil
 }
 
 type AnalysisArtifact struct {

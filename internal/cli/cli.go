@@ -82,14 +82,24 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "  qforge run -q q001 -r claude --with-visual -v")
 	fmt.Fprintln(out, "  qforge run -q q001 -r codex -r claude -v")
 	fmt.Fprintln(out, "  qforge run -q q001 -v")
-	fmt.Fprintln(out, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+	fmt.Fprintln(out, "  qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	fmt.Fprintln(out, "  qforge compare --question q003 -r codex -v")
 	fmt.Fprintln(out)
 	fmt.Fprintln(out, "Use `qforge <command> --help` for detailed subcommand help.")
 }
 
 func repoRoot() (string, error) {
+	if override := strings.TrimSpace(os.Getenv("QFORGE_CODE_ROOT")); override != "" {
+		return override, nil
+	}
 	return os.Getwd()
+}
+
+func runsRoot(codeRoot string) string {
+	if override := strings.TrimSpace(os.Getenv("QFORGE_RUN_ROOT")); override != "" {
+		return override
+	}
+	return codeRoot
 }
 
 func runListQuestions(args []string) error {
@@ -285,10 +295,11 @@ func runCompare(ctx context.Context, args []string) error {
 		}
 		return err
 	}
-	root, err := repoRoot()
+	codeRoot, err := repoRoot()
 	if err != nil {
 		return err
 	}
+	runRoot := runsRoot(codeRoot)
 	token := *mcpToken
 	if *mcpTokenFile != "" && token == "" {
 		bytes, err := os.ReadFile(*mcpTokenFile)
@@ -308,7 +319,7 @@ func runCompare(ctx context.Context, args []string) error {
 	if *questionRef != "" {
 		questionRefs = []string{*questionRef}
 	} else {
-		questionRefs, err = compare.DiscoverQuestionRefs(root, *day)
+		questionRefs, err = compare.DiscoverQuestionRefs(runRoot, *day)
 		if err != nil {
 			return err
 		}
@@ -355,24 +366,25 @@ type compareOptions struct {
 }
 
 func executeCompare(ctx context.Context, opts compareOptions) error {
-	root, err := repoRoot()
+	codeRoot, err := repoRoot()
 	if err != nil {
 		return err
 	}
-	question, err := questions.Resolve(root, opts.QuestionRef)
+	runRoot := runsRoot(codeRoot)
+	question, err := questions.Resolve(codeRoot, opts.QuestionRef)
 	if err != nil {
 		return err
 	}
-	cfg, err := datasets.Load(root, question.Meta.Dataset)
+	cfg, err := datasets.Load(codeRoot, question.Meta.Dataset)
 	if err != nil {
 		return err
 	}
-	paths := compare.ArtifactPathsForQuestion(root, opts.Day, question.Meta.Slug)
-	report, err := compare.Generate(ctx, root, paths.Dir, opts.Day, question.Meta.ID, opts.MCPURL, opts.MCPToken)
+	paths := compare.ArtifactPathsForQuestion(runRoot, opts.Day, question.Meta.Slug)
+	report, err := compare.Generate(ctx, codeRoot, runRoot, paths.Dir, opts.Day, question.Meta.ID, opts.MCPURL, opts.MCPToken)
 	if err != nil {
 		return err
 	}
-	prompt, err := compare.BuildAnalysisPrompt(root, question, report, paths.JSON)
+	prompt, err := compare.BuildAnalysisPrompt(codeRoot, runRoot, question, report, paths.JSON)
 	if err != nil {
 		return err
 	}
@@ -459,7 +471,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Example:")
-		fmt.Fprintln(os.Stdout, "  qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+		fmt.Fprintln(os.Stdout, "  qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	}
 	runDir := fs.String("run-dir", "", "Path to an existing qforge run directory")
 	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http")
@@ -505,7 +517,7 @@ func runInspectRun(args []string) error {
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Example:")
-		fmt.Fprintln(os.Stdout, "  qforge inspect-run --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004")
+		fmt.Fprintln(os.Stdout, "  qforge inspect-run --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004")
 	}
 	path := fs.String("run-dir", "", "Absolute or relative path to a qforge run directory")
 	if err := fs.Parse(args); err != nil {
@@ -558,11 +570,12 @@ type processVisualOptions struct {
 }
 
 func executeRun(ctx context.Context, opts runOptions) error {
-	root, err := repoRoot()
+	codeRoot, err := repoRoot()
 	if err != nil {
 		return err
 	}
-	question, err := questions.Resolve(root, opts.QuestionRef)
+	runRoot := runsRoot(codeRoot)
+	question, err := questions.Resolve(codeRoot, opts.QuestionRef)
 	if err != nil {
 		return err
 	}
@@ -570,7 +583,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if opts.Dataset != "" {
 		datasetName = opts.Dataset
 	}
-	cfg, err := datasets.Load(root, datasetName)
+	cfg, err := datasets.Load(codeRoot, datasetName)
 	if err != nil {
 		return err
 	}
@@ -599,7 +612,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		commandTimeoutSec = defaultCommandTimeoutSec
 	}
 	logf(opts.Verbose, "run question=%s runner=%s model=%s dataset=%s", question.Meta.ID, opts.Runner, opts.Model, datasetName)
-	outDir, err := runs.NextRunDir(root, question, opts.Runner, opts.Model, time.Now())
+	outDir, err := runs.NextRunDir(runRoot, question, opts.Runner, opts.Model, time.Now())
 	if err != nil {
 		return err
 	}
@@ -607,7 +620,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	artifacts := runs.DefaultArtifacts(outDir, question.PresentationEnabled)
 	startedAt := time.Now().UTC()
 	manifest := model.RunManifest{
-		SchemaVersion:   "2",
+		SchemaVersion:   "3",
 		Status:          model.RunStatusFailed,
 		QuestionID:      question.Meta.ID,
 		QuestionSlug:    question.Meta.Slug,
@@ -658,7 +671,9 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 	sqlCtx, cancelSQL := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancelSQL()
+	sqlProviderStartedAt := time.Now()
 	sqlResponse, providerErr := provider.GenerateSQL(sqlCtx, req)
+	manifest.SQLGenerationProviderDurationMs = time.Since(sqlProviderStartedAt).Milliseconds()
 	manifest.CLIBin = sqlResponse.CLIBin
 	_ = os.WriteFile(artifacts.AnswerSQLRaw, []byte(sqlResponse.RawOutput), 0o644)
 	_ = os.WriteFile(artifacts.StdoutLog, []byte(sqlResponse.Stdout), 0o644)
@@ -756,7 +771,9 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	presentationCtx, cancelPresentation := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancelPresentation()
 	presentationStartedAt := time.Now()
+	presentationProviderStartedAt := time.Now()
 	presentationResponse, presentationErr := provider.GeneratePresentation(presentationCtx, req)
+	manifest.PresentationProviderDurationMs = time.Since(presentationProviderStartedAt).Milliseconds()
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
 	htmlTemplate, err := loadVisualArtifact(presentationResponse.RawOutput, outDir, presentationStartedAt)
 	if err != nil {
@@ -913,13 +930,14 @@ func truncate(s string, limit int) string {
 }
 
 func processVisual(ctx context.Context, opts processVisualOptions) error {
-	root, err := repoRoot()
+	codeRoot, err := repoRoot()
 	if err != nil {
 		return err
 	}
+	runRoot := runsRoot(codeRoot)
 	runDir := opts.RunDir
 	if !filepath.IsAbs(runDir) {
-		runDir = filepath.Join(root, runDir)
+		runDir = filepath.Join(runRoot, runDir)
 	}
 	manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
 	if err != nil {
@@ -933,14 +951,14 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err := json.Unmarshal(resultBytes, &result); err != nil {
 		return err
 	}
-	question, err := questions.Resolve(root, manifest.QuestionID)
+	question, err := questions.Resolve(codeRoot, manifest.QuestionID)
 	if err != nil {
 		return err
 	}
 	if !question.VisualEnabled {
 		return fmt.Errorf("question %s does not declare visual artifacts", manifest.QuestionID)
 	}
-	cfg, err := datasets.Load(root, manifest.Dataset)
+	cfg, err := datasets.Load(codeRoot, manifest.Dataset)
 	if err != nil {
 		return err
 	}
@@ -960,6 +978,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	}
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, true)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
+	manifest.SchemaVersion = "3"
 	logf(opts.Verbose, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	querySQL, err := os.ReadFile(filepath.Join(runDir, "query.sql"))
 	if err != nil {
@@ -1003,7 +1022,9 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	presentationCtx, cancel := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancel()
 	presentationStartedAt := time.Now()
+	presentationProviderStartedAt := time.Now()
 	resp, providerErr := provider.GeneratePresentation(presentationCtx, req)
+	manifest.PresentationProviderDurationMs = time.Since(presentationProviderStartedAt).Milliseconds()
 	_ = os.WriteFile(manifest.Artifacts.AnswerPresentationRaw, []byte(resp.RawOutput), 0o644)
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", providerErr.Error())

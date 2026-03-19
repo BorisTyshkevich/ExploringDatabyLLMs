@@ -136,13 +136,13 @@ Run one question across selected providers:
 Process report and visual for an existing run:
 
 ```bash
-./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```
 
 Process report and visual but skip all visual validation:
 
 ```bash
-./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 --skip-visual-validation -v
+./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 --skip-visual-validation -v
 ```
 
 Compare runs for a day:
@@ -154,7 +154,7 @@ Compare runs for a day:
 Inspect one run directory:
 
 ```bash
-./scripts/qforge inspect-run --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004
+./scripts/qforge inspect-run --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004
 ```
 
 ## Command Reference
@@ -392,10 +392,10 @@ Flags:
 
 What `compare` writes:
 
-- `runs/<day>/<question-slug>/compare/compare.json`
-- `runs/<day>/<question-slug>/compare/analysis.prompt.md`
-- `runs/<day>/<question-slug>/compare/analysis.raw.md`
-- `runs/<day>/<question-slug>/compare_report.md`
+- `<day>/<question-slug>/compare/compare.json`
+- `<day>/<question-slug>/compare/analysis.prompt.md`
+- `<day>/<question-slug>/compare/analysis.raw.md`
+- `<day>/<question-slug>/compare_report.md`
 
 What `compare` does:
 
@@ -457,7 +457,7 @@ Example:
 Each run is stored under:
 
 ```text
-runs/YYYY-MM-DD/<question-slug>/<runner>/<model>/run-XXX/
+YYYY-MM-DD/<question-slug>/<runner>/<model>/run-XXX/
 ```
 
 Typical SQL-only run artifacts:
@@ -579,5 +579,5 @@ Multi-provider comparison:
 Process presentation for one completed run:
 
 ```bash
-./scripts/qforge process-visual --run-dir runs/2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```

@@ -15,7 +15,7 @@ import (
 )
 
 func NextRunDir(repoRoot string, question model.Question, runner, modelName string, now time.Time) (string, error) {
-	baseDir := filepath.Join(repoRoot, "runs", now.Format("2006-01-02"), question.Meta.Slug, runner, modelName)
+	baseDir := filepath.Join(repoRoot, now.Format("2006-01-02"), question.Meta.Slug, runner, modelName)
 	if err := os.MkdirAll(baseDir, 0o755); err != nil {
 		return "", err
 	}

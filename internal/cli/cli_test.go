@@ -93,6 +93,30 @@ func TestLoadAnalysisArtifactNormalizesEscapedMultilineStrings(t *testing.T) {
 	}
 }
 
+func TestLoadAnalysisArtifactAcceptsNumericMetricValues(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "answer.raw.json")
+	payload := `{
+  "sql": "SELECT 1",
+  "report_markdown": "# Title\n\n{{metric.max_hops}}",
+  "metrics": {
+    "named_values": {
+      "max_hops": 8
+    }
+  }
+}`
+	if err := os.WriteFile(path, []byte(payload), 0o644); err != nil {
+		t.Fatalf("write answer.raw.json: %v", err)
+	}
+	got, err := loadAnalysisArtifact(path)
+	if err != nil {
+		t.Fatalf("expected numeric metrics to be accepted: %v", err)
+	}
+	if got.Metrics.NamedValues["max_hops"] != "8" {
+		t.Fatalf("expected numeric metric to be coerced to string, got: %#v", got.Metrics.NamedValues)
+	}
+}
+
 func TestLoadAnalysisArtifactRejectsMissingFields(t *testing.T) {
 	tmpDir := t.TempDir()
 	path := filepath.Join(tmpDir, "answer.raw.json")
