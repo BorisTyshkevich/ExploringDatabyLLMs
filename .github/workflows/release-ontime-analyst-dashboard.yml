@@ -1,0 +1,43 @@
+name: Release OnTime Analyst Dashboard Skill
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Skills/ontime-analyst-dashboard/**'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Package skill
+        id: package
+        run: |
+          chmod +x scripts/package-skill.sh
+          artifact_path="$(scripts/package-skill.sh ontime-analyst-dashboard)"
+          echo "artifact_path=$artifact_path" >> "$GITHUB_OUTPUT"
+
+      - name: Compute release metadata
+        id: release_meta
+        run: |
+          short_sha="${GITHUB_SHA::7}"
+          tag="ontime-analyst-dashboard-${GITHUB_SHA}"
+          name="ontime-analyst-dashboard ${short_sha}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          name: ${{ steps.release_meta.outputs.name }}
+          files: ${{ steps.package.outputs.artifact_path }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
