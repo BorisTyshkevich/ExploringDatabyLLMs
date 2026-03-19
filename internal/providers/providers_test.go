@@ -176,3 +176,51 @@ func TestRunClaudeUsesOutDirAsWorkingDirectory(t *testing.T) {
 		t.Fatalf("did not expect visual.html outside outDir, err=%v", err)
 	}
 }
+
+func TestRunGeminiAddsAndRemovesMCPServer(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "fake-gemini.sh")
+	logPath := filepath.Join(tmpDir, "gemini.log")
+	script := "#!/usr/bin/env bash\n" +
+		"set -euo pipefail\n" +
+		"if [[ \"$1\" == \"mcp\" ]]; then\n" +
+		"  shift\n" +
+		"  if [[ \"$1\" == \"--transport\" ]]; then\n" +
+		"    echo \"mcp transport:$2 action:$3 name:$4 url:$5\" >> " + logPath + "\n" +
+		"    exit 0\n" +
+		"  fi\n" +
+		"  echo \"mcp action:$1 name:$2\" >> " + logPath + "\n" +
+		"  exit 0\n" +
+		"fi\n" +
+		"printf 'gemini main run\\n'\n"
+	if err := os.WriteFile(scriptPath, []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake gemini: %v", err)
+	}
+
+	req := model.ProviderRequest{
+		OutDir:        tmpDir,
+		Model:         "gemini-3.1-pro-preview",
+		MCPURL:        "https://example.invalid/token/http",
+		MCPServerName: "altinity_ontime_demo",
+		CLIBin:        scriptPath,
+	}
+
+	resp, err := cliProvider{name: "gemini", defaultBin: scriptPath}.GeneratePresentation(context.Background(), req)
+	if err != nil {
+		t.Fatalf("GeneratePresentation returned error: %v", err)
+	}
+	if !strings.Contains(resp.RawOutput, "gemini main run") {
+		t.Fatalf("unexpected raw output: %q", resp.RawOutput)
+	}
+	logBytes, err := os.ReadFile(logPath)
+	if err != nil {
+		t.Fatalf("read gemini log: %v", err)
+	}
+	logText := string(logBytes)
+	if !strings.Contains(logText, "mcp transport:http action:add name:altinity_ontime_demo url:https://example.invalid/token/http") {
+		t.Fatalf("expected gemini mcp add, got: %q", logText)
+	}
+	if !strings.Contains(logText, "mcp action:remove name:altinity_ontime_demo") {
+		t.Fatalf("expected gemini mcp remove, got: %q", logText)
+	}
+}

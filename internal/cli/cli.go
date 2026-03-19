@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -1097,8 +1098,8 @@ func loadAnalysisArtifact(path string) (model.AnalysisArtifact, error) {
 	if err := json.Unmarshal(payload, &artifact); err != nil {
 		return model.AnalysisArtifact{}, fmt.Errorf("invalid analysis json: %w", err)
 	}
-	artifact.SQL = strings.TrimSpace(artifact.SQL)
-	artifact.ReportMarkdown = strings.TrimSpace(artifact.ReportMarkdown)
+	artifact.SQL = normalizeEscapedMultiline(strings.TrimSpace(artifact.SQL))
+	artifact.ReportMarkdown = normalizeEscapedMultiline(strings.TrimSpace(artifact.ReportMarkdown))
 	if artifact.SQL == "" {
 		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty sql")
 	}
@@ -1106,4 +1107,18 @@ func loadAnalysisArtifact(path string) (model.AnalysisArtifact, error) {
 		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty report_markdown")
 	}
 	return artifact, nil
+}
+
+func normalizeEscapedMultiline(value string) string {
+	if value == "" {
+		return value
+	}
+	if !strings.Contains(value, `\`) {
+		return value
+	}
+	unquoted, err := strconv.Unquote(`"` + value + `"`)
+	if err != nil {
+		return value
+	}
+	return strings.TrimSpace(unquoted)
 }

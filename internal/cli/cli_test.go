@@ -71,6 +71,28 @@ func TestLoadAnalysisArtifactAcceptsValidJSON(t *testing.T) {
 	}
 }
 
+func TestLoadAnalysisArtifactNormalizesEscapedMultilineStrings(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "answer.raw.json")
+	payload := `{
+  "sql": "SELECT\\n  1",
+  "report_markdown": "# Title\\n\\n{{data_overview_md}}"
+}`
+	if err := os.WriteFile(path, []byte(payload), 0o644); err != nil {
+		t.Fatalf("write answer.raw.json: %v", err)
+	}
+	got, err := loadAnalysisArtifact(path)
+	if err != nil {
+		t.Fatalf("expected escaped multiline strings to be accepted: %v", err)
+	}
+	if got.SQL != "SELECT\n  1" {
+		t.Fatalf("expected sql newlines to be normalized, got: %q", got.SQL)
+	}
+	if got.ReportMarkdown != "# Title\n\n{{data_overview_md}}" {
+		t.Fatalf("expected report markdown newlines to be normalized, got: %q", got.ReportMarkdown)
+	}
+}
+
 func TestLoadAnalysisArtifactRejectsMissingFields(t *testing.T) {
 	tmpDir := t.TempDir()
 	path := filepath.Join(tmpDir, "answer.raw.json")

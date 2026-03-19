@@ -290,6 +290,16 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 
 func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, prompt string) (model.ProviderResponse, error) {
 	bin := p.bin(req)
+	if err := p.runGeminiMCP(ctx, req, "add"); err != nil {
+		return model.ProviderResponse{}, err
+	}
+	defer func() {
+		cleanupCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		if err := p.runGeminiMCP(cleanupCtx, req, "remove"); err != nil {
+			logf(req.Verbose, "provider=gemini phase=mcp_cleanup status=warning err=%v", err)
+		}
+	}()
 	args := []string{
 		"--model", req.Model,
 		"--prompt", prompt,
@@ -312,6 +322,29 @@ func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, p
 	}
 	logf(req.Verbose, "provider=gemini phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 	return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
+}
+
+func (p cliProvider) runGeminiMCP(ctx context.Context, req model.ProviderRequest, action string) error {
+	bin := p.bin(req)
+	var args []string
+	switch action {
+	case "add":
+		args = []string{"mcp", "--transport", "http", "add", req.MCPServerName, req.MCPURL}
+	case "remove":
+		args = []string{"mcp", "remove", req.MCPServerName}
+	default:
+		return fmt.Errorf("unsupported gemini mcp action: %s", action)
+	}
+	cmd := exec.CommandContext(ctx, bin, args...)
+	cmd.Dir = req.OutDir
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("gemini mcp %s %s: %w: %s%s", action, req.MCPServerName, err, stdout.String(), stderr.String())
+	}
+	return nil
 }
 
 func logf(verbose bool, format string, args ...any) {
