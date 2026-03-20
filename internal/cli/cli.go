@@ -284,7 +284,7 @@ func runCompare(ctx context.Context, args []string) error {
 	questionRef := fs.String("question", "", "Restrict compare output to one question id or slug")
 	fs.StringVar(questionRef, "q", "", "Restrict compare output to one question id or slug (shorthand)")
 	day := fs.String("day", time.Now().Format("2006-01-02"), "Run day in YYYY-MM-DD")
-	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http for query_log fetches")
+	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http for compare-report provider config")
 	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")

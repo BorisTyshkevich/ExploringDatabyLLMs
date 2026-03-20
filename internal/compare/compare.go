@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"qforge/internal/datasets"
 	"qforge/internal/model"
 	"qforge/internal/querylog"
 	"qforge/internal/runs"
@@ -221,32 +220,22 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 	}
 
 	if manifest.LogComment != "" {
-		cfg, err := datasets.Load(codeRoot, manifest.Dataset)
+		metrics, err := querylog.FetchLatest(ctx, manifest.LogComment)
 		if err != nil {
-			warnings = append(warnings, fmt.Sprintf("%s: failed to load dataset config for metrics: %v", runID(item), err))
+			warnings = append(warnings, fmt.Sprintf("%s: failed to fetch query_log metrics: %v", runID(item), err))
+		} else if metrics == nil {
+			warnings = append(warnings, fmt.Sprintf("%s: query_log metrics not found", runID(item)))
 		} else {
-			mcpURL, token, err := resolveMCPAccess(cfg, explicitMCPURL, explicitMCPToken)
-			if err != nil {
-				warnings = append(warnings, fmt.Sprintf("%s: failed to resolve MCP URL for metrics: %v", runID(item), err))
-			} else {
-				metrics, err := querylog.FetchLatest(ctx, mcpURL, token, manifest.LogComment)
-				if err != nil {
-					warnings = append(warnings, fmt.Sprintf("%s: failed to fetch query_log metrics: %v", runID(item), err))
-				} else if metrics == nil {
-					warnings = append(warnings, fmt.Sprintf("%s: query_log metrics not found", runID(item)))
-				} else {
-					item.Metrics = &RunMetrics{
-						QueryDurationMS: metrics.QueryDurationMS,
-						ReadRows:        metrics.ReadRows,
-						ReadBytes:       metrics.ReadBytes,
-						ResultRows:      metrics.ResultRows,
-						ResultBytes:     metrics.ResultBytes,
-						MemoryUsage:     metrics.MemoryUsage,
-						PeakThreads:     metrics.PeakThreads,
-						EventTime:       metrics.EventTime,
-						Type:            metrics.Type,
-					}
-				}
+			item.Metrics = &RunMetrics{
+				QueryDurationMS: metrics.QueryDurationMS,
+				ReadRows:        metrics.ReadRows,
+				ReadBytes:       metrics.ReadBytes,
+				ResultRows:      metrics.ResultRows,
+				ResultBytes:     metrics.ResultBytes,
+				MemoryUsage:     metrics.MemoryUsage,
+				PeakThreads:     metrics.PeakThreads,
+				EventTime:       metrics.EventTime,
+				Type:            metrics.Type,
 			}
 		}
 	}
@@ -573,22 +562,4 @@ func valueOrNA(value string) string {
 		return "n/a"
 	}
 	return value
-}
-
-func resolveMCPAccess(cfg model.DatasetConfig, explicitURL, explicitToken string) (string, string, error) {
-	if explicitToken != "" && explicitURL == "" {
-		baseURL := cfg.MCPBaseURL
-		if baseURL == "" {
-			baseURL = "https://mcp.demo.altinity.cloud"
-		}
-		return fmt.Sprintf("%s/%s/http", strings.TrimRight(baseURL, "/"), explicitToken), explicitToken, nil
-	}
-	url, token, err := datasets.ResolveMCPURL(cfg, explicitURL)
-	if err != nil {
-		return "", "", err
-	}
-	if explicitToken != "" {
-		token = explicitToken
-	}
-	return url, token, nil
 }

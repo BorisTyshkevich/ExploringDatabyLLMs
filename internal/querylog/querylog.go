@@ -4,14 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strconv"
+	"os/exec"
 	"strings"
 
-	"qforge/internal/execute"
 	"qforge/internal/model"
 )
 
-func FetchLatest(ctx context.Context, mcpURL, token, logComment string) (*model.QueryLogMetrics, error) {
+const demoConnectionName = "demo"
+
+func FetchLatest(ctx context.Context, logComment string) (*model.QueryLogMetrics, error) {
 	escaped := strings.ReplaceAll(logComment, "'", "''")
 	sql := fmt.Sprintf(`
 SELECT
@@ -31,58 +32,50 @@ FROM system.query_log
 WHERE log_comment = '%s'
 ORDER BY event_time_microseconds DESC
 LIMIT 1
+FORMAT JSONEachRow
 `, escaped)
-	_, result, err := execute.ExecuteSQL(ctx, mcpURL, token, sql, "")
+
+	cmd := exec.CommandContext(ctx, "clickhouse-client", "--connection", demoConnectionName, "--query", sql)
+	output, err := cmd.Output()
 	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			return nil, fmt.Errorf("clickhouse-client --connection %s: %s", demoConnectionName, strings.TrimSpace(string(exitErr.Stderr)))
+		}
 		return nil, err
 	}
-	if len(result.Rows) == 0 {
+	if strings.TrimSpace(string(output)) == "" {
 		return nil, nil
 	}
-	row := result.Rows[0]
-	metrics := &model.QueryLogMetrics{
-		LogComment:      stringValue(row["log_comment"]),
-		QueryID:         stringValue(row["query_id"]),
-		QueryDurationMS: int64Value(row["query_duration_ms"]),
-		ReadRows:        int64Value(row["read_rows"]),
-		ReadBytes:       int64Value(row["read_bytes"]),
-		ResultRows:      int64Value(row["result_rows"]),
-		ResultBytes:     int64Value(row["result_bytes"]),
-		MemoryUsage:     int64Value(row["memory_usage"]),
-		PeakThreads:     int64Value(row["peak_threads"]),
-		Query:           stringValue(row["query"]),
-		EventTime:       stringValue(row["event_time"]),
-		Type:            stringValue(row["type"]),
-	}
-	return metrics, nil
-}
 
-func stringValue(value any) string {
-	if value == nil {
-		return ""
+	var row struct {
+		LogComment      string `json:"log_comment"`
+		QueryID         string `json:"query_id"`
+		QueryDurationMS int64  `json:"query_duration_ms"`
+		ReadRows        int64  `json:"read_rows"`
+		ReadBytes       int64  `json:"read_bytes"`
+		ResultRows      int64  `json:"result_rows"`
+		ResultBytes     int64  `json:"result_bytes"`
+		MemoryUsage     int64  `json:"memory_usage"`
+		PeakThreads     int64  `json:"peak_threads"`
+		Query           string `json:"query"`
+		EventTime       string `json:"event_time"`
+		Type            string `json:"type"`
 	}
-	switch v := value.(type) {
-	case string:
-		return v
-	default:
-		return fmt.Sprint(v)
+	if err := json.Unmarshal(output, &row); err != nil {
+		return nil, fmt.Errorf("parse query_log row: %w", err)
 	}
-}
-
-func int64Value(value any) int64 {
-	switch v := value.(type) {
-	case float64:
-		return int64(v)
-	case int64:
-		return v
-	case json.Number:
-		n, _ := v.Int64()
-		return n
-	case string:
-		n, _ := strconv.ParseInt(v, 10, 64)
-		return n
-	default:
-		n, _ := strconv.ParseInt(fmt.Sprint(v), 10, 64)
-		return n
-	}
+	return &model.QueryLogMetrics{
+		LogComment:      row.LogComment,
+		QueryID:         row.QueryID,
+		QueryDurationMS: row.QueryDurationMS,
+		ReadRows:        row.ReadRows,
+		ReadBytes:       row.ReadBytes,
+		ResultRows:      row.ResultRows,
+		ResultBytes:     row.ResultBytes,
+		MemoryUsage:     row.MemoryUsage,
+		PeakThreads:     row.PeakThreads,
+		Query:           row.Query,
+		EventTime:       row.EventTime,
+		Type:            row.Type,
+	}, nil
 }

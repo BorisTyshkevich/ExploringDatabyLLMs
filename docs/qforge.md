@@ -374,7 +374,7 @@ Flags:
   - override the provider CLI executable for the compare report provider
 - `--mcp-url`
   - optional
-  - explicit MCP URL ending in `/http` for `system.query_log` fetches and any direct validation queries used during report generation
+  - explicit MCP URL ending in `/http` for compare-report provider config
 - `--mcp-server-name`
   - optional
   - explicit MCP server name for provider config
@@ -401,7 +401,7 @@ What `compare` does:
 
 - resolves one question per compare pass
 - loads `manifest.json` and `result.json` from matching runs
-- fetches deferred performance metrics from `system.query_log` using `log_comment`
+- fetches deferred performance metrics from `system.query_log` using `clickhouse-client --connection demo` and `log_comment`
 - writes compact structured compare data to `compare/compare.json`
 - runs one provider call using the shared analysis prompt to generate `compare_report.md`
 - includes partial runs in the structured compare output when possible
