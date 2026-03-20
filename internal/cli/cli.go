@@ -156,7 +156,7 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout, "Important:")
 		fmt.Fprintln(os.Stdout, "  Visual generation is handled separately by `qforge process-visual`, or by `--with-visual`.")
 		fmt.Fprintln(os.Stdout, "  `--with-visual` makes a second independent provider call after SQL execution and report rendering succeed.")
-		fmt.Fprintln(os.Stdout, "  If --runner is omitted, qforge runs codex, claude, and gemini.")
+		fmt.Fprintln(os.Stdout, "  If --runner is omitted, qforge runs claude/opus, claude/sonnet, and codex/gpt-5.4.")
 		fmt.Fprintln(os.Stdout, "  Repeated --model flags are matched positionally to repeated --runner flags.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Flags:")
@@ -186,8 +186,8 @@ func runRun(ctx context.Context, args []string) error {
 	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	var runners multiFlag
 	var models multiFlag
-	fs.Var(&runners, "runner", "Runner to include; repeat for multiple providers; default: codex, claude, gemini")
-	fs.Var(&runners, "r", "Runner to include; repeat for multiple providers; default: codex, claude, gemini (shorthand)")
+	fs.Var(&runners, "runner", "Runner to include; repeat for multiple providers; default: claude/opus, claude/sonnet, codex/gpt-5.4")
+	fs.Var(&runners, "r", "Runner to include; repeat for multiple providers; default: claude/opus, claude/sonnet, codex/gpt-5.4 (shorthand)")
 	fs.Var(&models, "model", "Model override aligned positionally with repeated --runner values")
 	if err := fs.Parse(args); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
@@ -199,7 +199,8 @@ func runRun(ctx context.Context, args []string) error {
 		return errors.New("run requires --question")
 	}
 	if len(runners) == 0 {
-		runners = multiFlag{"codex", "claude", "gemini"}
+		runners = multiFlag{"claude", "claude", "codex"}
+		models = multiFlag{"opus", "sonnet", "gpt-5.4"}
 	}
 	modelLabel, err := modelLabelForRunners(runners, models)
 	if err != nil {
@@ -208,19 +209,17 @@ func runRun(ctx context.Context, args []string) error {
 	if *verbose {
 		logf(true, modelLabel, "run question=%s runners=%s", *questionRef, strings.Join(runners, ","))
 	}
-	modelByRunner := map[string]string{}
-	for i, runner := range runners {
-		if i < len(models) {
-			modelByRunner[runner] = models[i]
-		}
-	}
 	var wg sync.WaitGroup
 	errCh := make(chan error, len(runners))
-	for _, runner := range runners {
+	for i, runner := range runners {
+		modelName := ""
+		if i < len(models) {
+			modelName = models[i]
+		}
 		opts := runOptions{
 			QuestionRef:          *questionRef,
 			Runner:               runner,
-			Model:                modelByRunner[runner],
+			Model:                modelName,
 			Dataset:              *datasetName,
 			MCPURL:               *mcpURL,
 			MCPServer:            *mcpServer,

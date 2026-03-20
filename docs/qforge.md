@@ -205,7 +205,7 @@ Flags:
   - provider runner: `codex`, `claude`, or `gemini`
 - `-r`
   - shorthand for `--runner`
-  - default when omitted: `codex`, `claude`, `gemini`
+  - default when omitted: `claude/opus`, `claude/sonnet`, `codex/gpt-5.4`
 - `--model`
   - optional, repeatable
   - override the default model for the selected runner

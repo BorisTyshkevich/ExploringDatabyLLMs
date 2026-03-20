@@ -30,6 +30,17 @@ func TestModelLabelForRunnersUsesResolvedModels(t *testing.T) {
 	}
 }
 
+func TestModelLabelForRunnersHandlesDuplicateRunnersWithDistinctModels(t *testing.T) {
+	got, err := modelLabelForRunners([]string{"claude", "claude", "codex"}, []string{"opus", "sonnet", "gpt-5.4"})
+	if err != nil {
+		t.Fatalf("modelLabelForRunners returned error: %v", err)
+	}
+	want := "opus,sonnet,gpt-5.4"
+	if got != want {
+		t.Fatalf("unexpected label: got %q want %q", got, want)
+	}
+}
+
 func TestLoadVisualArtifactRejectsStaleFallbackFile(t *testing.T) {
 	tmpDir := t.TempDir()
 	htmlPath := filepath.Join(tmpDir, "visual.html")
