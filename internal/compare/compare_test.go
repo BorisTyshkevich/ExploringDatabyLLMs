@@ -24,6 +24,8 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 				Model:         "gpt-5.4",
 				Status:        model.RunStatusOK,
 				RowCount:      832,
+				SQLGenMS:      2400,
+				VisualGenMS:   5100,
 				Metrics: &RunMetrics{
 					QueryDurationMS: 900,
 					ReadRows:        1146680615,
@@ -48,6 +50,8 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 		"- Status: 1 run(s) did not finish cleanly: gemini/gemini-2.5-pro.",
 		"- Row counts: mismatch (0, 832).",
 		"- Fastest successful run: codex/gpt-5.4 at 900 ms.",
+		"| runner | model | run | status | rows | sql gen | visual gen | query time | read rows | memory | warnings |",
+		"| codex | gpt-5.4 | n/a | ok | 832 | 2.40 s | 5.10 s | 900 ms | 1,146,680,615 | 270.0 MiB | 0 |",
 		"### Warnings",
 	} {
 		if !strings.Contains(got, want) {

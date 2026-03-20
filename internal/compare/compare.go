@@ -44,6 +44,8 @@ type RunSummary struct {
 	StartedAt     time.Time       `json:"started_at"`
 	FinishedAt    time.Time       `json:"finished_at"`
 	DurationSec   int64           `json:"duration_sec"`
+	SQLGenMS      int64           `json:"sql_generation_provider_duration_ms,omitempty"`
+	VisualGenMS   int64           `json:"presentation_provider_duration_ms,omitempty"`
 	QuerySHA256   string          `json:"query_sha256,omitempty"`
 	RowCount      int             `json:"row_count"`
 	Columns       []string        `json:"columns,omitempty"`
@@ -188,6 +190,8 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 		StartedAt:     manifest.StartedAt,
 		FinishedAt:    manifest.FinishedAt,
 		DurationSec:   manifest.DurationSec,
+		SQLGenMS:      manifest.SQLGenerationProviderDurationMs,
+		VisualGenMS:   manifest.PresentationProviderDurationMs,
 		QuerySHA256:   manifest.QuerySHA256,
 		RowCount:      manifest.ResultRowCount,
 	}
@@ -320,24 +324,28 @@ func renderMarkdown(report Report) string {
 	md.WriteString("\n\n")
 	md.WriteString(renderQuestionSummary(report.Runs))
 	md.WriteString("\n")
-	md.WriteString("| runner | model | run | status | rows | duration | read rows | memory | warnings |\n")
-	md.WriteString("| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: |\n")
+	md.WriteString("| runner | model | run | status | rows | sql gen | visual gen | query time | read rows | memory | warnings |\n")
+	md.WriteString("| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
 	for _, item := range report.Runs {
-		duration := "n/a"
+		sqlGen := formatOptionalDurationMS(item.SQLGenMS)
+		visualGen := formatOptionalDurationMS(item.VisualGenMS)
+		queryDuration := "n/a"
 		readRows := "n/a"
 		memory := "n/a"
 		if item.Metrics != nil {
-			duration = formatDurationMS(item.Metrics.QueryDurationMS)
+			queryDuration = formatDurationMS(item.Metrics.QueryDurationMS)
 			readRows = formatInt(item.Metrics.ReadRows)
 			memory = formatBytes(item.Metrics.MemoryUsage)
 		}
-		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %d | %s | %s | %s | %d |\n",
+		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %d |\n",
 			item.Runner,
 			item.Model,
 			valueOrNA(item.RunID),
 			item.Status,
 			item.RowCount,
-			duration,
+			sqlGen,
+			visualGen,
+			queryDuration,
 			readRows,
 			memory,
 			len(item.Warnings),
@@ -421,6 +429,13 @@ func bestByDuration(items []RunSummary) string {
 		return ""
 	}
 	return fmt.Sprintf("%s at %s", runID(best), formatDurationMS(best.Metrics.QueryDurationMS))
+}
+
+func formatOptionalDurationMS(value int64) string {
+	if value <= 0 {
+		return "n/a"
+	}
+	return formatDurationMS(value)
 }
 
 func bestByReadRows(items []RunSummary) string {
