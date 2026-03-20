@@ -27,3 +27,6 @@ Skills are separate from prompt templates:
 
 Start with [`qforge.md`](docs/qforge.md) if you want to run benchmarks or compare providers.
 Start with [`datasets/ontime/download/README.md`](datasets/ontime/download/README.md) if you want to rebuild or inspect the OnTime dataset.
+
+Published run artifacts live in the sibling runs site: [ExploringDatabyLLMs-runs](https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/).
+Example compare report: [q001 on 2026-03-20](https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-20/q001_hops_per_day/compare_report.md).
