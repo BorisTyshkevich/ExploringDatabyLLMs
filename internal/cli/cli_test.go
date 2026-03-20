@@ -8,7 +8,27 @@ import (
 	"time"
 
 	"qforge/internal/model"
+	verbosepkg "qforge/internal/verbose"
 )
+
+func TestVerbosePrefixFormat(t *testing.T) {
+	got := verbosepkg.PrefixAt(time.Date(2026, time.January, 1, 0, 0, 0, 0, time.FixedZone("UTC+1", 3600)), "opus")
+	want := "2026-01-01 00:00:00 opus"
+	if got != want {
+		t.Fatalf("unexpected prefix: got %q want %q", got, want)
+	}
+}
+
+func TestModelLabelForRunnersUsesResolvedModels(t *testing.T) {
+	got, err := modelLabelForRunners([]string{"codex", "claude", "gemini"}, []string{"", "sonnet"})
+	if err != nil {
+		t.Fatalf("modelLabelForRunners returned error: %v", err)
+	}
+	want := "gpt-5.4,sonnet,gemini-3.1-pro-preview"
+	if got != want {
+		t.Fatalf("unexpected label: got %q want %q", got, want)
+	}
+}
 
 func TestLoadVisualArtifactRejectsStaleFallbackFile(t *testing.T) {
 	tmpDir := t.TempDir()
@@ -138,5 +158,70 @@ func TestLoadAnalysisArtifactRejectsFencedJSONFile(t *testing.T) {
 	_, err := loadAnalysisArtifact(path)
 	if err == nil {
 		t.Fatalf("expected fenced json file to fail")
+	}
+}
+
+func TestBuildVisualInputSummaryCapturesShapeHints(t *testing.T) {
+	question := model.Question{
+		Meta: model.QuestionMeta{Title: "Q001", VisualMode: "dynamic"},
+	}
+	result := model.CanonicalResult{
+		Columns:  []string{"Date", "DepTimes", "Route"},
+		RowCount: 2,
+		Rows: []map[string]any{
+			{"Date": "2024-12-01T00:00:00Z", "DepTimes": []any{543.0, 810.0}, "Route": "ISP-BWI-SEA"},
+			{"Date": "2024-02-18T00:00:00Z", "DepTimes": []any{621.0, 801.0}, "Route": "CLE-BNA-DEN"},
+		},
+	}
+
+	got := buildVisualInputSummary(question, result)
+	if got.QuestionTitle != "Q001" || got.RowCount != 2 {
+		t.Fatalf("unexpected summary header: %+v", got)
+	}
+	if len(got.SampleRows) != 2 {
+		t.Fatalf("expected two sample rows, got %+v", got.SampleRows)
+	}
+	if got.FieldShapeNotes["Date"] != "ISO-like timestamp string" {
+		t.Fatalf("expected timestamp shape note, got %+v", got.FieldShapeNotes)
+	}
+	if got.FieldShapeNotes["DepTimes"] != "array field" {
+		t.Fatalf("expected array shape note, got %+v", got.FieldShapeNotes)
+	}
+	if got.ModeHint == "" {
+		t.Fatalf("expected mode hint in summary: %+v", got)
+	}
+}
+
+func TestEnsureVisualInputSummaryBackfillsMissingFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "visual_input.json")
+	question := model.Question{
+		Meta: model.QuestionMeta{Title: "Q001", VisualMode: "dynamic"},
+	}
+	result := model.CanonicalResult{
+		Columns:  []string{"Date", "DepTimes", "Route"},
+		RowCount: 1,
+		Rows: []map[string]any{
+			{"Date": "2024-12-01T00:00:00Z", "DepTimes": []any{543.0, 810.0}, "Route": "ISP-BWI-SEA"},
+		},
+	}
+
+	got, err := ensureVisualInputSummary(path, question, result)
+	if err != nil {
+		t.Fatalf("expected missing visual_input.json to be backfilled: %v", err)
+	}
+	if got.QuestionTitle != "Q001" || got.RowCount != 1 {
+		t.Fatalf("unexpected summary: %+v", got)
+	}
+	bytes, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("expected visual_input.json to be written: %v", err)
+	}
+	var persisted model.VisualInputSummary
+	if err := json.Unmarshal(bytes, &persisted); err != nil {
+		t.Fatalf("expected visual_input.json to be valid json: %v", err)
+	}
+	if persisted.FieldShapeNotes["DepTimes"] != "array field" {
+		t.Fatalf("expected persisted shape notes, got %+v", persisted.FieldShapeNotes)
 	}
 }

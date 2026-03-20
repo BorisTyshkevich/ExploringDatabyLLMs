@@ -62,10 +62,20 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 		Columns:     []string{"RowType", "Dest"},
 		GeneratedAt: time.Now(),
 	}
+	visualInput := model.VisualInputSummary{
+		QuestionTitle: "Delta ATL",
+		ResultColumns: []string{"RowType", "Dest"},
+		RowCount:      2,
+		SampleRows: []map[string]any{
+			{"RowType": "summary", "Dest": "LAX"},
+		},
+		FieldShapeNotes: map[string]string{"FlightDate": "ISO-like timestamp string"},
+		ModeHint:        "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint.",
+	}
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.ontime", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", visualInput)
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -81,14 +91,14 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Visual mode: `dynamic`") {
 		t.Fatalf("expected visual mode in prompt, got: %s", got)
 	}
-	if !strings.Contains(got, "Execute the embedded saved SQL in the browser as the primary query.") {
-		t.Fatalf("expected dynamic primary-query contract, got: %s", got)
-	}
-	if !strings.Contains(got, "visible query ledger") {
-		t.Fatalf("expected dynamic ledger contract, got: %s", got)
+	if !strings.Contains(got, "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...") || !strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
+		t.Fatalf("expected dynamic endpoint/auth contract, got: %s", got)
 	}
 	if !strings.Contains(got, "Do not embed the primary analytical dataset") {
 		t.Fatalf("expected no-embedded-dataset contract, got: %s", got)
+	}
+	if !strings.Contains(got, "`visual_input.json`") || !strings.Contains(got, "\"sample_rows\"") {
+		t.Fatalf("expected visual input summary context, got: %s", got)
 	}
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM ontime.ontime") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)
@@ -99,8 +109,8 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if strings.Contains(got, "qforge-result-data") || strings.Contains(got, "__QFORGE_DEFAULT_SQL__") {
 		t.Fatalf("did not expect legacy injected JSON contract, got: %s", got)
 	}
-	if !strings.Contains(got, "saved report template") && !strings.Contains(strings.ToLower(got), "saved report template") {
-		t.Fatalf("expected saved report template context, got: %s", got)
+	if strings.Contains(got, "saved report template") || strings.Contains(strings.ToLower(got), "saved report template") {
+		t.Fatalf("did not expect saved report template context in visual prompt, got: %s", got)
 	}
 	if strings.Contains(got, "Saved analysis artifact:") || strings.Contains(got, "\"report_markdown\"") {
 		t.Fatalf("did not expect saved analysis json context in visual prompt, got: %s", got)
@@ -129,7 +139,7 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -141,9 +151,6 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	}
 	if !strings.Contains(got, "query ledger") {
 		t.Fatalf("expected q001 prompt to inherit ledger contract, got: %s", got)
-	}
-	if !strings.Contains(got, "saved SQL in the browser") {
-		t.Fatalf("expected q001 prompt to inherit primary-query contract, got: %s", got)
 	}
 	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
 		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
@@ -178,7 +185,7 @@ func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) 
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -209,7 +216,13 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	dataset := model.DatasetConfig{
 		SemanticLayer: "Use `ontime.ontime` and `ontime.airports_latest`.",
 	}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime", "# Report\n{{data_overview_md}}")
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.ontime", "", model.VisualInputSummary{
+		QuestionTitle: "Static Fixture",
+		ResultColumns: []string{"Carrier", "Flights"},
+		RowCount:      1,
+		SampleRows:    []map[string]any{{"Carrier": "DL", "Flights": 42}},
+		ModeHint:      "Static mode embeds analytical data from result.json directly in the page.",
+	})
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
@@ -221,6 +234,9 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	}
 	if !strings.Contains(got, "Embed the analytical data needed by the page directly in the HTML") {
 		t.Fatalf("expected embedded-data contract, got: %s", got)
+	}
+	if !strings.Contains(got, "`visual_input.json`") {
+		t.Fatalf("expected visual input summary in static prompt, got: %s", got)
 	}
 	if strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
 		t.Fatalf("did not expect dynamic JWE contract in static prompt, got: %s", got)

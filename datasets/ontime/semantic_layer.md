@@ -23,6 +23,3 @@ Fallback sql joins:
 
 - use `ontime.ontime.Origin = ontime.airports_latest.code`
 - use `ontime.ontime.Dest = ontime.airports_latest.code`
-
-Use the `airport_id` joins when those columns are available.
-Use code-based joins only when the analytical result exposes route strings or airport codes but not airport IDs.

@@ -42,16 +42,17 @@ func NextRunDir(repoRoot string, question model.Question, runner, modelName stri
 
 func DefaultArtifacts(outDir string, presentation bool) model.ArtifactPaths {
 	artifacts := model.ArtifactPaths{
-		PromptSQLRaw: filepath.Join(outDir, "prompt.sql.md"),
-		AnswerSQLRaw: filepath.Join(outDir, "answer.sql.raw.md"),
-		AnswerRawJSON: filepath.Join(outDir, "answer.raw.json"),
-		AnalysisJSON: filepath.Join(outDir, "analysis.json"),
-		QuerySQL:     filepath.Join(outDir, "query.sql"),
-		ResultTSV:    filepath.Join(outDir, "result.tsv"),
-		ResultJSON:   filepath.Join(outDir, "result.json"),
-		ManifestJSON: filepath.Join(outDir, "manifest.json"),
-		StdoutLog:    filepath.Join(outDir, "stdout.log"),
-		StderrLog:    filepath.Join(outDir, "stderr.log"),
+		PromptSQLRaw:    filepath.Join(outDir, "prompt.sql.md"),
+		AnswerSQLRaw:    filepath.Join(outDir, "answer.sql.raw.md"),
+		AnswerRawJSON:   filepath.Join(outDir, "answer.raw.json"),
+		AnalysisJSON:    filepath.Join(outDir, "analysis.json"),
+		QuerySQL:        filepath.Join(outDir, "query.sql"),
+		ResultTSV:       filepath.Join(outDir, "result.tsv"),
+		ResultJSON:      filepath.Join(outDir, "result.json"),
+		VisualInputJSON: filepath.Join(outDir, "visual_input.json"),
+		ManifestJSON:    filepath.Join(outDir, "manifest.json"),
+		StdoutLog:       filepath.Join(outDir, "stdout.log"),
+		StderrLog:       filepath.Join(outDir, "stderr.log"),
 	}
 	if presentation {
 		artifacts.PromptPresentationRaw = filepath.Join(outDir, "prompt.presentation.md")

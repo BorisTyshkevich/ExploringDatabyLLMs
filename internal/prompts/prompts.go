@@ -1,6 +1,7 @@
 package prompts
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -41,11 +42,11 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 	return joinSections(sections), nil
 }
 
-func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL string) (string, error) {
-	return BuildVisualPrompt(question, dataset, result, savedSQL, "")
+func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string) (string, error) {
+	return BuildVisualPrompt(question, dataset, result, savedSQL, dynamicQueryEndpointTemplate, model.VisualInputSummary{})
 }
 
-func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, reportTemplate string) (string, error) {
+func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string, visualInput model.VisualInputSummary) (string, error) {
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
@@ -67,14 +68,15 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_semantic_layer_md": datasetSemanticLayerMarkdown(dataset),
-		"question_title":            question.Meta.Title,
-		"visual_mode":               strings.TrimSpace(question.Meta.VisualMode),
-		"visual_type":               question.Meta.VisualType,
-		"result_columns_csv":        strings.Join(result.Columns, ", "),
-		"saved_sql":                 strings.TrimSpace(savedSQL),
-		"saved_report_template":     strings.TrimSpace(reportTemplate),
-		"visual_prompt_md":          question.VisualPrompt,
+		"dataset_semantic_layer_md":       datasetSemanticLayerMarkdown(dataset),
+		"question_title":                  question.Meta.Title,
+		"visual_mode":                     strings.TrimSpace(question.Meta.VisualMode),
+		"visual_type":                     question.Meta.VisualType,
+		"result_columns_csv":              strings.Join(result.Columns, ", "),
+		"saved_sql":                       strings.TrimSpace(savedSQL),
+		"dynamic_query_endpoint_template": strings.TrimSpace(dynamicQueryEndpointTemplate),
+		"visual_input_summary_json":       visualInputSummaryJSON(visualInput),
+		"visual_prompt_md":                question.VisualPrompt,
 	}
 	sections := []string{
 		RenderTemplate(common, values),
@@ -83,6 +85,17 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		RenderTemplate(modeVisual, values),
 	}
 	return joinSections(sections), nil
+}
+
+func visualInputSummaryJSON(summary model.VisualInputSummary) string {
+	if summary.QuestionTitle == "" && len(summary.ResultColumns) == 0 && summary.RowCount == 0 && len(summary.SampleRows) == 0 && len(summary.FieldShapeNotes) == 0 && summary.ModeHint == "" {
+		return "{}"
+	}
+	data, err := json.MarshalIndent(summary, "", "  ")
+	if err != nil {
+		return "{}"
+	}
+	return string(data)
 }
 
 func loadCommonPrompt(question model.Question, name string) (string, error) {

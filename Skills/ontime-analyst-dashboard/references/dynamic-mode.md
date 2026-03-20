@@ -1,20 +1,8 @@
-# Dynamic Mode
+## Dynamic mode 
 
-Use dynamic mode for browser dashboards that fetch the saved SQL result from the MCP OpenAPI interface and may run explicit enrichment queries.
-
-## Endpoint and auth
-
-- Base URL: `https://mcp.demo.altinity.cloud`
-- Request URL:
-  `https://mcp.demo.altinity.cloud/{JWE_TOKEN}/openapi/execute_query?query=...`
-- JWE is stored in browser `localStorage`
-
-## Storage keys
-
-- auth key:
-  `OnTimeAnalystDashboard::auth::jwe`
-- layout key pattern:
-  `OnTimeAnalystDashboard::<dashboardId>::layout`
+- The saved SQL runs in the browser as the primary query for the page
+- Additional browser queries are allowed only for explicit enrichment or drill-down
+- Do not embed the primary analytical dataset or examples as stati payloads 
 
 ## Required UI
 
@@ -34,7 +22,11 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
   - status text
   - empty-state hint
 
-## Fetch flow
+## Data Shape
+
+use provided JSON data as an example that can be received by executing the SQL query.
+
+# Fetch flow
 
 1. On page load, read the stored JWE token from `localStorage` and prefill the token field if present
 2. If the page auto-runs when a stored token is present, use the same guarded run path as the manual fetch action
@@ -53,10 +45,13 @@ Use dynamic mode for browser dashboards that fetch the saved SQL result from the
 15. Re-enable the fetch button only after the active run has finished or failed
 16. Show content and render dashboard while keeping the control block at the bottom
 
-Do not use `payload.rows` directly in rendering logic. Always convert MCP `columns` + `rows` into object rows first, even if a provider sometimes returns object rows already.
+## Response-shape contract
 
-Do not embed analytical result rows as CSV or JSON in dynamic mode. The browser should fetch the primary saved SQL result after the user supplies JWE and SQL, then derive visuals from that result set and any explicit enrichment queries.
-If the page uses cloned card templates, keep DOM lookups scoped to each live card instance. Do not duplicate fixed global `id` values inside templates and then access them with `document.getElementById(...)`.
+- Browser query responses are tabular payloads
+- Use `columns` and `rows` as the primary response fields unless the prompt explicitly defines a different shape
+- Convert row arrays into object rows before deriving KPIs, charts, tables, or filters
+- Do not assume wrappers such as `meta`, `data`, or `items`
+- Treat empty tabular payloads as valid when the response indicates zero rows
 
 ## Error handling
 
@@ -68,26 +63,15 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 - If an enrichment query fails, report the failed query in the ledger, explain which visual degraded, and continue rendering the rest of the page
 - Surface empty, failed, and degraded states in visible page UI, not only in console output or logs
 - Keep primary-query failures separate from secondary-render failures; a component error must degrade that component instead of being reported as a primary-query failure
-
-## Payload rules
-
-- Normal success payloads may include:
-  - `columns`
-  - `types`
-  - `rows`
-  - `count`
-- Do not require `rows` to be an array in the empty-result case.
-- If `columns` is present and `count = 0` and `rows` is `null`, treat it as an empty dataset, not as a malformed payload.
-- Do not assume ClickHouse `Date` columns will always arrive as bare `YYYY-MM-DD` strings; MCP/OpenAPI payloads may surface ISO datetime strings such as `2024-12-01T00:00:00Z`.
+- Never expose the token in status messages or visible UI text
 
 ## Query ledger contract
 
 - Every query (primary and enrichment) must appear in a single unified ledger
 - Each ledger entry must include: label, role, status, rows, and the full SQL text
-- SQL text is hidden by default with a clickable row to expand/reveal
-- Use ▶/▼ toggle icons for expand/collapse affordance
-- Do not show the primary query SQL only in the footer—include it in the ledger
-- The footer SQL textarea remains for editing and re-running queries
+- SQL query text is hidden by default with a clickable row to expand/reveal
+- Use ▶ toggle icon to expand and show query text
+- Use ▼ toggle icon to collapse query text
 - Ledger entries should be added immediately (Pending status) and updated on completion
 - On status update, also update the SQL field if it wasn't known at registration time
 
@@ -120,7 +104,3 @@ If the page uses cloned card templates, keep DOM lookups scoped to each live car
 - Never hardcode a real token in examples
 - Always provide a `Forget` control that removes the token from storage
 - Forget must immediately clear the shared JWE storage key used by subsequent dashboards
-
-## Compatibility note
-
-Dynamic mode is for browser-opened dashboards. For benchmark-produced `visual.html`, prefer static mode unless live loading is explicitly requested.

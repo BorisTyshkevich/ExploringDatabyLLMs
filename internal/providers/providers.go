@@ -17,6 +17,7 @@ import (
 
 	"qforge/internal/extract"
 	"qforge/internal/model"
+	verbosepkg "qforge/internal/verbose"
 )
 
 type Provider interface {
@@ -79,7 +80,7 @@ func (p cliProvider) runCodex(ctx context.Context, req model.ProviderRequest, pr
 		args = append(args, "-c", fmt.Sprintf("mcp_servers.%s.headers.Authorization=%q", req.MCPServerName, "Bearer "+req.MCPToken))
 	}
 	args = append(args, "exec", "--color", "never", "--output-last-message", answerFile, "--model", req.Model, "-")
-	logf(req.Verbose, "provider=codex phase=start bin=%s model=%s output=%s", bin, req.Model, answerFile)
+	logf(req.Verbose, req.Model, "provider=codex phase=start bin=%s model=%s output=%s", bin, req.Model, answerFile)
 	startedAt := time.Now()
 	cmd := exec.CommandContext(ctx, bin, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
@@ -126,17 +127,17 @@ func (p cliProvider) runCodex(ctx context.Context, req model.ProviderRequest, pr
 			resp := model.ProviderResponse{RawOutput: raw, Stdout: stdoutText, Stderr: stderrText, CLIBin: bin}
 			if isComplete(raw) {
 				if err != nil {
-					logf(req.Verbose, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+					logf(req.Verbose, req.Model, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 				} else {
-					logf(req.Verbose, "provider=codex phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
+					logf(req.Verbose, req.Model, "provider=codex phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 				}
 				return resp, nil
 			}
 			if err != nil {
-				logf(req.Verbose, "provider=codex phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+				logf(req.Verbose, req.Model, "provider=codex phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 				return resp, err
 			}
-			logf(req.Verbose, "provider=codex phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
+			logf(req.Verbose, req.Model, "provider=codex phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 			return resp, nil
 		case <-ticker.C:
 			raw := codexRawOutput("", answerFile)
@@ -158,22 +159,22 @@ func (p cliProvider) runCodex(ctx context.Context, req model.ProviderRequest, pr
 			if time.Since(completedAt) < 2*time.Second {
 				continue
 			}
-			logf(req.Verbose, "provider=codex phase=completion-file status=stable elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
+			logf(req.Verbose, req.Model, "provider=codex phase=completion-file status=stable elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 			terminateProcess(cmd.Process)
 			select {
 			case err := <-waitCh:
 				resp := model.ProviderResponse{RawOutput: completedRaw, Stdout: readFileText(stdoutFile.Name()), Stderr: readFileText(stderrFile.Name()), CLIBin: bin}
 				if err != nil {
-					logf(req.Verbose, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+					logf(req.Verbose, req.Model, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 				} else {
-					logf(req.Verbose, "provider=codex phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
+					logf(req.Verbose, req.Model, "provider=codex phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 				}
 				return resp, nil
 			case <-time.After(2 * time.Second):
 				terminateProcess(cmd.Process)
 				err := <-waitCh
 				resp := model.ProviderResponse{RawOutput: completedRaw, Stdout: readFileText(stdoutFile.Name()), Stderr: readFileText(stderrFile.Name()), CLIBin: bin}
-				logf(req.Verbose, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+				logf(req.Verbose, req.Model, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 				return resp, nil
 			}
 		case <-ctx.Done():
@@ -183,7 +184,7 @@ func (p cliProvider) runCodex(ctx context.Context, req model.ProviderRequest, pr
 			raw := codexRawOutput(stdoutText, answerFile)
 			resp := model.ProviderResponse{RawOutput: raw, Stdout: stdoutText, Stderr: stderrText, CLIBin: bin}
 			if isComplete(raw) && errors.Is(ctx.Err(), context.DeadlineExceeded) {
-				logf(req.Verbose, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+				logf(req.Verbose, req.Model, "provider=codex phase=done status=recovered elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
 				return resp, nil
 			}
 			return resp, err
@@ -273,12 +274,12 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 		"--no-session-persistence",
 		prompt,
 	}
-	logf(req.Verbose, "provider=claude phase=start bin=%s model=%s config=%s", bin, req.Model, configPath)
+	logf(req.Verbose, req.Model, "provider=claude phase=start bin=%s model=%s config=%s", bin, req.Model, configPath)
 	startedAt := time.Now()
 	cmd := exec.CommandContext(ctx, bin, args...)
 	var stdout, stderr bytes.Buffer
-	liveStdout := newLiveLogWriter(req.Verbose, "claude", "stdout", os.Stdout)
-	liveStderr := newLiveLogWriter(req.Verbose, "claude", "stderr", os.Stderr)
+	liveStdout := newLiveLogWriter(req.Verbose, req.Model, "claude", "stdout", os.Stdout)
+	liveStderr := newLiveLogWriter(req.Verbose, req.Model, "claude", "stderr", os.Stderr)
 	cmd.Dir = req.OutDir
 	cmd.Stdout = io.MultiWriter(&stdout, liveStdout)
 	cmd.Stderr = io.MultiWriter(&stderr, liveStderr)
@@ -286,11 +287,11 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 	liveStdout.Flush()
 	liveStderr.Flush()
 	if err != nil {
-		logf(req.Verbose, "provider=claude phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
-		logProviderDetails(req.Verbose, "claude", stdout.String(), stderr.String())
+		logf(req.Verbose, req.Model, "provider=claude phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+		logProviderDetails(req.Verbose, req.Model, "claude", stdout.String(), stderr.String())
 		return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
 	}
-	logf(req.Verbose, "provider=claude phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
+	logf(req.Verbose, req.Model, "provider=claude phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 	return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
 }
 
@@ -303,7 +304,7 @@ func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, p
 		cleanupCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 		if err := p.runGeminiMCP(cleanupCtx, req, "remove"); err != nil {
-			logf(req.Verbose, "provider=gemini phase=mcp_cleanup status=warning err=%v", err)
+			logf(req.Verbose, req.Model, "provider=gemini phase=mcp_cleanup status=warning err=%v", err)
 		}
 	}()
 	args := []string{
@@ -313,24 +314,24 @@ func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, p
 		"--approval-mode", "yolo",
 		"--output-format", "text",
 	}
-	logf(req.Verbose, "provider=gemini phase=start bin=%s model=%s workdir=%s", bin, req.Model, req.OutDir)
+	logf(req.Verbose, req.Model, "provider=gemini phase=start bin=%s model=%s workdir=%s", bin, req.Model, req.OutDir)
 	startedAt := time.Now()
 	cmd := exec.CommandContext(ctx, bin, args...)
 	cmd.Dir = req.OutDir
 	var stdout, stderr bytes.Buffer
-	liveStdout := newLiveLogWriter(req.Verbose, "gemini", "stdout", os.Stdout)
-	liveStderr := newLiveLogWriter(req.Verbose, "gemini", "stderr", os.Stderr)
+	liveStdout := newLiveLogWriter(req.Verbose, req.Model, "gemini", "stdout", os.Stdout)
+	liveStderr := newLiveLogWriter(req.Verbose, req.Model, "gemini", "stderr", os.Stderr)
 	cmd.Stdout = io.MultiWriter(&stdout, liveStdout)
 	cmd.Stderr = io.MultiWriter(&stderr, liveStderr)
 	err := cmd.Run()
 	liveStdout.Flush()
 	liveStderr.Flush()
 	if err != nil {
-		logf(req.Verbose, "provider=gemini phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
-		logProviderDetails(req.Verbose, "gemini", stdout.String(), stderr.String())
+		logf(req.Verbose, req.Model, "provider=gemini phase=done status=warning elapsed=%s err=%v", time.Since(startedAt).Round(time.Millisecond), err)
+		logProviderDetails(req.Verbose, req.Model, "gemini", stdout.String(), stderr.String())
 		return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
 	}
-	logf(req.Verbose, "provider=gemini phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
+	logf(req.Verbose, req.Model, "provider=gemini phase=done status=ok elapsed=%s", time.Since(startedAt).Round(time.Millisecond))
 	return model.ProviderResponse{RawOutput: stdout.String(), Stdout: stdout.String(), Stderr: stderr.String(), CLIBin: bin}, err
 }
 
@@ -357,19 +358,19 @@ func (p cliProvider) runGeminiMCP(ctx context.Context, req model.ProviderRequest
 	return nil
 }
 
-func logf(verbose bool, format string, args ...any) {
-	if !verbose {
+func logf(enabled bool, model, format string, args ...any) {
+	if !enabled {
 		return
 	}
-	fmt.Printf("[qforge] "+format+"\n", args...)
+	verbosepkg.Printf(os.Stdout, time.Now, model, format, args...)
 }
 
-func logProviderDetails(verbose bool, providerName, stdoutText, stderrText string) {
-	if !verbose {
+func logProviderDetails(enabled bool, model, providerName, stdoutText, stderrText string) {
+	if !enabled {
 		return
 	}
 	if summary := summarizeProviderFailure(stderrText, stdoutText); summary != "" {
-		fmt.Printf("[qforge] provider=%s detail=%q\n", providerName, summary)
+		verbosepkg.Printf(os.Stdout, time.Now, model, "provider=%s detail=%q", providerName, summary)
 	}
 }
 
@@ -436,6 +437,7 @@ func truncate(s string, limit int) string {
 
 type liveLogWriter struct {
 	enabled  bool
+	model    string
 	provider string
 	stream   string
 	target   io.Writer
@@ -443,9 +445,10 @@ type liveLogWriter struct {
 	buf      bytes.Buffer
 }
 
-func newLiveLogWriter(enabled bool, provider, stream string, target io.Writer) *liveLogWriter {
+func newLiveLogWriter(enabled bool, model, provider, stream string, target io.Writer) *liveLogWriter {
 	return &liveLogWriter{
 		enabled:  enabled,
+		model:    model,
 		provider: provider,
 		stream:   stream,
 		target:   target,
@@ -467,9 +470,7 @@ func (w *liveLogWriter) Write(p []byte) (int, error) {
 			w.buf.WriteString(line)
 			return len(p), nil
 		}
-		if _, err := fmt.Fprintf(w.target, "[qforge] provider=%s stream=%s %s", w.provider, w.stream, line); err != nil {
-			return 0, err
-		}
+		verbosepkg.Printf(w.target, time.Now, w.model, "provider=%s stream=%s %s", w.provider, w.stream, strings.TrimRight(line, "\n"))
 	}
 }
 
@@ -482,6 +483,6 @@ func (w *liveLogWriter) Flush() {
 	if w.buf.Len() == 0 {
 		return
 	}
-	_, _ = fmt.Fprintf(w.target, "[qforge] provider=%s stream=%s %s\n", w.provider, w.stream, w.buf.String())
+	verbosepkg.Printf(w.target, time.Now, w.model, "provider=%s stream=%s %s", w.provider, w.stream, strings.TrimRight(w.buf.String(), "\n"))
 	w.buf.Reset()
 }

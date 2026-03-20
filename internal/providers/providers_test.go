@@ -1,6 +1,7 @@
 package providers
 
 import (
+	"bytes"
 	"context"
 	"os"
 	"path/filepath"
@@ -222,5 +223,55 @@ func TestRunGeminiAddsAndRemovesMCPServer(t *testing.T) {
 	}
 	if !strings.Contains(logText, "mcp action:remove name:altinity_ontime_demo") {
 		t.Fatalf("expected gemini mcp remove, got: %q", logText)
+	}
+}
+
+func TestLogProviderDetailsUsesTimestampAndModelPrefix(t *testing.T) {
+	var buf bytes.Buffer
+	origStdout := os.Stdout
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("pipe: %v", err)
+	}
+	os.Stdout = w
+	defer func() {
+		os.Stdout = origStdout
+	}()
+
+	logProviderDetails(true, "opus", "claude", "", "rate limit exceeded")
+
+	if err := w.Close(); err != nil {
+		t.Fatalf("close write pipe: %v", err)
+	}
+	if _, err := buf.ReadFrom(r); err != nil {
+		t.Fatalf("read pipe: %v", err)
+	}
+	got := strings.TrimSpace(buf.String())
+	if !strings.Contains(got, " opus provider=claude detail=") {
+		t.Fatalf("expected model/provider detail in log, got %q", got)
+	}
+	if strings.Contains(got, "[qforge]") {
+		t.Fatalf("expected no legacy prefix, got %q", got)
+	}
+	if len(got) < len("2006-01-02 15:04:05 opus") || got[4] != '-' || got[7] != '-' || got[10] != ' ' {
+		t.Fatalf("expected timestamp prefix, got %q", got)
+	}
+}
+
+func TestLiveLogWriterUsesTimestampAndModelPrefix(t *testing.T) {
+	var buf bytes.Buffer
+	writer := newLiveLogWriter(true, "opus", "claude", "stdout", &buf)
+	if _, err := writer.Write([]byte("hello world\n")); err != nil {
+		t.Fatalf("write: %v", err)
+	}
+	got := strings.TrimSpace(buf.String())
+	if !strings.Contains(got, " opus provider=claude stream=stdout hello world") {
+		t.Fatalf("unexpected live log output: %q", got)
+	}
+	if strings.Contains(got, "[qforge]") {
+		t.Fatalf("expected no legacy prefix, got %q", got)
+	}
+	if len(got) < len("2006-01-02 15:04:05 opus") || got[4] != '-' || got[7] != '-' || got[10] != ' ' {
+		t.Fatalf("expected timestamp prefix, got %q", got)
 	}
 }

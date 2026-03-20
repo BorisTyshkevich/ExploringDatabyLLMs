@@ -24,6 +24,7 @@ import (
 	"qforge/internal/questions"
 	"qforge/internal/render"
 	"qforge/internal/runs"
+	verbosepkg "qforge/internal/verbose"
 )
 
 const defaultCommandTimeoutSec = 900
@@ -200,8 +201,12 @@ func runRun(ctx context.Context, args []string) error {
 	if len(runners) == 0 {
 		runners = multiFlag{"codex", "claude", "gemini"}
 	}
+	modelLabel, err := modelLabelForRunners(runners, models)
+	if err != nil {
+		return err
+	}
 	if *verbose {
-		fmt.Printf("[qforge] run question=%s runners=%s\n", *questionRef, strings.Join(runners, ","))
+		logf(true, modelLabel, "run question=%s runners=%s", *questionRef, strings.Join(runners, ","))
 	}
 	modelByRunner := map[string]string{}
 	for i, runner := range runners {
@@ -331,7 +336,7 @@ func runCompare(ctx context.Context, args []string) error {
 	var errs []string
 	for _, ref := range questionRefs {
 		if *verbose {
-			fmt.Printf("[qforge] compare day=%s question=%s runner=%s model=%s\n", *day, ref, *runner, *modelName)
+			logf(true, *modelName, "compare day=%s question=%s runner=%s model=%s", *day, ref, *runner, *modelName)
 		}
 		if err := executeCompare(ctx, compareOptions{
 			QuestionRef: ref,
@@ -459,10 +464,11 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-visual --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has query.sql, report.template.md, report.md, and result.json.")
+		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has query.sql and any mode-specific visual inputs.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - loads manifest.json, query.sql, report.template.md, report.md, and result.json from the selected run")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json and query.sql from the selected run")
+		fmt.Fprintln(os.Stdout, "  - for static mode, also loads result.json")
 		fmt.Fprintln(os.Stdout, "  - rebuilds the visual prompt from the original question and saved artifacts")
 		fmt.Fprintln(os.Stdout, "  - invokes the original provider again for visual.html only")
 		fmt.Fprintln(os.Stdout, "  - writes final visual.html in the same run directory")
@@ -611,12 +617,12 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if commandTimeoutSec <= 0 {
 		commandTimeoutSec = defaultCommandTimeoutSec
 	}
-	logf(opts.Verbose, "run question=%s runner=%s model=%s dataset=%s", question.Meta.ID, opts.Runner, opts.Model, datasetName)
+	logf(opts.Verbose, opts.Model, "run question=%s runner=%s model=%s dataset=%s", question.Meta.ID, opts.Runner, opts.Model, datasetName)
 	outDir, err := runs.NextRunDir(runRoot, question, opts.Runner, opts.Model, time.Now())
 	if err != nil {
 		return err
 	}
-	logf(opts.Verbose, "out_dir=%s visual=%t timeout_sec=%d", outDir, question.VisualEnabled, commandTimeoutSec)
+	logf(opts.Verbose, opts.Model, "out_dir=%s visual=%t timeout_sec=%d", outDir, question.VisualEnabled, commandTimeoutSec)
 	artifacts := runs.DefaultArtifacts(outDir, question.PresentationEnabled)
 	startedAt := time.Now().UTC()
 	manifest := model.RunManifest{
@@ -649,7 +655,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return err
 	}
-	logf(opts.Verbose, "phase=sql_generation status=started")
+	logf(opts.Verbose, opts.Model, "phase=sql_generation status=started")
 	if err := os.WriteFile(artifacts.PromptSQLRaw, []byte(sqlPrompt), 0o644); err != nil {
 		return err
 	}
@@ -716,9 +722,9 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 	manifest.QuerySHA256 = runs.QuerySHA256(sqlBlock)
 	manifest.Phases.SQLGeneration = model.PhaseStatusOK
-	logf(opts.Verbose, "phase=sql_generation status=ok query_sha=%s", manifest.QuerySHA256[:12])
+	logf(opts.Verbose, opts.Model, "phase=sql_generation status=ok query_sha=%s", manifest.QuerySHA256[:12])
 	manifest.LogComment = fmt.Sprintf("qforge|question=%s|run=%s|runner=%s|model=%s|phase=full", question.Meta.ID, filepath.Base(outDir), opts.Runner, opts.Model)
-	logf(opts.Verbose, "phase=sql_execution status=started log_comment=%s", manifest.LogComment)
+	logf(opts.Verbose, opts.Model, "phase=sql_execution status=started log_comment=%s", manifest.LogComment)
 	rawDB, result, err := execute.ExecuteSQL(ctx, mcpURL, token, sqlBlock, manifest.LogComment)
 	if err != nil {
 		manifest.Status = model.RunStatusPartial
@@ -727,8 +733,12 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 	manifest.Phases.SQLExecution = model.PhaseStatusOK
 	manifest.ResultRowCount = result.RowCount
-	logf(opts.Verbose, "phase=sql_execution status=ok row_count=%d", result.RowCount)
+	logf(opts.Verbose, opts.Model, "phase=sql_execution status=ok row_count=%d", result.RowCount)
 	if err := execute.WriteJSON(artifacts.ResultJSON, result); err != nil {
+		return err
+	}
+	visualSummary := buildVisualInputSummary(question, result)
+	if err := execute.WriteJSON(artifacts.VisualInputJSON, visualSummary); err != nil {
 		return err
 	}
 	if question.ReportEnabled {
@@ -744,23 +754,27 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
 		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
 		if question.VisualEnabled && !opts.WithVisual {
-			logf(opts.Verbose, "run status=ok visual=deferred")
+			logf(opts.Verbose, opts.Model, "run status=ok visual=deferred")
 		} else {
-			logf(opts.Verbose, "run status=ok visual=skipped")
+			logf(opts.Verbose, opts.Model, "run status=ok visual=skipped")
 		}
 		return nil
 	}
 
-	logf(opts.Verbose, "phase=presentation_generation status=started")
+	logf(opts.Verbose, opts.Model, "phase=presentation_generation status=started")
 	querySQL, err := os.ReadFile(artifacts.QuerySQL)
 	if err != nil {
 		return fmt.Errorf("read query.sql for presentation prompt: %w", err)
 	}
-	reportTemplateBytes, err := os.ReadFile(artifacts.ReportTemplateMD)
+	visualInputBytes, err := os.ReadFile(artifacts.VisualInputJSON)
 	if err != nil {
-		return fmt.Errorf("read report.template.md for visual prompt: %w", err)
+		return fmt.Errorf("read visual_input.json for visual prompt: %w", err)
 	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
+	var visualInput model.VisualInputSummary
+	if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
+		return fmt.Errorf("parse visual_input.json: %w", err)
+	}
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
 		return err
 	}
@@ -777,7 +791,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
 	htmlTemplate, err := loadVisualArtifact(presentationResponse.RawOutput, outDir, presentationStartedAt)
 	if err != nil {
-		logPresentationFailure(opts.Verbose, err, presentationResponse)
+		logPresentationFailure(opts.Verbose, opts.Model, err, presentationResponse)
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
 		return err
@@ -786,7 +800,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", presentationErr.Error())
 	}
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
-	logf(opts.Verbose, "phase=presentation_generation status=ok")
+	logf(opts.Verbose, opts.Model, "phase=presentation_generation status=ok")
 	if err := os.WriteFile(artifacts.VisualHTML, []byte(htmlTemplate), 0o644); err != nil {
 		return err
 	}
@@ -795,6 +809,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		RunDir:               outDir,
 		HTMLPath:             artifacts.VisualHTML,
 		HTML:                 htmlTemplate,
+		Model:                opts.Model,
 		VisualMode:           question.Meta.VisualMode,
 		VisualType:           question.Meta.VisualType,
 		Token:                token,
@@ -808,13 +823,13 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if !validationResult.Valid {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationRender = model.PhaseStatusFailed
-		logf(opts.Verbose, "run status=partial visual=validation_failed mode=with-visual")
+		logf(opts.Verbose, opts.Model, "run status=partial visual=validation_failed mode=with-visual")
 		return nil
 	}
 
 	manifest.Phases.PresentationRender = model.PhaseStatusOK
 	manifest.Status = model.RunStatusOK
-	logf(opts.Verbose, "run status=ok visual=rendered mode=with-visual")
+	logf(opts.Verbose, opts.Model, "run status=ok visual=rendered mode=with-visual")
 	return nil
 }
 
@@ -851,20 +866,20 @@ func addMetadata(metadata map[string]string, key, value string) map[string]strin
 	return metadata
 }
 
-func logf(verbose bool, format string, args ...any) {
-	if !verbose {
+func logf(enabled bool, model, format string, args ...any) {
+	if !enabled {
 		return
 	}
-	fmt.Printf("[qforge] "+format+"\n", args...)
+	verbosepkg.Printf(os.Stdout, time.Now, model, format, args...)
 }
 
-func logPresentationFailure(verbose bool, err error, resp model.ProviderResponse) {
-	if !verbose {
+func logPresentationFailure(enabled bool, modelName string, err error, resp model.ProviderResponse) {
+	if !enabled {
 		return
 	}
-	logf(true, "phase=presentation_generation status=failed reason=%q", err.Error())
+	logf(true, modelName, "phase=presentation_generation status=failed reason=%q", err.Error())
 	if summary := summarizeProviderFailure(resp.Stderr, resp.Stdout, resp.RawOutput); summary != "" {
-		logf(true, "presentation_provider_detail=%q", summary)
+		logf(true, modelName, "presentation_provider_detail=%q", summary)
 	}
 }
 
@@ -979,19 +994,21 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, true)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "3"
-	logf(opts.Verbose, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
+	logf(opts.Verbose, manifest.Model, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	querySQL, err := os.ReadFile(filepath.Join(runDir, "query.sql"))
 	if err != nil {
 		return fmt.Errorf("process-visual requires query.sql: %w", err)
 	}
-	reportTemplateBytes, err := os.ReadFile(filepath.Join(runDir, "report.template.md"))
+	if strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
+		if _, err := os.Stat(filepath.Join(runDir, "result.json")); err != nil {
+			return fmt.Errorf("process-visual requires result.json for static mode: %w", err)
+		}
+	}
+	visualInput, err := ensureVisualInputSummary(filepath.Join(runDir, "visual_input.json"), question, result)
 	if err != nil {
-		return fmt.Errorf("process-visual requires report.template.md: %w", err)
+		return err
 	}
-	if _, err := os.Stat(filepath.Join(runDir, "report.md")); err != nil {
-		return fmt.Errorf("process-visual requires report.md: %w", err)
-	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), string(reportTemplateBytes))
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
 		return err
 	}
@@ -1018,7 +1035,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		CLIBin:        firstNonEmpty(opts.CLIBin, manifest.CLIBin),
 		Verbose:       opts.Verbose,
 	}
-	logf(opts.Verbose, "phase=presentation_generation status=started")
+	logf(opts.Verbose, manifest.Model, "phase=presentation_generation status=started")
 	presentationCtx, cancel := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancel()
 	presentationStartedAt := time.Now()
@@ -1031,14 +1048,14 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	}
 	htmlTemplate, err := loadVisualArtifact(resp.RawOutput, runDir, presentationStartedAt)
 	if err != nil {
-		logPresentationFailure(opts.Verbose, err, resp)
+		logPresentationFailure(opts.Verbose, manifest.Model, err, resp)
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
 		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 		return err
 	}
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
-	logf(opts.Verbose, "phase=presentation_generation status=ok")
+	logf(opts.Verbose, manifest.Model, "phase=presentation_generation status=ok")
 	if err := os.WriteFile(manifest.Artifacts.VisualHTML, []byte(htmlTemplate), 0o644); err != nil {
 		return err
 	}
@@ -1047,6 +1064,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		RunDir:               runDir,
 		HTMLPath:             manifest.Artifacts.VisualHTML,
 		HTML:                 htmlTemplate,
+		Model:                manifest.Model,
 		VisualMode:           question.Meta.VisualMode,
 		VisualType:           question.Meta.VisualType,
 		Token:                token,
@@ -1060,7 +1078,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if !validationResult.Valid {
 		manifest.Status = model.RunStatusPartial
 		manifest.Phases.PresentationRender = model.PhaseStatusFailed
-		logf(opts.Verbose, "phase=presentation_render status=failed")
+		logf(opts.Verbose, manifest.Model, "phase=presentation_render status=failed")
 		return runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 	}
 
@@ -1068,7 +1086,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if manifest.Phases.SQLGeneration == model.PhaseStatusOK && manifest.Phases.SQLExecution == model.PhaseStatusOK {
 		manifest.Status = model.RunStatusOK
 	}
-	logf(opts.Verbose, "phase=presentation_render status=ok")
+	logf(opts.Verbose, manifest.Model, "phase=presentation_render status=ok")
 	return runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 }
 
@@ -1076,6 +1094,124 @@ func firstNonEmpty(values ...string) string {
 	for _, value := range values {
 		if value != "" {
 			return value
+		}
+	}
+	return ""
+}
+
+func modelLabelForRunners(runners, explicitModels []string) (string, error) {
+	labels := make([]string, 0, len(runners))
+	seen := map[string]struct{}{}
+	for i, runner := range runners {
+		modelName := ""
+		if i < len(explicitModels) {
+			modelName = explicitModels[i]
+		}
+		if modelName == "" {
+			var err error
+			modelName, err = defaultModelForRunner(runner)
+			if err != nil {
+				return "", err
+			}
+		}
+		if _, ok := seen[modelName]; ok {
+			continue
+		}
+		seen[modelName] = struct{}{}
+		labels = append(labels, modelName)
+	}
+	return strings.Join(labels, ","), nil
+}
+
+func dynamicQueryEndpointTemplate(mcpURL, token string, cfg model.DatasetConfig) string {
+	baseURL := strings.TrimRight(cfg.MCPBaseURL, "/")
+	if strings.HasSuffix(mcpURL, "/http") {
+		trimmed := strings.TrimSuffix(mcpURL, "/http")
+		if token != "" && strings.HasSuffix(trimmed, "/"+token) {
+			trimmed = strings.TrimSuffix(trimmed, "/"+token)
+		}
+		if trimmed != "" {
+			baseURL = strings.TrimRight(trimmed, "/")
+		}
+	}
+	if baseURL == "" {
+		baseURL = "https://mcp.demo.altinity.cloud"
+	}
+	return baseURL + "/{JWE}/openapi/execute_query?query=..."
+}
+
+func buildVisualInputSummary(question model.Question, result model.CanonicalResult) model.VisualInputSummary {
+	summary := model.VisualInputSummary{
+		QuestionTitle: question.Meta.Title,
+		ResultColumns: append([]string(nil), result.Columns...),
+		RowCount:      result.RowCount,
+		ModeHint:      visualModeHint(question.Meta.VisualMode),
+	}
+	if len(result.Rows) > 0 {
+		limit := 2
+		if len(result.Rows) < limit {
+			limit = len(result.Rows)
+		}
+		summary.SampleRows = make([]map[string]any, 0, limit)
+		for i := 0; i < limit; i++ {
+			summary.SampleRows = append(summary.SampleRows, result.Rows[i])
+		}
+	}
+	notes := map[string]string{}
+	for _, col := range result.Columns {
+		note := detectFieldShapeNote(col, result.Rows)
+		if note != "" {
+			notes[col] = note
+		}
+	}
+	if len(notes) > 0 {
+		summary.FieldShapeNotes = notes
+	}
+	return summary
+}
+
+func ensureVisualInputSummary(path string, question model.Question, result model.CanonicalResult) (model.VisualInputSummary, error) {
+	var visualInput model.VisualInputSummary
+	visualInputBytes, err := os.ReadFile(path)
+	if err == nil {
+		if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
+			return model.VisualInputSummary{}, fmt.Errorf("parse visual_input.json: %w", err)
+		}
+		return visualInput, nil
+	}
+	if !errors.Is(err, os.ErrNotExist) {
+		return model.VisualInputSummary{}, fmt.Errorf("read visual_input.json: %w", err)
+	}
+
+	visualInput = buildVisualInputSummary(question, result)
+	if err := execute.WriteJSON(path, visualInput); err != nil {
+		return model.VisualInputSummary{}, fmt.Errorf("write visual_input.json: %w", err)
+	}
+	return visualInput, nil
+}
+
+func visualModeHint(mode string) string {
+	if strings.EqualFold(strings.TrimSpace(mode), "static") {
+		return "Static mode embeds analytical data from result.json directly in the page."
+	}
+	return "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint."
+}
+
+func detectFieldShapeNote(column string, rows []map[string]any) string {
+	for _, row := range rows {
+		value, ok := row[column]
+		if !ok || value == nil {
+			continue
+		}
+		switch v := value.(type) {
+		case []any:
+			return "array field"
+		case []string:
+			return "array field"
+		case string:
+			if len(v) >= len("2006-01-02T15:04:05Z") && strings.Contains(v, "T") && strings.HasSuffix(v, "Z") {
+				return "ISO-like timestamp string"
+			}
 		}
 	}
 	return ""

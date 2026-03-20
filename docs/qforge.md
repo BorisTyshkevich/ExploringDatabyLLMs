@@ -256,9 +256,10 @@ What `run` does:
 5. extracts fenced SQL and fenced report template
 6. executes SQL directly against the OpenAPI endpoint
 7. writes canonical `result.json`
-8. renders `report.md` from the saved report template
-9. writes `manifest.json`
-10. optionally makes a second independent provider call for `visual.html` when `--with-visual` is set
+8. writes `visual_input.json`
+9. renders `report.md` from the saved report template
+10. writes `manifest.json`
+11. optionally makes a second independent provider call for `visual.html` when `--with-visual` is set
 
 What `run` does not do:
 
@@ -309,7 +310,8 @@ Flags:
 
 What `process-visual` does:
 
-- loads `manifest.json`, `analysis.json`, `query.sql`, `report.template.md`, `report.md`, and `result.json` from an existing run
+- loads `manifest.json`, `query.sql`, and `visual_input.json` from an existing run
+- for static mode, also loads `result.json`
 - rebuilds the presentation prompt from question metadata and the saved artifacts
 - invokes the original provider again for `html`
 - validates `visual.html` in two stages unless `--skip-visual-validation` is set:
@@ -319,8 +321,6 @@ What `process-visual` does:
 - writes:
   - `prompt.presentation.md`
   - `answer.presentation.raw.md`
-  - `report.template.md`
-  - `report.md`
   - `visual.html`
 
 Report placeholder contract:
@@ -443,13 +443,13 @@ Current verbose output includes:
 Example:
 
 ```text
-[qforge] run question=q002 runners=claude
-[qforge] run question=q002 runner=claude model=opus dataset=ontime
-[qforge] out_dir=... presentation=false timeout_sec=900
-[qforge] phase=sql_generation status=started
-[qforge] provider=claude phase=start ...
-[qforge] provider=claude phase=done status=ok elapsed=1m29.067s
-[qforge] phase=sql_execution status=ok row_count=195
+2026-01-01 00:00:00 opus run question=q002 runners=claude
+2026-01-01 00:00:00 opus run question=q002 runner=claude model=opus dataset=ontime
+2026-01-01 00:00:00 opus out_dir=... visual=false timeout_sec=900
+2026-01-01 00:00:00 opus phase=sql_generation status=started
+2026-01-01 00:00:00 opus provider=claude phase=start ...
+2026-01-01 00:01:29 opus provider=claude phase=done status=ok elapsed=1m29.067s
+2026-01-01 00:01:29 opus phase=sql_execution status=ok row_count=195
 ```
 
 ## Artifacts
@@ -467,6 +467,7 @@ Typical SQL-only run artifacts:
 - `answer.raw.json`
 - `query.sql`
 - `result.json`
+- `visual_input.json`
 - `manifest.json`
 - `stdout.log`
 - `stderr.log`
@@ -481,8 +482,7 @@ Typical analysis-phase artifacts now include:
 
 - `analysis.json`
 - `query.sql`
-- `report.template.md`
-- `report.md`
+- `visual_input.json`
 
 ## Browser Validation
 

@@ -13,6 +13,7 @@ type presentationValidationOptions struct {
 	RunDir               string
 	HTMLPath             string
 	HTML                 string
+	Model                string
 	VisualMode           string
 	VisualType           string
 	Token                string
@@ -35,8 +36,8 @@ func validatePresentationHTML(ctx context.Context, opts presentationValidationOp
 		result.Metadata["visual_validation"] = "skipped"
 		result.Metadata["browser_validation"] = "skipped"
 		result.Metadata["browser_validation_live_fetch"] = "skipped"
-		logf(opts.Verbose, "phase=visual_validation status=skipped")
-		logf(opts.Verbose, "phase=browser_validation status=skipped")
+		logf(opts.Verbose, opts.Model, "phase=visual_validation status=skipped")
+		logf(opts.Verbose, opts.Model, "phase=browser_validation status=skipped")
 		return result
 	}
 
@@ -46,20 +47,20 @@ func validatePresentationHTML(ctx context.Context, opts presentationValidationOp
 		result.Metadata["visual_validation"] = "failed"
 		result.Metadata["visual_validation_errors"] = strings.Join(contractResult.Errors, "; ")
 		result.Metadata["browser_validation"] = "skipped_contract_failed"
-		logf(opts.Verbose, "phase=visual_validation status=failed errors=%q", result.Metadata["visual_validation_errors"])
+		logf(opts.Verbose, opts.Model, "phase=visual_validation status=failed errors=%q", result.Metadata["visual_validation_errors"])
 	} else {
 		result.Metadata["visual_validation"] = "ok"
-		logf(opts.Verbose, "phase=visual_validation status=ok")
+		logf(opts.Verbose, opts.Model, "phase=visual_validation status=ok")
 	}
 	if len(contractResult.Warnings) > 0 {
 		result.Metadata["visual_validation_warnings"] = strings.Join(contractResult.Warnings, "; ")
-		logf(opts.Verbose, "visual_validation_warnings=%q", result.Metadata["visual_validation_warnings"])
+		logf(opts.Verbose, opts.Model, "visual_validation_warnings=%q", result.Metadata["visual_validation_warnings"])
 	}
 	if !contractResult.Valid {
 		return result
 	}
 
-	logf(opts.Verbose, "phase=browser_validation status=started")
+	logf(opts.Verbose, opts.Model, "phase=browser_validation status=started")
 	browserResult := browservalidate.Validate(ctx, browservalidate.Options{
 		HTMLPath:      opts.HTMLPath,
 		VisualMode:    opts.VisualMode,
@@ -70,14 +71,14 @@ func validatePresentationHTML(ctx context.Context, opts presentationValidationOp
 		result.Valid = false
 		result.Metadata["browser_validation"] = "failed"
 		result.Metadata["browser_validation_errors"] = strings.Join(browserResult.Errors, "; ")
-		logf(opts.Verbose, "phase=browser_validation status=failed errors=%q", result.Metadata["browser_validation_errors"])
+		logf(opts.Verbose, opts.Model, "phase=browser_validation status=failed errors=%q", result.Metadata["browser_validation_errors"])
 	} else {
 		result.Metadata["browser_validation"] = "ok"
-		logf(opts.Verbose, "phase=browser_validation status=ok")
+		logf(opts.Verbose, opts.Model, "phase=browser_validation status=ok")
 	}
 	if len(browserResult.Warnings) > 0 {
 		result.Metadata["browser_validation_warnings"] = strings.Join(browserResult.Warnings, "; ")
-		logf(opts.Verbose, "browser_validation_warnings=%q", result.Metadata["browser_validation_warnings"])
+		logf(opts.Verbose, opts.Model, "browser_validation_warnings=%q", result.Metadata["browser_validation_warnings"])
 	}
 	if len(browserResult.ConsoleErrors) > 0 {
 		result.Metadata["browser_validation_console_errors"] = strings.Join(browserResult.ConsoleErrors, "; ")
@@ -94,13 +95,13 @@ func validatePresentationHTML(ctx context.Context, opts presentationValidationOp
 	switch {
 	case browserResult.LiveFetchSucceeded:
 		result.Metadata["browser_validation_live_fetch"] = "ok"
-		logf(opts.Verbose, "phase=browser_validation_live_fetch status=ok")
+		logf(opts.Verbose, opts.Model, "phase=browser_validation_live_fetch status=ok")
 	case browserResult.LiveFetchAttempted:
 		result.Metadata["browser_validation_live_fetch"] = "failed"
-		logf(opts.Verbose, "phase=browser_validation_live_fetch status=failed")
+		logf(opts.Verbose, opts.Model, "phase=browser_validation_live_fetch status=failed")
 	case browserResult.LiveFetchSkipped:
 		result.Metadata["browser_validation_live_fetch"] = browserResult.SkipReason
-		logf(opts.Verbose, "phase=browser_validation_live_fetch status=%s", browserResult.SkipReason)
+		logf(opts.Verbose, opts.Model, "phase=browser_validation_live_fetch status=%s", browserResult.SkipReason)
 	default:
 		result.Metadata["browser_validation_live_fetch"] = "not_attempted"
 	}

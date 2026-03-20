@@ -1,6 +1,7 @@
 Static-mode requirements:
 
 - Build a self-contained benchmark artifact. Do not require browser-side MCP access, tokens, localStorage, or live fetches to render the analytical content.
+- Use `result.json` as the authoritative embedded data input for the page.
 - Embed the analytical data needed by the page directly in the HTML using inline data blocks such as `<script type="application/json">` or `<script type="text/csv">`.
 - Derive KPIs, filters, charts, and tables from the embedded data after parsing and normalization in browser JavaScript.
 - Keep CSS and JavaScript inline.

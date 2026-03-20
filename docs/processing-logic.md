@@ -11,7 +11,7 @@ This document describes the current end-to-end processing flow for `qforge`: wha
    - the harness loads `answer.raw.json`, extracts SQL and report inputs, executes SQL itself, and renders `report.md`
 2. visual phase
    - optional, controlled by `run --with-visual` or by `process-visual`
-   - the provider receives saved analytical artifacts and generates only `visual.html`
+   - the provider receives `query.sql` plus a harness-generated visual input summary and generates only `visual.html`
 
 The model never executes the final SQL. The harness always executes SQL and writes the canonical `result.json`.
 
@@ -66,7 +66,8 @@ After the provider returns, qforge:
 6. writes `report.template.md`
 7. executes the SQL itself
 8. writes `result.json`
-9. renders final `report.md`
+9. writes `visual_input.json`
+10. renders final `report.md`
 
 Phase 1 fails if:
 
@@ -116,17 +117,15 @@ Current composition order:
 
 The visual provider receives these saved artifacts as prompt context:
 
-- `analysis.json`
 - `query.sql`
-- `report.template.md`
-- `report.md`
-- `result.json`
+- `visual_input.json`
+- `result.json` in static mode only
 
 The visual phase should treat:
 
-- `result.json` as the authoritative data result
 - `query.sql` as the authoritative executed query
-- `analysis.json` as authoritative structured analysis context
+- `visual_input.json` as the compact data-shape summary
+- `result.json` as the authoritative embedded data source in static mode
 
 ### Output
 
@@ -156,6 +155,7 @@ Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 - `query.sql`
 - `report.template.md`
 - `result.json`
+- `visual_input.json`
 - `report.md`
 - `prompt.presentation.md`
 - `answer.presentation.raw.md`
@@ -170,5 +170,6 @@ Source-of-truth artifacts:
 - normalized analysis snapshot: `analysis.json`
 - executed SQL: `query.sql`
 - canonical result: `result.json`
+- visual grounding summary: `visual_input.json`
 - final rendered report: `report.md`
 - final visual artifact: `visual.html`

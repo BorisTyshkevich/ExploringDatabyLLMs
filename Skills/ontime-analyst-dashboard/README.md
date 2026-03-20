@@ -35,7 +35,7 @@ All dashboards:
 Mode split:
 
 - static mode embeds the analytical data directly in `visual.html` so benchmark artifacts stay self-contained
-- dynamic mode fetches analytical data from MCP OpenAPI using a browser-stored JWE token and shows a visible query ledger
+- dynamic mode fetches analytical data through a runtime-provided tokenized HTTP SQL endpoint and shows a visible query ledger
 
 Maps are used when geography adds analytical value (routes, airports, regions). For non-geographic questions, use charts, heatmaps, or tables as the primary visual.
 
@@ -59,7 +59,6 @@ All data flows through one normalized client-side row model:
 
 ## Browser storage keys
 
-- `OnTimeAnalystDashboard::auth::jwe` — shared auth token
 - `OnTimeAnalystDashboard::<dashboardId>::layout` — layout state
 
 ## Files in this skill

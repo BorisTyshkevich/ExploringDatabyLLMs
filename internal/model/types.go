@@ -73,6 +73,7 @@ type ArtifactPaths struct {
 	QuerySQL              string `json:"query_sql"`
 	ResultTSV             string `json:"result_tsv,omitempty"`
 	ResultJSON            string `json:"result_json"`
+	VisualInputJSON       string `json:"visual_input_json,omitempty"`
 	ManifestJSON          string `json:"manifest_json"`
 	StdoutLog             string `json:"stdout_log"`
 	StderrLog             string `json:"stderr_log"`
@@ -91,28 +92,28 @@ type RunPhases struct {
 }
 
 type RunManifest struct {
-	SchemaVersion                    string            `json:"schema_version"`
-	Status                           RunStatus         `json:"status"`
-	QuestionID                       string            `json:"question_id"`
-	QuestionSlug                     string            `json:"question_slug"`
-	QuestionTitle                    string            `json:"question_title"`
-	Dataset                          string            `json:"dataset"`
-	Runner                           string            `json:"runner"`
-	Model                            string            `json:"model"`
-	CLIBin                           string            `json:"cli_bin"`
-	MCPServerName                    string            `json:"mcp_server_name"`
-	MCPConfigSource                  string            `json:"mcp_config_source"`
-	StartedAt                        time.Time         `json:"started_at"`
-	FinishedAt                       time.Time         `json:"finished_at"`
-	DurationSec                      int64             `json:"duration_sec"`
-	SQLGenerationProviderDurationMs  int64             `json:"sql_generation_provider_duration_ms,omitempty"`
-	PresentationProviderDurationMs   int64             `json:"presentation_provider_duration_ms,omitempty"`
-	LogComment                       string            `json:"log_comment"`
-	QuerySHA256                      string            `json:"query_sha256"`
-	ResultRowCount                   int               `json:"result_row_count"`
-	Phases                           RunPhases         `json:"phases"`
-	Artifacts                        ArtifactPaths     `json:"artifacts"`
-	Metadata                         map[string]string `json:"metadata,omitempty"`
+	SchemaVersion                   string            `json:"schema_version"`
+	Status                          RunStatus         `json:"status"`
+	QuestionID                      string            `json:"question_id"`
+	QuestionSlug                    string            `json:"question_slug"`
+	QuestionTitle                   string            `json:"question_title"`
+	Dataset                         string            `json:"dataset"`
+	Runner                          string            `json:"runner"`
+	Model                           string            `json:"model"`
+	CLIBin                          string            `json:"cli_bin"`
+	MCPServerName                   string            `json:"mcp_server_name"`
+	MCPConfigSource                 string            `json:"mcp_config_source"`
+	StartedAt                       time.Time         `json:"started_at"`
+	FinishedAt                      time.Time         `json:"finished_at"`
+	DurationSec                     int64             `json:"duration_sec"`
+	SQLGenerationProviderDurationMs int64             `json:"sql_generation_provider_duration_ms,omitempty"`
+	PresentationProviderDurationMs  int64             `json:"presentation_provider_duration_ms,omitempty"`
+	LogComment                      string            `json:"log_comment"`
+	QuerySHA256                     string            `json:"query_sha256"`
+	ResultRowCount                  int               `json:"result_row_count"`
+	Phases                          RunPhases         `json:"phases"`
+	Artifacts                       ArtifactPaths     `json:"artifacts"`
+	Metadata                        map[string]string `json:"metadata,omitempty"`
 }
 
 type CanonicalResult struct {
@@ -152,8 +153,8 @@ type AnalysisMetrics struct {
 
 func (m *AnalysisMetrics) UnmarshalJSON(data []byte) error {
 	type rawMetrics struct {
-		SummaryFacts []string          `json:"summary_facts,omitempty"`
-		NamedValues  map[string]any    `json:"named_values,omitempty"`
+		SummaryFacts []string            `json:"summary_facts,omitempty"`
+		NamedValues  map[string]any      `json:"named_values,omitempty"`
 		NamedLists   map[string][]string `json:"named_lists,omitempty"`
 	}
 	var raw rawMetrics
@@ -194,6 +195,15 @@ type AnalysisArtifact struct {
 	SQL            string          `json:"sql"`
 	ReportMarkdown string          `json:"report_markdown"`
 	Metrics        AnalysisMetrics `json:"metrics"`
+}
+
+type VisualInputSummary struct {
+	QuestionTitle   string            `json:"question_title"`
+	ResultColumns   []string          `json:"result_columns"`
+	RowCount        int               `json:"row_count"`
+	SampleRows      []map[string]any  `json:"sample_rows,omitempty"`
+	FieldShapeNotes map[string]string `json:"field_shape_notes,omitempty"`
+	ModeHint        string            `json:"mode_hint,omitempty"`
 }
 
 type NumericColumnSpec struct {
