@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -38,6 +40,68 @@ func TestModelLabelForRunnersHandlesDuplicateRunnersWithDistinctModels(t *testin
 	want := "opus,sonnet,gpt-5.4"
 	if got != want {
 		t.Fatalf("unexpected label: got %q want %q", got, want)
+	}
+}
+
+func TestPrintRootUsageMentionsProcessPresentation(t *testing.T) {
+	origStdout := os.Stdout
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatalf("pipe: %v", err)
+	}
+	os.Stdout = w
+	printRootUsage(w)
+	_ = w.Close()
+	os.Stdout = origStdout
+
+	var buf bytes.Buffer
+	if _, err := buf.ReadFrom(r); err != nil {
+		t.Fatalf("read usage: %v", err)
+	}
+	if !strings.Contains(buf.String(), "process-presentation") {
+		t.Fatalf("expected root usage to mention process-presentation, got: %s", buf.String())
+	}
+}
+
+func TestMarkPresentationDeferredSkipsUnsetPhases(t *testing.T) {
+	got := markPresentationDeferred(model.RunPhases{
+		SQLGeneration: model.PhaseStatusOK,
+		SQLExecution:  model.PhaseStatusOK,
+	})
+	if got.PresentationGeneration != model.PhaseStatusSkipped {
+		t.Fatalf("expected presentation_generation skipped, got %q", got.PresentationGeneration)
+	}
+	if got.PresentationRender != model.PhaseStatusSkipped {
+		t.Fatalf("expected presentation_render skipped, got %q", got.PresentationRender)
+	}
+}
+
+func TestPresentationPhasesOKRejectsFailures(t *testing.T) {
+	if presentationPhasesOK(model.RunPhases{
+		PresentationGeneration: model.PhaseStatusSkipped,
+		PresentationRender:     model.PhaseStatusFailed,
+	}) {
+		t.Fatalf("expected failed presentation phase to make status not ok")
+	}
+}
+
+func TestReadOrInferRunManifestWithoutManifest(t *testing.T) {
+	runDir := "/tmp/2026-03-20/q001_hops_per_day/claude/opus/run-002"
+	manifest, question, err := readOrInferRunManifest("/Users/bvt/work/ExploringDatabyLLMs", runDir)
+	if err != nil {
+		t.Fatalf("expected manifest inference to succeed: %v", err)
+	}
+	if question.Meta.ID != "q001" {
+		t.Fatalf("expected q001 question, got %q", question.Meta.ID)
+	}
+	if manifest.Runner != "claude" || manifest.Model != "opus" {
+		t.Fatalf("unexpected manifest runner/model: %+v", manifest)
+	}
+	if manifest.QuestionSlug != "q001_hops_per_day" {
+		t.Fatalf("unexpected manifest slug: %+v", manifest)
+	}
+	if manifest.Metadata["manifest_inferred"] != "true" {
+		t.Fatalf("expected inferred manifest metadata, got %+v", manifest.Metadata)
 	}
 }
 

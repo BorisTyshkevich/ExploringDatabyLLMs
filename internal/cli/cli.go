@@ -44,6 +44,8 @@ func Run(ctx context.Context, args []string) error {
 		return runListQuestions(args[1:])
 	case "run":
 		return runRun(ctx, args[1:])
+	case "process-presentation":
+		return runProcessPresentation(ctx, args[1:])
 	case "process-visual":
 		return runProcessVisual(ctx, args[1:])
 	case "compare":
@@ -56,7 +58,7 @@ func Run(ctx context.Context, args []string) error {
 }
 
 func usageError() error {
-	return errors.New("usage: qforge <run|process-visual|compare|list-questions|inspect-run> ...")
+	return errors.New("usage: qforge <run|process-presentation|process-visual|compare|list-questions|inspect-run> ...")
 }
 
 func printRootUsage(out *os.File) {
@@ -68,6 +70,7 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "Commands:")
 	fmt.Fprintln(out, "  list-questions   List available benchmark questions")
 	fmt.Fprintln(out, "  run              Run one question for one or more providers")
+	fmt.Fprintln(out, "  process-presentation  Regenerate query/result/report from answer.raw.json")
 	fmt.Fprintln(out, "  process-visual   Generate visual.html for an existing run directory")
 	fmt.Fprintln(out, "  compare          Compare runs and fetch query_log metrics")
 	fmt.Fprintln(out, "  inspect-run      Print one run manifest")
@@ -83,6 +86,7 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "  qforge run -q q001 -r claude --with-visual -v")
 	fmt.Fprintln(out, "  qforge run -q q001 -r codex -r claude -v")
 	fmt.Fprintln(out, "  qforge run -q q001 -v")
+	fmt.Fprintln(out, "  qforge process-presentation --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	fmt.Fprintln(out, "  qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	fmt.Fprintln(out, "  qforge compare --question q003 -r codex -v")
 	fmt.Fprintln(out)
@@ -521,6 +525,53 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	})
 }
 
+func runProcessPresentation(ctx context.Context, args []string) error {
+	fs := flag.NewFlagSet("process-presentation", flag.ContinueOnError)
+	fs.SetOutput(os.Stdout)
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stdout, "Usage: qforge process-presentation --run-dir <path> [flags]")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Regenerate query.sql, result.json, visual_input.json, and report.md from an existing answer.raw.json.")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Behavior:")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json and answer.raw.json from the selected run")
+		fmt.Fprintln(os.Stdout, "  - extracts SQL and report inputs from the saved analysis artifact")
+		fmt.Fprintln(os.Stdout, "  - executes SQL itself and rewrites result.json plus visual_input.json")
+		fmt.Fprintln(os.Stdout, "  - renders final report.md in the same run directory")
+		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.presentation.md for a later manual visual run when the question has visual artifacts")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Flags:")
+		fs.PrintDefaults()
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Example:")
+		fmt.Fprintln(os.Stdout, "  qforge process-presentation --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+	}
+	runDir := fs.String("run-dir", "", "Path to an existing qforge run directory")
+	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http")
+	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
+	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
+	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
+	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
+	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
+	if err := fs.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return nil
+		}
+		return err
+	}
+	if *runDir == "" {
+		return errors.New("process-presentation requires --run-dir")
+	}
+	return processPresentation(ctx, processPresentationOptions{
+		RunDir:       *runDir,
+		MCPURL:       *mcpURL,
+		MCPServer:    *mcpServer,
+		MCPToken:     *mcpToken,
+		MCPTokenFile: *mcpTokenFile,
+		Verbose:      *verbose,
+	})
+}
+
 func runInspectRun(args []string) error {
 	fs := flag.NewFlagSet("inspect-run", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
@@ -583,6 +634,15 @@ type processVisualOptions struct {
 	SkipVisualValidation bool
 	SkipBrowserLiveFetch bool
 	Verbose              bool
+}
+
+type processPresentationOptions struct {
+	RunDir       string
+	MCPURL       string
+	MCPServer    string
+	MCPToken     string
+	MCPTokenFile string
+	Verbose      bool
 }
 
 func executeRun(ctx context.Context, opts runOptions) error {
@@ -705,59 +765,21 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		}
 		return err
 	}
-	sqlBlock := analysisArtifact.SQL
-	reportTemplate := analysisArtifact.ReportMarkdown
-	if err := render.ValidateReportTemplate(reportTemplate, analysisArtifact.Metrics); err != nil {
-		manifest.Status = model.RunStatusPartial
-		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		return err
-	}
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "sql_generation_warning", providerErr.Error())
 	}
-	if err := os.WriteFile(artifacts.QuerySQL, []byte(sqlBlock+"\n"), 0o644); err != nil {
-		return err
-	}
-	analysisJSON, err := json.MarshalIndent(analysisArtifact, "", "  ")
+	result, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
+		RunDir:           outDir,
+		Question:         question,
+		Manifest:         &manifest,
+		MCPURL:           mcpURL,
+		Token:            token,
+		Verbose:          opts.Verbose,
+		AnalysisArtifact: analysisArtifact,
+	})
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(artifacts.AnalysisJSON, analysisJSON, 0o644); err != nil {
-		return err
-	}
-	if question.ReportEnabled {
-		if err := os.WriteFile(artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
-			return err
-		}
-	}
-	manifest.QuerySHA256 = runs.QuerySHA256(sqlBlock)
-	manifest.Phases.SQLGeneration = model.PhaseStatusOK
-	logf(opts.Verbose, opts.Model, "phase=sql_generation status=ok query_sha=%s", manifest.QuerySHA256[:12])
-	manifest.LogComment = fmt.Sprintf("qforge|question=%s|run=%s|runner=%s|model=%s|phase=full", question.Meta.ID, filepath.Base(outDir), opts.Runner, opts.Model)
-	logf(opts.Verbose, opts.Model, "phase=sql_execution status=started log_comment=%s", manifest.LogComment)
-	rawDB, result, err := execute.ExecuteSQL(ctx, mcpURL, token, sqlBlock, manifest.LogComment)
-	if err != nil {
-		manifest.Status = model.RunStatusPartial
-		manifest.Phases.SQLExecution = model.PhaseStatusFailed
-		return err
-	}
-	manifest.Phases.SQLExecution = model.PhaseStatusOK
-	manifest.ResultRowCount = result.RowCount
-	logf(opts.Verbose, opts.Model, "phase=sql_execution status=ok row_count=%d", result.RowCount)
-	if err := execute.WriteJSON(artifacts.ResultJSON, result); err != nil {
-		return err
-	}
-	visualSummary := buildVisualInputSummary(question, result)
-	if err := execute.WriteJSON(artifacts.VisualInputJSON, visualSummary); err != nil {
-		return err
-	}
-	if question.ReportEnabled {
-		renderedReport := render.RenderReport(reportTemplate, question, result, analysisArtifact.Metrics)
-		if err := os.WriteFile(artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
-			return err
-		}
-	}
-	manifest.Metadata = addMetadata(manifest.Metadata, "execution_response_bytes", fmt.Sprintf("%d", len(rawDB)))
 
 	if !question.VisualEnabled || !opts.WithVisual {
 		manifest.Status = model.RunStatusOK
@@ -841,6 +863,76 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	manifest.Status = model.RunStatusOK
 	logf(opts.Verbose, opts.Model, "run status=ok visual=rendered mode=with-visual")
 	return nil
+}
+
+type materializeSavedAnalysisOptions struct {
+	RunDir           string
+	Question         model.Question
+	Manifest         *model.RunManifest
+	MCPURL           string
+	Token            string
+	Verbose          bool
+	AnalysisArtifact model.AnalysisArtifact
+}
+
+func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (model.CanonicalResult, error) {
+	sqlBlock := opts.AnalysisArtifact.SQL
+	reportTemplate := opts.AnalysisArtifact.ReportMarkdown
+	if err := render.ValidateReportTemplate(reportTemplate, opts.AnalysisArtifact.Metrics); err != nil {
+		opts.Manifest.Status = model.RunStatusPartial
+		opts.Manifest.Phases.SQLGeneration = model.PhaseStatusFailed
+		return model.CanonicalResult{}, err
+	}
+	if err := os.WriteFile(opts.Manifest.Artifacts.QuerySQL, []byte(sqlBlock+"\n"), 0o644); err != nil {
+		return model.CanonicalResult{}, err
+	}
+	analysisJSON, err := json.MarshalIndent(opts.AnalysisArtifact, "", "  ")
+	if err != nil {
+		return model.CanonicalResult{}, err
+	}
+	if err := os.WriteFile(opts.Manifest.Artifacts.AnalysisJSON, analysisJSON, 0o644); err != nil {
+		return model.CanonicalResult{}, err
+	}
+	if opts.Question.ReportEnabled {
+		if err := os.WriteFile(opts.Manifest.Artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
+			return model.CanonicalResult{}, err
+		}
+	}
+	opts.Manifest.QuerySHA256 = runs.QuerySHA256(sqlBlock)
+	opts.Manifest.Phases.SQLGeneration = model.PhaseStatusOK
+	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_generation status=ok query_sha=%s", opts.Manifest.QuerySHA256[:12])
+	if strings.TrimSpace(opts.Manifest.LogComment) == "" {
+		opts.Manifest.LogComment = defaultLogComment(opts.Question.Meta.ID, filepath.Base(opts.RunDir), opts.Manifest.Runner, opts.Manifest.Model)
+	}
+	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=started log_comment=%s", opts.Manifest.LogComment)
+	rawDB, result, err := execute.ExecuteSQL(ctx, opts.MCPURL, opts.Token, sqlBlock, opts.Manifest.LogComment)
+	if err != nil {
+		opts.Manifest.Status = model.RunStatusPartial
+		opts.Manifest.Phases.SQLExecution = model.PhaseStatusFailed
+		return model.CanonicalResult{}, err
+	}
+	opts.Manifest.Phases.SQLExecution = model.PhaseStatusOK
+	opts.Manifest.ResultRowCount = result.RowCount
+	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=ok row_count=%d", result.RowCount)
+	if err := execute.WriteJSON(opts.Manifest.Artifacts.ResultJSON, result); err != nil {
+		return model.CanonicalResult{}, err
+	}
+	visualSummary := buildVisualInputSummary(opts.Question, result)
+	if err := execute.WriteJSON(opts.Manifest.Artifacts.VisualInputJSON, visualSummary); err != nil {
+		return model.CanonicalResult{}, err
+	}
+	if opts.Question.ReportEnabled {
+		renderedReport := render.RenderReport(reportTemplate, opts.Question, result, opts.AnalysisArtifact.Metrics)
+		if err := os.WriteFile(opts.Manifest.Artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
+			return model.CanonicalResult{}, err
+		}
+	}
+	opts.Manifest.Metadata = addMetadata(opts.Manifest.Metadata, "execution_response_bytes", fmt.Sprintf("%d", len(rawDB)))
+	return result, nil
+}
+
+func defaultLogComment(questionID, runName, runner, modelName string) string {
+	return fmt.Sprintf("qforge|question=%s|run=%s|runner=%s|model=%s|phase=full", questionID, runName, runner, modelName)
 }
 
 func enforceSQLPolicy(sql string, cfg model.DatasetConfig) error {
@@ -1100,6 +1192,140 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	return runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 }
 
+func processPresentation(ctx context.Context, opts processPresentationOptions) error {
+	codeRoot, err := repoRoot()
+	if err != nil {
+		return err
+	}
+	runRoot := runsRoot(codeRoot)
+	runDir := opts.RunDir
+	if !filepath.IsAbs(runDir) {
+		runDir = filepath.Join(runRoot, runDir)
+	}
+	manifest, question, err := readOrInferRunManifest(codeRoot, runDir)
+	if err != nil {
+		return err
+	}
+	startedAt := time.Now().UTC()
+	if manifest.StartedAt.IsZero() {
+		manifest.StartedAt = startedAt
+	}
+	defer func() {
+		manifest.FinishedAt = time.Now().UTC()
+		manifest.DurationSec = int64(manifest.FinishedAt.Sub(startedAt).Seconds())
+		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+	}()
+	cfg, err := datasets.Load(codeRoot, manifest.Dataset)
+	if err != nil {
+		return err
+	}
+	mcpURL, token, err := datasets.ResolveMCPURL(cfg, opts.MCPURL)
+	if err != nil {
+		return err
+	}
+	if opts.MCPTokenFile != "" && opts.MCPToken == "" {
+		bytes, err := os.ReadFile(opts.MCPTokenFile)
+		if err != nil {
+			return err
+		}
+		opts.MCPToken = strings.TrimSpace(string(bytes))
+	}
+	if opts.MCPToken != "" {
+		token = opts.MCPToken
+	}
+	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
+	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
+	manifest.SchemaVersion = "3"
+	logf(opts.Verbose, manifest.Model, "process-presentation run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
+	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=answer.raw.json")
+	analysisArtifact, err := loadAnalysisArtifact(manifest.Artifacts.AnswerRawJSON)
+	if err != nil {
+		manifest.Status = model.RunStatusFailed
+		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
+		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+		return err
+	}
+	result, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
+		RunDir:           runDir,
+		Question:         question,
+		Manifest:         &manifest,
+		MCPURL:           mcpURL,
+		Token:            token,
+		Verbose:          opts.Verbose,
+		AnalysisArtifact: analysisArtifact,
+	})
+	if err != nil {
+		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+		return err
+	}
+	if question.VisualEnabled {
+		visualInput, err := ensureVisualInputSummary(manifest.Artifacts.VisualInputJSON, question, result)
+		if err != nil {
+			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+			return err
+		}
+		prompt, err := prompts.BuildVisualPrompt(question, cfg, result, analysisArtifact.SQL, dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
+		if err != nil {
+			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+			return err
+		}
+		if err := os.WriteFile(manifest.Artifacts.PromptPresentationRaw, []byte(prompt), 0o644); err != nil {
+			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+			return err
+		}
+	}
+	manifest.Phases = markPresentationDeferred(manifest.Phases)
+	if presentationPhasesOK(manifest.Phases) {
+		manifest.Status = model.RunStatusOK
+	} else {
+		manifest.Status = model.RunStatusPartial
+	}
+	return nil
+}
+
+func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Question, error) {
+	manifestPath := filepath.Join(runDir, "manifest.json")
+	manifest, err := runs.ReadManifest(manifestPath)
+	if err == nil {
+		question, err := questions.Resolve(codeRoot, manifest.QuestionID)
+		if err != nil {
+			return model.RunManifest{}, model.Question{}, err
+		}
+		return manifest, question, nil
+	}
+	if !errors.Is(err, os.ErrNotExist) {
+		return model.RunManifest{}, model.Question{}, err
+	}
+
+	questionRef := filepath.Base(filepath.Dir(filepath.Dir(filepath.Dir(runDir))))
+	runner := filepath.Base(filepath.Dir(filepath.Dir(runDir)))
+	modelName := filepath.Base(filepath.Dir(runDir))
+	question, err := questions.Resolve(codeRoot, questionRef)
+	if err != nil {
+		return model.RunManifest{}, model.Question{}, fmt.Errorf("infer question from run dir: %w", err)
+	}
+	manifest = model.RunManifest{
+		SchemaVersion: "3",
+		Status:        model.RunStatusFailed,
+		QuestionID:    question.Meta.ID,
+		QuestionSlug:  question.Meta.Slug,
+		QuestionTitle: question.Meta.Title,
+		Dataset:       question.Meta.Dataset,
+		Runner:        runner,
+		Model:         modelName,
+		StartedAt:     time.Now().UTC(),
+		Artifacts:     runs.DefaultArtifacts(runDir, question.PresentationEnabled),
+		Phases: model.RunPhases{
+			SQLGeneration:          model.PhaseStatusNotRun,
+			SQLExecution:           model.PhaseStatusNotRun,
+			PresentationGeneration: model.PhaseStatusNotRun,
+			PresentationRender:     model.PhaseStatusNotRun,
+		},
+	}
+	manifest.Metadata = addMetadata(manifest.Metadata, "manifest_inferred", "true")
+	return manifest, question, nil
+}
+
 func firstNonEmpty(values ...string) string {
 	for _, value := range values {
 		if value != "" {
@@ -1131,6 +1357,28 @@ func modelLabelForRunners(runners, explicitModels []string) (string, error) {
 		labels = append(labels, modelName)
 	}
 	return strings.Join(labels, ","), nil
+}
+
+func markPresentationDeferred(phases model.RunPhases) model.RunPhases {
+	if phaseUnset(phases.PresentationGeneration) {
+		phases.PresentationGeneration = model.PhaseStatusSkipped
+	}
+	if phaseUnset(phases.PresentationRender) {
+		phases.PresentationRender = model.PhaseStatusSkipped
+	}
+	return phases
+}
+
+func presentationPhasesOK(phases model.RunPhases) bool {
+	return phaseOKOrSkipped(phases.PresentationGeneration) && phaseOKOrSkipped(phases.PresentationRender)
+}
+
+func phaseOKOrSkipped(status model.PhaseStatus) bool {
+	return status == model.PhaseStatusOK || status == model.PhaseStatusSkipped
+}
+
+func phaseUnset(status model.PhaseStatus) bool {
+	return status == "" || status == model.PhaseStatusNotRun
 }
 
 func dynamicQueryEndpointTemplate(mcpURL, token string, cfg model.DatasetConfig) string {

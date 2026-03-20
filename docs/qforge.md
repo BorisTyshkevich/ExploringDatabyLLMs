@@ -136,6 +136,7 @@ Run one question across selected providers:
 Process report and visual for an existing run:
 
 ```bash
+./scripts/qforge process-presentation --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```
 
@@ -269,6 +270,51 @@ What `run` does not do:
 Exception:
 
 - when `--with-visual` is set, `run` performs the SQL phase first and then a separate presentation call for successful runs
+
+### `qforge process-presentation`
+
+Usage:
+
+```bash
+./scripts/qforge process-presentation --run-dir <path> [flags]
+```
+
+Flags:
+
+- `--run-dir`
+  - required
+  - path to an existing qforge run directory
+- `--mcp-url`
+  - optional
+  - explicit MCP URL ending in `/http`
+- `--mcp-server-name`
+  - optional
+  - explicit MCP server name for provider config
+- `--mcp-token`
+  - optional
+  - explicit MCP bearer token
+- `--mcp-token-file`
+  - optional
+  - read MCP token from a file
+- `--verbose`
+  - optional
+  - print phase-level progress logs
+
+What `process-presentation` does:
+
+- loads `manifest.json` and `answer.raw.json` from an existing run
+- extracts SQL and report inputs from the saved analysis artifact
+- executes SQL directly against the OpenAPI endpoint
+- rewrites:
+  - `query.sql`
+  - `analysis.json`
+  - `result.json`
+  - `visual_input.json`
+  - `prompt.presentation.md` when the question has visual artifacts
+  - `report.template.md`
+  - `report.md`
+- does not invoke a provider again
+- does not generate `visual.html`
 
 ### `qforge process-visual`
 
