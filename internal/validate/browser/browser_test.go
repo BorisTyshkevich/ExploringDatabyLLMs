@@ -90,6 +90,26 @@ func TestValidateFailsWhenControlsMissing(t *testing.T) {
 	}
 }
 
+func TestValidateAcceptsGlobalStatusOutsideFooter(t *testing.T) {
+	srv := newGlobalStatusFixtureServer()
+	defer srv.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	result := Validate(ctx, Options{
+		BaseURL:                  srv.URL + "/visual.html",
+		VisualMode:               "dynamic",
+		Token:                    "public-token",
+		ExpectedRequestSubstring: "/api/test",
+	})
+	if !result.Valid {
+		t.Fatalf("expected global visible status to satisfy validation, got %+v", result)
+	}
+	if len(result.MissingControls) != 0 {
+		t.Fatalf("did not expect missing controls, got %+v", result.MissingControls)
+	}
+}
+
 func TestValidateStaticModeDoesNotRequireDynamicControls(t *testing.T) {
 	srv := newFixtureServer(http.StatusOK, `{"columns":["value"],"rows":[[1]],"count":1}`, false, true)
 	defer srv.Close()
@@ -180,6 +200,53 @@ func newFixtureServer(statusCode int, body string, throwException bool, missingC
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(statusCode)
 			_, _ = w.Write([]byte(body))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+}
+
+func newGlobalStatusFixtureServer() *httptest.Server {
+	html := `<!doctype html>
+<html>
+<body>
+  <section class="hero">
+    <div id="statusBar" class="status-banner">idle</div>
+  </section>
+  <section id="query-ledger"><span class="ledger-status">pending</span></section>
+  <footer>
+    <input type="password" id="tokenInput">
+    <textarea id="sqlTextarea">SELECT 1</textarea>
+    <button id="fetchBtn" type="button" onclick="runQuery()">Fetch</button>
+  </footer>
+  <script>
+    async function runQuery() {
+      const token = document.getElementById('tokenInput').value.trim();
+      localStorage.setItem('OnTimeAnalystDashboard::auth::jwe', token);
+      const resp = await fetch('/api/test?query=' + encodeURIComponent(document.getElementById('sqlTextarea').value.trim()));
+      if (!resp.ok) {
+        document.getElementById('statusBar').textContent = 'error ' + resp.status;
+        return;
+      }
+      const payload = await resp.json();
+      document.querySelector('.ledger-status').textContent = 'loaded';
+      document.getElementById('statusBar').textContent = 'loaded ' + (payload.count ?? 0) + ' rows';
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.textContent = JSON.stringify(payload.rows || []);
+      document.body.insertBefore(card, document.querySelector('footer'));
+    }
+  </script>
+</body>
+</html>`
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case "/visual.html":
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			_, _ = w.Write([]byte(html))
+		case "/api/test":
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(`{"columns":["value"],"rows":[[1]],"count":1}`))
 		default:
 			http.NotFound(w, r)
 		}

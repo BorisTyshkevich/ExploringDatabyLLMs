@@ -416,12 +416,13 @@ func executeCompare(ctx context.Context, opts compareOptions) error {
 	if err != nil {
 		return err
 	}
+	compareStartedAt := time.Now()
 	resp, providerErr := provider.GeneratePresentation(ctx, req)
 	_ = os.WriteFile(paths.RawAnalysis, []byte(resp.RawOutput), 0o644)
 	if providerErr != nil {
 		return fmt.Errorf("compare report generation for %s: %w", question.Meta.ID, providerErr)
 	}
-	reportMD, err := extractCompareMarkdown(resp.RawOutput)
+	reportMD, err := loadCompareReportArtifact(resp.RawOutput, paths.Dir, compareStartedAt)
 	if err != nil {
 		return fmt.Errorf("extract compare report for %s: %w", question.Meta.ID, err)
 	}
@@ -455,6 +456,16 @@ func extractCompareMarkdown(raw string) (string, error) {
 		return "", errors.New("empty compare report output")
 	}
 	return trimmed, nil
+}
+
+func loadCompareReportArtifact(rawOutput, outDir string, notBefore time.Time) (string, error) {
+	reportPath := filepath.Join(outDir, "compare_report.md")
+	reportInfo, reportStatErr := os.Stat(reportPath)
+	reportBytes, readReportErr := os.ReadFile(reportPath)
+	if reportStatErr == nil && readReportErr == nil && !reportInfo.ModTime().Before(notBefore) {
+		return strings.TrimSpace(string(reportBytes)), nil
+	}
+	return extractCompareMarkdown(rawOutput)
 }
 
 func runProcessVisual(ctx context.Context, args []string) error {

@@ -446,13 +446,14 @@ func setTokenAndClick(ctx context.Context, token string) error {
 
 func discoverControlsJSFunc() string {
 	return `(() => {
+		const statusSelector = '#statusText,[id*="status"],[class*="status"],[data-role*="status"]';
 		const footer = document.querySelector('footer') || document.querySelector('.footer-controls') || document.querySelector('[data-role="controls"]');
 		const scope = footer || document;
 		const input = scope.querySelector('input[type="password"]') || document.querySelector('input[type="password"]');
 		const textarea = scope.querySelector('textarea') || document.querySelector('textarea');
 		const buttons = Array.from(scope.querySelectorAll('button,input[type="button"],input[type="submit"]'));
 		const fetchButton = buttons.find((btn) => /fetch|run|execute|load|query|refresh|save/i.test([btn.innerText, btn.value, btn.id, btn.className].join(' ')));
-		const status = scope.querySelector('#statusText,[id*="status"],[class*="status"],[data-role*="status"]');
+		const status = scope.querySelector(statusSelector) || document.querySelector(statusSelector);
 		const ledger = document.querySelector('#query-ledger,.ledger,[id*="ledger"],[class*="ledger"]');
 		const missing = [];
 		if (!footer) missing.push('footer control block');
@@ -477,8 +478,9 @@ var discoverControlsJS = discoverControlsJSFunc()
 
 func collectPageStateJSFunc() string {
 	return `(() => {
+		const statusSelector = '#statusText,[id*="status"],[class*="status"],[data-role*="status"]';
 		const footer = document.querySelector('footer') || document.querySelector('.footer-controls') || document.querySelector('[data-role="controls"]');
-		const status = (footer || document).querySelector('#statusText,[id*="status"],[class*="status"],[data-role*="status"]');
+		const status = (footer && footer.querySelector(statusSelector)) || document.querySelector(statusSelector);
 		const isVisible = (el) => {
 			if (!el) return false;
 			const style = window.getComputedStyle(el);

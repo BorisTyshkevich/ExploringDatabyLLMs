@@ -62,7 +62,7 @@ Your job:
 - for `report.md`, use the provided `md.html?file=...` URL
 - for `query.sql` and `result.json`, use the provided GitHub blob URL
 - for `visual.html`, use the provided GitHub Pages file URL
-- in sections 6, 9, and 10, group content by provider/model and then by run id
+- in sections 6 and 9, group content by provider/model and then by run id
 - keep the note concise but complete enough for a blog-style benchmark write-up
 
 Required sections:
@@ -85,7 +85,10 @@ Rules:
 - If differences are localized to one field or row type, say that precisely.
 - Do not use vague judgments like “better” or “worse” without concrete evidence.
 - Do not mention files that you did not verify.
-- In sections 6, 9, and 10, prefer short provider-grouped subsections with per-run bullets.
+- In sections 6 and 9, prefer short provider-grouped subsections with per-run bullets.
+- In section 10 (`## Execution stats`), use a Markdown table as the primary presentation, not prose bullets.
+- The execution-stats table should have one row per run and include at least: provider/model, run id, status, query time, rows read, bytes read, peak memory, SQL generation time, visual generation time, and total run duration when available.
+- After the execution-stats table, add at most one short paragraph calling out the most important performance spread or anomaly.
 - Return only one fenced Markdown block.
 
 Return exactly this fenced section:

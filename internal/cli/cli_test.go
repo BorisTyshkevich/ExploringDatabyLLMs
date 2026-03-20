@@ -74,6 +74,37 @@ func TestLoadVisualArtifactAcceptsFreshFallbackFile(t *testing.T) {
 	}
 }
 
+func TestLoadCompareReportArtifactPrefersFreshFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	reportPath := filepath.Join(tmpDir, "compare_report.md")
+	notBefore := time.Now()
+	time.Sleep(20 * time.Millisecond)
+
+	report := "# Long Report\n\nFull compare body.\n"
+	if err := os.WriteFile(reportPath, []byte(report), 0o644); err != nil {
+		t.Fatalf("write compare_report.md: %v", err)
+	}
+
+	got, err := loadCompareReportArtifact("Short stdout note", tmpDir, notBefore)
+	if err != nil {
+		t.Fatalf("expected fresh compare_report.md to be accepted: %v", err)
+	}
+	if got != "# Long Report\n\nFull compare body." {
+		t.Fatalf("unexpected compare report content: %q", got)
+	}
+}
+
+func TestLoadCompareReportArtifactFallsBackToStdout(t *testing.T) {
+	tmpDir := t.TempDir()
+	got, err := loadCompareReportArtifact("Short stdout note", tmpDir, time.Now())
+	if err != nil {
+		t.Fatalf("expected stdout fallback to work: %v", err)
+	}
+	if got != "Short stdout note" {
+		t.Fatalf("unexpected stdout fallback content: %q", got)
+	}
+}
+
 func TestLoadAnalysisArtifactAcceptsValidJSON(t *testing.T) {
 	tmpDir := t.TempDir()
 	payload, err := json.Marshal(model.AnalysisArtifact{
