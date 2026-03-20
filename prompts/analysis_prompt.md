@@ -16,8 +16,7 @@ Primary structured compare artifact:
 
 Question files:
 
-- SQL question prompt: `{{question_prompt_path}}` (`{{question_prompt_url}}`)
-- Report prompt: `{{report_prompt_path}}` (`{{report_prompt_url}}`)
+- Question prompt: `{{question_prompt_path}}` (`{{question_prompt_url}}`)
 - Visual prompt: `{{visual_prompt_path}}` (`{{visual_prompt_url}}`)
 - Compare contract: `{{compare_contract_path}}` (`{{compare_contract_url}}`)
 

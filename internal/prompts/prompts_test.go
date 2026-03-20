@@ -55,7 +55,6 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
 		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Meta:         model.QuestionMeta{ID: "q003", Title: "Delta ATL", VisualMode: "dynamic", VisualType: "html_heatmap"},
-		ReportPrompt: "Report guidance.",
 		VisualPrompt: "Visual guidance.",
 	}
 	result := model.CanonicalResult{
@@ -206,7 +205,6 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 			VisualMode: "static",
 			VisualType: "html_ranked_dashboard",
 		},
-		ReportPrompt: "Report guidance.",
 		VisualPrompt: "Visual guidance.",
 	}
 	result := model.CanonicalResult{

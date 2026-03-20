@@ -50,7 +50,6 @@ func Resolve(repoRoot, ref string) (model.Question, error) {
 
 func Load(dir string) (model.Question, error) {
 	metaPath := filepath.Join(dir, "meta.yaml")
-	promptPath := filepath.Join(dir, "prompt.md")
 	reportPromptPath := filepath.Join(dir, "report_prompt.md")
 	visualPromptPath := filepath.Join(dir, "visual_prompt.md")
 
@@ -65,19 +64,17 @@ func Load(dir string) (model.Question, error) {
 	if strings.TrimSpace(meta.VisualMode) == "" {
 		meta.VisualMode = "dynamic"
 	}
-	promptBytes, err := os.ReadFile(promptPath)
+	reportPromptBytes, err := os.ReadFile(reportPromptPath)
 	if err != nil {
 		return model.Question{}, err
 	}
-	reportPromptBytes, _ := os.ReadFile(reportPromptPath)
 	visualPromptBytes, _ := os.ReadFile(visualPromptPath)
 	reportEnabled := requiresArtifact(meta.ArtifactsRequired, "report.md")
 	visualEnabled := requiresArtifact(meta.ArtifactsRequired, "visual.html")
 	return model.Question{
 		Dir:                 dir,
 		Meta:                meta,
-		Prompt:              strings.TrimSpace(string(promptBytes)),
-		ReportPrompt:        strings.TrimSpace(string(reportPromptBytes)),
+		Prompt:              strings.TrimSpace(string(reportPromptBytes)),
 		VisualPrompt:        strings.TrimSpace(string(visualPromptBytes)),
 		PresentationEnabled: reportEnabled || visualEnabled,
 		ReportEnabled:       reportEnabled,

@@ -23,7 +23,7 @@ Current composition order:
 
 - `prompts/common.md`
 - `prompts/common_sql.md`
-- question `prompt.md`
+- question `report_prompt.md`
 
 The shared dataset semantic layer is loaded from `datasets/<dataset>/semantic_layer.md` when present and inlined into the prompt.
 

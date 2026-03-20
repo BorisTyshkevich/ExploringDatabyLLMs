@@ -31,13 +31,12 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (strin
 	values := map[string]string{
 		"dataset_semantic_layer_md": datasetSemanticLayerMarkdown(dataset),
 		"question_title":            question.Meta.Title,
-		"report_prompt_md":          question.ReportPrompt,
+		"question_prompt_md":        question.Prompt,
 		"report_placeholders":       "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
 		RenderTemplate(common, values),
 		RenderTemplate(commonSQL, values),
-		question.Prompt,
 	}
 	return joinSections(sections), nil
 }

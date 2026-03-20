@@ -48,7 +48,7 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
   - static `visual.html` requirements
 
-Question-specific files such as `prompts/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
+Question-specific files such as `prompts/qXXX.../report_prompt.md` and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
 
 Question metadata may also declare `visual_mode`:
 

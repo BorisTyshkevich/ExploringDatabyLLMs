@@ -58,7 +58,6 @@ type Question struct {
 	Dir                 string       `json:"dir"`
 	Meta                QuestionMeta `json:"meta"`
 	Prompt              string       `json:"prompt"`
-	ReportPrompt        string       `json:"report_prompt"`
 	VisualPrompt        string       `json:"visual_prompt"`
 	PresentationEnabled bool         `json:"presentation_enabled"`
 	ReportEnabled       bool         `json:"report_enabled"`

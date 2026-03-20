@@ -19,7 +19,7 @@ Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
   - static `visual.html` requirements
 
-Question-specific files such as `prompts/qXXX.../prompt.md`, `report_prompt.md`, and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
+Question-specific files such as `prompts/qXXX.../report_prompt.md` and `visual_prompt.md` should contain task logic, not repeated dataset boilerplate.
 
 ## Prompt Composition
 
@@ -27,7 +27,7 @@ Prompt builders are implemented in [`/Users/bvt/work/ExploringDatabyLLMs/interna
 
 Current composition order:
 
-- SQL phase: `common.md` + `common_sql.md` + question `prompt.md`
+- SQL phase: `common.md` + `common_sql.md` + question `report_prompt.md`
 - Presentation phase: `common.md` + `common_presentation.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
 
 The shared `common.md` file is rendered in both phases, so any template variables used there must be available to both builders.
@@ -57,8 +57,8 @@ Presentation/report variables:
   - Source: `strings.Join(result.Columns, ", ")`.
 - `{{saved_sql}}`
   - Source: the saved `query.sql` text passed into `BuildPresentationPrompt`.
-- `{{report_prompt_md}}`
-  - Source: `question.ReportPrompt`.
+- `{{question_prompt_md}}`
+  - Source: `question.Prompt`.
 - `{{visual_prompt_md}}`
   - Source: `question.VisualPrompt`.
 - `{{report_placeholders}}`

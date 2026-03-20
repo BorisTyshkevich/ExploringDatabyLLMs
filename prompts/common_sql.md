@@ -58,6 +58,6 @@ The placeholder `{{primary_value}}` is invalid. Use `metrics.named_values.primar
 
 Question title: `{{question_title}}`
 
-Question-specific report guidance:
+Question-specific guidance:
 
-{{report_prompt_md}}
+{{question_prompt_md}}
