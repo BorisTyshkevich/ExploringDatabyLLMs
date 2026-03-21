@@ -1,13 +1,13 @@
 WITH airport_offsets AS (
     SELECT
-        code,
+        AirportCode,
         multiIf(
-            utc_local_time_variation = '', 0,
-            startsWith(utc_local_time_variation, '-'),
-                -1 * ((toInt32OrZero(substring(utc_local_time_variation, 2, 2)) * 60) + toInt32OrZero(substring(utc_local_time_variation, 4, 2))),
-            (toInt32OrZero(substring(utc_local_time_variation, 2, 2)) * 60) + toInt32OrZero(substring(utc_local_time_variation, 4, 2))
+            UtcLocalTimeVariation = '', 0,
+            startsWith(UtcLocalTimeVariation, '-'),
+                -1 * ((toInt32OrZero(substring(UtcLocalTimeVariation, 2, 2)) * 60) + toInt32OrZero(substring(UtcLocalTimeVariation, 4, 2))),
+            (toInt32OrZero(substring(UtcLocalTimeVariation, 2, 2)) * 60) + toInt32OrZero(substring(UtcLocalTimeVariation, 4, 2))
         ) AS utc_offset_minutes
-    FROM ontime.airports_latest
+    FROM ontime.dim_airports
 ),
 legs AS (
     SELECT
@@ -15,14 +15,14 @@ legs AS (
         Flight_Number_Reporting_Airline AS FlightNum,
         trimBoth(toString(Reporting_Airline)) AS Carrier,
         FlightDate,
-        replaceAll(toString(Origin), '\0', '') AS Origin,
-        replaceAll(toString(Dest), '\0', '') AS Dest,
+        replaceAll(toString(OriginCode), '\0', '') AS OriginCode,
+        replaceAll(toString(DestCode), '\0', '') AS DestCode,
         assumeNotNull(DepTime) AS DepTime,
         (toDateTime(FlightDate) + toIntervalHour(intDiv(DepTime, 100)) + toIntervalMinute(DepTime % 100))
             - toIntervalMinute(coalesce(ao.utc_offset_minutes, 0)) AS dep_ts_utc
-    FROM ontime.ontime AS o
+    FROM ontime.fact_ontime AS o
     LEFT JOIN airport_offsets AS ao
-        ON replaceAll(toString(o.Origin), '\0', '') = ao.code
+        ON replaceAll(toString(o.OriginCode), '\0', '') = ao.AirportCode
     WHERE Tail_Number != ''
       AND Flight_Number_Reporting_Airline != ''
       AND Cancelled = 0
@@ -36,7 +36,7 @@ itineraries AS (
         Carrier,
         FlightDate,
         count() AS hops,
-        arraySort(x -> (x.1, x.2, x.3, x.4), groupArray((dep_ts_utc, Origin, Dest, DepTime))) AS route_legs
+        arraySort(x -> (x.1, x.2, x.3, x.4), groupArray((dep_ts_utc, OriginCode, DestCode, DepTime))) AS route_legs
     FROM legs
     GROUP BY TailNum, FlightNum, Carrier, FlightDate
 )

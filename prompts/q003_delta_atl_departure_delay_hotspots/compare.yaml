@@ -8,7 +8,7 @@ compare_contract:
   key_columns:
     - RowType
     - MonthStart
-    - Dest
+    - DestCode
     - DepTimeBlk
     - HotspotRank
   compare_columns:

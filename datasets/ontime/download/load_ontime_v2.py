@@ -37,21 +37,21 @@ STORED_COLUMNS = [
     "OriginAirportID",
     "OriginAirportSeqID",
     "OriginCityMarketID",
-    "Origin",
+    "OriginCode",
     "OriginCityName",
     "OriginState",
     "OriginStateFips",
     "OriginStateName",
-    "OriginWac",
+    "OriginWorldAreaCode",
     "DestAirportID",
     "DestAirportSeqID",
     "DestCityMarketID",
-    "Dest",
+    "DestCode",
     "DestCityName",
     "DestState",
     "DestStateFips",
     "DestStateName",
-    "DestWac",
+    "DestWorldAreaCode",
     "CRSDepTime",
     "DepTime",
     "DepDelay",
@@ -150,12 +150,12 @@ STRING_COLUMNS = {
     "IATA_CODE_Reporting_Airline",
     "Tail_Number",
     "Flight_Number_Reporting_Airline",
-    "Origin",
+    "OriginCode",
     "OriginCityName",
     "OriginState",
     "OriginStateFips",
     "OriginStateName",
-    "Dest",
+    "DestCode",
     "DestCityName",
     "DestState",
     "DestStateFips",
@@ -180,11 +180,11 @@ NON_NULL_INT_COLUMNS = {
     "OriginAirportID",
     "OriginAirportSeqID",
     "OriginCityMarketID",
-    "OriginWac",
+    "OriginWorldAreaCode",
     "DestAirportID",
     "DestAirportSeqID",
     "DestCityMarketID",
-    "DestWac",
+    "DestWorldAreaCode",
     "DepDel15",
     "ArrDel15",
     "Cancelled",
@@ -558,7 +558,7 @@ def load_year(
         raise RuntimeError(f"no source months available for {year}")
 
     log(f"load year start: {year} months={len(target_months)}")
-    truncate = run_clickhouse(connection, query="TRUNCATE TABLE ontime.ontime_stage")
+    truncate = run_clickhouse(connection, query="TRUNCATE TABLE ontime.stage_ontime")
     if truncate.returncode != 0:
         raise RuntimeError(truncate.stderr.strip())
 
@@ -569,7 +569,7 @@ def load_year(
         inspected = inspect_archive(archive, strict)
         inserted_rows, skipped_rows = insert_month(
             connection,
-            "ontime.ontime_stage",
+            "ontime.stage_ontime",
             archive,
             inspected,
             max_bad_rows_per_month,
@@ -588,7 +588,7 @@ def load_year(
         year_rows += inserted_rows
         log(f"month done: {month_ref.stem} rows={inserted_rows} skipped={skipped_rows}")
 
-    count_query = f"SELECT count() FROM ontime.ontime_stage WHERE Year = {year}"
+    count_query = f"SELECT count() FROM ontime.stage_ontime WHERE Year = {year}"
     counted = run_clickhouse(connection, query=count_query)
     if counted.returncode != 0:
         raise RuntimeError(counted.stderr.strip())
@@ -599,13 +599,13 @@ def load_year(
 
     replace = run_clickhouse(
         connection,
-        query=f"ALTER TABLE ontime.ontime REPLACE PARTITION {year} FROM ontime.ontime_stage",
+        query=f"ALTER TABLE ontime.fact_ontime REPLACE PARTITION {year} FROM ontime.stage_ontime",
     )
     if replace.returncode != 0:
         raise RuntimeError(replace.stderr.strip())
     log(f"publish done: year={year}")
 
-    cleanup = run_clickhouse(connection, query="TRUNCATE TABLE ontime.ontime_stage")
+    cleanup = run_clickhouse(connection, query="TRUNCATE TABLE ontime.stage_ontime")
     if cleanup.returncode != 0:
         raise RuntimeError(cleanup.stderr.strip())
     log(f"stage cleanup done: year={year}")
@@ -614,7 +614,7 @@ def load_year(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Load BTS On-Time Reporting Carrier data into ontime.ontime. "
+            "Load BTS On-Time Reporting Carrier data into ontime.fact_ontime. "
             "Typical year controls: load-year --year YYYY, "
             "or backfill --start-year YYYY --end-year YYYY."
         )

@@ -1,10 +1,10 @@
-Determine which `(Reporting_Airline, Origin)` pairs perform worst in winter after applying a minimum flight threshold.
+Determine which `(Reporting_Airline, OriginCode)` pairs perform worst in winter after applying a minimum flight threshold.
 
 Definitions and filters:
 
 - Winter is `Month IN (12, 1, 2)`.
 - Restrict to completed flights with `Cancelled = 0`.
-- Aggregate at `(Reporting_Airline, Origin)`.
+- Aggregate at `(Reporting_Airline, OriginCode)`.
 - A qualifying pair must have at least `5,000` completed winter departures over the full table history.
 
 Ranking metrics:
@@ -25,7 +25,7 @@ Required output:
 - Return the 20 worst qualifying winter pairs.
 - Include these columns in this order:
   `Reporting_Airline`,
-  `Origin`,
+  `OriginCode`,
   `OriginCityName`,
   `CompletedWinterDepartures`,
   `DepartureOtpPct`,
@@ -38,7 +38,7 @@ Required output:
 
 Ordering:
 
-- Sort by departure OTP ascending, then average `DepDelayMinutes` descending, then completed winter departures descending, then `Reporting_Airline`, then `Origin`.
+- Sort by departure OTP ascending, then average `DepDelayMinutes` descending, then completed winter departures descending, then `Reporting_Airline`, then `OriginCode`.
 
 Implementation expectations:
 
@@ -50,6 +50,6 @@ Report guidance:
 
 Explain:
 
-- which winter `(Reporting_Airline, Origin)` pair ranks worst overall,
+- which winter `(Reporting_Airline, OriginCode)` pair ranks worst overall,
 - whether the worst-ranked pairs are driven more by weather or by operational causes such as carrier, NAS, or late-aircraft delay,
 - and whether the worst pairs are concentrated within a small number of carriers or airports.

@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW ontime.airports_latest AS
+CREATE OR REPLACE VIEW ontime.dim_airports AS
 SELECT *
-FROM ontime.airports_bts
-WHERE is_latest = 1
+FROM ontime.dim_airports_bts_full
+WHERE IsLatest = 1

@@ -12,7 +12,7 @@ func TestLoadReadsSemanticLayerFile(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Load returned error: %v", err)
 	}
-	if !strings.Contains(cfg.SemanticLayer, "ontime.ontime") {
+	if !strings.Contains(cfg.SemanticLayer, "ontime.fact_ontime") {
 		t.Fatalf("expected semantic layer to include fact table guidance, got: %s", cfg.SemanticLayer)
 	}
 	if strings.Contains(cfg.SemanticLayer, "ontime_semantic") {

@@ -19,8 +19,8 @@ Peak-month ranking:
 
 Contribution drilldowns for the selected month:
 
-- At `Origin` level, compute completed flights, average `DepDelayMinutes`, and total departure delay minutes.
-- At `(Origin, Dest)` route level, compute completed flights, average `DepDelayMinutes`, and total departure delay minutes.
+- At `OriginCode` level, compute completed flights, average `DepDelayMinutes`, and total departure delay minutes.
+- At `(OriginCode, DestCode)` route level, compute completed flights, average `DepDelayMinutes`, and total departure delay minutes.
 - Only include origins or routes with at least `100` completed flights in the selected month.
 - Rank contributors by total departure delay minutes descending, then average `DepDelayMinutes` descending, then completed flights descending.
 
@@ -30,8 +30,8 @@ Required output:
 - Include these columns in this order:
   `RowType`,
   `MonthStart`,
-  `Origin`,
-  `Dest`,
+  `OriginCode`,
+  `DestCode`,
   `CompletedFlights`,
   `AvgDepDelayMinutes`,
   `DepDel15Pct`,
@@ -41,8 +41,8 @@ Required output:
   `IsPeakMonth`
 - Use `RowType = 'month_summary'` for all monthly leaderboard rows.
 - Use `RowType = 'peak_origin'` for top origin contributors in the selected peak month.
-- Use `RowType = 'peak_route'` for top `(Origin, Dest)` contributors in the selected peak month.
-- For `month_summary` rows, leave `Origin`, `Dest`, and `ContributionRank` empty.
+- Use `RowType = 'peak_route'` for top `(OriginCode, DestCode)` contributors in the selected peak month.
+- For `month_summary` rows, leave `OriginCode`, `DestCode`, and `ContributionRank` empty.
 - For drilldown rows, keep `IsPeakMonth = 1`.
 
 Implementation expectations:

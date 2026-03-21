@@ -4,7 +4,7 @@ Layout intent:
 
 - headline and subtitle that clearly frame Delta departures from ATL
 - KPI strip for worst hotspot, worst average departure delay, p90 departure delay, and qualifying months
-- primary heatmap with `Dest` on one axis and `DepTimeBlk` on the other, colored by average `DepDelayMinutes`
+- primary heatmap with `DestCode` on one axis and `DepTimeBlk` on the other, colored by average `DepDelayMinutes`
 - supporting monthly trend view for the top 3 hotspot cells
 - ranked table for the top 20 hotspot cells
 - visible legend for the heatmap color scale

@@ -4,9 +4,9 @@ Definitions and rules:
 
 - Restrict to completed flights with `Cancelled = 0`.
 - Departure on-time performance is the share of flights with `DepDel15 = 0`.
-- Aggregate at the `Origin` level.
+- Aggregate at the `OriginCode` level.
 - A qualifying airport must have at least `50,000` completed departures over the full table history.
-- Rank airports by departure OTP ascending, then average `DepDelayMinutes` descending, then completed departures descending, then `Origin` ascending.
+- Rank airports by departure OTP ascending, then average `DepDelayMinutes` descending, then completed departures descending, then `OriginCode` ascending.
 
 Required metrics:
 
@@ -21,7 +21,7 @@ Required output:
 
 - Return the 25 worst qualifying origin airports.
 - Include these columns in this order:
-  `Origin`,
+  `OriginCode`,
   `OriginCityName`,
   `OriginState`,
   `CompletedDepartures`,

@@ -76,7 +76,7 @@ func TestWriteOutputsWritesCompactJSON(t *testing.T) {
 				StartedAt:     time.Unix(0, 0).UTC(),
 				FinishedAt:    time.Unix(1, 0).UTC(),
 				RowCount:      25,
-				Columns:       []string{"Origin", "DepartureOtpPct"},
+				Columns:       []string{"OriginCode", "DepartureOtpPct"},
 			},
 		},
 	}

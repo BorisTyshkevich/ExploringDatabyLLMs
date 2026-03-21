@@ -1,25 +1,25 @@
-Use `ontime.ontime` as the primary fact table for flight operations.
+Use `ontime.fact_ontime` as the primary fact table for flight operations.
 
-Use `ontime.airports_latest` as the semantic airport dimension for current airport reference data, including:
+Use `ontime.dim_airports` as the semantic airport dimension for current airport reference data, including:
 
-- `code`
-- `name`
-- `latitude`
-- `longitude`
-- `utc_local_time_variation`
+- `AirportCode`
+- `DisplayAirportName`
+- `Latitude`
+- `Longitude`
+- `UtcLocalTimeVariation`
 
-`ontime.airports_latest` can be used directly to get coordinates and other columns for enrichment in application code (such as JavaScript or python)
+`ontime.dim_airports` can be used directly to get coordinates and other columns for enrichment in application code (such as JavaScript or python)
 or used for SQL JOINs.
 
 Preferred sql joins:
 
-- `ontime.ontime.OriginAirportID = ontime.airports_latest.airport_id`
-- `ontime.ontime.DestAirportID = ontime.airports_latest.airport_id`
+- `ontime.fact_ontime.OriginAirportID = ontime.dim_airports.AirportID`
+- `ontime.fact_ontime.DestAirportID = ontime.dim_airports.AirportID`
 
-For `ontime.ontime`, use `OriginAirportID` and `DestAirportID` when enriching airport names, coordinates, or other airport attributes inside SQL.
-Do not join `ontime.ontime` legs directly to `ontime.airports_latest` by airport code when the airport id columns are already available.
+For `ontime.fact_ontime`, use `OriginAirportID` and `DestAirportID` when enriching airport names, coordinates, or other airport attributes inside SQL.
+Do not join `ontime.fact_ontime` legs directly to `ontime.dim_airports` by airport code when the airport id columns are already available.
 
 Fallback sql joins:
 
-- use `ontime.ontime.Origin = ontime.airports_latest.code`
-- use `ontime.ontime.Dest = ontime.airports_latest.code`
+- use `ontime.fact_ontime.OriginCode = ontime.dim_airports.AirportCode`
+- use `ontime.fact_ontime.DestCode = ontime.dim_airports.AirportCode`

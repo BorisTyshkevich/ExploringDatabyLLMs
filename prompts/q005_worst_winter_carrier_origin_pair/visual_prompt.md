@@ -1,7 +1,7 @@
 Build a dashboard that:
 
 - shows KPI cards for worst winter pair, worst OTP, average delay of the worst pair, and total qualifying pairs
-- renders a ranked chart for the worst winter `(Reporting_Airline, Origin)` pairs
+- renders a ranked chart for the worst winter `(Reporting_Airline, OriginCode)` pairs
 - renders a stacked bar chart of delay-cause shares for the top 10 pairs
 - renders a compact table of the full ranked result
 - derives the top 10 pairs for the cause-share chart from fetched ranking data, not from hardcoded labels

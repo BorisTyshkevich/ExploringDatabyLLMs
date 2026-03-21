@@ -1,6 +1,6 @@
 # OnTime V2
 
-This module rebuilds the BTS Reporting Carrier On-Time dataset into a new ClickHouse table, `ontime.ontime`, without touching the legacy `default.ontime` table.
+This module rebuilds the BTS Reporting Carrier On-Time dataset into a new ClickHouse fact table, `ontime.fact_ontime`, without touching the legacy `default.ontime` table.
 
 ## Source
 
@@ -21,17 +21,17 @@ Official BTS airport dimension source:
 
 ## Tables
 
-- `ontime.ontime`
-- `ontime.ontime_stage`
-- `ontime.airports_bts`
-- `ontime.airports_latest`
+- `ontime.fact_ontime`
+- `ontime.stage_ontime`
+- `ontime.dim_airports_bts_full`
+- `ontime.dim_airports`
 
 Both use yearly partitions. The stage table is rebuilt for a target year and then published with:
 
 ```sql
-ALTER TABLE ontime.ontime
+ALTER TABLE ontime.fact_ontime
 REPLACE PARTITION <year>
-FROM ontime.ontime_stage
+FROM ontime.stage_ontime
 ```
 
 ## Loader Commands
@@ -84,7 +84,7 @@ python3 datasets/ontime/download/analyze_existing_ontime.py --connection demo
 
 ## BTS Airport Dimension
 
-The official airport dimension is loaded separately from `default.airports`. It preserves BTS `Master Coordinate` history in `ontime.airports_bts` and exposes `ontime.airports_latest` as the cleaned semantic airport view with a single latest row per airport code.
+The official airport dimension is loaded separately from `default.airports`. It preserves BTS `Master Coordinate` history in `ontime.dim_airports_bts_full` and exposes `ontime.dim_airports` as the cleaned semantic airport view with a single latest row per airport code.
 
 Create the airport table and latest view:
 
@@ -114,16 +114,16 @@ Example join using the latest airport attributes:
 
 ```sql
 SELECT
-    replaceAll(toString(o.Origin), '\0', '') AS Origin,
-    any(a.name) AS AirportName,
-    any(a.latitude) AS Latitude,
-    any(a.longitude) AS Longitude,
-    any(a.utc_local_time_variation) AS UtcLocalTimeVariation
-FROM ontime.ontime AS o
-LEFT JOIN ontime.airports_latest AS a
-    ON o.OriginAirportID = a.airport_id
-GROUP BY Origin
-ORDER BY Origin
+    replaceAll(toString(o.OriginCode), '\0', '') AS OriginCode,
+    any(a.DisplayAirportName) AS AirportName,
+    any(a.Latitude) AS Latitude,
+    any(a.Longitude) AS Longitude,
+    any(a.UtcLocalTimeVariation) AS UtcLocalTimeVariation
+FROM ontime.fact_ontime AS o
+LEFT JOIN ontime.dim_airports AS a
+    ON o.OriginAirportID = a.AirportID
+GROUP BY OriginCode
+ORDER BY OriginCode
 LIMIT 20
 ```
 
@@ -131,11 +131,11 @@ Example code-based lookup using the cleaned latest airport view:
 
 ```sql
 SELECT
-    code,
-    name,
-    latitude,
-    longitude
-FROM ontime.airports_latest
-WHERE code IN ('ISP', 'BWI', 'SEA')
-ORDER BY code
+    AirportCode,
+    DisplayAirportName,
+    Latitude,
+    Longitude
+FROM ontime.dim_airports
+WHERE AirportCode IN ('ISP', 'BWI', 'SEA')
+ORDER BY AirportCode
 ```
