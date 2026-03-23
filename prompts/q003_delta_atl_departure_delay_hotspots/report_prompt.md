@@ -1,74 +1,24 @@
-Find which Delta departures out of ATL have the worst sustained departure delays at the `(DestCode, DepTimeBlk)` level.
+Find the Delta departure-delay hotspots out of ATL that appear to be persistently problematic, not just noisy one-off periods.
 
-Definitions and filters:
+Analyze completed Delta departures from ATL by destination and departure time block. Focus on combinations that have enough flight volume to be credible and enough repeated monthly presence to count as sustained hotspots.
 
-- Filter to `IATA_CODE_Reporting_Airline = 'DL'`.
-- Filter to `OriginCode = 'ATL'`.
-- Restrict to completed flights with `Cancelled = 0`.
-- Use `FlightDate` truncated to month as the monthly grain.
+For each hotspot, quantify:
 
-Metrics to compute:
+- flight volume
+- average departure delay
+- a high-delay measure that captures the worse end of the distribution
+- the share of flights departing 15+ minutes late
+- how many months the hotspot meaningfully appears
 
-- `CompletedFlights`
-- average `DepDelayMinutes`
-- p90 `DepDelayMinutes`
-- percentage of flights delayed 15+ minutes using `DepDel15`
-- number of qualifying months
+Return one SQL query that supports two views from the same result:
 
-Metric semantics:
+- a ranked hotspot summary
+- a monthly trend view for the leading hotspots
 
-- Use `quantile(0.9)(DepDelayMinutes)` for p90.
-- After monthly qualification, recompute final hotspot-level metrics from the raw flights that belong to qualifying monthly cells.
-- Do not compute hotspot metrics by averaging monthly averages, monthly p90 values, or monthly delayed-15 percentages.
+The output should let a BI dashboard answer:
 
-Threshold rules:
+- Which destination and time block is the worst recurring hotspot?
+- Is that hotspot consistently bad across time, or concentrated in a narrower period?
+- What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?
 
-- A monthly cell `(month, DestCode, DepTimeBlk)` qualifies only if it has at least `40` completed flights.
-- A `(DestCode, DepTimeBlk)` hotspot qualifies only if it has at least `1,000` completed flights across all qualifying monthly cells.
-- “Worst sustained” means rank by average `DepDelayMinutes` descending, then p90 `DepDelayMinutes` descending, then `% DepDel15` descending, then completed flights descending.
-
-Return one SQL query that produces rows supporting both hotspot ranking and monthly trend analysis.
-
-Include these columns in this order:
-
-- `RowType`
-- `MonthStart`
-- `DestCode`
-- `DepTimeBlk`
-- `QualifyingMonths`
-- `CompletedFlights`
-- `AvgDepDelayMinutes`
-- `P90DepDelayMinutes`
-- `DepDel15Pct`
-- `FirstQualifyingMonth`
-- `LastQualifyingMonth`
-- `HotspotRank`
-
-Row rules:
-
-- Use `RowType = 'hotspot_summary'` for the top 20 final hotspot cells.
-- For `hotspot_summary` rows, set `MonthStart = NULL`.
-- Use `RowType = 'monthly_trend'` for monthly rows belonging to those top 20 hotspot cells after monthly qualification.
-- Populate `FirstQualifyingMonth` and `LastQualifyingMonth` for both row types.
-
-Numeric normalization:
-
-- Round `AvgDepDelayMinutes`, `P90DepDelayMinutes`, and `DepDel15Pct` to exactly 2 decimal places in the final output.
-
-Ordering:
-
-- Sort by `RowType`, then `HotspotRank` ascending, then `MonthStart` ascending, then `DestCode`, then `DepTimeBlk`.
-
-Implementation expectations:
-
-- Use CTEs for monthly qualification, final rollup, and extraction of monthly trend rows for the top-ranked hotspot cells.
-- Exclude low-volume monthly cells before final ranking.
-- Verify that the final top-20 `(DestCode, DepTimeBlk)` ranking is based on hotspot metrics recomputed over all qualifying raw flights.
-
-Report guidance:
-
-Explain:
-
-- which destination and time block is the worst hotspot,
-- whether the hotspot is persistent or concentrated in a narrower era,
-- and what the top 5 hotspot cells suggest about ATL departure pressure for Delta.
+Keep the result business-readable and analytically sound. Exclude low-volume noise before identifying the leading hotspots.

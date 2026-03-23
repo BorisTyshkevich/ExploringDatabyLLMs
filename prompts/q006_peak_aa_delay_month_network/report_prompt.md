@@ -1,60 +1,25 @@
 Find American Airlines' worst network-wide month for departure delays, then identify which origins and routes contributed most to that peak.
 
-Definitions and filters:
+Analyze completed American Airlines flights by month across the full network. Find the single month that stands out as the worst overall for departure delays.
 
-- Filter to `IATA_CODE_Reporting_Airline = 'AA'`.
-- Restrict to completed flights with `Cancelled = 0`.
-- Aggregate months using `toStartOfMonth(FlightDate)`.
+For the monthly view, quantify:
 
-Monthly metrics:
+- flight volume
+- average departure delay
+- the share of flights departing 15+ minutes late
 
-- completed flights
-- average `DepDelayMinutes`
-- percentage of flights with `DepDel15 = 1`
+Then drill into the selected peak month to show which origin airports and origin-destination routes contributed most to that bad month. Focus on contributors with enough flights in that month to be meaningful.
 
-Peak-month ranking:
+Return one SQL query that supports two views from the same result:
 
-- Rank months by average `DepDelayMinutes` descending, then `% DepDel15` descending, then completed flights descending, then `MonthStart` ascending so ties prefer the earlier month.
-- Select the single worst month using those rules.
+- a monthly leaderboard showing how the network performed over time
+- a drilldown into the selected peak month by origin and by route
 
-Contribution drilldowns for the selected month:
+The output should let a BI dashboard answer:
 
-- At `OriginCode` level, compute completed flights, average `DepDelayMinutes`, and total departure delay minutes.
-- At `(OriginCode, DestCode)` route level, compute completed flights, average `DepDelayMinutes`, and total departure delay minutes.
-- Only include origins or routes with at least `100` completed flights in the selected month.
-- Rank contributors by total departure delay minutes descending, then average `DepDelayMinutes` descending, then completed flights descending.
+- Which month is the single worst American Airlines month for departure delays?
+- Which origins contribute most to that peak month?
+- Which routes contribute most to that peak month?
+- Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?
 
-Required output:
-
-- Your SQL should return a single result set that supports both peak-month selection and peak-month drilldowns.
-- Include these columns in this order:
-  `RowType`,
-  `MonthStart`,
-  `OriginCode`,
-  `DestCode`,
-  `CompletedFlights`,
-  `AvgDepDelayMinutes`,
-  `DepDel15Pct`,
-  `TotalDepDelayMinutes`,
-  `MonthRank`,
-  `ContributionRank`,
-  `IsPeakMonth`
-- Use `RowType = 'month_summary'` for all monthly leaderboard rows.
-- Use `RowType = 'peak_origin'` for top origin contributors in the selected peak month.
-- Use `RowType = 'peak_route'` for top `(OriginCode, DestCode)` contributors in the selected peak month.
-- For `month_summary` rows, leave `OriginCode`, `DestCode`, and `ContributionRank` empty.
-- For drilldown rows, keep `IsPeakMonth = 1`.
-
-Implementation expectations:
-
-- Use one query that emits the monthly summary and the selected-month contribution rows together.
-- Make the peak-month selection deterministic.
-
-Report guidance:
-
-Explain:
-
-- which month is the single worst American Airlines month by the question's ranking rule,
-- which origins contribute most to that peak month,
-- which routes contribute most to that peak month,
-- and whether the peak appears broad-based across the network or concentrated in a smaller set of origins and routes.
+Keep the result business-readable and analytically sound.

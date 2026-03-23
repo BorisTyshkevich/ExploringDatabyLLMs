@@ -1,50 +1,21 @@
 Identify which origin airports have the worst departure on-time performance after excluding low-volume airports.
 
-Definitions and rules:
+Analyze completed departures at the origin-airport level. Focus on airports with enough traffic to make the comparison meaningful, and rank the weakest performers by departure on-time performance.
 
-- Restrict to completed flights with `Cancelled = 0`.
-- Departure on-time performance is the share of flights with `DepDel15 = 0`.
-- Aggregate at the `OriginCode` level.
-- A qualifying airport must have at least `50,000` completed departures over the full table history.
-- Rank airports by departure OTP ascending, then average `DepDelayMinutes` descending, then completed departures descending, then `OriginCode` ascending.
-
-Required metrics:
+For each airport, quantify:
 
 - completed departures
-- departure OTP percentage
-- average `DepDelayMinutes`
-- p90 `DepDelayMinutes`
-- first flight date
-- last flight date
+- departure on-time performance
+- average departure delay
+- a high-delay measure that reflects the worse end of the delay distribution
+- the first and last dates represented in the data
 
-Required output:
+Return one SQL query that produces a ranked view of the weakest qualifying origin airports.
 
-- Return the 25 worst qualifying origin airports.
-- Include these columns in this order:
-  `OriginCode`,
-  `OriginCityName`,
-  `OriginState`,
-  `CompletedDepartures`,
-  `DepartureOtpPct`,
-  `AvgDepDelayMinutes`,
-  `P90DepDelayMinutes`,
-  `FirstFlightDate`,
-  `LastFlightDate`
+The output should let a BI dashboard answer:
 
-Ordering:
+- Which airport ranks worst on departure on-time performance?
+- How large is the spread between the worst airport and the middle of the ranked set?
+- Are the weakest airports mostly major hubs, or is the bottom group more mixed?
 
-- Sort using the ranking rules above.
-
-Implementation expectations:
-
-- Use a threshold CTE before final ranking.
-- Keep the ranking deterministic.
-- Use `quantile` logic for p90 rather than approximating in prose.
-
-Report guidance:
-
-Explain:
-
-- which airport ranks worst on departure on-time performance and how poor its OTP is,
-- how wide the spread is between the worst airport and the median airport within the ranked set,
-- and whether the bottom 25 are dominated by major hubs or show a more mixed airport profile.
+Keep the result business-readable and analytically sound. Exclude low-volume airports before ranking them.

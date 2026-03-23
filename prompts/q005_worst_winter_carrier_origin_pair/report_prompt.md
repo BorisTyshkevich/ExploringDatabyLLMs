@@ -1,55 +1,22 @@
-Determine which `(Reporting_Airline, OriginCode)` pairs perform worst in winter after applying a minimum flight threshold.
+Determine which airline and origin-airport combinations perform worst in winter after applying a meaningful flight threshold.
 
-Definitions and filters:
+Focus on winter departures only and evaluate completed flights at the `(carrier, origin airport)` level. Limit the analysis to combinations with enough winter traffic to be credible.
 
-- Winter is `Month IN (12, 1, 2)`.
-- Restrict to completed flights with `Cancelled = 0`.
-- Aggregate at `(Reporting_Airline, OriginCode)`.
-- A qualifying pair must have at least `5,000` completed winter departures over the full table history.
+For each qualifying pair, quantify:
 
-Ranking metrics:
+- winter flight volume
+- departure on-time performance
+- average departure delay
+- how reported delay minutes split across weather and operational causes such as carrier, NAS, security, and late aircraft
 
-- primary: departure OTP percentage, where OTP is the share with `DepDel15 = 0`
-- secondary: average `DepDelayMinutes`
-- tertiary: completed winter departures
+Rank the worst-performing winter pairs by on-time performance, while using the delay-cause mix as context rather than as the primary ranking driver.
 
-Cause context:
+Return one SQL query that produces a ranked view of the weakest qualifying winter carrier-airport pairs.
 
-- For each qualifying pair, compute total non-null minutes for `CarrierDelay`, `WeatherDelay`, `NASDelay`, `SecurityDelay`, and `LateAircraftDelay`.
-- Convert those totals into percentage shares of total reported delay-cause minutes.
-- If total reported delay-cause minutes are zero for a pair, emit zero shares rather than `NULL` or divide-by-zero results.
-- Ranking must still be based on OTP and average departure delay, not cause shares.
+The output should let a BI dashboard answer:
 
-Required output:
+- Which winter carrier-airport pair ranks worst overall?
+- Are the worst pairs driven more by weather or by operational causes?
+- Are the weakest pairs concentrated in a small number of carriers or airports?
 
-- Return the 20 worst qualifying winter pairs.
-- Include these columns in this order:
-  `Reporting_Airline`,
-  `OriginCode`,
-  `OriginCityName`,
-  `CompletedWinterDepartures`,
-  `DepartureOtpPct`,
-  `AvgDepDelayMinutes`,
-  `CarrierDelaySharePct`,
-  `WeatherDelaySharePct`,
-  `NASDelaySharePct`,
-  `SecurityDelaySharePct`,
-  `LateAircraftDelaySharePct`
-
-Ordering:
-
-- Sort by departure OTP ascending, then average `DepDelayMinutes` descending, then completed winter departures descending, then `Reporting_Airline`, then `OriginCode`.
-
-Implementation expectations:
-
-- Use separate CTEs for winter performance and delay-cause decomposition.
-- Handle missing cause minutes safely.
-- Keep season logic explicit in SQL.
-
-Report guidance:
-
-Explain:
-
-- which winter `(Reporting_Airline, OriginCode)` pair ranks worst overall,
-- whether the worst-ranked pairs are driven more by weather or by operational causes such as carrier, NAS, or late-aircraft delay,
-- and whether the worst pairs are concentrated within a small number of carriers or airports.
+Keep the result business-readable and analytically sound. Exclude low-volume winter pairs before ranking them.
