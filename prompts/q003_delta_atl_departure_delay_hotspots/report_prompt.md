@@ -12,9 +12,9 @@ For each hotspot, quantify:
 - the share of flights departing 15+ minutes late
 - how many months the hotspot meaningfully appears
 
-Return one SQL query that supports two views from the same result:
+Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
 
-- a ranked hotspot summary
+- a ranked hotspot summary view
 - a monthly trend view for the leading hotspots
 
 The monthly trend view should include only months that are credible for interpretation, not thin low-volume months that would add noise.

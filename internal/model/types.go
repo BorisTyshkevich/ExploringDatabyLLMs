@@ -15,6 +15,7 @@ type AnalysisMode string
 
 const (
 	AnalysisModeJSONArtifact   AnalysisMode = "json_artifact"
+	AnalysisModeMultiQueryJSON AnalysisMode = "multi_query_json"
 	AnalysisModeTemplateFiles  AnalysisMode = "template_files"
 	AnalysisModeManualTemplate AnalysisMode = "manual_templates"
 )
@@ -63,14 +64,20 @@ type QuestionMeta struct {
 	CommandTimeoutSec int    `yaml:"command_timeout_sec" json:"command_timeout_sec"`
 }
 
+type QuestionSubquestion struct {
+	ID   string `yaml:"id" json:"id"`
+	Text string `yaml:"text" json:"text"`
+}
+
 type Question struct {
-	Dir                 string       `json:"dir"`
-	Meta                QuestionMeta `json:"meta"`
-	Prompt              string       `json:"prompt"`
-	VisualPrompt        string       `json:"visual_prompt"`
-	PresentationEnabled bool         `json:"presentation_enabled"`
-	ReportEnabled       bool         `json:"report_enabled"`
-	VisualEnabled       bool         `json:"visual_enabled"`
+	Dir                 string                `json:"dir"`
+	Meta                QuestionMeta          `json:"meta"`
+	Prompt              string                `json:"prompt"`
+	VisualPrompt        string                `json:"visual_prompt"`
+	Subquestions        []QuestionSubquestion `json:"subquestions,omitempty"`
+	PresentationEnabled bool                  `json:"presentation_enabled"`
+	ReportEnabled       bool                  `json:"report_enabled"`
+	VisualEnabled       bool                  `json:"visual_enabled"`
 }
 
 type ArtifactPaths struct {
@@ -202,18 +209,37 @@ func (m *AnalysisMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type AnalysisArtifact struct {
-	SQL            string          `json:"sql"`
-	ReportMarkdown string          `json:"report_markdown"`
-	Metrics        AnalysisMetrics `json:"metrics"`
+	SQL            string                `json:"sql"`
+	ReportMarkdown string                `json:"report_markdown"`
+	Metrics        AnalysisMetrics       `json:"metrics"`
+	Subquestions   []AnalysisSubquestion `json:"subquestions,omitempty"`
+}
+
+type AnalysisSubquestion struct {
+	ID             string `json:"id"`
+	Subquestion    string `json:"subquestion"`
+	AnswerMarkdown string `json:"answer_markdown"`
+	SQL            string `json:"sql"`
+}
+
+type QueryResultSummary struct {
+	ID             string         `json:"id"`
+	Subquestion    string         `json:"subquestion"`
+	AnswerMarkdown string         `json:"answer_markdown"`
+	SQL            string         `json:"sql"`
+	RowCount       int            `json:"row_count"`
+	ResultColumns  []string       `json:"result_columns"`
+	FirstRow       map[string]any `json:"first_row,omitempty"`
 }
 
 type VisualInputSummary struct {
-	QuestionTitle   string            `json:"question_title"`
-	ResultColumns   []string          `json:"result_columns"`
-	RowCount        int               `json:"row_count"`
-	SampleRows      []map[string]any  `json:"sample_rows,omitempty"`
-	FieldShapeNotes map[string]string `json:"field_shape_notes,omitempty"`
-	ModeHint        string            `json:"mode_hint,omitempty"`
+	QuestionTitle   string               `json:"question_title"`
+	ResultColumns   []string             `json:"result_columns"`
+	RowCount        int                  `json:"row_count"`
+	SampleRows      []map[string]any     `json:"sample_rows,omitempty"`
+	FieldShapeNotes map[string]string    `json:"field_shape_notes,omitempty"`
+	ModeHint        string               `json:"mode_hint,omitempty"`
+	QuerySummaries  []QueryResultSummary `json:"query_summaries,omitempty"`
 }
 
 type NumericColumnSpec struct {

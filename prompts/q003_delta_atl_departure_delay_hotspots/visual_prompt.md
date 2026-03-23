@@ -1,17 +1,19 @@
-Build a dynamic non-map dashboard for Delta ATL departure delay hotspots.
+Build a browser-ready analytical brief for Delta ATL departure delay hotspots.
 
 Layout intent:
 
 - headline and subtitle that clearly frame Delta departures from ATL
-- KPI strip for worst hotspot, worst average departure delay, p90 departure delay, and qualifying months
-- primary heatmap with `DestCode` on one axis and `DepTimeBlk` on the other, colored by average `DepDelayMinutes`
-- supporting monthly trend view for the top 3 hotspot cells
-- ranked table for the top 20 hotspot cells
-- visible legend for the heatmap color scale
+- hero section naming the single worst hotspot with its key metrics
+- compact KPI strip for worst average delay, p90 departure delay, late-15-plus share, and qualifying months
+- one section for each required business question with clear prose and an evidence card
+- an evidence card should show the proof-query row count, column names, and the first preview row in a readable compact table
+- a concluding takeaway section that summarizes the broader operational pattern across the leading hotspots
 
 Behavior:
 
-- derive the top 3 hotspot cells for the trend view from the fetched ranking rows, not from hardcoded labels
-- make the single worst hotspot cell visually prominent
-- keep the heatmap readable on mobile by allowing horizontal scrolling if necessary
-- preserve useful content when the fetched result set is empty
+- make the single worst hotspot visually prominent
+- rely only on the verified analysis package; do not imply broader coverage than the provided query previews support
+- do not invent synthetic trend lines, inferred heatmap cells, or approximate values beyond the embedded proof-query previews
+- if the provided evidence is too thin for a richer chart, prefer a textual evidence panel over a fabricated visualization
+- keep the page readable on mobile with stacked sections and horizontally scrollable evidence tables if needed
+- preserve useful content when any proof query returns zero rows

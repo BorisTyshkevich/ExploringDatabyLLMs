@@ -786,6 +786,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	_ = os.WriteFile(artifacts.StderrLog, []byte(sqlResponse.Stderr), 0o644)
 	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
 		Mode:      analysisMode,
+		Question:  question,
 		Artifacts: artifacts,
 	})
 	if err != nil {
@@ -803,20 +804,21 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "sql_generation_warning", providerErr.Error())
 	}
-	result, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
+	materialized, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
 		RunDir:           outDir,
 		Question:         question,
 		Manifest:         &manifest,
 		MCPURL:           mcpURL,
 		Token:            token,
 		Verbose:          opts.Verbose,
+		AnalysisMode:     analysisMode,
 		AnalysisArtifact: analysisArtifact,
 	})
 	if err != nil {
 		return err
 	}
 	if question.VisualEnabled {
-		if err := writePresentationPrompt(artifacts.PromptPresentationRaw, artifacts.VisualInputJSON, question, cfg, result, analysisArtifact.SQL, mcpURL, token); err != nil {
+		if err := writePresentationPromptFromSummary(artifacts.PromptPresentationRaw, question, cfg, materialized.Result, materialized.SQL, mcpURL, token, materialized.VisualInput); err != nil {
 			return err
 		}
 	}
@@ -874,6 +876,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		SkipBrowserLiveFetch: opts.SkipBrowserLiveFetch,
 		Verbose:              opts.Verbose,
 	})
+	manifest.Metadata = clearPresentationValidationMetadata(manifest.Metadata)
 	for key, value := range validationResult.Metadata {
 		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
 	}
@@ -897,30 +900,44 @@ type materializeSavedAnalysisOptions struct {
 	MCPURL           string
 	Token            string
 	Verbose          bool
+	AnalysisMode     model.AnalysisMode
 	AnalysisArtifact model.AnalysisArtifact
 }
 
-func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (model.CanonicalResult, error) {
+type materializedAnalysis struct {
+	Result      model.CanonicalResult
+	VisualInput model.VisualInputSummary
+	SQL         string
+}
+
+func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
+	if opts.AnalysisMode == model.AnalysisModeMultiQueryJSON {
+		return materializeMultiQueryAnalysis(ctx, opts)
+	}
+	return materializeSingleQueryAnalysis(ctx, opts)
+}
+
+func materializeSingleQueryAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
 	sqlBlock := opts.AnalysisArtifact.SQL
 	reportTemplate := opts.AnalysisArtifact.ReportMarkdown
 	if err := render.ValidateReportTemplate(reportTemplate, opts.AnalysisArtifact.Metrics); err != nil {
 		opts.Manifest.Status = model.RunStatusPartial
 		opts.Manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	if err := os.WriteFile(opts.Manifest.Artifacts.QuerySQL, []byte(sqlBlock+"\n"), 0o644); err != nil {
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	analysisJSON, err := json.MarshalIndent(opts.AnalysisArtifact, "", "  ")
 	if err != nil {
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	if err := os.WriteFile(opts.Manifest.Artifacts.AnalysisJSON, analysisJSON, 0o644); err != nil {
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	if opts.Question.ReportEnabled {
 		if err := os.WriteFile(opts.Manifest.Artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
-			return model.CanonicalResult{}, err
+			return materializedAnalysis{}, err
 		}
 	}
 	opts.Manifest.QuerySHA256 = runs.QuerySHA256(sqlBlock)
@@ -934,26 +951,183 @@ func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysis
 	if err != nil {
 		opts.Manifest.Status = model.RunStatusPartial
 		opts.Manifest.Phases.SQLExecution = model.PhaseStatusFailed
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	opts.Manifest.Phases.SQLExecution = model.PhaseStatusOK
 	opts.Manifest.ResultRowCount = result.RowCount
 	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=ok row_count=%d", result.RowCount)
 	if err := execute.WriteJSON(opts.Manifest.Artifacts.ResultJSON, result); err != nil {
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	visualSummary := buildVisualInputSummary(opts.Question, result)
 	if err := execute.WriteJSON(opts.Manifest.Artifacts.VisualInputJSON, visualSummary); err != nil {
-		return model.CanonicalResult{}, err
+		return materializedAnalysis{}, err
 	}
 	if opts.Question.ReportEnabled {
 		renderedReport := render.RenderReport(reportTemplate, opts.Question, result, opts.AnalysisArtifact.Metrics)
 		if err := os.WriteFile(opts.Manifest.Artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
-			return model.CanonicalResult{}, err
+			return materializedAnalysis{}, err
 		}
 	}
 	opts.Manifest.Metadata = addMetadata(opts.Manifest.Metadata, "execution_response_bytes", fmt.Sprintf("%d", len(rawDB)))
-	return result, nil
+	return materializedAnalysis{
+		Result:      result,
+		VisualInput: visualSummary,
+		SQL:         sqlBlock,
+	}, nil
+}
+
+func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
+	artifact := opts.AnalysisArtifact
+	if err := validateMultiQueryAnalysisArtifact(opts.Question, artifact); err != nil {
+		opts.Manifest.Status = model.RunStatusPartial
+		opts.Manifest.Phases.SQLGeneration = model.PhaseStatusFailed
+		return materializedAnalysis{}, err
+	}
+	analysisJSON, err := json.MarshalIndent(artifact, "", "  ")
+	if err != nil {
+		return materializedAnalysis{}, err
+	}
+	if err := os.WriteFile(opts.Manifest.Artifacts.AnalysisJSON, analysisJSON, 0o644); err != nil {
+		return materializedAnalysis{}, err
+	}
+	queryDir := filepath.Join(opts.RunDir, "queries")
+	resultDir := filepath.Join(opts.RunDir, "results")
+	if err := os.MkdirAll(queryDir, 0o755); err != nil {
+		return materializedAnalysis{}, err
+	}
+	if err := os.MkdirAll(resultDir, 0o755); err != nil {
+		return materializedAnalysis{}, err
+	}
+
+	var queryHashes []string
+	var summaries []model.QueryResultSummary
+	totalRows := 0
+	if strings.TrimSpace(opts.Manifest.LogComment) == "" {
+		opts.Manifest.LogComment = defaultLogComment(opts.Question.Meta.ID, filepath.Base(opts.RunDir), opts.Manifest.Runner, opts.Manifest.Model)
+	}
+	opts.Manifest.Phases.SQLGeneration = model.PhaseStatusOK
+
+	ordered := orderMultiQuerySubquestions(opts.Question, artifact.Subquestions)
+	for _, item := range ordered {
+		queryPath := filepath.Join(queryDir, item.ID+".sql")
+		if err := os.WriteFile(queryPath, []byte(item.SQL+"\n"), 0o644); err != nil {
+			opts.Manifest.Phases.SQLExecution = model.PhaseStatusFailed
+			return materializedAnalysis{}, err
+		}
+		queryHashes = append(queryHashes, runs.QuerySHA256(item.SQL))
+		logComment := opts.Manifest.LogComment + "|subquestion=" + item.ID
+		logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=started subquestion=%s log_comment=%s", item.ID, logComment)
+		_, result, err := execute.ExecuteSQL(ctx, opts.MCPURL, opts.Token, item.SQL, logComment)
+		if err != nil {
+			opts.Manifest.Status = model.RunStatusPartial
+			opts.Manifest.Phases.SQLExecution = model.PhaseStatusFailed
+			return materializedAnalysis{}, fmt.Errorf("execute subquestion %s: %w", item.ID, err)
+		}
+		resultPath := filepath.Join(resultDir, item.ID+".json")
+		if err := execute.WriteJSON(resultPath, result); err != nil {
+			return materializedAnalysis{}, err
+		}
+		totalRows += result.RowCount
+		summary := model.QueryResultSummary{
+			ID:             item.ID,
+			Subquestion:    item.Subquestion,
+			AnswerMarkdown: item.AnswerMarkdown,
+			SQL:            item.SQL,
+			RowCount:       result.RowCount,
+			ResultColumns:  append([]string(nil), result.Columns...),
+		}
+		if len(result.Rows) > 0 {
+			summary.FirstRow = result.Rows[0]
+		}
+		summaries = append(summaries, summary)
+		logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=ok subquestion=%s row_count=%d", item.ID, result.RowCount)
+	}
+	opts.Manifest.Phases.SQLExecution = model.PhaseStatusOK
+	opts.Manifest.QuerySHA256 = runs.QuerySHA256(strings.Join(queryHashes, "\n"))
+	opts.Manifest.ResultRowCount = totalRows
+
+	monitoringResult := syntheticMonitoringResult(summaries)
+	if err := execute.WriteJSON(opts.Manifest.Artifacts.ResultJSON, monitoringResult); err != nil {
+		return materializedAnalysis{}, err
+	}
+	visualSummary := buildMultiQueryVisualInputSummary(opts.Question, summaries)
+	if err := execute.WriteJSON(opts.Manifest.Artifacts.VisualInputJSON, visualSummary); err != nil {
+		return materializedAnalysis{}, err
+	}
+	if opts.Question.ReportEnabled {
+		renderedReport := render.RenderMonitoringReport(opts.Question, summaries)
+		if err := os.WriteFile(opts.Manifest.Artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
+			return materializedAnalysis{}, err
+		}
+	}
+	return materializedAnalysis{
+		Result:      monitoringResult,
+		VisualInput: visualSummary,
+	}, nil
+}
+
+func validateMultiQueryAnalysisArtifact(question model.Question, artifact model.AnalysisArtifact) error {
+	if len(question.Subquestions) == 0 {
+		return fmt.Errorf("multi-query analysis mode requires question subquestions")
+	}
+	if len(artifact.Subquestions) == 0 {
+		return fmt.Errorf("analysis json missing non-empty subquestions")
+	}
+	byID := make(map[string]model.AnalysisSubquestion, len(artifact.Subquestions))
+	for _, item := range artifact.Subquestions {
+		if item.ID == "" || item.Subquestion == "" || item.AnswerMarkdown == "" || item.SQL == "" {
+			return fmt.Errorf("analysis json subquestions must include non-empty id, subquestion, answer_markdown, and sql")
+		}
+		byID[item.ID] = item
+	}
+	for _, req := range question.Subquestions {
+		got, ok := byID[req.ID]
+		if !ok {
+			return fmt.Errorf("analysis json missing required subquestion %q", req.ID)
+		}
+		if strings.TrimSpace(got.Subquestion) != strings.TrimSpace(req.Text) {
+			return fmt.Errorf("analysis json subquestion %q text mismatch", req.ID)
+		}
+	}
+	return nil
+}
+
+func orderMultiQuerySubquestions(question model.Question, items []model.AnalysisSubquestion) []model.AnalysisSubquestion {
+	byID := make(map[string]model.AnalysisSubquestion, len(items))
+	for _, item := range items {
+		byID[item.ID] = item
+	}
+	ordered := make([]model.AnalysisSubquestion, 0, len(question.Subquestions))
+	for _, req := range question.Subquestions {
+		if item, ok := byID[req.ID]; ok {
+			ordered = append(ordered, item)
+		}
+	}
+	return ordered
+}
+
+func syntheticMonitoringResult(summaries []model.QueryResultSummary) model.CanonicalResult {
+	rows := make([]map[string]any, 0, len(summaries))
+	for _, item := range summaries {
+		row := map[string]any{
+			"subquestion_id": item.ID,
+			"subquestion":    item.Subquestion,
+			"row_count":      item.RowCount,
+			"columns_csv":    strings.Join(item.ResultColumns, ", "),
+			"answer_preview": item.AnswerMarkdown,
+		}
+		if len(item.FirstRow) > 0 {
+			row["first_row"] = item.FirstRow
+		}
+		rows = append(rows, row)
+	}
+	return model.CanonicalResult{
+		Columns:     []string{"subquestion_id", "subquestion", "row_count", "columns_csv", "answer_preview", "first_row"},
+		Rows:        rows,
+		RowCount:    len(rows),
+		GeneratedAt: time.Now().UTC(),
+	}
 }
 
 func defaultLogComment(questionID, runName, runner, modelName string) string {
@@ -990,6 +1164,21 @@ func addMetadata(metadata map[string]string, key, value string) map[string]strin
 		metadata = map[string]string{}
 	}
 	metadata[key] = value
+	return metadata
+}
+
+func clearPresentationValidationMetadata(metadata map[string]string) map[string]string {
+	if len(metadata) == 0 {
+		return metadata
+	}
+	for key := range metadata {
+		if strings.HasPrefix(key, "visual_validation") || strings.HasPrefix(key, "browser_validation") {
+			delete(metadata, key)
+		}
+	}
+	if len(metadata) == 0 {
+		return nil
+	}
 	return metadata
 }
 
@@ -1085,17 +1274,20 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return err
 	}
-	resultBytes, err := os.ReadFile(filepath.Join(runDir, "result.json"))
-	if err != nil {
-		return fmt.Errorf("process-visual requires result.json: %w", err)
-	}
 	var result model.CanonicalResult
-	if err := json.Unmarshal(resultBytes, &result); err != nil {
-		return err
-	}
 	question, err := questions.Resolve(codeRoot, manifest.QuestionID)
 	if err != nil {
 		return err
+	}
+	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
+	if analysisMode != model.AnalysisModeMultiQueryJSON {
+		resultBytes, err := os.ReadFile(filepath.Join(runDir, "result.json"))
+		if err != nil {
+			return fmt.Errorf("process-visual requires result.json: %w", err)
+		}
+		if err := json.Unmarshal(resultBytes, &result); err != nil {
+			return err
+		}
 	}
 	if !question.VisualEnabled {
 		return fmt.Errorf("question %s does not declare visual artifacts", manifest.QuestionID)
@@ -1122,18 +1314,32 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "3"
 	logf(opts.Verbose, manifest.Model, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
-	querySQL, err := os.ReadFile(filepath.Join(runDir, "query.sql"))
-	if err != nil {
-		return fmt.Errorf("process-visual requires query.sql: %w", err)
+	var querySQL []byte
+	if analysisMode != model.AnalysisModeMultiQueryJSON {
+		querySQL, err = os.ReadFile(filepath.Join(runDir, "query.sql"))
+		if err != nil {
+			return fmt.Errorf("process-visual requires query.sql: %w", err)
+		}
 	}
-	if strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
+	if analysisMode != model.AnalysisModeMultiQueryJSON && strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
 		if _, err := os.Stat(filepath.Join(runDir, "result.json")); err != nil {
 			return fmt.Errorf("process-visual requires result.json for static mode: %w", err)
 		}
 	}
-	visualInput, err := ensureVisualInputSummary(filepath.Join(runDir, "visual_input.json"), question, result)
-	if err != nil {
-		return err
+	var visualInput model.VisualInputSummary
+	if analysisMode == model.AnalysisModeMultiQueryJSON {
+		visualInputBytes, err := os.ReadFile(filepath.Join(runDir, "visual_input.json"))
+		if err != nil {
+			return fmt.Errorf("process-visual requires visual_input.json for multi_query_json mode: %w", err)
+		}
+		if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
+			return fmt.Errorf("parse visual_input.json: %w", err)
+		}
+	} else {
+		visualInput, err = ensureVisualInputSummary(filepath.Join(runDir, "visual_input.json"), question, result)
+		if err != nil {
+			return err
+		}
 	}
 	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
@@ -1199,6 +1405,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		SkipBrowserLiveFetch: opts.SkipBrowserLiveFetch,
 		Verbose:              opts.Verbose,
 	})
+	manifest.Metadata = clearPresentationValidationMetadata(manifest.Metadata)
 	for key, value := range validationResult.Metadata {
 		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
 	}
@@ -1267,6 +1474,7 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=%s", analysisMode)
 	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
 		Mode:      analysisMode,
+		Question:  question,
 		Artifacts: manifest.Artifacts,
 	})
 	if err != nil {
@@ -1275,13 +1483,14 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 		return err
 	}
-	result, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
+	materialized, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
 		RunDir:           runDir,
 		Question:         question,
 		Manifest:         &manifest,
 		MCPURL:           mcpURL,
 		Token:            token,
 		Verbose:          opts.Verbose,
+		AnalysisMode:     analysisMode,
 		AnalysisArtifact: analysisArtifact,
 	})
 	if err != nil {
@@ -1289,7 +1498,7 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 		return err
 	}
 	if question.VisualEnabled {
-		if err := writePresentationPrompt(manifest.Artifacts.PromptPresentationRaw, manifest.Artifacts.VisualInputJSON, question, cfg, result, analysisArtifact.SQL, mcpURL, token); err != nil {
+		if err := writePresentationPromptFromSummary(manifest.Artifacts.PromptPresentationRaw, question, cfg, materialized.Result, materialized.SQL, mcpURL, token, materialized.VisualInput); err != nil {
 			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 			return err
 		}
@@ -1456,6 +1665,15 @@ func buildVisualInputSummary(question model.Question, result model.CanonicalResu
 	return summary
 }
 
+func buildMultiQueryVisualInputSummary(question model.Question, summaries []model.QueryResultSummary) model.VisualInputSummary {
+	return model.VisualInputSummary{
+		QuestionTitle:  question.Meta.Title,
+		RowCount:       len(summaries),
+		ModeHint:       "This visual pass receives only verified subquestion answers plus proof-query previews: row count, column names, and the first result row for each query.",
+		QuerySummaries: summaries,
+	}
+}
+
 func ensureVisualInputSummary(path string, question model.Question, result model.CanonicalResult) (model.VisualInputSummary, error) {
 	var visualInput model.VisualInputSummary
 	visualInputBytes, err := os.ReadFile(path)
@@ -1481,6 +1699,10 @@ func writePresentationPrompt(path, visualInputPath string, question model.Questi
 	if err != nil {
 		return err
 	}
+	return writePresentationPromptFromSummary(path, question, cfg, result, sql, mcpURL, token, visualInput)
+}
+
+func writePresentationPromptFromSummary(path string, question model.Question, cfg model.DatasetConfig, result model.CanonicalResult, sql, mcpURL, token string, visualInput model.VisualInputSummary) error {
 	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, sql, dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
 		return err
@@ -1533,6 +1755,7 @@ func defaultModelForRunner(runner string) (string, error) {
 
 type savedAnalysisSource struct {
 	Mode      model.AnalysisMode
+	Question  model.Question
 	Artifacts model.ArtifactPaths
 }
 
@@ -1556,6 +1779,8 @@ func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifa
 	switch source.Mode {
 	case model.AnalysisModeJSONArtifact:
 		return loadAnalysisArtifact(source.Artifacts.AnswerRawJSON)
+	case model.AnalysisModeMultiQueryJSON:
+		return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.AnswerRawJSON)
 	case model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
 		return loadTemplateAnalysisArtifact(source.Artifacts)
 	default:
@@ -1606,10 +1831,33 @@ func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.Analysis
 	return artifact, nil
 }
 
+func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model.AnalysisArtifact, error) {
+	payload, err := os.ReadFile(path)
+	if err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("read answer.raw.json: %w", err)
+	}
+	var artifact model.AnalysisArtifact
+	if err := json.Unmarshal(payload, &artifact); err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("invalid analysis json: %w", err)
+	}
+	for i := range artifact.Subquestions {
+		artifact.Subquestions[i].ID = strings.TrimSpace(artifact.Subquestions[i].ID)
+		artifact.Subquestions[i].Subquestion = normalizeEscapedMultiline(strings.TrimSpace(artifact.Subquestions[i].Subquestion))
+		artifact.Subquestions[i].AnswerMarkdown = normalizeEscapedMultiline(strings.TrimSpace(artifact.Subquestions[i].AnswerMarkdown))
+		artifact.Subquestions[i].SQL = normalizeEscapedMultiline(strings.TrimSpace(artifact.Subquestions[i].SQL))
+	}
+	if err := validateMultiQueryAnalysisArtifact(question, artifact); err != nil {
+		return model.AnalysisArtifact{}, err
+	}
+	return artifact, nil
+}
+
 func normalizeAnalysisMode(raw string) model.AnalysisMode {
 	switch model.AnalysisMode(strings.TrimSpace(raw)) {
 	case model.AnalysisModeJSONArtifact:
 		return model.AnalysisModeJSONArtifact
+	case model.AnalysisModeMultiQueryJSON:
+		return model.AnalysisModeMultiQueryJSON
 	case model.AnalysisModeTemplateFiles:
 		return model.AnalysisModeTemplateFiles
 	case model.AnalysisModeManualTemplate:
@@ -1629,8 +1877,9 @@ func resolveRunAnalysisMode(questionModeRaw, overrideRaw string) (model.Analysis
 	if string(overrideMode) != override {
 		return "", fmt.Errorf("unsupported analysis mode override %q", override)
 	}
-	if questionMode == model.AnalysisModeJSONArtifact || overrideMode == model.AnalysisModeJSONArtifact {
-		return "", fmt.Errorf("analysis mode override cannot switch to or from json_artifact")
+	if questionMode == model.AnalysisModeJSONArtifact || overrideMode == model.AnalysisModeJSONArtifact ||
+		questionMode == model.AnalysisModeMultiQueryJSON || overrideMode == model.AnalysisModeMultiQueryJSON {
+		return "", fmt.Errorf("analysis mode override cannot switch to or from structured json modes")
 	}
 	return overrideMode, nil
 }

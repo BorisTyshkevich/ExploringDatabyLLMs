@@ -72,6 +72,29 @@ func RenderReport(template string, question model.Question, result model.Canonic
 	return rendered
 }
 
+func RenderMonitoringReport(question model.Question, summaries []model.QueryResultSummary) string {
+	lines := []string{"# " + question.Meta.Title, ""}
+	for i, item := range summaries {
+		if i > 0 {
+			lines = append(lines, "")
+		}
+		lines = append(lines, "> "+strings.TrimSpace(item.Subquestion), "")
+		lines = append(lines, strings.TrimSpace(item.AnswerMarkdown), "")
+		lines = append(lines, fmt.Sprintf("- Rows returned: %d", item.RowCount))
+		if len(item.ResultColumns) > 0 {
+			lines = append(lines, fmt.Sprintf("- Columns: %s", strings.Join(item.ResultColumns, ", ")))
+		}
+		if len(item.FirstRow) > 0 {
+			result := model.CanonicalResult{
+				Columns: item.ResultColumns,
+				Rows:    []map[string]any{item.FirstRow},
+			}
+			lines = append(lines, "", renderResultTableMarkdown(result, 1))
+		}
+	}
+	return strings.TrimSpace(strings.Join(lines, "\n")) + "\n"
+}
+
 func renderDataOverviewMarkdown(result model.CanonicalResult) string {
 	lines := []string{
 		fmt.Sprintf("- Rows returned: %d", result.RowCount),

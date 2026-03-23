@@ -68,8 +68,30 @@ func TestBuildSQLPromptTemplateModeUsesDirectFileContract(t *testing.T) {
 	if strings.Contains(got, "Write one JSON object containing the final verified SQL") {
 		t.Fatalf("did not expect answer.raw.json contract in template mode, got: %s", got)
 	}
-	if !strings.Contains(got, "Do not use `{{metric.<name>}}` placeholders in this mode.") {
-		t.Fatalf("expected explicit metric-placeholder prohibition in template mode, got: %s", got)
+	if !strings.Contains(got, "Allowed built-in placeholders:") || !strings.Contains(got, "Do not invent any placeholder outside the built-in list.") {
+		t.Fatalf("expected placeholder constraints in template mode, got: %s", got)
+	}
+}
+
+func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
+	question := model.Question{
+		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Prompt: "Question-specific SQL guidance.",
+		Subquestions: []model.QuestionSubquestion{
+			{ID: "worst_hotspot", Text: "Which hotspot is worst?"},
+			{ID: "persistence", Text: "Is it persistent?"},
+		},
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeMultiQueryJSON)
+	if err != nil {
+		t.Fatalf("BuildSQLPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "\"subquestions\"") || !strings.Contains(got, "\"answer_markdown\"") {
+		t.Fatalf("expected multi-query json artifact contract, got: %s", got)
+	}
+	if !strings.Contains(got, "`worst_hotspot`: Which hotspot is worst?") || !strings.Contains(got, "`persistence`: Is it persistent?") {
+		t.Fatalf("expected required subquestion contract in prompt, got: %s", got)
 	}
 }
 

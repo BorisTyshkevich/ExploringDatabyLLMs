@@ -11,12 +11,14 @@ import (
 )
 
 const (
-	commonPromptFile               = "common.md"
-	commonReportPromptFile         = "common_report_json.md"
-	commonReportTemplatePromptFile = "common_report_templates.md"
-	commonVisualPromptFile         = "common_visual.md"
-	commonVisualStaticPromptFile   = "common_visual_static.md"
-	commonVisualDynamicPromptFile  = "common_visual_dynamic.md"
+	commonPromptFile                 = "common.md"
+	commonReportPromptFile           = "common_report_json.md"
+	commonReportMultiQueryPromptFile = "common_report_multi_query_json.md"
+	commonReportTemplatePromptFile   = "common_report_templates.md"
+	commonVisualPromptFile           = "common_visual.md"
+	commonVisualMultiQueryPromptFile = "common_visual_multi_query.md"
+	commonVisualStaticPromptFile     = "common_visual_static.md"
+	commonVisualDynamicPromptFile    = "common_visual_dynamic.md"
 )
 
 func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode model.AnalysisMode) (string, error) {
@@ -25,7 +27,9 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 		return "", err
 	}
 	contractPromptFile := commonReportPromptFile
-	if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
+	if mode == model.AnalysisModeMultiQueryJSON {
+		contractPromptFile = commonReportMultiQueryPromptFile
+	} else if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
 		contractPromptFile = commonReportTemplatePromptFile
 	}
 	commonReport, err := loadCommonPrompt(question, contractPromptFile)
@@ -33,10 +37,11 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_name":        datasetPromptName(dataset),
-		"question_title":      question.Meta.Title,
-		"question_prompt_md":  question.Prompt,
-		"report_placeholders": "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
+		"dataset_name":                datasetPromptName(dataset),
+		"question_title":              question.Meta.Title,
+		"question_prompt_md":          question.Prompt,
+		"subquestion_requirements_md": subquestionRequirementsMarkdown(question.Subquestions),
+		"report_placeholders":         "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
 		RenderTemplate(common, values),
@@ -50,11 +55,20 @@ func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfi
 }
 
 func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string, visualInput model.VisualInputSummary) (string, error) {
-	common, err := loadCommonPrompt(question, commonPromptFile)
-	if err != nil {
-		return "", err
+	commonVisualFile := commonVisualPromptFile
+	analysisMode := model.AnalysisMode(strings.TrimSpace(question.Meta.AnalysisMode))
+	if analysisMode == model.AnalysisModeMultiQueryJSON {
+		commonVisualFile = commonVisualMultiQueryPromptFile
 	}
-	commonVisual, err := loadCommonPrompt(question, commonVisualPromptFile)
+	var common string
+	if analysisMode != model.AnalysisModeMultiQueryJSON {
+		var err error
+		common, err = loadCommonPrompt(question, commonPromptFile)
+		if err != nil {
+			return "", err
+		}
+	}
+	commonVisual, err := loadCommonPrompt(question, commonVisualFile)
 	if err != nil {
 		return "", err
 	}
@@ -77,12 +91,39 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		"visual_input_summary_json":       visualInputSummaryJSON(visualInput),
 		"visual_prompt_md":                question.VisualPrompt,
 	}
-	sections := []string{
-		RenderTemplate(common, values),
-		RenderTemplate(commonVisual, values),
-		RenderTemplate(modeVisual, values),
+	sections := []string{RenderTemplate(commonVisual, values)}
+	if analysisMode != model.AnalysisModeMultiQueryJSON {
+		sections = append([]string{RenderTemplate(common, values)}, sections...)
+		sections = append(sections, RenderTemplate(modeVisual, values))
 	}
 	return joinSections(sections), nil
+}
+
+func subquestionRequirementsMarkdown(items []model.QuestionSubquestion) string {
+	if len(items) == 0 {
+		return "No explicit subquestion contract."
+	}
+	lines := make([]string, 0, len(items))
+	for _, item := range items {
+		id := strings.TrimSpace(item.ID)
+		text := strings.TrimSpace(item.Text)
+		if id == "" && text == "" {
+			continue
+		}
+		if id == "" {
+			lines = append(lines, "- "+text)
+			continue
+		}
+		if text == "" {
+			lines = append(lines, fmt.Sprintf("- `%s`", id))
+			continue
+		}
+		lines = append(lines, fmt.Sprintf("- `%s`: %s", id, text))
+	}
+	if len(lines) == 0 {
+		return "No explicit subquestion contract."
+	}
+	return strings.Join(lines, "\n")
 }
 
 func visualInputSummaryJSON(summary model.VisualInputSummary) string {

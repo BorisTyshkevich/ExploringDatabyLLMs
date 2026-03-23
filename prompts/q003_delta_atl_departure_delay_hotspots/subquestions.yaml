@@ -1,0 +1,7 @@
+subquestions:
+  - id: worst_hotspot
+    text: Which destination and time block is the worst recurring hotspot?
+  - id: persistence
+    text: Is that hotspot consistently bad across time, or concentrated in a narrower period?
+  - id: pattern_summary
+    text: What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?

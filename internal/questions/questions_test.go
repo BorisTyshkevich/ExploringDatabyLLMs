@@ -35,3 +35,16 @@ func TestLoadRejectsUnsupportedAnalysisMode(t *testing.T) {
 		t.Fatalf("expected unsupported analysis mode to fail")
 	}
 }
+
+func TestLoadMultiQueryModeRequiresSubquestions(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "meta.yaml"), []byte("id: qx\nslug: qx\ntitle: Test\ndataset: ontime\nanalysis_mode: multi_query_json\nartifacts_required: report.md\n"), 0o644); err != nil {
+		t.Fatalf("write meta.yaml: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "report_prompt.md"), []byte("report prompt"), 0o644); err != nil {
+		t.Fatalf("write report_prompt.md: %v", err)
+	}
+	if _, err := Load(dir); err == nil {
+		t.Fatalf("expected missing subquestions.yaml to fail")
+	}
+}

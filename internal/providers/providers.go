@@ -231,6 +231,9 @@ func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) 
 		if err := json.Unmarshal(data, &artifact); err != nil {
 			return false
 		}
+		if mode == model.AnalysisModeMultiQueryJSON {
+			return len(artifact.Subquestions) > 0
+		}
 		return strings.TrimSpace(artifact.SQL) != "" && strings.TrimSpace(artifact.ReportMarkdown) != ""
 	}
 }

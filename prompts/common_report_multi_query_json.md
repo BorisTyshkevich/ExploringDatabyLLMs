@@ -1,0 +1,41 @@
+
+- Do not emit result rows or any data output.
+- Write one JSON object to `answer.raw.json`.
+
+Write exactly this JSON object shape to `answer.raw.json`:
+
+{
+  "subquestions": [
+    {
+      "id": "example_id",
+      "subquestion": "Question text copied exactly from the required subquestion contract.",
+      "answer_markdown": "A concise prose answer to that subquestion.",
+      "sql": "-- one SQL statement that proves the answer"
+    }
+  ]
+}
+
+Rules:
+
+- Write the artifact to `answer.raw.json`.
+- The `answer.raw.json` file must contain raw JSON, not fenced Markdown.
+- Return one object in `subquestions` for every required subquestion listed below.
+- Preserve the required subquestion `id` values exactly.
+- Preserve the required `subquestion` text exactly.
+- Each `answer_markdown` must directly answer that subquestion in concise prose.
+- Each `sql` must be one executable SQL statement only and should serve as the proof query for that subquestion.
+- Use one proof query per required subquestion. Do not merge several subquestions into one unioned or row-typed SQL result unless the question-specific guidance explicitly requires that.
+- Derive SQL and answers only from the current question and the current query result shape.
+- Do not rely on prior qforge runs, prior question ids, or previously observed values.
+- Do not invent extra required subquestions, custom scoring formulas, analysis windows, ranking rules, or business definitions unless the question-specific prompt explicitly asks for them.
+- Use the full available dataset history unless the question-specific prompt explicitly asks for a narrower time window.
+
+Required subquestion contract:
+
+{{subquestion_requirements_md}}
+
+Question title: `{{question_title}}`
+
+Question-specific guidance:
+
+{{question_prompt_md}}

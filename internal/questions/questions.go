@@ -65,7 +65,7 @@ func Load(dir string) (model.Question, error) {
 		meta.AnalysisMode = string(model.AnalysisModeTemplateFiles)
 	}
 	switch model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) {
-	case model.AnalysisModeJSONArtifact, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
+	case model.AnalysisModeJSONArtifact, model.AnalysisModeMultiQueryJSON, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
 	default:
 		return model.Question{}, fmt.Errorf("parse %s: unsupported analysis_mode %q", metaPath, meta.AnalysisMode)
 	}
@@ -77,6 +77,10 @@ func Load(dir string) (model.Question, error) {
 		return model.Question{}, err
 	}
 	visualPromptBytes, _ := os.ReadFile(visualPromptPath)
+	subquestions, err := loadSubquestions(dir, model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)))
+	if err != nil {
+		return model.Question{}, err
+	}
 	reportEnabled := requiresArtifact(meta.ArtifactsRequired, "report.md")
 	visualEnabled := requiresArtifact(meta.ArtifactsRequired, "visual.html")
 	return model.Question{
@@ -84,10 +88,35 @@ func Load(dir string) (model.Question, error) {
 		Meta:                meta,
 		Prompt:              strings.TrimSpace(string(reportPromptBytes)),
 		VisualPrompt:        strings.TrimSpace(string(visualPromptBytes)),
+		Subquestions:        subquestions,
 		PresentationEnabled: reportEnabled || visualEnabled,
 		ReportEnabled:       reportEnabled,
 		VisualEnabled:       visualEnabled,
 	}, nil
+}
+
+func loadSubquestions(dir string, mode model.AnalysisMode) ([]model.QuestionSubquestion, error) {
+	path := filepath.Join(dir, "subquestions.yaml")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			if mode == model.AnalysisModeMultiQueryJSON {
+				return nil, fmt.Errorf("load %s: missing subquestions.yaml for analysis_mode %q", dir, mode)
+			}
+			return nil, nil
+		}
+		return nil, err
+	}
+	var file struct {
+		Subquestions []model.QuestionSubquestion `yaml:"subquestions"`
+	}
+	if err := yaml.Unmarshal(data, &file); err != nil {
+		return nil, fmt.Errorf("parse %s: %w", path, err)
+	}
+	if mode == model.AnalysisModeMultiQueryJSON && len(file.Subquestions) == 0 {
+		return nil, fmt.Errorf("parse %s: subquestions list is required for analysis_mode %q", path, mode)
+	}
+	return file.Subquestions, nil
 }
 
 func requiresArtifact(required, name string) bool {
