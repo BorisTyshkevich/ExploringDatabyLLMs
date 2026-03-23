@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestLoadDefaultsAnalysisModeToJSONArtifact(t *testing.T) {
+func TestLoadDefaultsAnalysisModeToTemplateFiles(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "meta.yaml"), []byte("id: qx\nslug: qx\ntitle: Test\ndataset: ontime\nartifacts_required: report.md\n"), 0o644); err != nil {
 		t.Fatalf("write meta.yaml: %v", err)
@@ -18,7 +18,7 @@ func TestLoadDefaultsAnalysisModeToJSONArtifact(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Load returned error: %v", err)
 	}
-	if question.Meta.AnalysisMode != "json_artifact" {
+	if question.Meta.AnalysisMode != "template_files" {
 		t.Fatalf("expected default analysis mode, got %q", question.Meta.AnalysisMode)
 	}
 }

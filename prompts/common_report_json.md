@@ -39,6 +39,13 @@ Rules:
 - Derive SQL, metrics, and report claims only from the current question and the current query result shape.
 - Do not rely on prior qforge runs, prior question ids, or previously observed values.
 - Do not mention other question ids such as `q001` in the artifact unless the current prompt explicitly asks for cross-question comparison.
+- The report must directly answer the business questions asked in the question-specific prompt.
+- Do not make the report primarily about how to read the table, result shape, or row types.
+- Do not replace analysis with instructions to the reader such as "use these rows to determine...".
+- If the question-specific prompt asks multiple business questions, answer each of them explicitly in prose.
+- Do not invent a custom scoring formula, analysis window, ranking rule, or business definition unless the question-specific prompt explicitly asks for it.
+- If a reasonable guardrail or assumption is necessary to remove noise, keep it minimal and make it consistent with the question's business framing.
+- Use the full available dataset history unless the question-specific prompt explicitly asks for a narrower time window.
 - Allowed built-in placeholders: {{report_placeholders}}
 - Allowed metric placeholders use this pattern only: `{{metric.<name>}}`
 - Do not invent any placeholder outside the built-in list and `{{metric.<name>}}`.

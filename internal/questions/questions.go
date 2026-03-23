@@ -62,7 +62,7 @@ func Load(dir string) (model.Question, error) {
 		return model.Question{}, fmt.Errorf("parse %s: %w", metaPath, err)
 	}
 	if strings.TrimSpace(meta.AnalysisMode) == "" {
-		meta.AnalysisMode = string(model.AnalysisModeJSONArtifact)
+		meta.AnalysisMode = string(model.AnalysisModeTemplateFiles)
 	}
 	switch model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) {
 	case model.AnalysisModeJSONArtifact, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:

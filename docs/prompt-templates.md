@@ -8,7 +8,7 @@ Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_json.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_json.md)
   - SQL-only rules for `analysis_mode: json_artifact`
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for `analysis_mode: template_files` and `analysis_mode: manual_templates`
@@ -28,7 +28,7 @@ Prompt builders are implemented in [`/Users/bvt/work/ExploringDatabyLLMs/interna
 Current composition order:
 
 - SQL phase:
-  - `json_artifact`: `common.md` + `common_report.md` + question `report_prompt.md`
+- `json_artifact`: `common.md` + `common_report_json.md` + question `report_prompt.md`
   - `template_files` / `manual_templates`: `common.md` + `common_report_templates.md` + question `report_prompt.md`
 - Presentation phase: `common.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
 

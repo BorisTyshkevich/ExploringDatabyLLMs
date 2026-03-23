@@ -12,7 +12,7 @@ import (
 
 const (
 	commonPromptFile               = "common.md"
-	commonReportPromptFile         = "common_report.md"
+	commonReportPromptFile         = "common_report_json.md"
 	commonReportTemplatePromptFile = "common_report_templates.md"
 	commonVisualPromptFile         = "common_visual.md"
 	commonVisualStaticPromptFile   = "common_visual_static.md"

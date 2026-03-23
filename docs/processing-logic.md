@@ -25,7 +25,7 @@ Phase 1 prompt assembly is implemented in [`/Users/bvt/work/ExploringDatabyLLMs/
 Current composition order:
 
 - `prompts/common.md`
-- `prompts/common_report.md`
+- `prompts/common_report_json.md`
 - question `report_prompt.md`
 
 Shared prompt assets now reference dataset-specific skills directly. For OnTime, schema inspection and join guidance come from the `ontime-semantic-layer` skill rather than an inlined `semantic_layer.md` block.

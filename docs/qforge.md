@@ -39,7 +39,7 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_json.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_json.md)
   - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` analysis-artifact contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for direct `query.sql` plus `report.template.md` output

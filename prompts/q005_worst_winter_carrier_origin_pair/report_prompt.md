@@ -2,6 +2,8 @@ Determine which airline and origin-airport combinations perform worst in winter 
 
 Focus on winter departures only and evaluate completed flights at the `(carrier, origin airport)` level. Limit the analysis to combinations with enough winter traffic to be credible.
 
+Use winter consistently as the business definition of the season for the full available history. You may apply a reasonable minimum-volume filter to remove noise, but do not invent a custom score or let delay-cause shares replace the primary performance ranking.
+
 For each qualifying pair, quantify:
 
 - winter flight volume
@@ -18,5 +20,7 @@ The output should let a BI dashboard answer:
 - Which winter carrier-airport pair ranks worst overall?
 - Are the worst pairs driven more by weather or by operational causes?
 - Are the weakest pairs concentrated in a small number of carriers or airports?
+
+In the report, answer those questions directly in prose. Do not mainly describe the table structure or tell the reader how to interpret it.
 
 Keep the result business-readable and analytically sound. Exclude low-volume winter pairs before ranking them.

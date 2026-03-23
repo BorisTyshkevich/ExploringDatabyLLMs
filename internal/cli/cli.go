@@ -1608,12 +1608,14 @@ func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.Analysis
 
 func normalizeAnalysisMode(raw string) model.AnalysisMode {
 	switch model.AnalysisMode(strings.TrimSpace(raw)) {
+	case model.AnalysisModeJSONArtifact:
+		return model.AnalysisModeJSONArtifact
 	case model.AnalysisModeTemplateFiles:
 		return model.AnalysisModeTemplateFiles
 	case model.AnalysisModeManualTemplate:
 		return model.AnalysisModeManualTemplate
 	default:
-		return model.AnalysisModeJSONArtifact
+		return model.AnalysisModeTemplateFiles
 	}
 }
 
