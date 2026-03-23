@@ -321,7 +321,7 @@ func (p cliProvider) runGemini(ctx context.Context, req model.ProviderRequest, p
 	}()
 	args := []string{
 		"--model", req.Model,
-		"--prompt", prompt,
+		"--prompt=" + prompt,
 		"--allowed-mcp-server-names", req.MCPServerName,
 		"--approval-mode", "yolo",
 		"--output-format", "text",

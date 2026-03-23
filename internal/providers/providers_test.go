@@ -283,6 +283,51 @@ func TestRunGeminiAddsAndRemovesMCPServer(t *testing.T) {
 	}
 }
 
+func TestRunGeminiPassesLeadingDashPromptAsSingleArgument(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "fake-gemini.sh")
+	argLogPath := filepath.Join(tmpDir, "gemini-args.log")
+	script := "#!/usr/bin/env bash\n" +
+		"set -euo pipefail\n" +
+		"if [[ \"$1\" == \"mcp\" ]]; then\n" +
+		"  exit 0\n" +
+		"fi\n" +
+		"printf '%s\n' \"$@\" > " + argLogPath + "\n" +
+		"printf 'gemini main run\\n'\n"
+	if err := os.WriteFile(scriptPath, []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake gemini: %v", err)
+	}
+
+	req := model.ProviderRequest{
+		OutDir:        tmpDir,
+		Model:         "gemini-3.1-pro-preview",
+		Prompt:        "- leading dash prompt\nsecond line",
+		MCPURL:        "https://example.invalid/token/http",
+		MCPServerName: "altinity_ontime_demo",
+		CLIBin:        scriptPath,
+	}
+
+	resp, err := cliProvider{name: "gemini", defaultBin: scriptPath}.GeneratePresentation(context.Background(), req)
+	if err != nil {
+		t.Fatalf("GeneratePresentation returned error: %v", err)
+	}
+	if !strings.Contains(resp.RawOutput, "gemini main run") {
+		t.Fatalf("unexpected raw output: %q", resp.RawOutput)
+	}
+
+	argBytes, err := os.ReadFile(argLogPath)
+	if err != nil {
+		t.Fatalf("read gemini arg log: %v", err)
+	}
+	argText := string(argBytes)
+	if !strings.Contains(argText, "--prompt=- leading dash prompt") {
+		t.Fatalf("expected --prompt=<value> form for leading-dash prompt, got: %q", argText)
+	}
+	if strings.Contains(argText, "\n- leading dash prompt\n") {
+		t.Fatalf("did not expect prompt to be passed as a standalone argv token, got: %q", argText)
+	}
+}
+
 func TestLogProviderDetailsUsesTimestampAndModelPrefix(t *testing.T) {
 	var buf bytes.Buffer
 	origStdout := os.Stdout
