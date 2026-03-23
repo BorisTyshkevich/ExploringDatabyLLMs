@@ -140,7 +140,6 @@ Phase 2 prompt assembly is also implemented in [`/Users/bvt/work/ExploringDataby
 Current composition order:
 
 - `prompts/common.md`
-- `prompts/common_presentation.md`
 - `prompts/common_visual.md`
 - mode-specific visual asset
 - question `visual_prompt.md`
@@ -189,7 +188,7 @@ Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 - `result.json`
 - `visual_input.json`
 - `report.md`
-- `prompt.presentation.md`
+- `prompt.visual.md`
 - `answer.presentation.raw.md`
 - `visual.html`
 - `manifest.json`

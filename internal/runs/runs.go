@@ -55,7 +55,7 @@ func DefaultArtifacts(outDir string, presentation bool) model.ArtifactPaths {
 		StderrLog:       filepath.Join(outDir, "stderr.log"),
 	}
 	if presentation {
-		artifacts.PromptPresentationRaw = filepath.Join(outDir, "prompt.presentation.md")
+		artifacts.PromptPresentationRaw = filepath.Join(outDir, "prompt.visual.md")
 		artifacts.AnswerPresentationRaw = filepath.Join(outDir, "answer.presentation.raw.md")
 		artifacts.ReportTemplateMD = filepath.Join(outDir, "report.template.md")
 		artifacts.ReportMD = filepath.Join(outDir, "report.md")

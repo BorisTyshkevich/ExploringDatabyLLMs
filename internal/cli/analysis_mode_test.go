@@ -180,8 +180,8 @@ func TestExecuteRunStagesPresentationPromptWithoutWithVisual(t *testing.T) {
 	}
 
 	runDir := latestRunDir(t, repoRoot)
-	if _, err := os.Stat(filepath.Join(runDir, "prompt.presentation.md")); err != nil {
-		t.Fatalf("expected staged prompt.presentation.md: %v", err)
+	if _, err := os.Stat(filepath.Join(runDir, "prompt.visual.md")); err != nil {
+		t.Fatalf("expected staged prompt.visual.md: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
 		t.Fatalf("did not expect visual.html without --with-visual, err=%v", err)
@@ -194,6 +194,31 @@ func TestExecuteRunStagesPresentationPromptWithoutWithVisual(t *testing.T) {
 		t.Fatalf("expected deferred presentation phases, got %+v", manifest.Phases)
 	}
 	_ = server
+}
+
+func TestExecuteRunManualTemplatesStagesVisualPromptForVisualQuestions(t *testing.T) {
+	repoRoot := t.TempDir()
+	writeTestQuestionRepoWithArtifacts(t, repoRoot, "manual_templates", "report.md,visual.html")
+	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
+	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
+
+	err := executeRun(context.Background(), runOptions{
+		QuestionRef: "q901",
+		Runner:      "claude",
+		Model:       "opus",
+		CLIBin:      "/path/that/should/not/run",
+	})
+	if err != nil {
+		t.Fatalf("executeRun returned error: %v", err)
+	}
+
+	runDir := latestRunDir(t, repoRoot)
+	if _, err := os.Stat(filepath.Join(runDir, "prompt.visual.md")); err != nil {
+		t.Fatalf("expected staged prompt.visual.md: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
+		t.Fatalf("did not expect visual.html in manual staging run, err=%v", err)
+	}
 }
 
 func TestProcessPresentationTemplateFiles(t *testing.T) {
@@ -257,7 +282,7 @@ func writeTestQuestionRepoWithArtifacts(t *testing.T, repoRoot, analysisMode, ar
 	if err := os.WriteFile(filepath.Join(repoRoot, "datasets", "ontime", "mcp.yaml"), []byte("dataset: ontime\nmcp_url: "+newExecuteQueryServerURL(t)+"\ndefault_mcp_server_name: demo\n"), 0o644); err != nil {
 		t.Fatalf("write mcp.yaml: %v", err)
 	}
-	for _, name := range []string{"common.md", "common_report.md", "common_report_templates.md", "common_presentation.md", "common_visual.md", "common_visual_dynamic.md", "common_visual_static.md"} {
+	for _, name := range []string{"common.md", "common_report.md", "common_report_templates.md", "common_visual.md", "common_visual_dynamic.md", "common_visual_static.md"} {
 		src := filepath.Join("/Users/bvt/work/ExploringDatabyLLMs", "prompts", name)
 		data, err := os.ReadFile(src)
 		if err != nil {

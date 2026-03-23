@@ -43,10 +43,8 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
   - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` analysis-artifact contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for direct `query.sql` plus `report.template.md` output
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
-  - report/template rules for the presentation phase
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
-  - shared `visual.html` rules
+  - shared presentation and `visual.html` rules
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
@@ -285,14 +283,14 @@ What `run` does:
 8. writes canonical `result.json`
 9. writes `visual_input.json`
 10. renders `report.md` from the saved report template
-11. writes `prompt.presentation.md` for visual-capable questions so visual generation can be run manually later
+11. writes `prompt.visual.md` for visual-capable questions so visual generation can be run manually later
 12. writes `manifest.json`
 13. optionally makes a second independent provider call for `visual.html` when `--with-visual` is set
 
 What `run` does not do:
 
 - it does not produce `visual.html` unless `--with-visual` is set
-- it may still prebuild `prompt.presentation.md` for visual-capable questions
+- it may still prebuild `prompt.visual.md` for visual-capable questions
 - use `qforge process-visual` for HTML generation later
 
 Exception:
@@ -338,7 +336,7 @@ What `process-presentation` does:
   - `analysis.json`
   - `result.json`
   - `visual_input.json`
-  - `prompt.presentation.md` when the question has visual artifacts
+  - `prompt.visual.md` when the question has visual artifacts
   - `report.template.md`
   - `report.md`
 - does not invoke a provider again
@@ -393,7 +391,7 @@ What `process-visual` does:
   - browser validation using `chromedp`
 - for dynamic dashboards, browser validation automatically attempts the live MCP fetch path when a token is available unless `--skip-browser-live-fetch` is set
 - writes:
-  - `prompt.presentation.md`
+  - `prompt.visual.md`
   - `answer.presentation.raw.md`
   - `visual.html`
 
@@ -549,7 +547,7 @@ Typical SQL-only run artifacts:
 
 When presentation is processed later with `qforge process-visual`:
 
-- `prompt.presentation.md`
+- `prompt.visual.md`
 - `answer.presentation.raw.md`
 - `visual.html`
 

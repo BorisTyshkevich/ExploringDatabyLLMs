@@ -154,7 +154,7 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout, "  - stages prompts and analysis artifacts according to the question analysis mode")
 		fmt.Fprintln(os.Stdout, "  - executes SQL itself and writes result.json when analysis artifacts are available")
 		fmt.Fprintln(os.Stdout, "  - renders final report.md from the saved report template")
-		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.presentation.md for visual-capable questions even without --with-visual")
+		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.visual.md for visual-capable questions even without --with-visual")
 		fmt.Fprintln(os.Stdout, "  - runs providers concurrently when more than one is selected")
 		fmt.Fprintln(os.Stdout, "  - optionally performs a separate follow-up provider call for visual.html only")
 		fmt.Fprintln(os.Stdout)
@@ -546,7 +546,7 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout, "  - extracts SQL and report inputs from the saved analysis artifact")
 		fmt.Fprintln(os.Stdout, "  - executes SQL itself and rewrites result.json plus visual_input.json")
 		fmt.Fprintln(os.Stdout, "  - renders final report.md in the same run directory")
-		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.presentation.md for a later manual visual run when the question has visual artifacts")
+		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.visual.md for a later manual visual run when the question has visual artifacts")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Flags:")
 		fs.PrintDefaults()
@@ -761,6 +761,11 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		Verbose:       opts.Verbose,
 	}
 	if analysisMode == model.AnalysisModeManualTemplate {
+		if question.VisualEnabled {
+			if err := writePresentationPrompt(artifacts.PromptPresentationRaw, artifacts.VisualInputJSON, question, cfg, model.CanonicalResult{}, "", mcpURL, token); err != nil {
+				return err
+			}
+		}
 		manifest.Phases.SQLGeneration = model.PhaseStatusSkipped
 		manifest.Phases.SQLExecution = model.PhaseStatusNotRun
 		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
@@ -831,7 +836,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	logf(opts.Verbose, opts.Model, "phase=presentation_generation status=started")
 	prompt, err := os.ReadFile(artifacts.PromptPresentationRaw)
 	if err != nil {
-		return fmt.Errorf("read prompt.presentation.md for visual generation: %w", err)
+		return fmt.Errorf("read prompt.visual.md for visual generation: %w", err)
 	}
 	req.Prompt = string(prompt)
 	presentationCtx, cancelPresentation := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
