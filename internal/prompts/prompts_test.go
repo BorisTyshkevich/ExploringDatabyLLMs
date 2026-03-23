@@ -104,6 +104,9 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Create browser-ready HTML `visual.html`") {
 		t.Fatalf("expected merged visual scaffold, got: %s", got)
 	}
+	if !strings.Contains(got, "Write the file or provide a download link.") {
+		t.Fatalf("expected file-writing visual contract, got: %s", got)
+	}
 	if !strings.Contains(got, "*-analyst-dashboard") || !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected dashboard and semantic skill guidance, got: %s", got)
 	}
@@ -116,14 +119,14 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Do not embed the primary analytical dataset") {
 		t.Fatalf("expected no-embedded-dataset contract, got: %s", got)
 	}
-	if !strings.Contains(got, "### Visual input requirements") || !strings.Contains(got, "\"sample_rows\"") {
+	if !strings.Contains(got, "Data example/snippet:") || !strings.Contains(got, "\"sample_rows\"") {
 		t.Fatalf("expected visual input summary context, got: %s", got)
 	}
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM ontime.fact_ontime") {
 		t.Fatalf("expected saved sql to be embedded in prompt, got: %s", got)
 	}
-	if !strings.Contains(got, "```html") || strings.Contains(got, "```report\nUse placeholders only") {
-		t.Fatalf("expected html-only output contract in presentation prompt, got: %s", got)
+	if !strings.Contains(got, "Do not include the HTML source in the response.") || strings.Contains(got, "```html") {
+		t.Fatalf("expected write-file output contract in presentation prompt, got: %s", got)
 	}
 	if strings.Contains(got, "qforge-result-data") || strings.Contains(got, "__QFORGE_DEFAULT_SQL__") {
 		t.Fatalf("did not expect legacy injected JSON contract, got: %s", got)
@@ -247,7 +250,7 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	if !strings.Contains(got, "Embed the analytical data needed by the page directly in the HTML") {
 		t.Fatalf("expected embedded-data contract, got: %s", got)
 	}
-	if !strings.Contains(got, "### Visual input requirements") {
+	if !strings.Contains(got, "Data example/snippet:") {
 		t.Fatalf("expected visual input summary in static prompt, got: %s", got)
 	}
 	if !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {

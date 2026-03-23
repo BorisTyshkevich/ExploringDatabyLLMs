@@ -1,17 +1,6 @@
 Create browser-ready HTML `visual.html` using the proper  `*-analyst-dashboard` skill.
 
-The returned `visual.html` must be final browser-ready HTML. qforge will not patch or rewrite it after generation.
-
-Use file `query.sql` as the authoritative input for the primary data query.
-Use file `visual_input.json` to understand the result shape before building visuals without querying dataset.
-You may construct additional queries when needed for enrichment or drill-down, but do not rebuild the saved SQL.
-
-Return exactly this fenced section:
-
-```html
-<!doctype html>
-<html>...</html>
-```
+Write the file or provide a download link. Do not include the HTML source in the response. Do not open the artifact view frame.
 
 ### Rules
 
@@ -34,6 +23,5 @@ SQL query for primary data source:
 
 Data example/snippet:
 
-### Visual input requirements
-
 {{visual_input_summary_json}}
+
