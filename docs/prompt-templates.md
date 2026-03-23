@@ -12,10 +12,8 @@ Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](
   - SQL-only rules for `analysis_mode: json_artifact`
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for `analysis_mode: template_files` and `analysis_mode: manual_templates`
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
-  - report/template rules for the presentation phase
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
-  - shared visual rules used by all presentation prompts
+  - shared presentation and visual rules used by all presentation prompts
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
@@ -32,7 +30,7 @@ Current composition order:
 - SQL phase:
   - `json_artifact`: `common.md` + `common_report.md` + question `report_prompt.md`
   - `template_files` / `manual_templates`: `common.md` + `common_report_templates.md` + question `report_prompt.md`
-- Presentation phase: `common.md` + `common_presentation.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
+- Presentation phase: `common.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
 
 The shared `common.md` file is rendered in both phases, so any template variables used there must be available to both builders.
 

@@ -14,7 +14,6 @@ const (
 	commonPromptFile               = "common.md"
 	commonReportPromptFile         = "common_report.md"
 	commonReportTemplatePromptFile = "common_report_templates.md"
-	commonPresentationPromptFile   = "common_presentation.md"
 	commonVisualPromptFile         = "common_visual.md"
 	commonVisualStaticPromptFile   = "common_visual_static.md"
 	commonVisualDynamicPromptFile  = "common_visual_dynamic.md"
@@ -55,10 +54,6 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 	if err != nil {
 		return "", err
 	}
-	commonPresentation, err := loadCommonPrompt(question, commonPresentationPromptFile)
-	if err != nil {
-		return "", err
-	}
 	commonVisual, err := loadCommonPrompt(question, commonVisualPromptFile)
 	if err != nil {
 		return "", err
@@ -84,7 +79,6 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 	}
 	sections := []string{
 		RenderTemplate(common, values),
-		RenderTemplate(commonPresentation, values),
 		RenderTemplate(commonVisual, values),
 		RenderTemplate(modeVisual, values),
 	}

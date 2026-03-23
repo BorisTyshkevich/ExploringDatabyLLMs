@@ -20,10 +20,10 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "Use the ontime database to answer analytical questions") {
+	if !strings.Contains(got, "Use the `ontime` database to answer analytical questions") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+	if !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected semantic skill guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "Question-specific SQL guidance.") {
@@ -98,13 +98,13 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "Use the ontime database to answer analytical questions") {
+	if !strings.Contains(got, "Use the `ontime` database to answer analytical questions") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "Generate only the visual artifact.") {
-		t.Fatalf("expected presentation-specific scaffold, got: %s", got)
+	if !strings.Contains(got, "Create browser-ready HTML `visual.html`") {
+		t.Fatalf("expected merged visual scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "ontime-analyst-dashboard") || !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+	if !strings.Contains(got, "*-analyst-dashboard") || !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected dashboard and semantic skill guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "Visual mode: `dynamic`") {
@@ -116,7 +116,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Do not embed the primary analytical dataset") {
 		t.Fatalf("expected no-embedded-dataset contract, got: %s", got)
 	}
-	if !strings.Contains(got, "`visual_input.json`") || !strings.Contains(got, "\"sample_rows\"") {
+	if !strings.Contains(got, "### Visual input requirements") || !strings.Contains(got, "\"sample_rows\"") {
 		t.Fatalf("expected visual input summary context, got: %s", got)
 	}
 	if !strings.Contains(got, "SELECT *") || !strings.Contains(got, "FROM ontime.fact_ontime") {
@@ -160,7 +160,7 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "ontime-analyst-dashboard") || !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+	if !strings.Contains(got, "*-analyst-dashboard") || !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected q001 prompt to reference dashboard and semantic skill guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "airport-coordinate enrichment") {
@@ -247,10 +247,10 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	if !strings.Contains(got, "Embed the analytical data needed by the page directly in the HTML") {
 		t.Fatalf("expected embedded-data contract, got: %s", got)
 	}
-	if !strings.Contains(got, "`visual_input.json`") {
+	if !strings.Contains(got, "### Visual input requirements") {
 		t.Fatalf("expected visual input summary in static prompt, got: %s", got)
 	}
-	if !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+	if !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected semantic skill guidance in static prompt, got: %s", got)
 	}
 	if strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {

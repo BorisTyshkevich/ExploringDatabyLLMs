@@ -1,4 +1,4 @@
-Dynamic-mode additions:
+### Dynamic-mode additions
 
 - Use this endpoint template for every browser query: `{{dynamic_query_endpoint_template}}`
 - Keep JWE in `localStorage['OnTimeAnalystDashboard::auth::jwe']`.

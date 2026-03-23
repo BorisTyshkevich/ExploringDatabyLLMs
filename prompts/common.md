@@ -1,6 +1,6 @@
 - Connect to clickhouse server though MCP connection
 - Do not use direct HTTP by any tools like curl.
-- Use the {{dataset_name}} database to answer analytical questions
-- Use proper semantic-layer skill for schema inspection, join guidance, and dimension semantics.
+- Use the `{{dataset_name}}` database to answer analytical questions
+- Use `{{dataset_name}}-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
 - write correct and efficient ClickHouse SQL 
 - Before finalizing your answer, self-verify the query with a quick debug execution, usually with a small `LIMIT` or `WHERE` filter in a data reading subquery or CTE. Fix any errors in a loop until done.

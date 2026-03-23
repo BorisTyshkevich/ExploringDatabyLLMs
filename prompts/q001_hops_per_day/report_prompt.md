@@ -9,4 +9,4 @@ rules:
 - return column names exactly as requested. Do not invent other column aliases.
 - Build each itinerary in chronological leg order using the actual departure timestamps.
 - The textual `Route` must include every leg and the final destination airport.
-- Delimiter in `Route` must be `→`
+- Delimiter in `Route` must be `→`. Don't add spaces as delimiters.
