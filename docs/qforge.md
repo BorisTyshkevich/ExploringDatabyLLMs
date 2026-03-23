@@ -18,8 +18,10 @@ This repository still contains historical Bash and Python benchmark code, but th
 
 1. SQL generation
    - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
-   - the model writes `answer.raw.json` in the run directory
-   - `answer.raw.json` contains the analysis artifact with `sql`, `report_markdown`, and `metrics`
+   - the exact artifact contract is selected by the question's `analysis_mode`
+   - `json_artifact`: the model writes `answer.raw.json` with `sql`, `report_markdown`, and `metrics`
+   - `template_files`: the model writes `query.sql` and `report.template.md`
+   - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
 2. Optional presentation generation
    - the model writes final `html`
    - the final `report.md` is rendered by the harness from the saved analysis artifact plus JSON-derived sections
@@ -37,8 +39,10 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md)
   - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` analysis-artifact contract
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
+  - SQL-only rules for direct `query.sql` plus `report.template.md` output
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
   - report/template rules for the presentation phase
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
@@ -107,6 +111,18 @@ Run one question:
 
 ```bash
 ./scripts/qforge run -q q001 -r claude -v
+```
+
+Stage a manual-template run without invoking the provider:
+
+```bash
+./scripts/qforge run -q q001 -r claude --analysis-mode manual_templates -v
+```
+
+Equivalent shortcut:
+
+```bash
+./scripts/qforge run -q q001 -r claude --manual -v
 ```
 
 Run one question and immediately follow with a separate presentation call:
@@ -232,6 +248,15 @@ Flags:
 - `--cli-bin`
   - optional
   - override the provider CLI executable
+- `--analysis-mode`
+  - optional
+  - may override only between `template_files` and `manual_templates`
+  - cannot switch to or from `json_artifact`
+- `--manual`
+  - optional
+  - alias for `--analysis-mode manual_templates`
+- `-m`
+  - shorthand for `--manual`
 - `--verbose`
   - optional
   - print phase-level progress logs and provider subprocess timing
@@ -252,19 +277,22 @@ What `run` does:
 
 1. resolves question metadata
 2. selects one or more providers
-3. builds the SQL prompt for each selected provider
-4. invokes those providers, concurrently when more than one is selected
-5. extracts fenced SQL and fenced report template
-6. executes SQL directly against the OpenAPI endpoint
-7. writes canonical `result.json`
-8. writes `visual_input.json`
-9. renders `report.md` from the saved report template
-10. writes `manifest.json`
-11. optionally makes a second independent provider call for `visual.html` when `--with-visual` is set
+3. resolves the effective analysis mode from question metadata plus any allowed CLI override
+4. builds the SQL prompt for each selected provider
+5. either invokes the provider or stages a manual run, depending on the effective analysis mode
+6. loads the saved analysis artifact for that mode
+7. executes SQL directly against the OpenAPI endpoint when analysis artifacts are available
+8. writes canonical `result.json`
+9. writes `visual_input.json`
+10. renders `report.md` from the saved report template
+11. writes `prompt.presentation.md` for visual-capable questions so visual generation can be run manually later
+12. writes `manifest.json`
+13. optionally makes a second independent provider call for `visual.html` when `--with-visual` is set
 
 What `run` does not do:
 
 - it does not produce `visual.html` unless `--with-visual` is set
+- it may still prebuild `prompt.presentation.md` for visual-capable questions
 - use `qforge process-visual` for HTML generation later
 
 Exception:
@@ -302,7 +330,7 @@ Flags:
 
 What `process-presentation` does:
 
-- loads `manifest.json` and `answer.raw.json` from an existing run
+- loads `manifest.json` and the saved analysis artifacts for the question's declared `analysis_mode`
 - extracts SQL and report inputs from the saved analysis artifact
 - executes SQL directly against the OpenAPI endpoint
 - rewrites:
@@ -508,9 +536,10 @@ YYYY-MM-DD/<question-slug>/<runner>/<model>/run-XXX/
 
 Typical SQL-only run artifacts:
 
-- `prompt.sql.md`
-- `answer.sql.raw.md`
+- `prompt.report.md`
+- `answer.report.raw.md`
 - `answer.raw.json`
+- `report.template.md`
 - `query.sql`
 - `result.json`
 - `visual_input.json`

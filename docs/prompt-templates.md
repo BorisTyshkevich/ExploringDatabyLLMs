@@ -8,8 +8,10 @@ Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_sql.md)
-  - SQL-only rules such as schema inspection, self-verification, and the fenced `sql` output contract
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report.md)
+  - SQL-only rules for `analysis_mode: json_artifact`
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
+  - SQL-only rules for `analysis_mode: template_files` and `analysis_mode: manual_templates`
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_presentation.md)
   - report/template rules for the presentation phase
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
@@ -27,7 +29,9 @@ Prompt builders are implemented in [`/Users/bvt/work/ExploringDatabyLLMs/interna
 
 Current composition order:
 
-- SQL phase: `common.md` + `common_sql.md` + question `report_prompt.md`
+- SQL phase:
+  - `json_artifact`: `common.md` + `common_report.md` + question `report_prompt.md`
+  - `template_files` / `manual_templates`: `common.md` + `common_report_templates.md` + question `report_prompt.md`
 - Presentation phase: `common.md` + `common_presentation.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
 
 The shared `common.md` file is rendered in both phases, so any template variables used there must be available to both builders.
@@ -81,12 +85,12 @@ These placeholders are not expanded when the prompt is built. They are passed th
 - `{{result_table_md}}`
   - Markdown table derived from `result.json`.
 
+`{{metric.<name>}}` placeholders are available only in `analysis_mode: json_artifact`, because that mode persists `metrics` from the provider artifact.
+
 ## Example Dataset Mapping
 
 For `ontime`, the source config is [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/mcp.yaml).
 
-Dataset semantic-layer guidance is loaded from [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_layer.md`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_layer.md) when present.
+Dataset semantic-layer documentation remains in [`/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_layer.md`](/Users/bvt/work/ExploringDatabyLLMs/datasets/ontime/semantic_layer.md), but prompt generation no longer injects that file directly.
 
-That content is injected directly into the shared prompt scaffold as `{{dataset_semantic_layer_md}}`.
-
-Current OnTime semantic-layer guidance names the main tables and joins directly rather than sending the model to a separate semantic catalog.
+OnTime prompt generation now references the [`ontime-semantic-layer`](../Skills/ontime-semantic-layer/SKILL.md) skill for schema inspection, joins, and airport-dimension semantics.

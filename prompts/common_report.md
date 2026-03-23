@@ -1,11 +1,6 @@
-Do not emit result rows or any data output.
-Inspect the live schema first with `SHOW TABLES FROM ontime` and `DESCRIBE TABLE` for the tables you intend to use.
-Before finalizing your answer, self-verify the query with a quick debug execution, usually with a small `LIMIT` or `WHERE` filter in source data reading subquery/CTE, and fix any errors internally.
-Write one JSON object containing the final verified SQL and a Markdown report template to `answer.raw.json`, not the debug query.
 
-`answer.raw.json` must contain plain JSON bytes only. Do not wrap the file contents in Markdown fences.
-
-Your stdout response may contain a short status line, but qforge will ignore stdout and load only `answer.raw.json`.
+- Do not emit result rows or any data output.
+- Write one JSON object containing the final verified SQL and a Markdown report template to `answer.raw.json`, not the debug query.
 
 Write exactly this JSON object shape to `answer.raw.json`:
 
@@ -54,7 +49,7 @@ Invalid example:
 
 `"report_markdown": "The key derived value is {{primary_value}}."`
 
-The placeholder `{{primary_value}}` is invalid. Use `metrics.named_values.primary_value` plus `{{metric.primary_value}}` instead.
+Use `metrics.named_values.primary_value` and `{{metric.primary_value}}` .
 
 Question title: `{{question_title}}`
 

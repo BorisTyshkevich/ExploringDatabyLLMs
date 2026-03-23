@@ -42,8 +42,8 @@ func NextRunDir(repoRoot string, question model.Question, runner, modelName stri
 
 func DefaultArtifacts(outDir string, presentation bool) model.ArtifactPaths {
 	artifacts := model.ArtifactPaths{
-		PromptSQLRaw:    filepath.Join(outDir, "prompt.sql.md"),
-		AnswerSQLRaw:    filepath.Join(outDir, "answer.sql.raw.md"),
+		PromptReportRaw: filepath.Join(outDir, "prompt.report.md"),
+		AnswerReportRaw: filepath.Join(outDir, "answer.report.raw.md"),
 		AnswerRawJSON:   filepath.Join(outDir, "answer.raw.json"),
 		AnalysisJSON:    filepath.Join(outDir, "analysis.json"),
 		QuerySQL:        filepath.Join(outDir, "query.sql"),

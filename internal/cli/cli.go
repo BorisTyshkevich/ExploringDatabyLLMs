@@ -70,7 +70,7 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "Commands:")
 	fmt.Fprintln(out, "  list-questions   List available benchmark questions")
 	fmt.Fprintln(out, "  run              Run one question for one or more providers")
-	fmt.Fprintln(out, "  process-presentation  Regenerate query/result/report from answer.raw.json")
+	fmt.Fprintln(out, "  process-presentation  Regenerate query/result/report from saved analysis artifacts")
 	fmt.Fprintln(out, "  process-visual   Generate visual.html for an existing run directory")
 	fmt.Fprintln(out, "  compare          Compare runs and fetch query_log metrics")
 	fmt.Fprintln(out, "  inspect-run      Print one run manifest")
@@ -151,15 +151,17 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
 		fmt.Fprintln(os.Stdout, "  - loads question and dataset metadata")
-		fmt.Fprintln(os.Stdout, "  - prompts each selected provider for final SQL and a report template")
-		fmt.Fprintln(os.Stdout, "  - executes SQL itself and writes result.json")
+		fmt.Fprintln(os.Stdout, "  - stages prompts and analysis artifacts according to the question analysis mode")
+		fmt.Fprintln(os.Stdout, "  - executes SQL itself and writes result.json when analysis artifacts are available")
 		fmt.Fprintln(os.Stdout, "  - renders final report.md from the saved report template")
+		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.presentation.md for visual-capable questions even without --with-visual")
 		fmt.Fprintln(os.Stdout, "  - runs providers concurrently when more than one is selected")
 		fmt.Fprintln(os.Stdout, "  - optionally performs a separate follow-up provider call for visual.html only")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Important:")
 		fmt.Fprintln(os.Stdout, "  Visual generation is handled separately by `qforge process-visual`, or by `--with-visual`.")
 		fmt.Fprintln(os.Stdout, "  `--with-visual` makes a second independent provider call after SQL execution and report rendering succeed.")
+		fmt.Fprintln(os.Stdout, "  `--manual` / `-m` is a shortcut for `--analysis-mode manual_templates`.")
 		fmt.Fprintln(os.Stdout, "  If --runner is omitted, qforge runs claude/opus, claude/sonnet, and codex/gpt-5.4.")
 		fmt.Fprintln(os.Stdout, "  Repeated --model flags are matched positionally to repeated --runner flags.")
 		fmt.Fprintln(os.Stdout)
@@ -168,6 +170,7 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Examples:")
 		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r claude")
+		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r claude --manual")
 		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r claude --with-visual")
 		fmt.Fprintln(os.Stdout, "  qforge run -q q001 -r codex -r claude")
 		fmt.Fprintln(os.Stdout, "  qforge run -q q001")
@@ -183,6 +186,9 @@ func runRun(ctx context.Context, args []string) error {
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
+	analysisMode := fs.String("analysis-mode", "", "Override analysis mode only between template_files and manual_templates")
+	manual := fs.Bool("manual", false, "Alias for --analysis-mode manual_templates")
+	fs.BoolVar(manual, "m", false, "Alias for --analysis-mode manual_templates (shorthand)")
 	withVisual := fs.Bool("with-visual", false, "After SQL and report rendering succeed, make a separate presentation call for visual.html")
 	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
 	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
@@ -202,6 +208,7 @@ func runRun(ctx context.Context, args []string) error {
 	if *questionRef == "" {
 		return errors.New("run requires --question")
 	}
+	requestedAnalysisMode := resolveRequestedAnalysisMode(*analysisMode, *manual)
 	if len(runners) == 0 {
 		runners = multiFlag{"claude", "claude", "codex"}
 		models = multiFlag{"opus", "sonnet", "gpt-5.4"}
@@ -230,6 +237,7 @@ func runRun(ctx context.Context, args []string) error {
 			MCPToken:             *mcpToken,
 			MCPTokenFile:         *mcpTokenFile,
 			CLIBin:               *cliBin,
+			AnalysisModeOverride: requestedAnalysisMode,
 			WithVisual:           *withVisual,
 			SkipVisualValidation: *skipVisualValidation,
 			SkipBrowserLiveFetch: *skipBrowserLiveFetch,
@@ -531,10 +539,10 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-presentation --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Regenerate query.sql, result.json, visual_input.json, and report.md from an existing answer.raw.json.")
+		fmt.Fprintln(os.Stdout, "Regenerate query.sql, result.json, visual_input.json, and report.md from existing saved analysis artifacts.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - loads manifest.json and answer.raw.json from the selected run")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json and the analysis artifacts declared by the question mode")
 		fmt.Fprintln(os.Stdout, "  - extracts SQL and report inputs from the saved analysis artifact")
 		fmt.Fprintln(os.Stdout, "  - executes SQL itself and rewrites result.json plus visual_input.json")
 		fmt.Fprintln(os.Stdout, "  - renders final report.md in the same run directory")
@@ -613,6 +621,7 @@ type runOptions struct {
 	Runner               string
 	Model                string
 	Dataset              string
+	AnalysisModeOverride string
 	MCPURL               string
 	MCPServer            string
 	MCPToken             string
@@ -683,11 +692,15 @@ func executeRun(ctx context.Context, opts runOptions) error {
 			return err
 		}
 	}
+	analysisMode, err := resolveRunAnalysisMode(question.Meta.AnalysisMode, opts.AnalysisModeOverride)
+	if err != nil {
+		return err
+	}
 	commandTimeoutSec := question.Meta.CommandTimeoutSec
 	if commandTimeoutSec <= 0 {
 		commandTimeoutSec = defaultCommandTimeoutSec
 	}
-	logf(opts.Verbose, opts.Model, "run question=%s runner=%s model=%s dataset=%s", question.Meta.ID, opts.Runner, opts.Model, datasetName)
+	logf(opts.Verbose, opts.Model, "run question=%s runner=%s model=%s dataset=%s analysis_mode=%s", question.Meta.ID, opts.Runner, opts.Model, datasetName, analysisMode)
 	outDir, err := runs.NextRunDir(runRoot, question, opts.Runner, opts.Model, time.Now())
 	if err != nil {
 		return err
@@ -704,6 +717,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		Dataset:         datasetName,
 		Runner:          opts.Runner,
 		Model:           opts.Model,
+		AnalysisMode:    string(analysisMode),
 		MCPServerName:   datasets.ResolveMCPServerName(cfg, opts.MCPServer),
 		MCPConfigSource: filepath.Join("datasets", datasetName, "mcp.yaml"),
 		StartedAt:       startedAt,
@@ -721,12 +735,12 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		_ = runs.WriteManifest(artifacts.ManifestJSON, manifest)
 	}()
 
-	sqlPrompt, err := prompts.BuildSQLPrompt(question, cfg)
+	sqlPrompt, err := prompts.BuildSQLPrompt(question, cfg, analysisMode)
 	if err != nil {
 		return err
 	}
 	logf(opts.Verbose, opts.Model, "phase=sql_generation status=started")
-	if err := os.WriteFile(artifacts.PromptSQLRaw, []byte(sqlPrompt), 0o644); err != nil {
+	if err := os.WriteFile(artifacts.PromptReportRaw, []byte(sqlPrompt), 0o644); err != nil {
 		return err
 	}
 	provider, err := providers.New(opts.Runner)
@@ -739,28 +753,44 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		Prompt:        sqlPrompt,
 		OutDir:        outDir,
 		Model:         opts.Model,
+		AnalysisMode:  string(analysisMode),
 		MCPURL:        mcpURL,
 		MCPServerName: manifest.MCPServerName,
 		MCPToken:      token,
 		CLIBin:        opts.CLIBin,
 		Verbose:       opts.Verbose,
 	}
+	if analysisMode == model.AnalysisModeManualTemplate {
+		manifest.Phases.SQLGeneration = model.PhaseStatusSkipped
+		manifest.Phases.SQLExecution = model.PhaseStatusNotRun
+		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
+		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
+		manifest.Status = model.RunStatusPartial
+		logf(opts.Verbose, opts.Model, "run status=partial analysis=manual_staged")
+		return nil
+	}
+
 	sqlCtx, cancelSQL := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancelSQL()
 	sqlProviderStartedAt := time.Now()
 	sqlResponse, providerErr := provider.GenerateSQL(sqlCtx, req)
 	manifest.SQLGenerationProviderDurationMs = time.Since(sqlProviderStartedAt).Milliseconds()
 	manifest.CLIBin = sqlResponse.CLIBin
-	_ = os.WriteFile(artifacts.AnswerSQLRaw, []byte(sqlResponse.RawOutput), 0o644)
+	_ = os.WriteFile(artifacts.AnswerReportRaw, []byte(sqlResponse.RawOutput), 0o644)
 	_ = os.WriteFile(artifacts.StdoutLog, []byte(sqlResponse.Stdout), 0o644)
 	_ = os.WriteFile(artifacts.StderrLog, []byte(sqlResponse.Stderr), 0o644)
-	analysisArtifact, err := loadAnalysisArtifact(artifacts.AnswerRawJSON)
+	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
+		Mode:      analysisMode,
+		Artifacts: artifacts,
+	})
 	if err != nil {
 		manifest.Status = model.RunStatusFailed
 		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		if _, statErr := os.Stat(artifacts.AnswerRawJSON); statErr != nil {
-			if providerErr != nil {
-				return fmt.Errorf("provider %s sql generation: %w", opts.Runner, providerErr)
+		if analysisMode == model.AnalysisModeJSONArtifact {
+			if _, statErr := os.Stat(artifacts.AnswerRawJSON); statErr != nil {
+				if providerErr != nil {
+					return fmt.Errorf("provider %s sql generation: %w", opts.Runner, providerErr)
+				}
 			}
 		}
 		return err
@@ -780,6 +810,11 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		return err
 	}
+	if question.VisualEnabled {
+		if err := writePresentationPrompt(artifacts.PromptPresentationRaw, artifacts.VisualInputJSON, question, cfg, result, analysisArtifact.SQL, mcpURL, token); err != nil {
+			return err
+		}
+	}
 
 	if !question.VisualEnabled || !opts.WithVisual {
 		manifest.Status = model.RunStatusOK
@@ -794,26 +829,11 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 
 	logf(opts.Verbose, opts.Model, "phase=presentation_generation status=started")
-	querySQL, err := os.ReadFile(artifacts.QuerySQL)
+	prompt, err := os.ReadFile(artifacts.PromptPresentationRaw)
 	if err != nil {
-		return fmt.Errorf("read query.sql for presentation prompt: %w", err)
+		return fmt.Errorf("read prompt.presentation.md for visual generation: %w", err)
 	}
-	visualInputBytes, err := os.ReadFile(artifacts.VisualInputJSON)
-	if err != nil {
-		return fmt.Errorf("read visual_input.json for visual prompt: %w", err)
-	}
-	var visualInput model.VisualInputSummary
-	if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
-		return fmt.Errorf("parse visual_input.json: %w", err)
-	}
-	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(artifacts.PromptPresentationRaw, []byte(prompt), 0o644); err != nil {
-		return err
-	}
-	req.Prompt = prompt
+	req.Prompt = string(prompt)
 	presentationCtx, cancelPresentation := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
 	defer cancelPresentation()
 	presentationStartedAt := time.Now()
@@ -1236,9 +1256,14 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "3"
+	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
+	manifest.AnalysisMode = string(analysisMode)
 	logf(opts.Verbose, manifest.Model, "process-presentation run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
-	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=answer.raw.json")
-	analysisArtifact, err := loadAnalysisArtifact(manifest.Artifacts.AnswerRawJSON)
+	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=%s", analysisMode)
+	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
+		Mode:      analysisMode,
+		Artifacts: manifest.Artifacts,
+	})
 	if err != nil {
 		manifest.Status = model.RunStatusFailed
 		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
@@ -1259,17 +1284,7 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 		return err
 	}
 	if question.VisualEnabled {
-		visualInput, err := ensureVisualInputSummary(manifest.Artifacts.VisualInputJSON, question, result)
-		if err != nil {
-			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
-			return err
-		}
-		prompt, err := prompts.BuildVisualPrompt(question, cfg, result, analysisArtifact.SQL, dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
-		if err != nil {
-			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
-			return err
-		}
-		if err := os.WriteFile(manifest.Artifacts.PromptPresentationRaw, []byte(prompt), 0o644); err != nil {
+		if err := writePresentationPrompt(manifest.Artifacts.PromptPresentationRaw, manifest.Artifacts.VisualInputJSON, question, cfg, result, analysisArtifact.SQL, mcpURL, token); err != nil {
 			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 			return err
 		}
@@ -1313,6 +1328,7 @@ func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Q
 		Dataset:       question.Meta.Dataset,
 		Runner:        runner,
 		Model:         modelName,
+		AnalysisMode:  question.Meta.AnalysisMode,
 		StartedAt:     time.Now().UTC(),
 		Artifacts:     runs.DefaultArtifacts(runDir, question.PresentationEnabled),
 		Phases: model.RunPhases{
@@ -1333,6 +1349,13 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func resolveRequestedAnalysisMode(analysisMode string, manual bool) string {
+	if manual {
+		return string(model.AnalysisModeManualTemplate)
+	}
+	return analysisMode
 }
 
 func modelLabelForRunners(runners, explicitModels []string) (string, error) {
@@ -1448,6 +1471,21 @@ func ensureVisualInputSummary(path string, question model.Question, result model
 	return visualInput, nil
 }
 
+func writePresentationPrompt(path, visualInputPath string, question model.Question, cfg model.DatasetConfig, result model.CanonicalResult, sql, mcpURL, token string) error {
+	visualInput, err := ensureVisualInputSummary(visualInputPath, question, result)
+	if err != nil {
+		return err
+	}
+	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, sql, dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(path, []byte(prompt), 0o644); err != nil {
+		return err
+	}
+	return nil
+}
+
 func visualModeHint(mode string) string {
 	if strings.EqualFold(strings.TrimSpace(mode), "static") {
 		return "Static mode embeds analytical data from result.json directly in the page."
@@ -1488,6 +1526,11 @@ func defaultModelForRunner(runner string) (string, error) {
 	}
 }
 
+type savedAnalysisSource struct {
+	Mode      model.AnalysisMode
+	Artifacts model.ArtifactPaths
+}
+
 func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, error) {
 	htmlTemplate, htmlErr := extract.Block(rawOutput, "html")
 	if htmlErr == nil {
@@ -1502,6 +1545,17 @@ func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, 
 	}
 
 	return "", htmlErr
+}
+
+func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifact, error) {
+	switch source.Mode {
+	case model.AnalysisModeJSONArtifact:
+		return loadAnalysisArtifact(source.Artifacts.AnswerRawJSON)
+	case model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
+		return loadTemplateAnalysisArtifact(source.Artifacts)
+	default:
+		return model.AnalysisArtifact{}, fmt.Errorf("unsupported analysis mode %q", source.Mode)
+	}
 }
 
 func loadAnalysisArtifact(path string) (model.AnalysisArtifact, error) {
@@ -1522,6 +1576,56 @@ func loadAnalysisArtifact(path string) (model.AnalysisArtifact, error) {
 		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty report_markdown")
 	}
 	return artifact, nil
+}
+
+func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.AnalysisArtifact, error) {
+	sqlBytes, err := os.ReadFile(artifacts.QuerySQL)
+	if err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("read query.sql: %w", err)
+	}
+	reportBytes, err := os.ReadFile(artifacts.ReportTemplateMD)
+	if err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("read report.template.md: %w", err)
+	}
+	artifact := model.AnalysisArtifact{
+		SQL:            normalizeEscapedMultiline(strings.TrimSpace(string(sqlBytes))),
+		ReportMarkdown: normalizeEscapedMultiline(strings.TrimSpace(string(reportBytes))),
+		Metrics:        model.AnalysisMetrics{},
+	}
+	if artifact.SQL == "" {
+		return model.AnalysisArtifact{}, fmt.Errorf("analysis templates missing non-empty query.sql")
+	}
+	if artifact.ReportMarkdown == "" {
+		return model.AnalysisArtifact{}, fmt.Errorf("analysis templates missing non-empty report.template.md")
+	}
+	return artifact, nil
+}
+
+func normalizeAnalysisMode(raw string) model.AnalysisMode {
+	switch model.AnalysisMode(strings.TrimSpace(raw)) {
+	case model.AnalysisModeTemplateFiles:
+		return model.AnalysisModeTemplateFiles
+	case model.AnalysisModeManualTemplate:
+		return model.AnalysisModeManualTemplate
+	default:
+		return model.AnalysisModeJSONArtifact
+	}
+}
+
+func resolveRunAnalysisMode(questionModeRaw, overrideRaw string) (model.AnalysisMode, error) {
+	questionMode := normalizeAnalysisMode(questionModeRaw)
+	override := strings.TrimSpace(overrideRaw)
+	if override == "" {
+		return questionMode, nil
+	}
+	overrideMode := normalizeAnalysisMode(override)
+	if string(overrideMode) != override {
+		return "", fmt.Errorf("unsupported analysis mode override %q", override)
+	}
+	if questionMode == model.AnalysisModeJSONArtifact || overrideMode == model.AnalysisModeJSONArtifact {
+		return "", fmt.Errorf("analysis mode override cannot switch to or from json_artifact")
+	}
+	return overrideMode, nil
 }
 
 func normalizeEscapedMultiline(value string) string {

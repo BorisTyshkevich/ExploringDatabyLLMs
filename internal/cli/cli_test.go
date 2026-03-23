@@ -76,6 +76,27 @@ func TestMarkPresentationDeferredSkipsUnsetPhases(t *testing.T) {
 	}
 }
 
+func TestResolveRequestedAnalysisModeUsesManualAlias(t *testing.T) {
+	got := resolveRequestedAnalysisMode("", true)
+	if got != "manual_templates" {
+		t.Fatalf("expected manual alias to force manual_templates, got %q", got)
+	}
+}
+
+func TestResolveRequestedAnalysisModeManualAliasOverridesExplicitValue(t *testing.T) {
+	got := resolveRequestedAnalysisMode("template_files", true)
+	if got != "manual_templates" {
+		t.Fatalf("expected manual alias to override explicit mode, got %q", got)
+	}
+}
+
+func TestResolveRequestedAnalysisModeKeepsExplicitValueWithoutManualAlias(t *testing.T) {
+	got := resolveRequestedAnalysisMode("template_files", false)
+	if got != "template_files" {
+		t.Fatalf("expected explicit mode to be preserved, got %q", got)
+	}
+}
+
 func TestPresentationPhasesOKRejectsFailures(t *testing.T) {
 	if presentationPhasesOK(model.RunPhases{
 		PresentationGeneration: model.PhaseStatusSkipped,

@@ -11,32 +11,37 @@ import (
 )
 
 const (
-	commonPromptFile              = "common.md"
-	commonSQLPromptFile           = "common_sql.md"
-	commonPresentationPromptFile  = "common_presentation.md"
-	commonVisualPromptFile        = "common_visual.md"
-	commonVisualStaticPromptFile  = "common_visual_static.md"
-	commonVisualDynamicPromptFile = "common_visual_dynamic.md"
+	commonPromptFile               = "common.md"
+	commonReportPromptFile         = "common_report.md"
+	commonReportTemplatePromptFile = "common_report_templates.md"
+	commonPresentationPromptFile   = "common_presentation.md"
+	commonVisualPromptFile         = "common_visual.md"
+	commonVisualStaticPromptFile   = "common_visual_static.md"
+	commonVisualDynamicPromptFile  = "common_visual_dynamic.md"
 )
 
-func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (string, error) {
+func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode model.AnalysisMode) (string, error) {
+	_ = dataset
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
 	}
-	commonSQL, err := loadCommonPrompt(question, commonSQLPromptFile)
+	contractPromptFile := commonReportPromptFile
+	if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
+		contractPromptFile = commonReportTemplatePromptFile
+	}
+	commonReport, err := loadCommonPrompt(question, contractPromptFile)
 	if err != nil {
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_semantic_layer_md": datasetSemanticLayerMarkdown(dataset),
-		"question_title":            question.Meta.Title,
-		"question_prompt_md":        question.Prompt,
-		"report_placeholders":       "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
+		"question_title":      question.Meta.Title,
+		"question_prompt_md":  question.Prompt,
+		"report_placeholders": "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
 		RenderTemplate(common, values),
-		RenderTemplate(commonSQL, values),
+		RenderTemplate(commonReport, values),
 	}
 	return joinSections(sections), nil
 }
@@ -46,6 +51,7 @@ func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfi
 }
 
 func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string, visualInput model.VisualInputSummary) (string, error) {
+	_ = dataset
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
@@ -67,7 +73,6 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_semantic_layer_md":       datasetSemanticLayerMarkdown(dataset),
 		"question_title":                  question.Meta.Title,
 		"visual_mode":                     strings.TrimSpace(question.Meta.VisualMode),
 		"visual_type":                     question.Meta.VisualType,
@@ -105,13 +110,6 @@ func loadCommonPrompt(question model.Question, name string) (string, error) {
 		return "", fmt.Errorf("load prompt asset %s: %w", path, err)
 	}
 	return strings.TrimSpace(string(data)), nil
-}
-
-func datasetSemanticLayerMarkdown(dataset model.DatasetConfig) string {
-	if strings.TrimSpace(dataset.SemanticLayer) == "" {
-		return ""
-	}
-	return "Dataset semantic layer:\n\n" + strings.TrimSpace(dataset.SemanticLayer)
 }
 
 // RenderTemplate substitutes {{key}} placeholders with values from the map.

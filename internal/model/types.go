@@ -11,6 +11,14 @@ const (
 	PhasePresentation Phase = "presentation"
 )
 
+type AnalysisMode string
+
+const (
+	AnalysisModeJSONArtifact   AnalysisMode = "json_artifact"
+	AnalysisModeTemplateFiles  AnalysisMode = "template_files"
+	AnalysisModeManualTemplate AnalysisMode = "manual_templates"
+)
+
 type RunStatus string
 
 const (
@@ -46,6 +54,7 @@ type QuestionMeta struct {
 	Slug              string `yaml:"slug" json:"slug"`
 	Title             string `yaml:"title" json:"title"`
 	Dataset           string `yaml:"dataset" json:"dataset"`
+	AnalysisMode      string `yaml:"analysis_mode" json:"analysis_mode"`
 	ArtifactsRequired string `yaml:"artifacts_required" json:"artifacts_required"`
 	VisualMode        string `yaml:"visual_mode" json:"visual_mode"`
 	VisualType        string `yaml:"visual_type" json:"visual_type"`
@@ -65,8 +74,8 @@ type Question struct {
 }
 
 type ArtifactPaths struct {
-	PromptSQLRaw          string `json:"prompt_sql_raw"`
-	AnswerSQLRaw          string `json:"answer_sql_raw"`
+	PromptReportRaw       string `json:"prompt_report_raw"`
+	AnswerReportRaw       string `json:"answer_report_raw"`
 	AnswerRawJSON         string `json:"answer_raw_json,omitempty"`
 	AnalysisJSON          string `json:"analysis_json,omitempty"`
 	QuerySQL              string `json:"query_sql"`
@@ -99,6 +108,7 @@ type RunManifest struct {
 	Dataset                         string            `json:"dataset"`
 	Runner                          string            `json:"runner"`
 	Model                           string            `json:"model"`
+	AnalysisMode                    string            `json:"analysis_mode,omitempty"`
 	CLIBin                          string            `json:"cli_bin"`
 	MCPServerName                   string            `json:"mcp_server_name"`
 	MCPConfigSource                 string            `json:"mcp_config_source"`
@@ -130,6 +140,7 @@ type ProviderRequest struct {
 	Prompt        string
 	OutDir        string
 	Model         string
+	AnalysisMode  string
 	MCPURL        string
 	MCPServerName string
 	MCPToken      string
