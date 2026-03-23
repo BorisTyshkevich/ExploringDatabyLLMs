@@ -41,6 +41,7 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
+		AnalysisMode:  string(model.AnalysisModeJSONArtifact),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
@@ -71,8 +72,17 @@ func TestCodexCompletionChecks(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Title\\n\\n{{data_overview_md}}\"}"), 0o644); err != nil {
 		t.Fatalf("write answer.raw.json: %v", err)
 	}
-	if !codexAnalysisComplete(tmpDir)("") {
+	if !codexAnalysisComplete(tmpDir, model.AnalysisModeJSONArtifact)("") {
 		t.Fatalf("expected analysis completion checker to accept answer.raw.json")
+	}
+	if err := os.WriteFile(filepath.Join(tmpDir, "query.sql"), []byte("SELECT 1"), 0o644); err != nil {
+		t.Fatalf("write query.sql: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(tmpDir, "report.template.md"), []byte("# Title\n\n{{data_overview_md}}"), 0o644); err != nil {
+		t.Fatalf("write report.template.md: %v", err)
+	}
+	if !codexAnalysisComplete(tmpDir, model.AnalysisModeTemplateFiles)("") {
+		t.Fatalf("expected template analysis completion checker to accept direct files")
 	}
 
 	presentationRaw := "```html\n<!doctype html>\n<html></html>\n```"
@@ -80,7 +90,7 @@ func TestCodexCompletionChecks(t *testing.T) {
 		t.Fatalf("expected presentation completion checker to accept fenced html")
 	}
 
-	if codexAnalysisComplete(t.TempDir())("") {
+	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeJSONArtifact)("") {
 		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
 	if codexVisualComplete("```report\nonly report\n```") {
@@ -107,6 +117,7 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
+		AnalysisMode:  string(model.AnalysisModeJSONArtifact),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
@@ -175,6 +186,52 @@ func TestRunClaudeUsesOutDirAsWorkingDirectory(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(tmpDir, "visual.html")); !os.IsNotExist(err) {
 		t.Fatalf("did not expect visual.html outside outDir, err=%v", err)
+	}
+}
+
+func TestRunClaudeSendsPromptViaStdinInsteadOfArgument(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "fake-claude.sh")
+	promptCapturePath := filepath.Join(tmpDir, "prompt.txt")
+	argCapturePath := filepath.Join(tmpDir, "args.txt")
+	script := "#!/usr/bin/env bash\n" +
+		"set -euo pipefail\n" +
+		"printf '%s\\n' \"$*\" > " + argCapturePath + "\n" +
+		"cat > " + promptCapturePath + "\n" +
+		"printf 'ok\\n'\n"
+	if err := os.WriteFile(scriptPath, []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake claude: %v", err)
+	}
+
+	req := model.ProviderRequest{
+		OutDir:        tmpDir,
+		Model:         "opus",
+		MCPURL:        "https://example.invalid/http",
+		MCPServerName: "altinity_ontime_demo",
+		CLIBin:        scriptPath,
+		Prompt:        "- leading dash prompt\nsecond line\n",
+	}
+
+	resp, err := cliProvider{name: "claude", defaultBin: scriptPath}.GenerateSQL(context.Background(), req)
+	if err != nil {
+		t.Fatalf("GenerateSQL returned error: %v", err)
+	}
+	if !strings.Contains(resp.RawOutput, "ok") {
+		t.Fatalf("unexpected raw output: %q", resp.RawOutput)
+	}
+	promptBytes, err := os.ReadFile(promptCapturePath)
+	if err != nil {
+		t.Fatalf("read captured prompt: %v", err)
+	}
+	if string(promptBytes) != req.Prompt {
+		t.Fatalf("expected prompt on stdin, got %q want %q", string(promptBytes), req.Prompt)
+	}
+	argBytes, err := os.ReadFile(argCapturePath)
+	if err != nil {
+		t.Fatalf("read arg count: %v", err)
+	}
+	if strings.Contains(string(argBytes), "leading dash prompt") {
+		t.Fatalf("did not expect prompt to be passed as CLI args: %q", string(argBytes))
 	}
 }
 

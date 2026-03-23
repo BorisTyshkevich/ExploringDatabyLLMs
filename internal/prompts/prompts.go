@@ -21,7 +21,6 @@ const (
 )
 
 func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode model.AnalysisMode) (string, error) {
-	_ = dataset
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
@@ -35,6 +34,7 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 		return "", err
 	}
 	values := map[string]string{
+		"dataset_name":        datasetPromptName(dataset),
 		"question_title":      question.Meta.Title,
 		"question_prompt_md":  question.Prompt,
 		"report_placeholders": "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
@@ -51,7 +51,6 @@ func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfi
 }
 
 func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string, visualInput model.VisualInputSummary) (string, error) {
-	_ = dataset
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
@@ -73,6 +72,7 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		return "", err
 	}
 	values := map[string]string{
+		"dataset_name":                    datasetPromptName(dataset),
 		"question_title":                  question.Meta.Title,
 		"visual_mode":                     strings.TrimSpace(question.Meta.VisualMode),
 		"visual_type":                     question.Meta.VisualType,
@@ -131,4 +131,14 @@ func joinSections(sections []string) string {
 		cleaned = append(cleaned, section)
 	}
 	return strings.Join(cleaned, "\n\n")
+}
+
+func datasetPromptName(dataset model.DatasetConfig) string {
+	if strings.TrimSpace(dataset.DefaultDatabase) != "" {
+		return strings.TrimSpace(dataset.DefaultDatabase)
+	}
+	if strings.TrimSpace(dataset.Name) != "" {
+		return strings.TrimSpace(dataset.Name)
+	}
+	return "configured"
 }

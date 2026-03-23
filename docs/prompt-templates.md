@@ -42,12 +42,9 @@ Template variables are rendered in [`/Users/bvt/work/ExploringDatabyLLMs/interna
 
 Dataset-related variables:
 
-- `{{dataset_primary_table}}`
-  - The dataset's main fact table.
-  - Source: `DatasetConfig.PrimaryTable`.
-- `{{dataset_constraints_md}}`
-  - Markdown bullet list describing allowed and forbidden table usage.
-  - Built from `DatasetConfig.PrimaryTable` and `DatasetConfig.ForbiddenTables`.
+- `{{dataset_name}}`
+  - Dataset/database name to mention in shared prompts.
+  - Source: `DatasetConfig.DefaultDatabase`, falling back to `DatasetConfig.Name`.
 
 Presentation/report variables:
 

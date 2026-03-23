@@ -61,6 +61,14 @@ func Load(dir string) (model.Question, error) {
 	if err := yaml.Unmarshal(metaBytes, &meta); err != nil {
 		return model.Question{}, fmt.Errorf("parse %s: %w", metaPath, err)
 	}
+	if strings.TrimSpace(meta.AnalysisMode) == "" {
+		meta.AnalysisMode = string(model.AnalysisModeJSONArtifact)
+	}
+	switch model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) {
+	case model.AnalysisModeJSONArtifact, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
+	default:
+		return model.Question{}, fmt.Errorf("parse %s: unsupported analysis_mode %q", metaPath, meta.AnalysisMode)
+	}
 	if strings.TrimSpace(meta.VisualMode) == "" {
 		meta.VisualMode = "dynamic"
 	}

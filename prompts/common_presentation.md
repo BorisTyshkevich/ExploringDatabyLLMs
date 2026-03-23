@@ -1,13 +1,8 @@
 Generate only the visual artifact.
 
-The analytical run already produced:
-
-- `query.sql`
-- `visual_input.json`
-
-Use `query.sql` as the authoritative input for the primary data query.
-Use `visual_input.json` to understand the result shape before building visuals.
-You may construct additional queries when needed for enrichment or drill-down, but do not regenerate the saved SQL.
+Use file `query.sql` as the authoritative input for the primary data query.
+Use file `visual_input.json` to understand the result shape before building visuals without querying dataset.
+You may construct additional queries when needed for enrichment or drill-down, but do not rebuild the saved SQL.
 
 Return exactly this fenced section:
 
@@ -16,8 +11,5 @@ Return exactly this fenced section:
 <html>...</html>
 ```
 
-Visual input summary:
+Visual input requirements:   {{visual_input_summary_json}}
 
-```json
-{{visual_input_summary_json}}
-```

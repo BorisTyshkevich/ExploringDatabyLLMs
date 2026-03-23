@@ -1,3 +1,6 @@
+This file is repository documentation for the OnTime semantic model. Prompt generation does not inline this file.
+For runtime prompt guidance, schema inspection, and join behavior, use the `ontime-semantic-layer` skill.
+
 Use `ontime.fact_ontime` as the primary fact table for flight operations.
 
 Use `ontime.dim_airports` as the semantic airport dimension for current airport reference data, including:

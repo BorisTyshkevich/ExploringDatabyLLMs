@@ -27,13 +27,6 @@ func Load(repoRoot, name string) (model.DatasetConfig, error) {
 	if cfg.MCPJWETokenEnv == "" {
 		cfg.MCPJWETokenEnv = "MCP_JWE_TOKEN"
 	}
-	semanticLayerPath := filepath.Join(repoRoot, "datasets", name, "semantic_layer.md")
-	semanticLayerBytes, err := os.ReadFile(semanticLayerPath)
-	if err == nil {
-		cfg.SemanticLayer = strings.TrimSpace(string(semanticLayerBytes))
-	} else if !os.IsNotExist(err) {
-		return model.DatasetConfig{}, err
-	}
 	return cfg, nil
 }
 

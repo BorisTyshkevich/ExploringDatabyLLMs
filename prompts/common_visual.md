@@ -1,4 +1,5 @@
 Create `visual.html` using the `ontime-analyst-dashboard` skill.
+Use the `ontime-semantic-layer` skill for OnTime schema inspection, join guidance, and airport-dimension semantics.
 
 The returned `visual.html` must be final browser-ready HTML. qforge will not patch or rewrite it after generation.
 

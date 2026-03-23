@@ -44,7 +44,7 @@ type cliProvider struct {
 }
 
 func (p cliProvider) GenerateSQL(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexAnalysisComplete(req.OutDir))
+	return p.run(ctx, req, req.Prompt, codexAnalysisComplete(req.OutDir, model.AnalysisMode(req.AnalysisMode)))
 }
 
 func (p cliProvider) GeneratePresentation(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
@@ -208,7 +208,19 @@ func readFileText(path string) string {
 	return string(data)
 }
 
-func codexAnalysisComplete(outDir string) func(string) bool {
+func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) bool {
+	if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
+		sqlPath := filepath.Join(outDir, "query.sql")
+		reportPath := filepath.Join(outDir, "report.template.md")
+		return func(string) bool {
+			sqlBytes, sqlErr := os.ReadFile(sqlPath)
+			reportBytes, reportErr := os.ReadFile(reportPath)
+			if sqlErr != nil || reportErr != nil {
+				return false
+			}
+			return strings.TrimSpace(string(sqlBytes)) != "" && strings.TrimSpace(string(reportBytes)) != ""
+		}
+	}
 	answerPath := filepath.Join(outDir, "answer.raw.json")
 	return func(string) bool {
 		data, err := os.ReadFile(answerPath)
@@ -272,7 +284,6 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 		"--mcp-config", configPath,
 		"--strict-mcp-config",
 		"--no-session-persistence",
-		prompt,
 	}
 	logf(req.Verbose, req.Model, "provider=claude phase=start bin=%s model=%s config=%s", bin, req.Model, configPath)
 	startedAt := time.Now()
@@ -281,6 +292,7 @@ func (p cliProvider) runClaude(ctx context.Context, req model.ProviderRequest, p
 	liveStdout := newLiveLogWriter(req.Verbose, req.Model, "claude", "stdout", os.Stdout)
 	liveStderr := newLiveLogWriter(req.Verbose, req.Model, "claude", "stderr", os.Stderr)
 	cmd.Dir = req.OutDir
+	cmd.Stdin = strings.NewReader(prompt)
 	cmd.Stdout = io.MultiWriter(&stdout, liveStdout)
 	cmd.Stderr = io.MultiWriter(&stderr, liveStderr)
 	err = cmd.Run()

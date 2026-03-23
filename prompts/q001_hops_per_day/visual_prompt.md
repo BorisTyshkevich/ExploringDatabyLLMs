@@ -1,5 +1,3 @@
-The page must:
-
 - show a lead-itinerary map that remains present even before airport-coordinate enrichment succeeds
 - treat the first row returned by the primary query as the default selected itinerary on initial load
 - derive hop count, stop sequence, and repeated-route comparisons from the result set

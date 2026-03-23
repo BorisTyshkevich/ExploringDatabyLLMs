@@ -14,7 +14,8 @@ Related repo areas:
 - [`prompts`](prompts)
   - shared and question-specific prompt assets used by `qforge`
 - [`Skills`](Skills)
-  - currently includes only the [`ontime-analyst-dashboard`](Skills/ontime-analyst-dashboard/SKILL.md) skill for `visual.html` generation
+  - includes the [`ontime-analyst-dashboard`](Skills/ontime-analyst-dashboard/SKILL.md) skill for `visual.html` generation
+  - includes the [`ontime-semantic-layer`](Skills/ontime-semantic-layer/SKILL.md) skill for OnTime schema inspection and join guidance
 - [`cmd/qforge`](cmd/qforge)
   - CLI entrypoint for the active harness
 - [`internal`](internal)

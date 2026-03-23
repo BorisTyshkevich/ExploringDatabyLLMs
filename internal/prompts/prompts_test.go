@@ -15,29 +15,27 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Prompt: "Question-specific SQL guidance.",
 	}
-	dataset := model.DatasetConfig{
-		SemanticLayer: "Use `ontime.fact_ontime` and `ontime.dim_airports`.",
-	}
-	got, err := BuildSQLPrompt(question, dataset)
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeJSONArtifact)
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "Stay within the configured dataset scope.") {
+	if !strings.Contains(got, "Use the ontime database to answer analytical questions") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "Inspect the live schema first") {
-		t.Fatalf("expected SQL-specific scaffold, got: %s", got)
+	if !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+		t.Fatalf("expected semantic skill guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "Question-specific SQL guidance.") {
 		t.Fatalf("expected question prompt section, got: %s", got)
 	}
-	if !strings.Contains(got, "Dataset semantic layer:") || !strings.Contains(got, "ontime.dim_airports") {
-		t.Fatalf("expected dataset semantic layer guidance, got: %s", got)
+	if strings.Contains(got, "Dataset semantic layer:") {
+		t.Fatalf("did not expect inlined semantic layer guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "answer.raw.json") || !strings.Contains(got, "\"sql\"") || !strings.Contains(got, "\"report_markdown\"") || !strings.Contains(got, "\"metrics\"") {
 		t.Fatalf("expected file-based single json analysis contract, got: %s", got)
 	}
-	if !strings.Contains(got, "plain JSON bytes only") || !strings.Contains(got, "ignore stdout") {
+	if !strings.Contains(got, "raw JSON, not fenced Markdown") || !strings.Contains(got, "Do not emit result rows") {
 		t.Fatalf("expected strict answer.raw.json file rules, got: %s", got)
 	}
 	if !strings.Contains(got, "{{metric.<name>}}") || !strings.Contains(got, "Do not invent any placeholder") {
@@ -48,6 +46,30 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 	if strings.Contains(got, "dataset constraints") || strings.Contains(got, "ontime_semantic") {
 		t.Fatalf("did not expect legacy dataset constraints or semantic db references, got: %s", got)
+	}
+}
+
+func TestBuildSQLPromptTemplateModeUsesDirectFileContract(t *testing.T) {
+	question := model.Question{
+		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Prompt: "Question-specific SQL guidance.",
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeTemplateFiles)
+	if err != nil {
+		t.Fatalf("BuildSQLPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "Write the final verified SQL to `query.sql`.") {
+		t.Fatalf("expected query.sql contract, got: %s", got)
+	}
+	if !strings.Contains(got, "Write the Markdown report template to `report.template.md`.") {
+		t.Fatalf("expected report.template.md contract, got: %s", got)
+	}
+	if strings.Contains(got, "Write one JSON object containing the final verified SQL") {
+		t.Fatalf("did not expect answer.raw.json contract in template mode, got: %s", got)
+	}
+	if !strings.Contains(got, "Do not use `{{metric.<name>}}` placeholders in this mode.") {
+		t.Fatalf("expected explicit metric-placeholder prohibition in template mode, got: %s", got)
 	}
 }
 
@@ -71,21 +93,19 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 		FieldShapeNotes: map[string]string{"FlightDate": "ISO-like timestamp string"},
 		ModeHint:        "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint.",
 	}
-	dataset := model.DatasetConfig{
-		SemanticLayer: "Use `ontime.fact_ontime` and `ontime.dim_airports`.",
-	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.fact_ontime", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", visualInput)
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "Stay within the configured dataset scope.") {
+	if !strings.Contains(got, "Use the ontime database to answer analytical questions") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
 	}
 	if !strings.Contains(got, "Generate only the visual artifact.") {
 		t.Fatalf("expected presentation-specific scaffold, got: %s", got)
 	}
-	if !strings.Contains(got, "ontime-analyst-dashboard") {
-		t.Fatalf("expected skill reference, got: %s", got)
+	if !strings.Contains(got, "ontime-analyst-dashboard") || !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+		t.Fatalf("expected dashboard and semantic skill guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "Visual mode: `dynamic`") {
 		t.Fatalf("expected visual mode in prompt, got: %s", got)
@@ -114,8 +134,8 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	if strings.Contains(got, "Saved analysis artifact:") || strings.Contains(got, "\"report_markdown\"") {
 		t.Fatalf("did not expect saved analysis json context in visual prompt, got: %s", got)
 	}
-	if !strings.Contains(got, "Dataset semantic layer:") || !strings.Contains(got, "ontime.dim_airports") {
-		t.Fatalf("expected inlined semantic-layer guidance, got: %s", got)
+	if strings.Contains(got, "Dataset semantic layer:") {
+		t.Fatalf("did not expect inlined semantic-layer guidance, got: %s", got)
 	}
 }
 
@@ -135,15 +155,13 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 		},
 		GeneratedAt: time.Now(),
 	}
-	dataset := model.DatasetConfig{
-		SemanticLayer: "Use `ontime.fact_ontime` and `ontime.dim_airports`.",
-	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
 	}
-	if !strings.Contains(got, "ontime-analyst-dashboard") {
-		t.Fatalf("expected q001 prompt to reference skill, got: %s", got)
+	if !strings.Contains(got, "ontime-analyst-dashboard") || !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+		t.Fatalf("expected q001 prompt to reference dashboard and semantic skill guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "airport-coordinate enrichment") {
 		t.Fatalf("expected q001 prompt to label map enrichment clearly, got: %s", got)
@@ -154,8 +172,8 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
 		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
 	}
-	if !strings.Contains(got, "Dataset semantic layer:") {
-		t.Fatalf("expected semantic layer heading when semantic guidance is present, got: %s", got)
+	if strings.Contains(got, "Dataset semantic layer:") {
+		t.Fatalf("did not expect semantic layer heading when using skill references, got: %s", got)
 	}
 }
 
@@ -181,9 +199,7 @@ func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) 
 		},
 		GeneratedAt: time.Now(),
 	}
-	dataset := model.DatasetConfig{
-		SemanticLayer: "Use `ontime.fact_ontime` and `ontime.dim_airports`.",
-	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
 	if err != nil {
 		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
@@ -211,9 +227,7 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 		Columns:     []string{"Carrier", "Flights"},
 		GeneratedAt: time.Now(),
 	}
-	dataset := model.DatasetConfig{
-		SemanticLayer: "Use `ontime.fact_ontime` and `ontime.dim_airports`.",
-	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT Carrier, Flights FROM ontime.fact_ontime", "", model.VisualInputSummary{
 		QuestionTitle: "Static Fixture",
 		ResultColumns: []string{"Carrier", "Flights"},
@@ -235,6 +249,9 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	}
 	if !strings.Contains(got, "`visual_input.json`") {
 		t.Fatalf("expected visual input summary in static prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "Use proper semantic-layer skill for schema inspection") {
+		t.Fatalf("expected semantic skill guidance in static prompt, got: %s", got)
 	}
 	if strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
 		t.Fatalf("did not expect dynamic JWE contract in static prompt, got: %s", got)
