@@ -2,6 +2,8 @@
 
 This document describes how qforge assembles shared prompt assets and which template variables are available in those assets.
 
+For guidance on writing the question-specific prompts themselves, see [`/Users/bvt/work/ExploringDatabyLLMs/docs/writing-prompts.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/writing-prompts.md).
+
 ## Prompt Assets
 
 Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](/Users/bvt/work/ExploringDatabyLLMs/prompts):

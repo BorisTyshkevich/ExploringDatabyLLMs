@@ -63,6 +63,8 @@ If `visual_mode` is absent, qforge treats the question as `dynamic` for backward
 
 Template variables, prompt composition, and dataset mapping are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md).
 
+Practical guidance on writing question prompts is documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/writing-prompts.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/writing-prompts.md).
+
 End-to-end phase behavior and artifact ownership are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/processing-logic.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/processing-logic.md).
 
 ## Setup
