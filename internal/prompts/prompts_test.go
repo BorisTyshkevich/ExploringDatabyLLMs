@@ -168,16 +168,22 @@ func TestBuildReviewPromptIncludesRunArtifacts(t *testing.T) {
 		AnswerRawJSON:   "{\"subquestions\":[]}",
 		AnalysisJSON:    "{\"subquestions\":[]}",
 		VisualInputJSON: "{\"query_summaries\":[]}",
-		Queries:         map[string]string{"q1": "SELECT 1"},
-		Results:         map[string]string{"q1": "{\"row_count\":1}"},
+		QueryFiles:      []string{"queries/q1.sql"},
+		ResultFiles:     []string{"results/q1.json"},
 	})
 	if err != nil {
 		t.Fatalf("BuildReviewPrompt returned error: %v", err)
 	}
-	for _, want := range []string{"Return the final review by writing `review.md`", "## Dashboard Questions", "Generated report.md:", "queries/q1.sql:", "results/q1.json:"} {
+	for _, want := range []string{"Return the final review by writing `review.md`", "## Dashboard Questions", "Generated report.md:", "`queries/q1.sql`", "`results/q1.json`"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected review prompt to contain %q, got: %s", want, got)
 		}
+	}
+	if strings.Contains(got, "```sql\nSELECT 1\n```") {
+		t.Fatalf("expected review prompt to reference query files instead of embedding SQL, got: %s", got)
+	}
+	if strings.Contains(got, "```json\n{\"row_count\":1}\n```") {
+		t.Fatalf("expected review prompt to reference result files instead of embedding JSON, got: %s", got)
 	}
 }
 

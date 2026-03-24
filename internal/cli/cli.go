@@ -1055,8 +1055,8 @@ func buildReviewPrompt(opts runAnalysisReviewOptions) (string, error) {
 	if opts.AnalysisMode == model.AnalysisModeMultiQueryJSON {
 		queryDir := filepath.Join(opts.OutDir, "queries")
 		resultDir := filepath.Join(opts.OutDir, "results")
-		inputs.Queries = readDirArtifacts(queryDir, ".sql")
-		inputs.Results = readDirArtifacts(resultDir, ".json")
+		inputs.QueryFiles = readDirArtifactPaths(queryDir, ".sql")
+		inputs.ResultFiles = readDirArtifactPaths(resultDir, ".json")
 	}
 	return prompts.BuildReviewPrompt(inputs)
 }
@@ -1084,6 +1084,24 @@ func readDirArtifacts(dir, suffix string) map[string]string {
 			continue
 		}
 		out[strings.TrimSuffix(entry.Name(), suffix)] = string(data)
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
+}
+
+func readDirArtifactPaths(dir, suffix string) []string {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil
+	}
+	out := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), suffix) {
+			continue
+		}
+		out = append(out, filepath.Join(filepath.Base(dir), entry.Name()))
 	}
 	if len(out) == 0 {
 		return nil

@@ -119,8 +119,8 @@ type ReviewPromptInputs struct {
 	QuerySQL        string
 	ResultJSON      string
 	VisualInputJSON string
-	Queries         map[string]string
-	Results         map[string]string
+	QueryFiles      []string
+	ResultFiles     []string
 }
 
 func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
@@ -152,29 +152,23 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 		if strings.TrimSpace(inputs.VisualInputJSON) != "" {
 			sections = append(sections, "Saved visual_input.json:\n\n```json\n"+strings.TrimSpace(inputs.VisualInputJSON)+"\n```")
 		}
-		if len(inputs.Queries) > 0 {
-			var parts []string
-			keys := make([]string, 0, len(inputs.Queries))
-			for key := range inputs.Queries {
-				keys = append(keys, key)
+		if len(inputs.QueryFiles) > 0 {
+			files := append([]string(nil), inputs.QueryFiles...)
+			sort.Strings(files)
+			parts := make([]string, 0, len(files))
+			for _, path := range files {
+				parts = append(parts, "- `"+strings.TrimSpace(path)+"`")
 			}
-			sort.Strings(keys)
-			for _, key := range keys {
-				parts = append(parts, fmt.Sprintf("queries/%s.sql:\n```sql\n%s\n```", key, strings.TrimSpace(inputs.Queries[key])))
-			}
-			sections = append(sections, "Proof queries:\n\n"+strings.Join(parts, "\n\n"))
+			sections = append(sections, "Proof queries are saved as files in the run directory. Read the SQL files you need to verify grain, filters, metrics, and ranking logic:\n\n"+strings.Join(parts, "\n"))
 		}
-		if len(inputs.Results) > 0 {
-			var parts []string
-			keys := make([]string, 0, len(inputs.Results))
-			for key := range inputs.Results {
-				keys = append(keys, key)
+		if len(inputs.ResultFiles) > 0 {
+			files := append([]string(nil), inputs.ResultFiles...)
+			sort.Strings(files)
+			parts := make([]string, 0, len(files))
+			for _, path := range files {
+				parts = append(parts, "- `"+strings.TrimSpace(path)+"`")
 			}
-			sort.Strings(keys)
-			for _, key := range keys {
-				parts = append(parts, fmt.Sprintf("results/%s.json:\n```json\n%s\n```", key, strings.TrimSpace(inputs.Results[key])))
-			}
-			sections = append(sections, "Executed query results:\n\n"+strings.Join(parts, "\n\n"))
+			sections = append(sections, "Executed query results are saved as files in the run directory. Read the result files you need for verification instead of assuming the report summary is complete:\n\n"+strings.Join(parts, "\n"))
 		}
 	} else {
 		if strings.TrimSpace(inputs.QuerySQL) != "" {
