@@ -11,12 +11,16 @@ For each qualifying pair, quantify:
 - average departure delay
 - how reported delay minutes split across weather and operational causes such as carrier, NAS, security, and late aircraft
 
+If delay-cause fields are missing or unreported for some of the weakest pairs, surface that explicitly in both the proof query output and the report. Do not present a blanket weather-vs-operational conclusion as if it covers pairs whose cause data is unavailable.
+
 Rank the worst-performing winter pairs by on-time performance, while using the delay-cause mix as context rather than as the primary ranking driver.
 
 Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
 
 - a ranked view of the weakest qualifying winter carrier-airport pairs
 - a cause-composition view for the leading weak pairs that separates weather from operational causes
+
+The proof query behind the concentration question must directly support both parts of that question. It should make carrier concentration and airport concentration separately inspectable from the returned result, rather than requiring the reader to infer one of them indirectly from lists or arrays.
 
 The proof query behind the worst-pair question should preserve the ranked pair-level rows needed for the dashboard, not just a single worst pair or summary count.
 
@@ -27,6 +31,8 @@ The proof query behind the worst-pair question should preserve the ranked pair-l
 - Are the weakest pairs concentrated in a small number of carriers or airports?
 
 In the report, answer those questions directly in prose. Name the worst winter pair, summarize whether the weakest pairs are driven more by weather or by operational causes, and state whether the weak set is concentrated in a small number of carriers or airports.
+
+If some leading weak pairs lack delay-cause reporting, say so directly and limit the weather-vs-operational conclusion to the subset with measured cause data.
 
 Do not use fallback phrases such as "the worst pair" or "the weakest pairs" when your verified query results let you name the actual carrier-airport combinations directly.
 
