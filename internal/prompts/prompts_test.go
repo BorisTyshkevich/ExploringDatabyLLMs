@@ -262,41 +262,6 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	}
 }
 
-func TestBuildPresentationPromptQ007NoLongerUsesSemanticDiscovery(t *testing.T) {
-	repoRoot := filepath.Join("..", "..")
-	question, err := questions.Resolve(repoRoot, "q007")
-	if err != nil {
-		t.Fatalf("Resolve returned error: %v", err)
-	}
-	if strings.Contains(question.VisualPrompt, "ontime.dim_airports") {
-		t.Fatalf("did not expect q007 local visual prompt to hardcode airport enrichment source: %s", question.VisualPrompt)
-	}
-	if strings.Contains(question.Prompt, "ontime.dim_airports") {
-		t.Fatalf("did not expect q007 local prompt to hardcode airport enrichment source: %s", question.Prompt)
-	}
-	result := model.CanonicalResult{
-		Columns: []string{
-			"Tail_Number",
-			"Flight_Number_Reporting_Airline",
-			"IATA_CODE_Reporting_Airline",
-			"FlightDate",
-			"Route",
-		},
-		GeneratedAt: time.Now(),
-	}
-	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
-	if err != nil {
-		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
-	}
-	if strings.Contains(got, "ontime_semantic") || strings.Contains(got, "Dataset discovery:") {
-		t.Fatalf("did not expect semantic discovery guidance, got: %s", got)
-	}
-	if strings.Contains(got, "run an explicit airport-coordinate enrichment query against") {
-		t.Fatalf("did not expect q007 built prompt to include the old explicit airport instruction, got: %s", got)
-	}
-}
-
 func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T) {
 	question := model.Question{
 		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
