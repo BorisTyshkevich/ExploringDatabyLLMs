@@ -278,6 +278,9 @@ func (m *multiFlag) Set(value string) error {
 }
 
 func runCompare(ctx context.Context, args []string) error {
+	if len(args) > 0 && !strings.HasPrefix(args[0], "-") {
+		args = append([]string{"--question", args[0]}, args[1:]...)
+	}
 	fs := flag.NewFlagSet("compare", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
 	fs.Usage = func() {
@@ -316,6 +319,9 @@ func runCompare(ctx context.Context, args []string) error {
 			return nil
 		}
 		return err
+	}
+	if fs.NArg() > 0 {
+		return fmt.Errorf("compare does not accept unexpected trailing args: %s", strings.Join(fs.Args(), ", "))
 	}
 	codeRoot, err := repoRoot()
 	if err != nil {

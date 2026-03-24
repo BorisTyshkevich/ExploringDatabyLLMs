@@ -1,6 +1,7 @@
 package querylog
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -13,7 +14,39 @@ import (
 const demoConnectionName = "demo"
 
 func FetchLatest(ctx context.Context, logComment string) (*model.QueryLogMetrics, error) {
-	escaped := strings.ReplaceAll(logComment, "'", "''")
+	rows, err := fetchRows(ctx, fmt.Sprintf("WHERE log_comment = '%s'", escapeLiteral(logComment)))
+	if err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return nil, nil
+	}
+	return &rows[0], nil
+}
+
+func FetchForRun(ctx context.Context, logComment string, multiQuery bool) (*model.QueryLogMetrics, error) {
+	whereClause := fmt.Sprintf("WHERE log_comment = '%s'", escapeLiteral(logComment))
+	if multiQuery {
+		whereClause = fmt.Sprintf(
+			"WHERE log_comment = '%s' OR startsWith(log_comment, '%s|subquestion=')",
+			escapeLiteral(logComment),
+			escapeLiteral(logComment),
+		)
+	}
+	rows, err := fetchRows(ctx, whereClause)
+	if err != nil {
+		return nil, err
+	}
+	if len(rows) == 0 {
+		return nil, nil
+	}
+	if !multiQuery {
+		return &rows[0], nil
+	}
+	return aggregateRows(rows), nil
+}
+
+func fetchRows(ctx context.Context, whereClause string) ([]model.QueryLogMetrics, error) {
 	sql := fmt.Sprintf(`
 SELECT
   log_comment,
@@ -29,11 +62,10 @@ SELECT
   toString(event_time) AS event_time,
   type
 FROM system.query_log
-WHERE log_comment = '%s'
+%s
 ORDER BY event_time_microseconds DESC
-LIMIT 1
 FORMAT JSONEachRow
-`, escaped)
+`, whereClause)
 
 	cmd := exec.CommandContext(ctx, "clickhouse-client", "--connection", demoConnectionName, "--query", sql)
 	output, err := cmd.Output()
@@ -47,35 +79,46 @@ FORMAT JSONEachRow
 		return nil, nil
 	}
 
-	var row struct {
-		LogComment      string `json:"log_comment"`
-		QueryID         string `json:"query_id"`
-		QueryDurationMS int64  `json:"query_duration_ms"`
-		ReadRows        int64  `json:"read_rows"`
-		ReadBytes       int64  `json:"read_bytes"`
-		ResultRows      int64  `json:"result_rows"`
-		ResultBytes     int64  `json:"result_bytes"`
-		MemoryUsage     int64  `json:"memory_usage"`
-		PeakThreads     int64  `json:"peak_threads"`
-		Query           string `json:"query"`
-		EventTime       string `json:"event_time"`
-		Type            string `json:"type"`
+	var rows []model.QueryLogMetrics
+	scanner := bufio.NewScanner(strings.NewReader(string(output)))
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+		var row model.QueryLogMetrics
+		if err := json.Unmarshal([]byte(line), &row); err != nil {
+			return nil, fmt.Errorf("parse query_log row: %w", err)
+		}
+		rows = append(rows, row)
 	}
-	if err := json.Unmarshal(output, &row); err != nil {
-		return nil, fmt.Errorf("parse query_log row: %w", err)
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("scan query_log rows: %w", err)
 	}
-	return &model.QueryLogMetrics{
-		LogComment:      row.LogComment,
-		QueryID:         row.QueryID,
-		QueryDurationMS: row.QueryDurationMS,
-		ReadRows:        row.ReadRows,
-		ReadBytes:       row.ReadBytes,
-		ResultRows:      row.ResultRows,
-		ResultBytes:     row.ResultBytes,
-		MemoryUsage:     row.MemoryUsage,
-		PeakThreads:     row.PeakThreads,
-		Query:           row.Query,
-		EventTime:       row.EventTime,
-		Type:            row.Type,
-	}, nil
+	return rows, nil
+}
+
+func aggregateRows(rows []model.QueryLogMetrics) *model.QueryLogMetrics {
+	agg := rows[0]
+	for _, row := range rows[1:] {
+		agg.QueryDurationMS += row.QueryDurationMS
+		agg.ReadRows += row.ReadRows
+		agg.ReadBytes += row.ReadBytes
+		agg.ResultRows += row.ResultRows
+		agg.ResultBytes += row.ResultBytes
+		if row.MemoryUsage > agg.MemoryUsage {
+			agg.MemoryUsage = row.MemoryUsage
+		}
+		if row.PeakThreads > agg.PeakThreads {
+			agg.PeakThreads = row.PeakThreads
+		}
+	}
+	agg.QueryID = ""
+	agg.Query = ""
+	agg.Type = "aggregated"
+	return &agg
+}
+
+func escapeLiteral(value string) string {
+	return strings.ReplaceAll(value, "'", "''")
 }

@@ -22,18 +22,25 @@ type ArtifactRef struct {
 }
 
 type ArtifactLinks struct {
-	QuerySQL     ArtifactRef `json:"query_sql,omitempty"`
-	ReportMD     ArtifactRef `json:"report_md,omitempty"`
-	ReviewMD     ArtifactRef `json:"review_md,omitempty"`
-	ResultJSON   ArtifactRef `json:"result_json,omitempty"`
-	VisualHTML   ArtifactRef `json:"visual_html,omitempty"`
-	VisualSource ArtifactRef `json:"visual_source,omitempty"`
-	VisualBuild  ArtifactRef `json:"visual_build,omitempty"`
+	QuerySQL     ArtifactRef   `json:"query_sql,omitempty"`
+	QuerySQLs    []ArtifactRef `json:"query_sqls,omitempty"`
+	ReportMD     ArtifactRef   `json:"report_md,omitempty"`
+	ReviewMD     ArtifactRef   `json:"review_md,omitempty"`
+	ResultJSON   ArtifactRef   `json:"result_json,omitempty"`
+	VisualHTML   ArtifactRef   `json:"visual_html,omitempty"`
+	VisualSource ArtifactRef   `json:"visual_source,omitempty"`
+	VisualBuild  ArtifactRef   `json:"visual_build,omitempty"`
 }
 
 func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
+	querySQLs := buildQueryArtifactRefs(runsRoot, runDir)
+	querySQL := ArtifactRef{}
+	if len(querySQLs) == 1 {
+		querySQL = querySQLs[0]
+	}
 	return ArtifactLinks{
-		QuerySQL:     buildArtifactRef(runsRoot, filepath.Join(runDir, "query.sql"), "sql"),
+		QuerySQL:     querySQL,
+		QuerySQLs:    querySQLs,
 		ReportMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
 		ReviewMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "review.md"), "md"),
 		ResultJSON:   buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
@@ -41,6 +48,29 @@ func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
 		VisualSource: buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_src"), "dir"),
 		VisualBuild:  buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_build"), "dir"),
 	}
+}
+
+func buildQueryArtifactRefs(runsRoot, runDir string) []ArtifactRef {
+	single := buildArtifactRef(runsRoot, filepath.Join(runDir, "query.sql"), "sql")
+	if single.URL != "" {
+		return []ArtifactRef{single}
+	}
+
+	entries, err := os.ReadDir(filepath.Join(runDir, "queries"))
+	if err != nil {
+		return nil
+	}
+	var refs []ArtifactRef
+	for _, entry := range entries {
+		if entry.IsDir() || filepath.Ext(entry.Name()) != ".sql" {
+			continue
+		}
+		ref := buildArtifactRef(runsRoot, filepath.Join(runDir, "queries", entry.Name()), "sql")
+		if ref.URL != "" {
+			refs = append(refs, ref)
+		}
+	}
+	return refs
 }
 
 func buildArtifactRef(runsRoot, localPath, kind string) ArtifactRef {

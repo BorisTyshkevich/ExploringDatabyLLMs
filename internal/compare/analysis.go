@@ -87,6 +87,14 @@ func runDirs(items []RunSummary) []string {
 func querySQLPaths(items []RunSummary) []string {
 	out := make([]string, 0, len(items))
 	for _, item := range items {
+		if len(item.Artifacts.QuerySQLs) > 0 {
+			for _, ref := range item.Artifacts.QuerySQLs {
+				if ref.LocalPath != "" {
+					out = append(out, ref.LocalPath)
+				}
+			}
+			continue
+		}
 		out = append(out, filepath.Join(item.RunDir, "query.sql"))
 	}
 	return out
@@ -162,6 +170,17 @@ func renderPublishedLinks(links ArtifactLinks) string {
 	var parts []string
 	if links.QuerySQL.URL != "" {
 		parts = append(parts, fmt.Sprintf("query.sql: %s", links.QuerySQL.URL))
+	} else {
+		for _, ref := range links.QuerySQLs {
+			if ref.URL == "" {
+				continue
+			}
+			label := filepath.Base(ref.PublishedPath)
+			if label == "" {
+				label = "query.sql"
+			}
+			parts = append(parts, fmt.Sprintf("%s: %s", label, ref.URL))
+		}
 	}
 	if links.ReportMD.URL != "" {
 		parts = append(parts, fmt.Sprintf("report.md: %s", links.ReportMD.URL))
@@ -188,9 +207,23 @@ func renderPublishedLinks(links ArtifactLinks) string {
 }
 
 func existingLocalPaths(links ArtifactLinks) []string {
+	seen := map[string]struct{}{}
 	var out []string
+	for _, ref := range links.QuerySQLs {
+		if ref.LocalPath != "" {
+			if _, ok := seen[ref.LocalPath]; ok {
+				continue
+			}
+			seen[ref.LocalPath] = struct{}{}
+			out = append(out, ref.LocalPath)
+		}
+	}
 	for _, ref := range []ArtifactRef{links.QuerySQL, links.ReportMD, links.ReviewMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
 		if ref.LocalPath != "" {
+			if _, ok := seen[ref.LocalPath]; ok {
+				continue
+			}
+			seen[ref.LocalPath] = struct{}{}
 			out = append(out, ref.LocalPath)
 		}
 	}

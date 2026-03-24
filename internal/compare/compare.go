@@ -50,7 +50,9 @@ type RunSummary struct {
 	PresentationTarget string          `json:"presentation_target,omitempty"`
 	ReviewVerdict      string          `json:"review_verdict,omitempty"`
 	QuerySHA256        string          `json:"query_sha256,omitempty"`
-	RowCount           int             `json:"row_count"`
+	ResultRowCount     int             `json:"result_row_count"`
+	SyntheticRowCount  int             `json:"synthetic_row_count,omitempty"`
+	MultiQuery         bool            `json:"multi_query,omitempty"`
 	Columns            []string        `json:"columns,omitempty"`
 	Metrics            *RunMetrics     `json:"metrics,omitempty"`
 	Artifacts          ArtifactLinks   `json:"artifacts,omitempty"`
@@ -199,7 +201,8 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 		PresentationTarget: manifest.PresentationTarget,
 		ReviewVerdict:      manifest.ReviewVerdict,
 		QuerySHA256:        manifest.QuerySHA256,
-		RowCount:           manifest.ResultRowCount,
+		ResultRowCount:     manifest.ResultRowCount,
+		MultiQuery:         isMultiQueryRun(manifest, runDir),
 	}
 	if strings.HasPrefix(item.RunID, "run-") {
 		fmt.Sscanf(item.RunID, "run-%d", &item.RunNumber)
@@ -221,16 +224,17 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 			warnings = append(warnings, fmt.Sprintf("%s: failed to parse result.json: %v", runID(item), err))
 		} else {
 			item.Columns = summary.Columns
-			if item.RowCount == 0 {
-				item.RowCount = summary.RowCount
-			} else if summary.RowCount != 0 && summary.RowCount != item.RowCount {
-				warnings = append(warnings, fmt.Sprintf("%s: manifest row count %d differs from result.json row count %d", runID(item), item.RowCount, summary.RowCount))
+			item.SyntheticRowCount = summary.RowCount
+			if item.ResultRowCount == 0 {
+				item.ResultRowCount = summary.RowCount
+			} else if !item.MultiQuery && summary.RowCount != 0 && summary.RowCount != item.ResultRowCount {
+				warnings = append(warnings, fmt.Sprintf("%s: manifest row count %d differs from result.json row count %d", runID(item), item.ResultRowCount, summary.RowCount))
 			}
 		}
 	}
 
 	if manifest.LogComment != "" {
-		metrics, err := querylog.FetchLatest(ctx, manifest.LogComment)
+		metrics, err := querylog.FetchForRun(ctx, manifest.LogComment, item.MultiQuery)
 		if err != nil {
 			warnings = append(warnings, fmt.Sprintf("%s: failed to fetch query_log metrics: %v", runID(item), err))
 		} else if metrics == nil {
@@ -252,6 +256,22 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 
 	item.Warnings = dedupeStrings(warnings)
 	return item, item.Warnings, nil
+}
+
+func isMultiQueryRun(manifest model.RunManifest, runDir string) bool {
+	if strings.TrimSpace(manifest.AnalysisMode) == string(model.AnalysisModeMultiQueryJSON) {
+		return true
+	}
+	entries, err := os.ReadDir(filepath.Join(runDir, "queries"))
+	if err != nil {
+		return false
+	}
+	for _, entry := range entries {
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".sql" {
+			return true
+		}
+	}
+	return false
 }
 
 func discoverRunDirs(runsRoot, day, questionFilter string) ([]string, error) {
@@ -330,21 +350,23 @@ func renderMarkdown(report Report) string {
 	md.WriteString("\n\n")
 	md.WriteString(renderQuestionSummary(report.Runs))
 	md.WriteString("\n")
-	md.WriteString("| runner | model | run | target | review | review md | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |\n")
-	md.WriteString("| --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
+	md.WriteString("| runner | model | run | target | review | review md | status | result rows (manifest) | sql gen | visual gen | build | query time | read rows | bytes read | peak memory | warnings |\n")
+	md.WriteString("| --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
 	for _, item := range report.Runs {
 		sqlGen := formatOptionalDurationMS(item.SQLGenMS)
 		visualGen := formatOptionalDurationMS(item.VisualGenMS)
 		visualBuild := formatOptionalDurationMS(item.VisualBuildMS)
 		queryDuration := "n/a"
 		readRows := "n/a"
+		readBytes := "n/a"
 		memory := "n/a"
 		if item.Metrics != nil {
 			queryDuration = formatDurationMS(item.Metrics.QueryDurationMS)
 			readRows = formatInt(item.Metrics.ReadRows)
+			readBytes = formatBytes(item.Metrics.ReadBytes)
 			memory = formatBytes(item.Metrics.MemoryUsage)
 		}
-		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %d |\n",
+		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %s | %d |\n",
 			item.Runner,
 			item.Model,
 			valueOrNA(item.RunID),
@@ -352,12 +374,13 @@ func renderMarkdown(report Report) string {
 			valueOrNA(item.ReviewVerdict),
 			markdownLinkOrNA("review.md", item.Artifacts.ReviewMD.URL),
 			item.Status,
-			item.RowCount,
+			item.ResultRowCount,
 			sqlGen,
 			visualGen,
 			visualBuild,
 			queryDuration,
 			readRows,
+			readBytes,
 			memory,
 			len(item.Warnings),
 		))
@@ -389,7 +412,7 @@ func renderQuestionSummary(items []RunSummary) string {
 	} else {
 		lines = append(lines, fmt.Sprintf("- Status: %d run(s) did not finish cleanly: %s.", len(failed), strings.Join(failed, ", ")))
 	}
-	lines = append(lines, "- Row counts: "+rowCountSummary(items)+".")
+	lines = append(lines, "- Result rows (manifest): "+rowCountSummary(items)+".")
 	if fastest := bestByDuration(items); fastest != "" {
 		lines = append(lines, "- Fastest successful run: "+fastest+".")
 	}
@@ -402,7 +425,19 @@ func renderQuestionSummary(items []RunSummary) string {
 	if warnings := countWarnings(items); warnings > 0 {
 		lines = append(lines, fmt.Sprintf("- Warnings: %d.", warnings))
 	}
+	if hasMultiQueryRuns(items) {
+		lines = append(lines, "- Multi-query note: manifest result rows are the sum of all subquery result rows; synthetic result.json rows are summary rows only.")
+	}
 	return strings.Join(lines, "\n")
+}
+
+func hasMultiQueryRuns(items []RunSummary) bool {
+	for _, item := range items {
+		if item.MultiQuery {
+			return true
+		}
+	}
+	return false
 }
 
 func failedRuns(items []RunSummary) []string {
@@ -419,11 +454,11 @@ func rowCountSummary(items []RunSummary) string {
 	seen := map[int]struct{}{}
 	var counts []int
 	for _, item := range items {
-		if _, ok := seen[item.RowCount]; ok {
+		if _, ok := seen[item.ResultRowCount]; ok {
 			continue
 		}
-		seen[item.RowCount] = struct{}{}
-		counts = append(counts, item.RowCount)
+		seen[item.ResultRowCount] = struct{}{}
+		counts = append(counts, item.ResultRowCount)
 	}
 	sort.Ints(counts)
 	if len(counts) <= 1 {

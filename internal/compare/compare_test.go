@@ -28,13 +28,14 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 				PresentationTarget: "react",
 				ReviewVerdict:      "PASS",
 				Status:             model.RunStatusOK,
-				RowCount:           832,
+				ResultRowCount:     832,
 				SQLGenMS:           2400,
 				VisualGenMS:        5100,
 				VisualBuildMS:      1300,
 				Metrics: &RunMetrics{
 					QueryDurationMS: 900,
 					ReadRows:        1146680615,
+					ReadBytes:       3221225472,
 					MemoryUsage:     283105876,
 				},
 			},
@@ -46,10 +47,10 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 				Artifacts: ArtifactLinks{
 					ReviewMD: ArtifactRef{URL: "https://example.invalid/run-002/review.md"},
 				},
-				ReviewVerdict: "FAIL",
-				Status:        model.RunStatusPartial,
-				RowCount:      0,
-				Warnings:      []string{"gemini/gemini-2.5-pro: query_log metrics not found"},
+				ReviewVerdict:  "FAIL",
+				Status:         model.RunStatusPartial,
+				ResultRowCount: 0,
+				Warnings:       []string{"gemini/gemini-2.5-pro: query_log metrics not found"},
 			},
 		},
 	}
@@ -58,10 +59,10 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 	for _, want := range []string{
 		"## q003: Delta ATL departure delay hotspots by destination and time block",
 		"- Status: 1 run(s) did not finish cleanly: gemini/gemini-2.5-pro.",
-		"- Row counts: mismatch (0, 832).",
+		"- Result rows (manifest): mismatch (0, 832).",
 		"- Fastest successful run: codex/gpt-5.4 at 900 ms.",
-		"| runner | model | run | target | review | review md | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |",
-		"| codex | gpt-5.4 | n/a | react | PASS | [review.md](https://example.invalid/run-001/review.md) | ok | 832 | 2.40 s | 5.10 s | 1.30 s | 900 ms | 1,146,680,615 | 270.0 MiB | 0 |",
+		"| runner | model | run | target | review | review md | status | result rows (manifest) | sql gen | visual gen | build | query time | read rows | bytes read | peak memory | warnings |",
+		"| codex | gpt-5.4 | n/a | react | PASS | [review.md](https://example.invalid/run-001/review.md) | ok | 832 | 2.40 s | 5.10 s | 1.30 s | 900 ms | 1,146,680,615 | 3.0 GiB | 270.0 MiB | 0 |",
 		"### Warnings",
 	} {
 		if !strings.Contains(got, want) {
@@ -77,16 +78,16 @@ func TestWriteOutputsWritesCompactJSON(t *testing.T) {
 		Day:         "2026-03-16",
 		Runs: []RunSummary{
 			{
-				RunDir:        "/tmp/run-001",
-				QuestionID:    "q004",
-				QuestionTitle: "Worst origin airports by departure on-time performance",
-				Runner:        "claude",
-				Model:         "opus",
-				Status:        model.RunStatusOK,
-				StartedAt:     time.Unix(0, 0).UTC(),
-				FinishedAt:    time.Unix(1, 0).UTC(),
-				RowCount:      25,
-				Columns:       []string{"OriginCode", "DepartureOtpPct"},
+				RunDir:         "/tmp/run-001",
+				QuestionID:     "q004",
+				QuestionTitle:  "Worst origin airports by departure on-time performance",
+				Runner:         "claude",
+				Model:          "opus",
+				Status:         model.RunStatusOK,
+				StartedAt:      time.Unix(0, 0).UTC(),
+				FinishedAt:     time.Unix(1, 0).UTC(),
+				ResultRowCount: 25,
+				Columns:        []string{"OriginCode", "DepartureOtpPct"},
 			},
 		},
 	}
@@ -107,7 +108,7 @@ func TestWriteOutputsWritesCompactJSON(t *testing.T) {
 	if strings.Contains(string(data), "\"manifest\"") || strings.Contains(string(data), "\"result\"") {
 		t.Fatalf("expected compact compare json, got: %s", string(data))
 	}
-	if !strings.Contains(string(data), "\"columns\"") || !strings.Contains(string(data), "\"row_count\"") {
+	if !strings.Contains(string(data), "\"columns\"") || !strings.Contains(string(data), "\"result_row_count\"") {
 		t.Fatalf("expected summary fields in compare json, got: %s", string(data))
 	}
 }
@@ -216,6 +217,68 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_src",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_build",
+	} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)
+		}
+	}
+}
+
+func TestBuildAnalysisPromptIncludesMultiQuerySQLArtifacts(t *testing.T) {
+	codeRoot := t.TempDir()
+	runsRoot := t.TempDir()
+	promptDir := filepath.Join(codeRoot, "prompts")
+	if err := os.MkdirAll(promptDir, 0o755); err != nil {
+		t.Fatalf("mkdir prompts: %v", err)
+	}
+	template := "SQL:\n{{query_sql_paths_md}}\nPUBLISHED:\n{{published_run_artifacts_md}}\n"
+	if err := os.WriteFile(filepath.Join(promptDir, analysisPromptFile), []byte(template), 0o644); err != nil {
+		t.Fatalf("write analysis prompt: %v", err)
+	}
+
+	questionDir := filepath.Join(codeRoot, "prompts", "q006_peak_aa_delay_month_network")
+	if err := os.MkdirAll(questionDir, 0o755); err != nil {
+		t.Fatalf("mkdir question dir: %v", err)
+	}
+	question := model.Question{
+		Dir: questionDir,
+		Meta: model.QuestionMeta{
+			ID:    "q006",
+			Slug:  "q006_peak_aa_delay_month_network",
+			Title: "American Airlines peak network delay month and contributors",
+		},
+	}
+	runDir := filepath.Join(runsRoot, "2026-03-24", "q006_peak_aa_delay_month_network", "codex", "gpt-5.4", "run-002")
+	if err := os.MkdirAll(filepath.Join(runDir, "queries"), 0o755); err != nil {
+		t.Fatalf("mkdir queries dir: %v", err)
+	}
+	for _, name := range []string{"q1.sql", "q2.sql"} {
+		if err := os.WriteFile(filepath.Join(runDir, "queries", name), []byte("SELECT 1"), 0o644); err != nil {
+			t.Fatalf("write query artifact %s: %v", name, err)
+		}
+	}
+	report := Report{
+		Day: "2026-03-24",
+		Runs: []RunSummary{
+			{
+				RunDir:    runDir,
+				RunID:     "run-002",
+				Runner:    "codex",
+				Model:     "gpt-5.4",
+				Artifacts: buildRunArtifactLinks(runsRoot, runDir),
+			},
+		},
+	}
+
+	got, err := BuildAnalysisPrompt(codeRoot, runsRoot, question, report, filepath.Join(runsRoot, "2026-03-24", "q006_peak_aa_delay_month_network", "compare", "compare.json"))
+	if err != nil {
+		t.Fatalf("BuildAnalysisPrompt returned error: %v", err)
+	}
+	for _, want := range []string{
+		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
+		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
+		"q1.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
+		"q2.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)

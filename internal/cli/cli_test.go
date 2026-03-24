@@ -2,7 +2,9 @@ package cli
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -353,5 +355,103 @@ func TestEnsureVisualInputSummaryBackfillsMissingFile(t *testing.T) {
 	}
 	if persisted.FieldShapeNotes["DepTimes"] != "array field" {
 		t.Fatalf("expected persisted shape notes, got %+v", persisted.FieldShapeNotes)
+	}
+}
+
+func TestRunComparePositionalQuestionRefScopesOutputs(t *testing.T) {
+	codeRoot := t.TempDir()
+	runRoot := t.TempDir()
+	t.Setenv("QFORGE_CODE_ROOT", codeRoot)
+	t.Setenv("QFORGE_RUN_ROOT", runRoot)
+
+	mustWriteFile(t, filepath.Join(codeRoot, "prompts", "analysis_prompt.md"), "Return exactly this fenced section:\n\n```markdown\n# Compare Report\n```\n")
+	mustWriteFile(t, filepath.Join(codeRoot, "datasets", "ontime", "mcp.yaml"), "dataset: ontime\ndefault_mcp_server_name: demo\nmcp_url: https://example.invalid/http\n")
+	for _, item := range []struct {
+		dir   string
+		id    string
+		slug  string
+		title string
+	}{
+		{dir: "q001_hops_per_day", id: "q001", slug: "q001_hops_per_day", title: "Hops Per Day"},
+		{dir: "q002_top_carrier", id: "q002", slug: "q002_top_carrier", title: "Top Carrier"},
+	} {
+		mustWriteFile(t, filepath.Join(codeRoot, "prompts", item.dir, "meta.yaml"), fmt.Sprintf("id: %s\nslug: %s\ntitle: %q\ndataset: ontime\nanalysis_mode: template_files\nartifacts_required: report.md\npresentation_target: html\n", item.id, item.slug, item.title))
+		mustWriteFile(t, filepath.Join(codeRoot, "prompts", item.dir, "report_prompt.md"), "# Prompt\n")
+	}
+
+	for _, item := range []struct {
+		slug string
+		id   string
+	}{
+		{slug: "q001_hops_per_day", id: "q001"},
+		{slug: "q002_top_carrier", id: "q002"},
+	} {
+		runDir := filepath.Join(runRoot, "2026-03-24", item.slug, "claude", "sonnet", "run-001")
+		if err := os.MkdirAll(runDir, 0o755); err != nil {
+			t.Fatalf("mkdir run dir: %v", err)
+		}
+		manifest := model.RunManifest{
+			SchemaVersion: "4",
+			Status:        model.RunStatusOK,
+			QuestionID:    item.id,
+			QuestionSlug:  item.slug,
+			QuestionTitle: item.slug,
+			Dataset:       "ontime",
+			Runner:        "claude",
+			Model:         "sonnet",
+			StartedAt:     time.Unix(0, 0).UTC(),
+			FinishedAt:    time.Unix(1, 0).UTC(),
+			DurationSec:   1,
+			Artifacts:     model.ArtifactPaths{},
+		}
+		data, err := json.Marshal(manifest)
+		if err != nil {
+			t.Fatalf("marshal manifest: %v", err)
+		}
+		if err := os.WriteFile(filepath.Join(runDir, "manifest.json"), data, 0o644); err != nil {
+			t.Fatalf("write manifest: %v", err)
+		}
+		if err := os.WriteFile(filepath.Join(runDir, "result.json"), []byte(`{"columns":["x"],"row_count":1}`), 0o644); err != nil {
+			t.Fatalf("write result: %v", err)
+		}
+		if err := os.WriteFile(filepath.Join(runDir, "query.sql"), []byte("SELECT 1\n"), 0o644); err != nil {
+			t.Fatalf("write query: %v", err)
+		}
+		if err := os.WriteFile(filepath.Join(runDir, "report.md"), []byte("# report\n"), 0o644); err != nil {
+			t.Fatalf("write report: %v", err)
+		}
+	}
+
+	fakeClaude := filepath.Join(t.TempDir(), "claude")
+	script := "#!/bin/sh\ncat <<'EOF'\n```markdown\n# Compare Report\n\nScoped output.\n```\nEOF\n"
+	if err := os.WriteFile(fakeClaude, []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake claude: %v", err)
+	}
+
+	if err := runCompare(context.Background(), []string{"q001", "--day", "2026-03-24", "--runner", "claude", "--model", "sonnet", "--cli-bin", fakeClaude, "--mcp-url", "https://example.invalid/http"}); err != nil {
+		t.Fatalf("runCompare returned error: %v", err)
+	}
+
+	if _, err := os.Stat(filepath.Join(runRoot, "2026-03-24", "q001_hops_per_day", "compare", "compare.json")); err != nil {
+		t.Fatalf("expected q001 compare.json to be written: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(runRoot, "2026-03-24", "q001_hops_per_day", "compare", "analysis.prompt.md")); err != nil {
+		t.Fatalf("expected q001 analysis.prompt.md to be written: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(runRoot, "2026-03-24", "q001_hops_per_day", "compare_report.md")); err != nil {
+		t.Fatalf("expected q001 compare_report.md to be written: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(runRoot, "2026-03-24", "q002_top_carrier", "compare", "compare.json")); !os.IsNotExist(err) {
+		t.Fatalf("expected q002 compare artifacts to be untouched, got err=%v", err)
+	}
+}
+
+func mustWriteFile(t *testing.T, path, content string) {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatalf("mkdir %s: %v", filepath.Dir(path), err)
+	}
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("write %s: %v", path, err)
 	}
 }
