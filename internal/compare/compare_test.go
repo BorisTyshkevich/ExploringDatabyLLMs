@@ -18,10 +18,13 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 		Day:         "2026-03-16",
 		Runs: []RunSummary{
 			{
-				QuestionID:         "q003",
-				QuestionTitle:      "Delta ATL departure delay hotspots by destination and time block",
-				Runner:             "codex",
-				Model:              "gpt-5.4",
+				QuestionID:    "q003",
+				QuestionTitle: "Delta ATL departure delay hotspots by destination and time block",
+				Runner:        "codex",
+				Model:         "gpt-5.4",
+				Artifacts: ArtifactLinks{
+					ReviewMD: ArtifactRef{URL: "https://example.invalid/run-001/review.md"},
+				},
 				PresentationTarget: "react",
 				ReviewVerdict:      "PASS",
 				Status:             model.RunStatusOK,
@@ -40,6 +43,9 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 				QuestionTitle: "Delta ATL departure delay hotspots by destination and time block",
 				Runner:        "gemini",
 				Model:         "gemini-2.5-pro",
+				Artifacts: ArtifactLinks{
+					ReviewMD: ArtifactRef{URL: "https://example.invalid/run-002/review.md"},
+				},
 				ReviewVerdict: "FAIL",
 				Status:        model.RunStatusPartial,
 				RowCount:      0,
@@ -54,8 +60,8 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 		"- Status: 1 run(s) did not finish cleanly: gemini/gemini-2.5-pro.",
 		"- Row counts: mismatch (0, 832).",
 		"- Fastest successful run: codex/gpt-5.4 at 900 ms.",
-		"| runner | model | run | target | review | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |",
-		"| codex | gpt-5.4 | n/a | react | PASS | ok | 832 | 2.40 s | 5.10 s | 1.30 s | 900 ms | 1,146,680,615 | 270.0 MiB | 0 |",
+		"| runner | model | run | target | review | review md | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |",
+		"| codex | gpt-5.4 | n/a | react | PASS | [review.md](https://example.invalid/run-001/review.md) | ok | 832 | 2.40 s | 5.10 s | 1.30 s | 900 ms | 1,146,680,615 | 270.0 MiB | 0 |",
 		"### Warnings",
 	} {
 		if !strings.Contains(got, want) {

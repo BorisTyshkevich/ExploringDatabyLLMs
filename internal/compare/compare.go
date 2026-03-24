@@ -330,8 +330,8 @@ func renderMarkdown(report Report) string {
 	md.WriteString("\n\n")
 	md.WriteString(renderQuestionSummary(report.Runs))
 	md.WriteString("\n")
-	md.WriteString("| runner | model | run | target | review | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |\n")
-	md.WriteString("| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
+	md.WriteString("| runner | model | run | target | review | review md | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |\n")
+	md.WriteString("| --- | --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
 	for _, item := range report.Runs {
 		sqlGen := formatOptionalDurationMS(item.SQLGenMS)
 		visualGen := formatOptionalDurationMS(item.VisualGenMS)
@@ -344,12 +344,13 @@ func renderMarkdown(report Report) string {
 			readRows = formatInt(item.Metrics.ReadRows)
 			memory = formatBytes(item.Metrics.MemoryUsage)
 		}
-		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %d |\n",
+		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %d |\n",
 			item.Runner,
 			item.Model,
 			valueOrNA(item.RunID),
 			valueOrNA(item.PresentationTarget),
 			valueOrNA(item.ReviewVerdict),
+			markdownLinkOrNA("review.md", item.Artifacts.ReviewMD.URL),
 			item.Status,
 			item.RowCount,
 			sqlGen,
@@ -372,6 +373,13 @@ func renderMarkdown(report Report) string {
 		md.WriteString("\n")
 	}
 	return md.String()
+}
+
+func markdownLinkOrNA(label, href string) string {
+	if strings.TrimSpace(href) == "" {
+		return "n/a"
+	}
+	return fmt.Sprintf("[%s](%s)", label, href)
 }
 
 func renderQuestionSummary(items []RunSummary) string {
