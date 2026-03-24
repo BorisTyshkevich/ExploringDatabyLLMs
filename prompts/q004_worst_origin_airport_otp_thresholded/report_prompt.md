@@ -12,7 +12,12 @@ For each airport, quantify:
 - a high-delay measure that reflects the worse end of the delay distribution
 - the first and last dates represented in the data
 
-Return one SQL query that produces a ranked view of the weakest qualifying origin airports.
+Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
+
+- a ranked view of the weakest qualifying origin airports
+- a comparison view that makes the gap between the very worst airports and the middle of the ranked set easy to judge
+
+The proof query behind the worst-airport question should preserve the ranked airport-level rows needed for the dashboard, not just a single top airport or summary statistic.
 
 The output should let a BI dashboard answer:
 
@@ -20,6 +25,8 @@ The output should let a BI dashboard answer:
 - How large is the spread between the worst airport and the middle of the ranked set?
 - Are the weakest airports mostly major hubs, or is the bottom group more mixed?
 
-In the report, answer those questions directly in prose. Do not mainly describe the table structure or tell the reader how to interpret it.
+In the report, answer those questions directly in prose. Name the worst airport, describe the spread between the bottom and the middle using the verified result, and summarize whether the weakest group is mostly hubs or more mixed.
+
+Do not use fallback phrases such as "the worst airport" or "the bottom group" when your verified query results let you name the actual airport set directly.
 
 Keep the result business-readable and analytically sound. Exclude low-volume airports before ranking them.

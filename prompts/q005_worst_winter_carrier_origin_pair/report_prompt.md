@@ -13,7 +13,12 @@ For each qualifying pair, quantify:
 
 Rank the worst-performing winter pairs by on-time performance, while using the delay-cause mix as context rather than as the primary ranking driver.
 
-Return one SQL query that produces a ranked view of the weakest qualifying winter carrier-airport pairs.
+Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
+
+- a ranked view of the weakest qualifying winter carrier-airport pairs
+- a cause-composition view for the leading weak pairs that separates weather from operational causes
+
+The proof query behind the worst-pair question should preserve the ranked pair-level rows needed for the dashboard, not just a single worst pair or summary count.
 
 The output should let a BI dashboard answer:
 
@@ -21,6 +26,8 @@ The output should let a BI dashboard answer:
 - Are the worst pairs driven more by weather or by operational causes?
 - Are the weakest pairs concentrated in a small number of carriers or airports?
 
-In the report, answer those questions directly in prose. Do not mainly describe the table structure or tell the reader how to interpret it.
+In the report, answer those questions directly in prose. Name the worst winter pair, summarize whether the weakest pairs are driven more by weather or by operational causes, and state whether the weak set is concentrated in a small number of carriers or airports.
+
+Do not use fallback phrases such as "the worst pair" or "the weakest pairs" when your verified query results let you name the actual carrier-airport combinations directly.
 
 Keep the result business-readable and analytically sound. Exclude low-volume winter pairs before ranking them.

@@ -1,0 +1,9 @@
+subquestions:
+  - id: peak_month
+    text: Which month is the single worst American Airlines month for departure delays?
+  - id: origin_contributors
+    text: Which origins contribute most to that peak month?
+  - id: route_contributors
+    text: Which routes contribute most to that peak month?
+  - id: concentration_pattern
+    text: Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?

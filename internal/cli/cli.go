@@ -1730,6 +1730,14 @@ func selectPrimaryVisualQuery(question model.Question, visualInput model.VisualI
 	switch strings.TrimSpace(question.Meta.ID) {
 	case "q003":
 		preferredID = "worst_hotspot"
+	case "q002":
+		preferredID = "most_frequent_leader"
+	case "q004":
+		preferredID = "worst_airport"
+	case "q005":
+		preferredID = "worst_pair"
+	case "q006":
+		preferredID = "peak_month"
 	}
 	if preferredID != "" {
 		for _, item := range visualInput.QuerySummaries {
