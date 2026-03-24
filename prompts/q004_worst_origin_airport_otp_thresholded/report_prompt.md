@@ -19,7 +19,7 @@ Provide one proof query for each required business question. Across those proof 
 
 The proof query behind the worst-airport question should preserve the ranked airport-level rows needed for the dashboard, not just a single top airport or summary statistic.
 
-The output should let a BI dashboard answer:
+## Dashboard Questions
 
 - Which airport ranks worst on departure on-time performance?
 - How large is the spread between the worst airport and the middle of the ranked set?

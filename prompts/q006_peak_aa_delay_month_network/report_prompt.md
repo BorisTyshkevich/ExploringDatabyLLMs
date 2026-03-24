@@ -19,7 +19,7 @@ Provide one proof query for each required business question. Across those proof 
 
 The proof query behind the peak-month question should preserve the month-by-month network rows needed for the dashboard, not just the single worst month.
 
-The output should let a BI dashboard answer:
+## Dashboard Questions
 
 - Which month is the single worst American Airlines month for departure delays?
 - Which origins contribute most to that peak month?

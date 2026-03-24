@@ -1,7 +1,0 @@
-subquestions:
-  - id: worst_airport
-    text: Which airport ranks worst on departure on-time performance?
-  - id: spread_to_middle
-    text: How large is the spread between the worst airport and the middle of the ranked set?
-  - id: bottom_group_mix
-    text: Are the weakest airports mostly major hubs, or is the bottom group more mixed?

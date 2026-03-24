@@ -13,7 +13,7 @@ Provide one proof query for each required business question. Across those proof 
 
 The proof query behind the leading-carrier question should preserve the annual carrier-by-year leadership rows needed for the dashboard, not just a final overall count of years led.
 
-The output should let a BI dashboard answer:
+## Dashboard Questions
 
 - Which carrier leads most often across the full time range?
 - When leadership changes, how large is the swing versus the prior leader?

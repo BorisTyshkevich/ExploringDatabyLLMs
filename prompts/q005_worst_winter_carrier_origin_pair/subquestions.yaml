@@ -1,7 +1,0 @@
-subquestions:
-  - id: worst_pair
-    text: Which winter carrier-airport pair ranks worst overall?
-  - id: cause_mix
-    text: Are the worst pairs driven more by weather or by operational causes?
-  - id: concentration_pattern
-    text: Are the weakest pairs concentrated in a small number of carriers or airports?

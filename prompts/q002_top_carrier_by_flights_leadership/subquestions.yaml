@@ -1,9 +1,0 @@
-subquestions:
-  - id: most_frequent_leader
-    text: Which carrier leads most often across the full time range?
-  - id: leadership_swing
-    text: When leadership changes, how large is the swing versus the prior leader?
-  - id: sharpest_transition
-    text: Which transition is the sharpest?
-  - id: stability_pattern
-    text: Does the market show long stable eras, or frequent turnover at the top?

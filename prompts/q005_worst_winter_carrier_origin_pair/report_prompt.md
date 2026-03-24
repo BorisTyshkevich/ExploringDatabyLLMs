@@ -20,7 +20,7 @@ Provide one proof query for each required business question. Across those proof 
 
 The proof query behind the worst-pair question should preserve the ranked pair-level rows needed for the dashboard, not just a single worst pair or summary count.
 
-The output should let a BI dashboard answer:
+## Dashboard Questions
 
 - Which winter carrier-airport pair ranks worst overall?
 - Are the worst pairs driven more by weather or by operational causes?

@@ -19,7 +19,7 @@ Provide one proof query for each required business question. Across those proof 
 
 The monthly trend view should include only months that are credible for interpretation, not thin low-volume months that would add noise.
 
-The output should let a BI dashboard answer:
+## Dashboard Questions
 
 - Which destination and time block is the worst recurring hotspot?
 - Is that hotspot consistently bad across time, or concentrated in a narrower period?
