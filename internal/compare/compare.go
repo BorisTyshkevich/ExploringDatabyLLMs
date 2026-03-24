@@ -48,6 +48,7 @@ type RunSummary struct {
 	VisualGenMS        int64           `json:"presentation_provider_duration_ms,omitempty"`
 	VisualBuildMS      int64           `json:"presentation_build_duration_ms,omitempty"`
 	PresentationTarget string          `json:"presentation_target,omitempty"`
+	ReviewVerdict      string          `json:"review_verdict,omitempty"`
 	QuerySHA256        string          `json:"query_sha256,omitempty"`
 	RowCount           int             `json:"row_count"`
 	Columns            []string        `json:"columns,omitempty"`
@@ -196,6 +197,7 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 		VisualGenMS:        manifest.PresentationProviderDurationMs,
 		VisualBuildMS:      manifest.PresentationBuildDurationMs,
 		PresentationTarget: manifest.PresentationTarget,
+		ReviewVerdict:      manifest.ReviewVerdict,
 		QuerySHA256:        manifest.QuerySHA256,
 		RowCount:           manifest.ResultRowCount,
 	}
@@ -328,8 +330,8 @@ func renderMarkdown(report Report) string {
 	md.WriteString("\n\n")
 	md.WriteString(renderQuestionSummary(report.Runs))
 	md.WriteString("\n")
-	md.WriteString("| runner | model | run | target | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |\n")
-	md.WriteString("| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
+	md.WriteString("| runner | model | run | target | review | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |\n")
+	md.WriteString("| --- | --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
 	for _, item := range report.Runs {
 		sqlGen := formatOptionalDurationMS(item.SQLGenMS)
 		visualGen := formatOptionalDurationMS(item.VisualGenMS)
@@ -342,11 +344,12 @@ func renderMarkdown(report Report) string {
 			readRows = formatInt(item.Metrics.ReadRows)
 			memory = formatBytes(item.Metrics.MemoryUsage)
 		}
-		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %d |\n",
+		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %d |\n",
 			item.Runner,
 			item.Model,
 			valueOrNA(item.RunID),
 			valueOrNA(item.PresentationTarget),
+			valueOrNA(item.ReviewVerdict),
 			item.Status,
 			item.RowCount,
 			sqlGen,

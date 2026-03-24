@@ -22,6 +22,7 @@ import (
 
 type Provider interface {
 	GenerateSQL(context.Context, model.ProviderRequest) (model.ProviderResponse, error)
+	GenerateReview(context.Context, model.ProviderRequest) (model.ProviderResponse, error)
 	GeneratePresentation(context.Context, model.ProviderRequest) (model.ProviderResponse, error)
 }
 
@@ -49,6 +50,10 @@ func (p cliProvider) GenerateSQL(ctx context.Context, req model.ProviderRequest)
 
 func (p cliProvider) GeneratePresentation(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
 	return p.run(ctx, req, req.Prompt, codexVisualComplete(req.OutDir, req.Question.Meta.PresentationTarget))
+}
+
+func (p cliProvider) GenerateReview(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
+	return p.run(ctx, req, req.Prompt, codexReviewComplete(req.OutDir))
 }
 
 func (p cliProvider) run(ctx context.Context, req model.ProviderRequest, prompt string, codexComplete func(string) bool) (model.ProviderResponse, error) {
@@ -256,6 +261,17 @@ func codexVisualComplete(outDir, presentationTarget string) func(string) bool {
 	return func(raw string) bool {
 		_, htmlErr := extract.Block(raw, "html")
 		return htmlErr == nil
+	}
+}
+
+func codexReviewComplete(outDir string) func(string) bool {
+	reviewPath := filepath.Join(outDir, "review.md")
+	return func(string) bool {
+		data, err := os.ReadFile(reviewPath)
+		if err != nil {
+			return false
+		}
+		return strings.TrimSpace(string(data)) != ""
 	}
 }
 

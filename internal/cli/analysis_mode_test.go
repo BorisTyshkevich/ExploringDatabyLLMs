@@ -282,7 +282,7 @@ func writeTestQuestionRepoWithArtifacts(t *testing.T, repoRoot, analysisMode, ar
 	if err := os.WriteFile(filepath.Join(repoRoot, "datasets", "ontime", "mcp.yaml"), []byte("dataset: ontime\nmcp_url: "+newExecuteQueryServerURL(t)+"\ndefault_mcp_server_name: demo\n"), 0o644); err != nil {
 		t.Fatalf("write mcp.yaml: %v", err)
 	}
-	for _, name := range []string{"common.md", "common_report_multi_query_json.md", "common_report_templates.md", "common_visual.md", "common_visual_html.md", "common_visual_react.md", "common_visual_multi_query.md", "common_visual_dynamic.md", "common_visual_static.md"} {
+	for _, name := range []string{"common.md", "common_report_multi_query_json.md", "common_report_templates.md", "common_review.md", "common_visual.md", "common_visual_html.md", "common_visual_react.md", "common_visual_multi_query.md", "common_visual_dynamic.md", "common_visual_static.md"} {
 		src := filepath.Join("/Users/bvt/work/ExploringDatabyLLMs", "prompts", name)
 		data, err := os.ReadFile(src)
 		if err != nil {
@@ -296,7 +296,7 @@ func writeTestQuestionRepoWithArtifacts(t *testing.T, repoRoot, analysisMode, ar
 
 func writeFakeTemplateProvider(t *testing.T, repoRoot string) {
 	t.Helper()
-	script := "#!/usr/bin/env bash\nset -euo pipefail\ncat >/dev/null\nprintf 'SELECT 1\\n' > query.sql\nprintf '# Report\\n\\n{{data_overview_md}}\\n' > report.template.md\nprintf 'provider wrote template files\\n'\n"
+	script := "#!/usr/bin/env bash\nset -euo pipefail\ncat >/dev/null\nprintf 'SELECT 1\\n' > query.sql\nprintf '# Report\\n\\n{{data_overview_md}}\\n' > report.template.md\nprintf '# Analysis Review\\nVerdict: PASS\\n\\n## Summary\\nPass.\\n\\n## Findings\\nNone.\\n\\n## Suggested Prompt Fixes\\nNone.\\n' > review.md\nprintf 'provider wrote artifacts\\n'\n"
 	if err := os.WriteFile(filepath.Join(repoRoot, "fake-provider.sh"), []byte(script), 0o755); err != nil {
 		t.Fatalf("write fake provider: %v", err)
 	}

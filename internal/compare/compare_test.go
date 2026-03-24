@@ -23,6 +23,7 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 				Runner:             "codex",
 				Model:              "gpt-5.4",
 				PresentationTarget: "react",
+				ReviewVerdict:      "PASS",
 				Status:             model.RunStatusOK,
 				RowCount:           832,
 				SQLGenMS:           2400,
@@ -39,6 +40,7 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 				QuestionTitle: "Delta ATL departure delay hotspots by destination and time block",
 				Runner:        "gemini",
 				Model:         "gemini-2.5-pro",
+				ReviewVerdict: "FAIL",
 				Status:        model.RunStatusPartial,
 				RowCount:      0,
 				Warnings:      []string{"gemini/gemini-2.5-pro: query_log metrics not found"},
@@ -52,8 +54,8 @@ func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
 		"- Status: 1 run(s) did not finish cleanly: gemini/gemini-2.5-pro.",
 		"- Row counts: mismatch (0, 832).",
 		"- Fastest successful run: codex/gpt-5.4 at 900 ms.",
-		"| runner | model | run | target | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |",
-		"| codex | gpt-5.4 | n/a | react | ok | 832 | 2.40 s | 5.10 s | 1.30 s | 900 ms | 1,146,680,615 | 270.0 MiB | 0 |",
+		"| runner | model | run | target | review | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |",
+		"| codex | gpt-5.4 | n/a | react | PASS | ok | 832 | 2.40 s | 5.10 s | 1.30 s | 900 ms | 1,146,680,615 | 270.0 MiB | 0 |",
 		"### Warnings",
 	} {
 		if !strings.Contains(got, want) {
@@ -126,6 +128,8 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		"{{query_sql_paths_md}}",
 		"REPORT:",
 		"{{report_md_paths_md}}",
+		"REVIEW:",
+		"{{review_md_paths_md}}",
 		"VISUAL:",
 		"{{visual_html_paths_md}}",
 		"PUBLISHED:",
@@ -173,7 +177,7 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		if err := os.MkdirAll(runDir, 0o755); err != nil {
 			t.Fatalf("mkdir run dir: %v", err)
 		}
-		for _, name := range []string{"query.sql", "report.md", "visual.html", "result.json"} {
+		for _, name := range []string{"query.sql", "report.md", "review.md", "visual.html", "result.json"} {
 			if err := os.WriteFile(filepath.Join(runDir, name), []byte("x"), 0o644); err != nil {
 				t.Fatalf("write artifact %s: %v", name, err)
 			}
@@ -196,10 +200,12 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 	for _, want := range []string{
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/report.md",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/review.md",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/report.md",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/visual.html",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freport.md",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freview.md",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_src",

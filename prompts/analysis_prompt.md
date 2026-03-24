@@ -18,7 +18,6 @@ Question files:
 
 - Question prompt: `{{question_prompt_path}}` (`{{question_prompt_url}}`)
 - Visual prompt: `{{visual_prompt_path}}` (`{{visual_prompt_url}}`)
-- Compare contract: `{{compare_contract_path}}` (`{{compare_contract_url}}`)
 
 Published run artifact links to use in the final Markdown:
 
@@ -35,6 +34,10 @@ Query SQL files:
 Report Markdown files:
 
 {{report_md_paths_md}}
+
+Review Markdown files:
+
+{{review_md_paths_md}}
 
 Visual HTML files:
 
@@ -55,6 +58,7 @@ Your job:
 - verify whether outputs actually differ before claiming they differ
 - quantify differences when they exist
 - mention performance differences only from verified query-log metrics
+- use `review.md` when discussing correctness, prompt-alignment issues, or known failures
 - describe SQL-shape differences only when supported by the actual `query.sql` files
 - cite `report.md` and `visual.html` artifacts when discussing presentation outputs
 - prefer links to local artifacts instead of long pasted SQL

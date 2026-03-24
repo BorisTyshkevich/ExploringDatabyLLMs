@@ -24,6 +24,7 @@ type ArtifactRef struct {
 type ArtifactLinks struct {
 	QuerySQL     ArtifactRef `json:"query_sql,omitempty"`
 	ReportMD     ArtifactRef `json:"report_md,omitempty"`
+	ReviewMD     ArtifactRef `json:"review_md,omitempty"`
 	ResultJSON   ArtifactRef `json:"result_json,omitempty"`
 	VisualHTML   ArtifactRef `json:"visual_html,omitempty"`
 	VisualSource ArtifactRef `json:"visual_source,omitempty"`
@@ -34,6 +35,7 @@ func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
 	return ArtifactLinks{
 		QuerySQL:     buildArtifactRef(runsRoot, filepath.Join(runDir, "query.sql"), "sql"),
 		ReportMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
+		ReviewMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "review.md"), "md"),
 		ResultJSON:   buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
 		VisualHTML:   buildArtifactRef(runsRoot, filepath.Join(runDir, "visual.html"), "html"),
 		VisualSource: buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_src"), "dir"),

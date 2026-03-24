@@ -83,6 +83,9 @@ type ArtifactPaths struct {
 	AnswerReportRaw       string `json:"answer_report_raw"`
 	AnswerRawJSON         string `json:"answer_raw_json,omitempty"`
 	AnalysisJSON          string `json:"analysis_json,omitempty"`
+	PromptReviewRaw       string `json:"prompt_review_raw,omitempty"`
+	AnswerReviewRaw       string `json:"answer_review_raw,omitempty"`
+	ReviewMD              string `json:"review_md,omitempty"`
 	QuerySQL              string `json:"query_sql"`
 	ResultTSV             string `json:"result_tsv,omitempty"`
 	ResultJSON            string `json:"result_json"`
@@ -104,6 +107,7 @@ type ArtifactPaths struct {
 type RunPhases struct {
 	SQLGeneration          PhaseStatus `json:"sql_generation"`
 	SQLExecution           PhaseStatus `json:"sql_execution"`
+	Review                 PhaseStatus `json:"review"`
 	PresentationGeneration PhaseStatus `json:"presentation_generation"`
 	PresentationRender     PhaseStatus `json:"presentation_render"`
 }
@@ -119,6 +123,9 @@ type RunManifest struct {
 	Model                           string            `json:"model"`
 	AnalysisMode                    string            `json:"analysis_mode,omitempty"`
 	PresentationTarget              string            `json:"presentation_target,omitempty"`
+	ReviewRunner                    string            `json:"review_runner,omitempty"`
+	ReviewModel                     string            `json:"review_model,omitempty"`
+	ReviewVerdict                   string            `json:"review_verdict,omitempty"`
 	CLIBin                          string            `json:"cli_bin"`
 	MCPServerName                   string            `json:"mcp_server_name"`
 	MCPConfigSource                 string            `json:"mcp_config_source"`
@@ -202,42 +209,6 @@ type VisualInputSummary struct {
 type NumericColumnSpec struct {
 	Name         string  `yaml:"name" json:"name"`
 	ToleranceAbs float64 `yaml:"tolerance_abs" json:"tolerance_abs"`
-}
-
-type RowFilter struct {
-	IncludeRowTypes []string       `yaml:"include_row_types" json:"include_row_types"`
-	Where           map[string]any `yaml:"where" json:"where"`
-}
-
-type NormalizationSpec struct {
-	TrimStrings     bool     `yaml:"trim_strings" json:"trim_strings"`
-	NullEquivalents []string `yaml:"null_equivalents" json:"null_equivalents"`
-}
-
-type ComplianceSpec struct {
-	RequireNonemptyRows   bool `yaml:"require_nonempty_rows" json:"require_nonempty_rows"`
-	RequireUniqueKeys     bool `yaml:"require_unique_keys" json:"require_unique_keys"`
-	RequireReferenceMatch bool `yaml:"require_reference_match" json:"require_reference_match"`
-}
-
-type CompareColumns struct {
-	Exact   []string            `yaml:"exact" json:"exact"`
-	Numeric []NumericColumnSpec `yaml:"numeric" json:"numeric"`
-}
-
-type CompareContract struct {
-	Version         int                 `yaml:"version" json:"version"`
-	RowFilter       RowFilter           `yaml:"row_filter" json:"row_filter"`
-	KeyColumns      []string            `yaml:"key_columns" json:"key_columns"`
-	CompareColumns  CompareColumns      `yaml:"compare_columns" json:"compare_columns"`
-	OptionalColumns []string            `yaml:"optional_columns" json:"optional_columns"`
-	HeaderAliases   map[string][]string `yaml:"header_aliases" json:"header_aliases"`
-	Normalization   NormalizationSpec   `yaml:"normalization" json:"normalization"`
-	Compliance      ComplianceSpec      `yaml:"compliance" json:"compliance"`
-}
-
-type CompareContractFile struct {
-	CompareContract CompareContract `yaml:"compare_contract" json:"compare_contract"`
 }
 
 type QueryLogMetrics struct {

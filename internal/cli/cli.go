@@ -186,6 +186,8 @@ func runRun(ctx context.Context, args []string) error {
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
+	reviewRunner := fs.String("review-runner", "", "Runner for the mandatory post-analysis review; default: same as the generation runner")
+	reviewModel := fs.String("review-model", "", "Model for the mandatory post-analysis review; default: same as the generation model")
 	analysisMode := fs.String("analysis-mode", "", "Override analysis mode only between template_files and manual_templates")
 	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	manual := fs.Bool("manual", false, "Alias for --analysis-mode manual_templates")
@@ -232,6 +234,8 @@ func runRun(ctx context.Context, args []string) error {
 			QuestionRef:          *questionRef,
 			Runner:               runner,
 			Model:                modelName,
+			ReviewRunner:         *reviewRunner,
+			ReviewModel:          *reviewModel,
 			Dataset:              *datasetName,
 			MCPURL:               *mcpURL,
 			MCPServer:            *mcpServer,
@@ -443,6 +447,16 @@ func executeCompare(ctx context.Context, opts compareOptions) error {
 	return os.WriteFile(paths.ReportMD, []byte(reportMD+"\n"), 0o644)
 }
 
+func reviewCLIBin(opts runAnalysisReviewOptions) string {
+	if strings.TrimSpace(opts.CLIBin) == "" {
+		return ""
+	}
+	if strings.TrimSpace(opts.Manifest.ReviewRunner) != "" && strings.TrimSpace(opts.Manifest.ReviewRunner) != strings.TrimSpace(opts.Manifest.Runner) {
+		return ""
+	}
+	return opts.CLIBin
+}
+
 func compareResolveMCPURL(cfg model.DatasetConfig, explicitURL, explicitToken string) (string, string, error) {
 	if explicitToken != "" && explicitURL == "" {
 		baseURL := cfg.MCPBaseURL
@@ -626,6 +640,8 @@ type runOptions struct {
 	QuestionRef          string
 	Runner               string
 	Model                string
+	ReviewRunner         string
+	ReviewModel          string
 	Dataset              string
 	AnalysisModeOverride string
 	MCPURL               string
@@ -721,7 +737,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	artifacts := runs.DefaultArtifacts(outDir, question.PresentationEnabled)
 	startedAt := time.Now().UTC()
 	manifest := model.RunManifest{
-		SchemaVersion:      "3",
+		SchemaVersion:      "4",
 		Status:             model.RunStatusFailed,
 		QuestionID:         question.Meta.ID,
 		QuestionSlug:       question.Meta.Slug,
@@ -731,6 +747,8 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		Model:              opts.Model,
 		AnalysisMode:       string(analysisMode),
 		PresentationTarget: normalizePresentationTarget(question.Meta.PresentationTarget),
+		ReviewRunner:       firstNonEmpty(opts.ReviewRunner, opts.Runner),
+		ReviewModel:        firstNonEmpty(opts.ReviewModel, opts.Model),
 		MCPServerName:      datasets.ResolveMCPServerName(cfg, opts.MCPServer),
 		MCPConfigSource:    filepath.Join("datasets", datasetName, "mcp.yaml"),
 		StartedAt:          startedAt,
@@ -738,6 +756,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		Phases: model.RunPhases{
 			SQLGeneration:          model.PhaseStatusNotRun,
 			SQLExecution:           model.PhaseStatusNotRun,
+			Review:                 model.PhaseStatusNotRun,
 			PresentationGeneration: model.PhaseStatusNotRun,
 			PresentationRender:     model.PhaseStatusNotRun,
 		},
@@ -781,6 +800,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		}
 		manifest.Phases.SQLGeneration = model.PhaseStatusSkipped
 		manifest.Phases.SQLExecution = model.PhaseStatusNotRun
+		manifest.Phases.Review = model.PhaseStatusSkipped
 		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
 		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
 		manifest.Status = model.RunStatusPartial
@@ -827,6 +847,27 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		if err := writePresentationPromptFromSummary(artifacts.PromptPresentationRaw, question, cfg, materialized.Result, materialized.SQL, mcpURL, token, materialized.VisualInput); err != nil {
 			return err
 		}
+	}
+	if err := runAnalysisReview(ctx, runAnalysisReviewOptions{
+		Question:     question,
+		Config:       cfg,
+		Manifest:     &manifest,
+		Artifacts:    artifacts,
+		OutDir:       outDir,
+		AnalysisMode: analysisMode,
+		CLIBin:       opts.CLIBin,
+		MCPURL:       mcpURL,
+		MCPToken:     token,
+		Verbose:      opts.Verbose,
+	}); err != nil {
+		return err
+	}
+	if manifest.ReviewVerdict != "PASS" {
+		manifest.Status = model.RunStatusFailed
+		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
+		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
+		logf(opts.Verbose, opts.Model, "run status=failed review=fail")
+		return nil
 	}
 
 	if !question.VisualEnabled || !opts.WithVisual {
@@ -929,6 +970,152 @@ type materializedAnalysis struct {
 	Result      model.CanonicalResult
 	VisualInput model.VisualInputSummary
 	SQL         string
+}
+
+type runAnalysisReviewOptions struct {
+	Question     model.Question
+	Config       model.DatasetConfig
+	Manifest     *model.RunManifest
+	Artifacts    model.ArtifactPaths
+	OutDir       string
+	AnalysisMode model.AnalysisMode
+	CLIBin       string
+	MCPURL       string
+	MCPToken     string
+	Verbose      bool
+}
+
+func runAnalysisReview(ctx context.Context, opts runAnalysisReviewOptions) error {
+	logf(opts.Verbose, opts.Manifest.Model, "phase=review status=started")
+	prompt, err := buildReviewPrompt(opts)
+	if err != nil {
+		opts.Manifest.Phases.Review = model.PhaseStatusFailed
+		return err
+	}
+	if err := os.WriteFile(opts.Artifacts.PromptReviewRaw, []byte(prompt), 0o644); err != nil {
+		opts.Manifest.Phases.Review = model.PhaseStatusFailed
+		return err
+	}
+	reviewProvider, err := providers.New(firstNonEmpty(opts.Manifest.ReviewRunner, opts.Manifest.Runner))
+	if err != nil {
+		opts.Manifest.Phases.Review = model.PhaseStatusFailed
+		return err
+	}
+	commandTimeoutSec := opts.Question.Meta.CommandTimeoutSec
+	if commandTimeoutSec <= 0 {
+		commandTimeoutSec = defaultCommandTimeoutSec
+	}
+	req := model.ProviderRequest{
+		Question:      opts.Question,
+		Dataset:       opts.Config,
+		Prompt:        prompt,
+		OutDir:        opts.OutDir,
+		Model:         firstNonEmpty(opts.Manifest.ReviewModel, opts.Manifest.Model),
+		AnalysisMode:  string(opts.AnalysisMode),
+		MCPURL:        opts.MCPURL,
+		MCPServerName: opts.Manifest.MCPServerName,
+		MCPToken:      opts.MCPToken,
+		CLIBin:        opts.CLIBin,
+		Verbose:       opts.Verbose,
+	}
+	reviewCtx, cancel := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
+	defer cancel()
+	resp, providerErr := reviewProvider.GenerateReview(reviewCtx, req)
+	_ = os.WriteFile(opts.Artifacts.AnswerReviewRaw, []byte(resp.RawOutput), 0o644)
+	if providerErr != nil {
+		opts.Manifest.Metadata = addMetadata(opts.Manifest.Metadata, "review_warning", providerErr.Error())
+	}
+	reviewMarkdown, err := loadReviewArtifact(opts.Artifacts.ReviewMD)
+	if err != nil {
+		opts.Manifest.Phases.Review = model.PhaseStatusFailed
+		return err
+	}
+	verdict, err := parseReviewVerdict(reviewMarkdown)
+	if err != nil {
+		opts.Manifest.Phases.Review = model.PhaseStatusFailed
+		return err
+	}
+	opts.Manifest.ReviewVerdict = verdict
+	opts.Manifest.Phases.Review = model.PhaseStatusOK
+	logf(opts.Verbose, opts.Manifest.Model, "phase=review status=ok verdict=%s", verdict)
+	return nil
+}
+
+func buildReviewPrompt(opts runAnalysisReviewOptions) (string, error) {
+	inputs := prompts.ReviewPromptInputs{
+		Question:        opts.Question,
+		AnalysisMode:    opts.AnalysisMode,
+		ReportMarkdown:  mustReadOptional(opts.Artifacts.ReportMD),
+		AnswerRawJSON:   mustReadOptional(opts.Artifacts.AnswerRawJSON),
+		AnalysisJSON:    mustReadOptional(opts.Artifacts.AnalysisJSON),
+		QuerySQL:        mustReadOptional(opts.Artifacts.QuerySQL),
+		ResultJSON:      mustReadOptional(opts.Artifacts.ResultJSON),
+		VisualInputJSON: mustReadOptional(opts.Artifacts.VisualInputJSON),
+	}
+	if opts.AnalysisMode == model.AnalysisModeMultiQueryJSON {
+		queryDir := filepath.Join(opts.OutDir, "queries")
+		resultDir := filepath.Join(opts.OutDir, "results")
+		inputs.Queries = readDirArtifacts(queryDir, ".sql")
+		inputs.Results = readDirArtifacts(resultDir, ".json")
+	}
+	return prompts.BuildReviewPrompt(inputs)
+}
+
+func mustReadOptional(path string) string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func readDirArtifacts(dir, suffix string) map[string]string {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil
+	}
+	out := map[string]string{}
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), suffix) {
+			continue
+		}
+		data, err := os.ReadFile(filepath.Join(dir, entry.Name()))
+		if err != nil {
+			continue
+		}
+		out[strings.TrimSuffix(entry.Name(), suffix)] = string(data)
+	}
+	if len(out) == 0 {
+		return nil
+	}
+	return out
+}
+
+func loadReviewArtifact(path string) (string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("read review.md: %w", err)
+	}
+	content := strings.TrimSpace(string(data))
+	if content == "" {
+		return "", fmt.Errorf("review.md is empty")
+	}
+	return content, nil
+}
+
+func parseReviewVerdict(markdown string) (string, error) {
+	for _, line := range strings.Split(markdown, "\n") {
+		line = strings.TrimSpace(line)
+		if !strings.HasPrefix(line, "Verdict:") {
+			continue
+		}
+		verdict := strings.TrimSpace(strings.TrimPrefix(line, "Verdict:"))
+		if verdict == "PASS" || verdict == "FAIL" {
+			return verdict, nil
+		}
+		return "", fmt.Errorf("review.md has unsupported verdict %q", verdict)
+	}
+	return "", fmt.Errorf("review.md missing Verdict: PASS|FAIL line")
 }
 
 func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
@@ -1335,7 +1522,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	}
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, true)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
-	manifest.SchemaVersion = "3"
+	manifest.SchemaVersion = "4"
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	logf(opts.Verbose, manifest.Model, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	var querySQL []byte
@@ -1514,7 +1701,7 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	}
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
-	manifest.SchemaVersion = "3"
+	manifest.SchemaVersion = "4"
 	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
 	manifest.AnalysisMode = string(analysisMode)
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
@@ -1582,7 +1769,7 @@ func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Q
 		return model.RunManifest{}, model.Question{}, fmt.Errorf("infer question from run dir: %w", err)
 	}
 	manifest = model.RunManifest{
-		SchemaVersion:      "3",
+		SchemaVersion:      "4",
 		Status:             model.RunStatusFailed,
 		QuestionID:         question.Meta.ID,
 		QuestionSlug:       question.Meta.Slug,
@@ -1597,6 +1784,7 @@ func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Q
 		Phases: model.RunPhases{
 			SQLGeneration:          model.PhaseStatusNotRun,
 			SQLExecution:           model.PhaseStatusNotRun,
+			Review:                 model.PhaseStatusNotRun,
 			PresentationGeneration: model.PhaseStatusNotRun,
 			PresentationRender:     model.PhaseStatusNotRun,
 		},

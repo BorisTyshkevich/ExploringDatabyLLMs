@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"qforge/internal/model"
@@ -14,6 +15,7 @@ const (
 	commonPromptFile                 = "common.md"
 	commonReportMultiQueryPromptFile = "common_report_multi_query_json.md"
 	commonReportTemplatePromptFile   = "common_report_templates.md"
+	commonReviewPromptFile           = "common_review.md"
 	commonVisualPromptFile           = "common_visual.md"
 	commonVisualHTMLPromptFile       = "common_visual_html.md"
 	commonVisualReactPromptFile      = "common_visual_react.md"
@@ -105,6 +107,83 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 	}
 	sections = append(sections, RenderTemplate(modeVisual, values))
 	sections = append(sections, RenderTemplate(targetVisual, values))
+	return joinSections(sections), nil
+}
+
+type ReviewPromptInputs struct {
+	Question        model.Question
+	AnalysisMode    model.AnalysisMode
+	ReportMarkdown  string
+	AnswerRawJSON   string
+	AnalysisJSON    string
+	QuerySQL        string
+	ResultJSON      string
+	VisualInputJSON string
+	Queries         map[string]string
+	Results         map[string]string
+}
+
+func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
+	common, err := loadCommonPrompt(inputs.Question, commonPromptFile)
+	if err != nil {
+		return "", err
+	}
+	review, err := loadCommonPrompt(inputs.Question, commonReviewPromptFile)
+	if err != nil {
+		return "", err
+	}
+	values := map[string]string{
+		"question_title":     inputs.Question.Meta.Title,
+		"dataset_name":       strings.TrimSpace(inputs.Question.Meta.Dataset),
+		"question_prompt_md": questionPromptForAnalysis(inputs.Question),
+	}
+	sections := []string{RenderTemplate(common, values), RenderTemplate(review, values)}
+	sections = append(sections,
+		"Question-specific guidance:\n\n"+strings.TrimSpace(inputs.Question.Prompt),
+		"Generated report.md:\n\n```md\n"+strings.TrimSpace(inputs.ReportMarkdown)+"\n```",
+	)
+	if inputs.AnalysisMode == model.AnalysisModeMultiQueryJSON {
+		if strings.TrimSpace(inputs.AnswerRawJSON) != "" {
+			sections = append(sections, "Saved answer.raw.json:\n\n```json\n"+strings.TrimSpace(inputs.AnswerRawJSON)+"\n```")
+		}
+		if strings.TrimSpace(inputs.AnalysisJSON) != "" {
+			sections = append(sections, "Saved analysis.json:\n\n```json\n"+strings.TrimSpace(inputs.AnalysisJSON)+"\n```")
+		}
+		if strings.TrimSpace(inputs.VisualInputJSON) != "" {
+			sections = append(sections, "Saved visual_input.json:\n\n```json\n"+strings.TrimSpace(inputs.VisualInputJSON)+"\n```")
+		}
+		if len(inputs.Queries) > 0 {
+			var parts []string
+			keys := make([]string, 0, len(inputs.Queries))
+			for key := range inputs.Queries {
+				keys = append(keys, key)
+			}
+			sort.Strings(keys)
+			for _, key := range keys {
+				parts = append(parts, fmt.Sprintf("queries/%s.sql:\n```sql\n%s\n```", key, strings.TrimSpace(inputs.Queries[key])))
+			}
+			sections = append(sections, "Proof queries:\n\n"+strings.Join(parts, "\n\n"))
+		}
+		if len(inputs.Results) > 0 {
+			var parts []string
+			keys := make([]string, 0, len(inputs.Results))
+			for key := range inputs.Results {
+				keys = append(keys, key)
+			}
+			sort.Strings(keys)
+			for _, key := range keys {
+				parts = append(parts, fmt.Sprintf("results/%s.json:\n```json\n%s\n```", key, strings.TrimSpace(inputs.Results[key])))
+			}
+			sections = append(sections, "Executed query results:\n\n"+strings.Join(parts, "\n\n"))
+		}
+	} else {
+		if strings.TrimSpace(inputs.QuerySQL) != "" {
+			sections = append(sections, "Saved query.sql:\n\n```sql\n"+strings.TrimSpace(inputs.QuerySQL)+"\n```")
+		}
+		if strings.TrimSpace(inputs.ResultJSON) != "" {
+			sections = append(sections, "Saved result.json:\n\n```json\n"+strings.TrimSpace(inputs.ResultJSON)+"\n```")
+		}
+	}
 	return joinSections(sections), nil
 }
 

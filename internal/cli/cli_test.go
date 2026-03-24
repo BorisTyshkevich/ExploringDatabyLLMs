@@ -110,6 +110,22 @@ func TestApplyPresentationTargetOverride(t *testing.T) {
 	}
 }
 
+func TestParseReviewVerdict(t *testing.T) {
+	got, err := parseReviewVerdict("# Analysis Review\nVerdict: PASS\n")
+	if err != nil {
+		t.Fatalf("parseReviewVerdict returned error: %v", err)
+	}
+	if got != "PASS" {
+		t.Fatalf("unexpected verdict: %q", got)
+	}
+	if _, err := parseReviewVerdict("# Analysis Review\nVerdict: MAYBE\n"); err == nil {
+		t.Fatalf("expected unsupported verdict to fail")
+	}
+	if _, err := parseReviewVerdict("# Analysis Review\n## Summary\n"); err == nil {
+		t.Fatalf("expected missing verdict to fail")
+	}
+}
+
 func TestPresentationPhasesOKRejectsFailures(t *testing.T) {
 	if presentationPhasesOK(model.RunPhases{
 		PresentationGeneration: model.PhaseStatusSkipped,

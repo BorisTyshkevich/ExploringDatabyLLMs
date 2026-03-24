@@ -171,22 +171,3 @@ func requiresArtifact(required, name string) bool {
 	}
 	return false
 }
-
-func LoadCompareContract(question model.Question) (*model.CompareContract, error) {
-	path := filepath.Join(question.Dir, "compare.yaml")
-	data, err := os.ReadFile(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil
-		}
-		return nil, err
-	}
-	var file model.CompareContractFile
-	if err := yaml.Unmarshal(data, &file); err != nil {
-		return nil, fmt.Errorf("parse %s: %w", path, err)
-	}
-	if len(file.CompareContract.Normalization.NullEquivalents) == 0 {
-		file.CompareContract.Normalization.NullEquivalents = []string{"", "NULL", "null"}
-	}
-	return &file.CompareContract, nil
-}

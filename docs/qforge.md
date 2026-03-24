@@ -22,6 +22,10 @@ This repository still contains historical Bash and Python benchmark code, but th
    - `multi_query_json`: the model writes `answer.raw.json` with ordered subquestion answers and proof queries
    - `template_files`: the model writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
+2. Mandatory analysis review during `run`
+   - after qforge executes SQL and renders `report.md`, it makes a separate review-model call
+   - the reviewer writes `review.md` with `Verdict: PASS|FAIL`
+   - `qforge run` stops before visual generation if the review verdict is `FAIL`
 2. Optional presentation generation
    - the model writes final `html`
    - the final `report.md` is rendered by the harness from the saved analysis artifact plus JSON-derived sections
@@ -43,6 +47,8 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
   - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` multi-query contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for direct `query.sql` plus `report.template.md` output
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_review.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_review.md)
+  - shared analysis-review contract for the mandatory post-analysis reviewer
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
   - shared presentation and `visual.html` rules
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_html.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_html.md)
@@ -124,6 +130,12 @@ Run one question:
 
 ```bash
 ./scripts/qforge run -q q001 -r claude -v
+```
+
+Run one question with an explicit separate reviewer:
+
+```bash
+./scripts/qforge run -q q001 -r claude --model sonnet --review-runner codex --review-model gpt-5.4 -v
 ```
 
 Stage a manual-template run without invoking the provider:

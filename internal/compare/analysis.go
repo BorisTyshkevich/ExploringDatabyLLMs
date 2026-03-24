@@ -29,11 +29,10 @@ func BuildAnalysisPrompt(codeRoot, runsRoot string, question model.Question, rep
 		"question_prompt_url":        qforgeRepoURL(codeRoot, filepath.Join(question.Dir, "report_prompt.md")),
 		"visual_prompt_path":         optionalPath(codeRoot, filepath.Join(question.Dir, "visual_prompt.md")),
 		"visual_prompt_url":          optionalURL(codeRoot, filepath.Join(question.Dir, "visual_prompt.md")),
-		"compare_contract_path":      optionalPath(codeRoot, filepath.Join(question.Dir, "compare.yaml")),
-		"compare_contract_url":       optionalURL(codeRoot, filepath.Join(question.Dir, "compare.yaml")),
 		"run_dirs_md":                bulletList(repoRelativePaths(runsRoot, runDirs(report.Runs))),
 		"query_sql_paths_md":         bulletList(repoRelativePaths(runsRoot, querySQLPaths(report.Runs))),
 		"report_md_paths_md":         bulletList(repoRelativePaths(runsRoot, reportMDPaths(report.Runs))),
+		"review_md_paths_md":         bulletList(repoRelativePaths(runsRoot, reviewMDPaths(report.Runs))),
 		"visual_html_paths_md":       bulletList(repoRelativePaths(runsRoot, visualHTMLPaths(report.Runs))),
 		"result_json_paths_md":       bulletList(repoRelativePaths(runsRoot, resultJSONPaths(report.Runs))),
 		"published_run_artifacts_md": renderPublishedRunArtifacts(report.Runs),
@@ -109,6 +108,14 @@ func reportMDPaths(items []RunSummary) []string {
 	return out
 }
 
+func reviewMDPaths(items []RunSummary) []string {
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		out = append(out, filepath.Join(item.RunDir, "review.md"))
+	}
+	return out
+}
+
 func visualHTMLPaths(items []RunSummary) []string {
 	out := make([]string, 0, len(items))
 	for _, item := range items {
@@ -159,6 +166,9 @@ func renderPublishedLinks(links ArtifactLinks) string {
 	if links.ReportMD.URL != "" {
 		parts = append(parts, fmt.Sprintf("report.md: %s", links.ReportMD.URL))
 	}
+	if links.ReviewMD.URL != "" {
+		parts = append(parts, fmt.Sprintf("review.md: %s", links.ReviewMD.URL))
+	}
 	if links.ResultJSON.URL != "" {
 		parts = append(parts, fmt.Sprintf("result.json: %s", links.ResultJSON.URL))
 	}
@@ -179,7 +189,7 @@ func renderPublishedLinks(links ArtifactLinks) string {
 
 func existingLocalPaths(links ArtifactLinks) []string {
 	var out []string
-	for _, ref := range []ArtifactRef{links.QuerySQL, links.ReportMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
+	for _, ref := range []ArtifactRef{links.QuerySQL, links.ReportMD, links.ReviewMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
 		if ref.LocalPath != "" {
 			out = append(out, ref.LocalPath)
 		}

@@ -155,6 +155,32 @@ func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.
 	}
 }
 
+func TestBuildReviewPromptIncludesRunArtifacts(t *testing.T) {
+	question := model.Question{
+		Dir:    filepath.Join("..", "..", "prompts", "q004_worst_origin_airport_otp_thresholded"),
+		Meta:   model.QuestionMeta{Title: "Worst origin airports", AnalysisMode: string(model.AnalysisModeMultiQueryJSON)},
+		Prompt: "Question-specific SQL guidance.\n\n## Dashboard Questions\n\n- Which airport ranks worst?\n- How wide is the spread?",
+	}
+	got, err := BuildReviewPrompt(ReviewPromptInputs{
+		Question:        question,
+		AnalysisMode:    model.AnalysisModeMultiQueryJSON,
+		ReportMarkdown:  "# Report",
+		AnswerRawJSON:   "{\"subquestions\":[]}",
+		AnalysisJSON:    "{\"subquestions\":[]}",
+		VisualInputJSON: "{\"query_summaries\":[]}",
+		Queries:         map[string]string{"q1": "SELECT 1"},
+		Results:         map[string]string{"q1": "{\"row_count\":1}"},
+	})
+	if err != nil {
+		t.Fatalf("BuildReviewPrompt returned error: %v", err)
+	}
+	for _, want := range []string{"Return the final review by writing `review.md`", "## Dashboard Questions", "Generated report.md:", "queries/q1.sql:", "results/q1.json:"} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected review prompt to contain %q, got: %s", want, got)
+		}
+	}
+}
+
 func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
 		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),

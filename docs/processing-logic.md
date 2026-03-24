@@ -12,6 +12,7 @@ This document describes the current end-to-end processing flow for `qforge`: wha
    - `template_files`: the provider writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages prompts only, then a human writes `query.sql` and `report.template.md`
    - the harness loads the saved analysis artifacts, executes SQL itself, and renders `report.md`
+   - during `qforge run`, the harness then performs a mandatory post-analysis review and writes `review.md`
 2. visual phase
    - optional, controlled by `run --with-visual` or by `process-visual`
    - the provider receives `query.sql` plus a harness-generated visual input summary and generates only `visual.html`
@@ -99,6 +100,7 @@ After the provider returns, qforge:
 7. writes `result.json` or named per-query result summaries
 8. writes `visual_input.json`
 9. renders final `report.md`
+10. during `qforge run`, calls the review model and writes `review.md`
 
 Phase 1 fails if:
 
@@ -175,6 +177,9 @@ Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 - `answer.report.raw.md`
 - `answer.raw.json`
 - `analysis.json`
+- `prompt.review.md`
+- `answer.review.raw.md`
+- `review.md`
 - `query.sql`
 - `report.template.md`
 - `result.json`
@@ -193,6 +198,7 @@ Source-of-truth artifacts:
   - `answer.raw.json` for `multi_query_json`
   - `query.sql` + `report.template.md` for `template_files` and `manual_templates`
 - normalized analysis snapshot: `analysis.json`
+- review artifact: `review.md`
 - executed SQL: `query.sql`
 - canonical result: `result.json`
 - visual grounding summary: `visual_input.json`

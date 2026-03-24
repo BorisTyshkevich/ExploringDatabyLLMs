@@ -89,12 +89,51 @@ func TestCodexCompletionChecks(t *testing.T) {
 	if !codexVisualComplete(tmpDir, "html")(presentationRaw) {
 		t.Fatalf("expected presentation completion checker to accept fenced html")
 	}
+	if err := os.WriteFile(filepath.Join(tmpDir, "review.md"), []byte("# Analysis Review\nVerdict: PASS\n"), 0o644); err != nil {
+		t.Fatalf("write review.md: %v", err)
+	}
+	if !codexReviewComplete(tmpDir)("") {
+		t.Fatalf("expected review completion checker to accept review.md")
+	}
 
 	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeMultiQueryJSON)("") {
 		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
 	if codexVisualComplete(tmpDir, "html")("```report\nonly report\n```") {
 		t.Fatalf("did not expect visual checker to accept non-html output")
+	}
+}
+
+func TestRunCodexRecoversFromStableReviewFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "fake-codex.sh")
+	script := "#!/usr/bin/env bash\n" +
+		"set -euo pipefail\n" +
+		"while [[ $# -gt 0 ]]; do shift; done\n" +
+		"cat >/dev/null\n" +
+		"cat > review.md <<'EOF'\n" +
+		"# Analysis Review\nVerdict: PASS\n\n## Summary\nok\n\n## Findings\nnone\n\n## Suggested Prompt Fixes\nnone\n" +
+		"EOF\n" +
+		"echo 'review written'\n" +
+		"sleep 30\n"
+	if err := os.WriteFile(scriptPath, []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake codex: %v", err)
+	}
+	req := model.ProviderRequest{
+		OutDir:        tmpDir,
+		Model:         "gpt-5.4",
+		MCPURL:        "https://example.invalid/http",
+		MCPServerName: "altinity_ontime_demo",
+		CLIBin:        scriptPath,
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+	resp, err := cliProvider{name: "codex", defaultBin: scriptPath}.GenerateReview(ctx, req)
+	if err != nil {
+		t.Fatalf("GenerateReview returned error: %v", err)
+	}
+	if !strings.Contains(resp.Stdout, "review written") {
+		t.Fatalf("unexpected stdout: %q", resp.Stdout)
 	}
 }
 
