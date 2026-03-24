@@ -165,6 +165,12 @@ func renderPublishedLinks(links ArtifactLinks) string {
 	if links.VisualHTML.URL != "" {
 		parts = append(parts, fmt.Sprintf("visual.html: %s", links.VisualHTML.URL))
 	}
+	if links.VisualSource.URL != "" {
+		parts = append(parts, fmt.Sprintf("visual_src: %s", links.VisualSource.URL))
+	}
+	if links.VisualBuild.URL != "" {
+		parts = append(parts, fmt.Sprintf("visual_build: %s", links.VisualBuild.URL))
+	}
 	if len(parts) == 0 {
 		return "(no published artifacts found)"
 	}
@@ -173,7 +179,7 @@ func renderPublishedLinks(links ArtifactLinks) string {
 
 func existingLocalPaths(links ArtifactLinks) []string {
 	var out []string
-	for _, ref := range []ArtifactRef{links.QuerySQL, links.ReportMD, links.ResultJSON, links.VisualHTML} {
+	for _, ref := range []ArtifactRef{links.QuerySQL, links.ReportMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
 		if ref.LocalPath != "" {
 			out = append(out, ref.LocalPath)
 		}

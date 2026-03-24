@@ -51,17 +51,18 @@ type DatasetConfig struct {
 }
 
 type QuestionMeta struct {
-	ID                string `yaml:"id" json:"id"`
-	Slug              string `yaml:"slug" json:"slug"`
-	Title             string `yaml:"title" json:"title"`
-	Dataset           string `yaml:"dataset" json:"dataset"`
-	AnalysisMode      string `yaml:"analysis_mode" json:"analysis_mode"`
-	ArtifactsRequired string `yaml:"artifacts_required" json:"artifacts_required"`
-	VisualMode        string `yaml:"visual_mode" json:"visual_mode"`
-	VisualType        string `yaml:"visual_type" json:"visual_type"`
-	Tags              string `yaml:"tags" json:"tags"`
-	ReferencePolicy   string `yaml:"reference_policy" json:"reference_policy"`
-	CommandTimeoutSec int    `yaml:"command_timeout_sec" json:"command_timeout_sec"`
+	ID                 string `yaml:"id" json:"id"`
+	Slug               string `yaml:"slug" json:"slug"`
+	Title              string `yaml:"title" json:"title"`
+	Dataset            string `yaml:"dataset" json:"dataset"`
+	AnalysisMode       string `yaml:"analysis_mode" json:"analysis_mode"`
+	ArtifactsRequired  string `yaml:"artifacts_required" json:"artifacts_required"`
+	VisualMode         string `yaml:"visual_mode" json:"visual_mode"`
+	PresentationTarget string `yaml:"presentation_target" json:"presentation_target"`
+	VisualType         string `yaml:"visual_type" json:"visual_type"`
+	Tags               string `yaml:"tags" json:"tags"`
+	ReferencePolicy    string `yaml:"reference_policy" json:"reference_policy"`
+	CommandTimeoutSec  int    `yaml:"command_timeout_sec" json:"command_timeout_sec"`
 }
 
 type QuestionSubquestion struct {
@@ -97,6 +98,10 @@ type ArtifactPaths struct {
 	ReportTemplateMD      string `json:"report_template_md,omitempty"`
 	ReportMD              string `json:"report_md,omitempty"`
 	VisualHTML            string `json:"visual_html,omitempty"`
+	VisualSourceDir       string `json:"visual_source_dir,omitempty"`
+	VisualBuildDir        string `json:"visual_build_dir,omitempty"`
+	VisualAssetsDir       string `json:"visual_assets_dir,omitempty"`
+	VisualPackageJSON     string `json:"visual_package_json,omitempty"`
 }
 
 type RunPhases struct {
@@ -116,6 +121,7 @@ type RunManifest struct {
 	Runner                          string            `json:"runner"`
 	Model                           string            `json:"model"`
 	AnalysisMode                    string            `json:"analysis_mode,omitempty"`
+	PresentationTarget              string            `json:"presentation_target,omitempty"`
 	CLIBin                          string            `json:"cli_bin"`
 	MCPServerName                   string            `json:"mcp_server_name"`
 	MCPConfigSource                 string            `json:"mcp_config_source"`
@@ -124,6 +130,7 @@ type RunManifest struct {
 	DurationSec                     int64             `json:"duration_sec"`
 	SQLGenerationProviderDurationMs int64             `json:"sql_generation_provider_duration_ms,omitempty"`
 	PresentationProviderDurationMs  int64             `json:"presentation_provider_duration_ms,omitempty"`
+	PresentationBuildDurationMs     int64             `json:"presentation_build_duration_ms,omitempty"`
 	LogComment                      string            `json:"log_comment"`
 	QuerySHA256                     string            `json:"query_sha256"`
 	ResultRowCount                  int               `json:"result_row_count"`
@@ -216,7 +223,7 @@ type AnalysisArtifact struct {
 }
 
 type AnalysisSubquestion struct {
-	ID             string `json:"id"`
+	ID             string `json:"id,omitempty"`
 	Subquestion    string `json:"subquestion"`
 	AnswerMarkdown string `json:"answer_markdown"`
 	SQL            string `json:"sql"`

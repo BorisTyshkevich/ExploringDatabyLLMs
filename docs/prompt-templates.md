@@ -16,6 +16,10 @@ Shared prompt assets live under [`/Users/bvt/work/ExploringDatabyLLMs/prompts`](
   - SQL-only rules for `analysis_mode: template_files` and `analysis_mode: manual_templates`
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
   - shared presentation and visual rules used by all presentation prompts
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_html.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_html.md)
+  - HTML-target presentation requirements
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_react.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_react.md)
+  - React-target presentation requirements
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
@@ -33,6 +37,7 @@ Current composition order:
 - `json_artifact`: `common.md` + `common_report_json.md` + question `report_prompt.md`
   - `template_files` / `manual_templates`: `common.md` + `common_report_templates.md` + question `report_prompt.md`
 - Presentation phase: `common.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
+- Target-specific presentation guidance is added after the mode-specific visual asset.
 
 The shared `common.md` file is rendered in both phases, so any template variables used there must be available to both builders.
 
@@ -54,6 +59,8 @@ Presentation/report variables:
   - Source: `question.Meta.VisualType`.
 - `{{visual_mode}}`
   - Source: `question.Meta.VisualMode`.
+- `{{presentation_target}}`
+  - Source: `question.Meta.PresentationTarget`, defaulting to `html`.
 - `{{result_columns_csv}}`
   - Source: `strings.Join(result.Columns, ", ")`.
 - `{{saved_sql}}`

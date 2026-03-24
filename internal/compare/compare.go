@@ -30,28 +30,30 @@ type RunMetrics struct {
 }
 
 type RunSummary struct {
-	RunDir        string          `json:"run_dir"`
-	RunID         string          `json:"run_id,omitempty"`
-	RunNumber     int             `json:"run_number,omitempty"`
-	QuestionID    string          `json:"question_id"`
-	QuestionSlug  string          `json:"question_slug"`
-	QuestionTitle string          `json:"question_title"`
-	Dataset       string          `json:"dataset"`
-	Runner        string          `json:"runner"`
-	Model         string          `json:"model"`
-	Status        model.RunStatus `json:"status"`
-	Phases        model.RunPhases `json:"phases"`
-	StartedAt     time.Time       `json:"started_at"`
-	FinishedAt    time.Time       `json:"finished_at"`
-	DurationSec   int64           `json:"duration_sec"`
-	SQLGenMS      int64           `json:"sql_generation_provider_duration_ms,omitempty"`
-	VisualGenMS   int64           `json:"presentation_provider_duration_ms,omitempty"`
-	QuerySHA256   string          `json:"query_sha256,omitempty"`
-	RowCount      int             `json:"row_count"`
-	Columns       []string        `json:"columns,omitempty"`
-	Metrics       *RunMetrics     `json:"metrics,omitempty"`
-	Artifacts     ArtifactLinks   `json:"artifacts,omitempty"`
-	Warnings      []string        `json:"warnings,omitempty"`
+	RunDir             string          `json:"run_dir"`
+	RunID              string          `json:"run_id,omitempty"`
+	RunNumber          int             `json:"run_number,omitempty"`
+	QuestionID         string          `json:"question_id"`
+	QuestionSlug       string          `json:"question_slug"`
+	QuestionTitle      string          `json:"question_title"`
+	Dataset            string          `json:"dataset"`
+	Runner             string          `json:"runner"`
+	Model              string          `json:"model"`
+	Status             model.RunStatus `json:"status"`
+	Phases             model.RunPhases `json:"phases"`
+	StartedAt          time.Time       `json:"started_at"`
+	FinishedAt         time.Time       `json:"finished_at"`
+	DurationSec        int64           `json:"duration_sec"`
+	SQLGenMS           int64           `json:"sql_generation_provider_duration_ms,omitempty"`
+	VisualGenMS        int64           `json:"presentation_provider_duration_ms,omitempty"`
+	VisualBuildMS      int64           `json:"presentation_build_duration_ms,omitempty"`
+	PresentationTarget string          `json:"presentation_target,omitempty"`
+	QuerySHA256        string          `json:"query_sha256,omitempty"`
+	RowCount           int             `json:"row_count"`
+	Columns            []string        `json:"columns,omitempty"`
+	Metrics            *RunMetrics     `json:"metrics,omitempty"`
+	Artifacts          ArtifactLinks   `json:"artifacts,omitempty"`
+	Warnings           []string        `json:"warnings,omitempty"`
 }
 
 type Report struct {
@@ -177,23 +179,25 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 	}
 
 	item := RunSummary{
-		RunDir:        runDir,
-		RunID:         filepath.Base(runDir),
-		QuestionID:    manifest.QuestionID,
-		QuestionSlug:  manifest.QuestionSlug,
-		QuestionTitle: manifest.QuestionTitle,
-		Dataset:       manifest.Dataset,
-		Runner:        manifest.Runner,
-		Model:         manifest.Model,
-		Status:        manifest.Status,
-		Phases:        manifest.Phases,
-		StartedAt:     manifest.StartedAt,
-		FinishedAt:    manifest.FinishedAt,
-		DurationSec:   manifest.DurationSec,
-		SQLGenMS:      manifest.SQLGenerationProviderDurationMs,
-		VisualGenMS:   manifest.PresentationProviderDurationMs,
-		QuerySHA256:   manifest.QuerySHA256,
-		RowCount:      manifest.ResultRowCount,
+		RunDir:             runDir,
+		RunID:              filepath.Base(runDir),
+		QuestionID:         manifest.QuestionID,
+		QuestionSlug:       manifest.QuestionSlug,
+		QuestionTitle:      manifest.QuestionTitle,
+		Dataset:            manifest.Dataset,
+		Runner:             manifest.Runner,
+		Model:              manifest.Model,
+		Status:             manifest.Status,
+		Phases:             manifest.Phases,
+		StartedAt:          manifest.StartedAt,
+		FinishedAt:         manifest.FinishedAt,
+		DurationSec:        manifest.DurationSec,
+		SQLGenMS:           manifest.SQLGenerationProviderDurationMs,
+		VisualGenMS:        manifest.PresentationProviderDurationMs,
+		VisualBuildMS:      manifest.PresentationBuildDurationMs,
+		PresentationTarget: manifest.PresentationTarget,
+		QuerySHA256:        manifest.QuerySHA256,
+		RowCount:           manifest.ResultRowCount,
 	}
 	if strings.HasPrefix(item.RunID, "run-") {
 		fmt.Sscanf(item.RunID, "run-%d", &item.RunNumber)
@@ -324,11 +328,12 @@ func renderMarkdown(report Report) string {
 	md.WriteString("\n\n")
 	md.WriteString(renderQuestionSummary(report.Runs))
 	md.WriteString("\n")
-	md.WriteString("| runner | model | run | status | rows | sql gen | visual gen | query time | read rows | memory | warnings |\n")
-	md.WriteString("| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
+	md.WriteString("| runner | model | run | target | status | rows | sql gen | visual gen | build | query time | read rows | memory | warnings |\n")
+	md.WriteString("| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |\n")
 	for _, item := range report.Runs {
 		sqlGen := formatOptionalDurationMS(item.SQLGenMS)
 		visualGen := formatOptionalDurationMS(item.VisualGenMS)
+		visualBuild := formatOptionalDurationMS(item.VisualBuildMS)
 		queryDuration := "n/a"
 		readRows := "n/a"
 		memory := "n/a"
@@ -337,14 +342,16 @@ func renderMarkdown(report Report) string {
 			readRows = formatInt(item.Metrics.ReadRows)
 			memory = formatBytes(item.Metrics.MemoryUsage)
 		}
-		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %d |\n",
+		md.WriteString(fmt.Sprintf("| %s | %s | %s | %s | %s | %d | %s | %s | %s | %s | %s | %s | %d |\n",
 			item.Runner,
 			item.Model,
 			valueOrNA(item.RunID),
+			valueOrNA(item.PresentationTarget),
 			item.Status,
 			item.RowCount,
 			sqlGen,
 			visualGen,
+			visualBuild,
 			queryDuration,
 			readRows,
 			memory,

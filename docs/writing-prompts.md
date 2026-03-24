@@ -194,6 +194,27 @@ Use `static` when:
 
 Do not mix the two in the question prompt. If the page should live-fetch, write a dynamic visual prompt and let the shared dynamic contract do its job.
 
+## HTML Target Vs React Target
+
+Choose `presentation_target` based on what the model should author.
+
+Use `presentation_target: html` when:
+
+- the model should write final `visual.html`
+- you want the simplest presentation path
+- you do not need React source as a benchmark artifact
+
+Use `presentation_target: react` when:
+
+- the model should write source under `visual_src/`
+- qforge should build that source into the final browser artifact
+- you want to compare model authoring of React against direct HTML generation
+
+Keep `visual_mode` and `presentation_target` separate:
+
+- `visual_mode` controls runtime semantics such as live fetch vs embedded data
+- `presentation_target` controls whether the model writes HTML directly or React source
+
 ## What To Keep Out Of Question Prompts
 
 Do not repeat:

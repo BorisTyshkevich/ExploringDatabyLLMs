@@ -306,7 +306,7 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	if !strings.Contains(got, "Build a self-contained benchmark artifact") {
 		t.Fatalf("expected static artifact contract, got: %s", got)
 	}
-	if !strings.Contains(got, "Embed the analytical data needed by the page directly in the HTML") {
+	if !strings.Contains(got, "Embed or bake the analytical data needed by the page into the final browser artifact") {
 		t.Fatalf("expected embedded-data contract, got: %s", got)
 	}
 	if !strings.Contains(got, "Data example/snippet:") {
@@ -317,5 +317,75 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	}
 	if strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
 		t.Fatalf("did not expect dynamic JWE contract in static prompt, got: %s", got)
+	}
+}
+
+func TestBuildPresentationPromptReactDynamicUsesSourceContract(t *testing.T) {
+	question := model.Question{
+		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Meta: model.QuestionMeta{
+			ID:                 "q901",
+			Title:              "React Dynamic Fixture",
+			VisualMode:         "dynamic",
+			PresentationTarget: "react",
+			VisualType:         "html_heatmap",
+		},
+		VisualPrompt: "Visual guidance.",
+	}
+	result := model.CanonicalResult{
+		Columns:     []string{"Carrier", "Flights"},
+		GeneratedAt: time.Now(),
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
+	if err != nil {
+		t.Fatalf("BuildVisualPrompt returned error: %v", err)
+	}
+	for _, want := range []string{
+		"Presentation target: `react`",
+		"Create a React source artifact under `visual_src/`",
+		"`visual_src/package.json`",
+		"`visual_src/src/main.jsx`",
+		"Do not emit the source code inline in the response",
+		"Use this endpoint template for every browser query",
+	} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected react dynamic prompt to contain %q, got: %s", want, got)
+		}
+	}
+	if strings.Contains(got, "Create browser-ready HTML `visual.html`") {
+		t.Fatalf("did not expect html-only contract in react prompt, got: %s", got)
+	}
+}
+
+func TestBuildPresentationPromptReactStaticAvoidsDynamicTokenFlow(t *testing.T) {
+	question := model.Question{
+		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Meta: model.QuestionMeta{
+			ID:                 "q902",
+			Title:              "React Static Fixture",
+			VisualMode:         "static",
+			PresentationTarget: "react",
+			VisualType:         "html_ranked_dashboard",
+		},
+		VisualPrompt: "Visual guidance.",
+	}
+	result := model.CanonicalResult{
+		Columns:     []string{"Carrier", "Flights"},
+		GeneratedAt: time.Now(),
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "", model.VisualInputSummary{})
+	if err != nil {
+		t.Fatalf("BuildVisualPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "Presentation target: `react`") || !strings.Contains(got, "Create a React source artifact under `visual_src/`") {
+		t.Fatalf("expected react static source contract, got: %s", got)
+	}
+	if !strings.Contains(got, "Build a self-contained benchmark artifact") {
+		t.Fatalf("expected static runtime guidance, got: %s", got)
+	}
+	if strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
+		t.Fatalf("did not expect dynamic token flow in static react prompt, got: %s", got)
 	}
 }

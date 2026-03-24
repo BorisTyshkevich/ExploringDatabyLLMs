@@ -48,7 +48,7 @@ func (p cliProvider) GenerateSQL(ctx context.Context, req model.ProviderRequest)
 }
 
 func (p cliProvider) GeneratePresentation(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexVisualComplete)
+	return p.run(ctx, req, req.Prompt, codexVisualComplete(req.OutDir, req.Question.Meta.PresentationTarget))
 }
 
 func (p cliProvider) run(ctx context.Context, req model.ProviderRequest, prompt string, codexComplete func(string) bool) (model.ProviderResponse, error) {
@@ -238,9 +238,28 @@ func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) 
 	}
 }
 
-func codexVisualComplete(raw string) bool {
-	_, htmlErr := extract.Block(raw, "html")
-	return htmlErr == nil
+func codexVisualComplete(outDir, presentationTarget string) func(string) bool {
+	if strings.EqualFold(strings.TrimSpace(presentationTarget), "react") {
+		return func(string) bool {
+			required := []string{
+				filepath.Join(outDir, "visual_src", "package.json"),
+				filepath.Join(outDir, "visual_src", "index.html"),
+				filepath.Join(outDir, "visual_src", "src", "main.jsx"),
+				filepath.Join(outDir, "visual_src", "src", "App.jsx"),
+			}
+			for _, path := range required {
+				data, err := os.ReadFile(path)
+				if err != nil || strings.TrimSpace(string(data)) == "" {
+					return false
+				}
+			}
+			return true
+		}
+	}
+	return func(raw string) bool {
+		_, htmlErr := extract.Block(raw, "html")
+		return htmlErr == nil
+	}
 }
 
 func terminateProcess(proc *os.Process) {

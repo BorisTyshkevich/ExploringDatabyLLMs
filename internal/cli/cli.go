@@ -187,6 +187,7 @@ func runRun(ctx context.Context, args []string) error {
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	analysisMode := fs.String("analysis-mode", "", "Override analysis mode only between template_files and manual_templates")
+	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	manual := fs.Bool("manual", false, "Alias for --analysis-mode manual_templates")
 	fs.BoolVar(manual, "m", false, "Alias for --analysis-mode manual_templates (shorthand)")
 	withVisual := fs.Bool("with-visual", false, "After SQL and report rendering succeed, make a separate presentation call for visual.html")
@@ -238,6 +239,7 @@ func runRun(ctx context.Context, args []string) error {
 			MCPTokenFile:         *mcpTokenFile,
 			CLIBin:               *cliBin,
 			AnalysisModeOverride: requestedAnalysisMode,
+			PresentationTarget:   *presentationTarget,
 			WithVisual:           *withVisual,
 			SkipVisualValidation: *skipVisualValidation,
 			SkipBrowserLiveFetch: *skipBrowserLiveFetch,
@@ -507,6 +509,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
+	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
 	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
@@ -527,6 +530,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 		MCPToken:             *mcpToken,
 		MCPTokenFile:         *mcpTokenFile,
 		CLIBin:               *cliBin,
+		PresentationTarget:   *presentationTarget,
 		SkipVisualValidation: *skipVisualValidation,
 		SkipBrowserLiveFetch: *skipBrowserLiveFetch,
 		Verbose:              *verbose,
@@ -559,6 +563,7 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
+	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
 	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	if err := fs.Parse(args); err != nil {
@@ -571,12 +576,13 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 		return errors.New("process-presentation requires --run-dir")
 	}
 	return processPresentation(ctx, processPresentationOptions{
-		RunDir:       *runDir,
-		MCPURL:       *mcpURL,
-		MCPServer:    *mcpServer,
-		MCPToken:     *mcpToken,
-		MCPTokenFile: *mcpTokenFile,
-		Verbose:      *verbose,
+		RunDir:             *runDir,
+		MCPURL:             *mcpURL,
+		MCPServer:          *mcpServer,
+		MCPToken:           *mcpToken,
+		MCPTokenFile:       *mcpTokenFile,
+		PresentationTarget: *presentationTarget,
+		Verbose:            *verbose,
 	})
 }
 
@@ -627,6 +633,7 @@ type runOptions struct {
 	MCPToken             string
 	MCPTokenFile         string
 	CLIBin               string
+	PresentationTarget   string
 	WithVisual           bool
 	SkipVisualValidation bool
 	SkipBrowserLiveFetch bool
@@ -640,18 +647,20 @@ type processVisualOptions struct {
 	MCPToken             string
 	MCPTokenFile         string
 	CLIBin               string
+	PresentationTarget   string
 	SkipVisualValidation bool
 	SkipBrowserLiveFetch bool
 	Verbose              bool
 }
 
 type processPresentationOptions struct {
-	RunDir       string
-	MCPURL       string
-	MCPServer    string
-	MCPToken     string
-	MCPTokenFile string
-	Verbose      bool
+	RunDir             string
+	MCPURL             string
+	MCPServer          string
+	MCPToken           string
+	MCPTokenFile       string
+	PresentationTarget string
+	Verbose            bool
 }
 
 func executeRun(ctx context.Context, opts runOptions) error {
@@ -662,6 +671,9 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	runRoot := runsRoot(codeRoot)
 	question, err := questions.Resolve(codeRoot, opts.QuestionRef)
 	if err != nil {
+		return err
+	}
+	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
 		return err
 	}
 	datasetName := question.Meta.Dataset
@@ -709,19 +721,20 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	artifacts := runs.DefaultArtifacts(outDir, question.PresentationEnabled)
 	startedAt := time.Now().UTC()
 	manifest := model.RunManifest{
-		SchemaVersion:   "3",
-		Status:          model.RunStatusFailed,
-		QuestionID:      question.Meta.ID,
-		QuestionSlug:    question.Meta.Slug,
-		QuestionTitle:   question.Meta.Title,
-		Dataset:         datasetName,
-		Runner:          opts.Runner,
-		Model:           opts.Model,
-		AnalysisMode:    string(analysisMode),
-		MCPServerName:   datasets.ResolveMCPServerName(cfg, opts.MCPServer),
-		MCPConfigSource: filepath.Join("datasets", datasetName, "mcp.yaml"),
-		StartedAt:       startedAt,
-		Artifacts:       artifacts,
+		SchemaVersion:      "3",
+		Status:             model.RunStatusFailed,
+		QuestionID:         question.Meta.ID,
+		QuestionSlug:       question.Meta.Slug,
+		QuestionTitle:      question.Meta.Title,
+		Dataset:            datasetName,
+		Runner:             opts.Runner,
+		Model:              opts.Model,
+		AnalysisMode:       string(analysisMode),
+		PresentationTarget: normalizePresentationTarget(question.Meta.PresentationTarget),
+		MCPServerName:      datasets.ResolveMCPServerName(cfg, opts.MCPServer),
+		MCPConfigSource:    filepath.Join("datasets", datasetName, "mcp.yaml"),
+		StartedAt:          startedAt,
+		Artifacts:          artifacts,
 		Phases: model.RunPhases{
 			SQLGeneration:          model.PhaseStatusNotRun,
 			SQLExecution:           model.PhaseStatusNotRun,
@@ -848,26 +861,41 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	presentationResponse, presentationErr := provider.GeneratePresentation(presentationCtx, req)
 	manifest.PresentationProviderDurationMs = time.Since(presentationProviderStartedAt).Milliseconds()
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
-	htmlTemplate, err := loadVisualArtifact(presentationResponse.RawOutput, outDir, presentationStartedAt)
+	artifactResult, err := materializePresentationArtifact(outDir, question, artifacts, presentationResponse.RawOutput, presentationStartedAt, opts.Model, opts.Verbose)
 	if err != nil {
+		for key, value := range artifactResult.Metadata {
+			manifest.Metadata = addMetadata(manifest.Metadata, key, value)
+		}
 		logPresentationFailure(opts.Verbose, opts.Model, err, presentationResponse)
 		manifest.Status = model.RunStatusPartial
-		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
+		var artifactErr presentationArtifactError
+		if errors.As(err, &artifactErr) && artifactErr.Stage == "render" {
+			manifest.Phases.PresentationGeneration = model.PhaseStatusOK
+			manifest.Phases.PresentationRender = model.PhaseStatusFailed
+		} else {
+			manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
+		}
 		return err
 	}
+	manifest.PresentationBuildDurationMs = artifactResult.BuildDurationMS
 	if presentationErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", presentationErr.Error())
 	}
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
 	logf(opts.Verbose, opts.Model, "phase=presentation_generation status=ok")
-	if err := os.WriteFile(artifacts.VisualHTML, []byte(htmlTemplate), 0o644); err != nil {
-		return err
+	for key, value := range artifactResult.Metadata {
+		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
+	}
+	if normalizePresentationTarget(question.Meta.PresentationTarget) != "react" {
+		if err := os.WriteFile(artifacts.VisualHTML, []byte(artifactResult.HTML), 0o644); err != nil {
+			return err
+		}
 	}
 
 	validationResult := validatePresentationHTML(ctx, presentationValidationOptions{
 		RunDir:               outDir,
 		HTMLPath:             artifacts.VisualHTML,
-		HTML:                 htmlTemplate,
+		HTML:                 artifactResult.HTML,
 		Model:                opts.Model,
 		VisualMode:           question.Meta.VisualMode,
 		VisualType:           question.Meta.VisualType,
@@ -1069,40 +1097,39 @@ func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAna
 
 func validateMultiQueryAnalysisArtifact(question model.Question, artifact model.AnalysisArtifact) error {
 	if len(question.Subquestions) == 0 {
-		return fmt.Errorf("multi-query analysis mode requires question subquestions")
+		return fmt.Errorf("multi-query analysis mode requires dashboard questions")
 	}
 	if len(artifact.Subquestions) == 0 {
 		return fmt.Errorf("analysis json missing non-empty subquestions")
 	}
-	byID := make(map[string]model.AnalysisSubquestion, len(artifact.Subquestions))
-	for _, item := range artifact.Subquestions {
-		if item.ID == "" || item.Subquestion == "" || item.AnswerMarkdown == "" || item.SQL == "" {
-			return fmt.Errorf("analysis json subquestions must include non-empty id, subquestion, answer_markdown, and sql")
-		}
-		byID[item.ID] = item
+	if len(artifact.Subquestions) != len(question.Subquestions) {
+		return fmt.Errorf("analysis json must include exactly %d dashboard-question blocks", len(question.Subquestions))
 	}
-	for _, req := range question.Subquestions {
-		got, ok := byID[req.ID]
-		if !ok {
-			return fmt.Errorf("analysis json missing required subquestion %q", req.ID)
+	for i, item := range artifact.Subquestions {
+		if item.Subquestion == "" || item.AnswerMarkdown == "" || item.SQL == "" {
+			return fmt.Errorf("analysis json subquestions must include non-empty subquestion, answer_markdown, and sql")
 		}
-		if strings.TrimSpace(got.Subquestion) != strings.TrimSpace(req.Text) {
-			return fmt.Errorf("analysis json subquestion %q text mismatch", req.ID)
+		req := question.Subquestions[i]
+		if strings.TrimSpace(item.Subquestion) != strings.TrimSpace(req.Text) {
+			return fmt.Errorf("analysis json dashboard question %d text mismatch", i+1)
 		}
 	}
 	return nil
 }
 
 func orderMultiQuerySubquestions(question model.Question, items []model.AnalysisSubquestion) []model.AnalysisSubquestion {
-	byID := make(map[string]model.AnalysisSubquestion, len(items))
-	for _, item := range items {
-		byID[item.ID] = item
-	}
-	ordered := make([]model.AnalysisSubquestion, 0, len(question.Subquestions))
-	for _, req := range question.Subquestions {
-		if item, ok := byID[req.ID]; ok {
-			ordered = append(ordered, item)
+	ordered := make([]model.AnalysisSubquestion, 0, len(items))
+	for i, item := range items {
+		if i >= len(question.Subquestions) {
+			break
 		}
+		if strings.TrimSpace(item.Subquestion) == "" {
+			item.Subquestion = strings.TrimSpace(question.Subquestions[i].Text)
+		}
+		if strings.TrimSpace(item.ID) == "" {
+			item.ID = fmt.Sprintf("q%d", i+1)
+		}
+		ordered = append(ordered, item)
 	}
 	return ordered
 }
@@ -1172,7 +1199,7 @@ func clearPresentationValidationMetadata(metadata map[string]string) map[string]
 		return metadata
 	}
 	for key := range metadata {
-		if strings.HasPrefix(key, "visual_validation") || strings.HasPrefix(key, "browser_validation") {
+		if strings.HasPrefix(key, "visual_validation") || strings.HasPrefix(key, "browser_validation") || strings.HasPrefix(key, "react_") || key == "presentation_target" {
 			delete(metadata, key)
 		}
 	}
@@ -1279,6 +1306,9 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err != nil {
 		return err
 	}
+	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
+		return err
+	}
 	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
 	if analysisMode != model.AnalysisModeMultiQueryJSON {
 		resultBytes, err := os.ReadFile(filepath.Join(runDir, "result.json"))
@@ -1313,6 +1343,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, true)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "3"
+	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	logf(opts.Verbose, manifest.Model, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	var querySQL []byte
 	if analysisMode != model.AnalysisModeMultiQueryJSON {
@@ -1384,24 +1415,39 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", providerErr.Error())
 	}
-	htmlTemplate, err := loadVisualArtifact(resp.RawOutput, runDir, presentationStartedAt)
+	artifactResult, err := materializePresentationArtifact(runDir, question, manifest.Artifacts, resp.RawOutput, presentationStartedAt, manifest.Model, opts.Verbose)
 	if err != nil {
+		for key, value := range artifactResult.Metadata {
+			manifest.Metadata = addMetadata(manifest.Metadata, key, value)
+		}
 		logPresentationFailure(opts.Verbose, manifest.Model, err, resp)
 		manifest.Status = model.RunStatusPartial
-		manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
+		var artifactErr presentationArtifactError
+		if errors.As(err, &artifactErr) && artifactErr.Stage == "render" {
+			manifest.Phases.PresentationGeneration = model.PhaseStatusOK
+			manifest.Phases.PresentationRender = model.PhaseStatusFailed
+		} else {
+			manifest.Phases.PresentationGeneration = model.PhaseStatusFailed
+		}
 		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 		return err
 	}
+	manifest.PresentationBuildDurationMs = artifactResult.BuildDurationMS
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
 	logf(opts.Verbose, manifest.Model, "phase=presentation_generation status=ok")
-	if err := os.WriteFile(manifest.Artifacts.VisualHTML, []byte(htmlTemplate), 0o644); err != nil {
-		return err
+	for key, value := range artifactResult.Metadata {
+		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
+	}
+	if normalizePresentationTarget(question.Meta.PresentationTarget) != "react" {
+		if err := os.WriteFile(manifest.Artifacts.VisualHTML, []byte(artifactResult.HTML), 0o644); err != nil {
+			return err
+		}
 	}
 
 	validationResult := validatePresentationHTML(ctx, presentationValidationOptions{
 		RunDir:               runDir,
 		HTMLPath:             manifest.Artifacts.VisualHTML,
-		HTML:                 htmlTemplate,
+		HTML:                 artifactResult.HTML,
 		Model:                manifest.Model,
 		VisualMode:           question.Meta.VisualMode,
 		VisualType:           question.Meta.VisualType,
@@ -1456,6 +1502,9 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	if err != nil {
 		return err
 	}
+	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
+		return err
+	}
 	mcpURL, token, err := datasets.ResolveMCPURL(cfg, opts.MCPURL)
 	if err != nil {
 		return err
@@ -1475,6 +1524,7 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	manifest.SchemaVersion = "3"
 	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
 	manifest.AnalysisMode = string(analysisMode)
+	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	logf(opts.Verbose, manifest.Model, "process-presentation run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=%s", analysisMode)
 	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
@@ -1539,17 +1589,18 @@ func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Q
 		return model.RunManifest{}, model.Question{}, fmt.Errorf("infer question from run dir: %w", err)
 	}
 	manifest = model.RunManifest{
-		SchemaVersion: "3",
-		Status:        model.RunStatusFailed,
-		QuestionID:    question.Meta.ID,
-		QuestionSlug:  question.Meta.Slug,
-		QuestionTitle: question.Meta.Title,
-		Dataset:       question.Meta.Dataset,
-		Runner:        runner,
-		Model:         modelName,
-		AnalysisMode:  question.Meta.AnalysisMode,
-		StartedAt:     time.Now().UTC(),
-		Artifacts:     runs.DefaultArtifacts(runDir, question.PresentationEnabled),
+		SchemaVersion:      "3",
+		Status:             model.RunStatusFailed,
+		QuestionID:         question.Meta.ID,
+		QuestionSlug:       question.Meta.Slug,
+		QuestionTitle:      question.Meta.Title,
+		Dataset:            question.Meta.Dataset,
+		Runner:             runner,
+		Model:              modelName,
+		AnalysisMode:       question.Meta.AnalysisMode,
+		PresentationTarget: normalizePresentationTarget(question.Meta.PresentationTarget),
+		StartedAt:          time.Now().UTC(),
+		Artifacts:          runs.DefaultArtifacts(runDir, question.PresentationEnabled),
 		Phases: model.RunPhases{
 			SQLGeneration:          model.PhaseStatusNotRun,
 			SQLExecution:           model.PhaseStatusNotRun,
@@ -1568,6 +1619,23 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func applyPresentationTargetOverride(question *model.Question, override string) error {
+	override = strings.TrimSpace(override)
+	if override == "" {
+		if strings.TrimSpace(question.Meta.PresentationTarget) == "" {
+			question.Meta.PresentationTarget = "html"
+		}
+		return nil
+	}
+	switch override {
+	case "html", "react":
+		question.Meta.PresentationTarget = override
+		return nil
+	default:
+		return fmt.Errorf("unsupported presentation target override %q", override)
+	}
 }
 
 func resolveRequestedAnalysisMode(analysisMode string, manual bool) string {
@@ -1728,6 +1796,8 @@ func writePresentationPromptFromSummary(path string, question model.Question, cf
 func selectPrimaryVisualQuery(question model.Question, visualInput model.VisualInputSummary) (model.QueryResultSummary, error) {
 	preferredID := ""
 	switch strings.TrimSpace(question.Meta.ID) {
+	case "q001":
+		preferredID = "q1"
 	case "q003":
 		preferredID = "worst_hotspot"
 	case "q002":

@@ -10,6 +10,7 @@ import (
 
 const (
 	runsRepoGitHubBlobBase = "https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main"
+	runsRepoGitHubTreeBase = "https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main"
 	runsRepoPagesBase      = "https://boristyshkevich.github.io/ExploringDatabyLLMs-runs"
 	qforgeRepoGitHubBlob   = "https://github.com/boristyshkevich/ExploringDatabyLLMs/blob/main"
 )
@@ -21,18 +22,22 @@ type ArtifactRef struct {
 }
 
 type ArtifactLinks struct {
-	QuerySQL   ArtifactRef `json:"query_sql,omitempty"`
-	ReportMD   ArtifactRef `json:"report_md,omitempty"`
-	ResultJSON ArtifactRef `json:"result_json,omitempty"`
-	VisualHTML ArtifactRef `json:"visual_html,omitempty"`
+	QuerySQL     ArtifactRef `json:"query_sql,omitempty"`
+	ReportMD     ArtifactRef `json:"report_md,omitempty"`
+	ResultJSON   ArtifactRef `json:"result_json,omitempty"`
+	VisualHTML   ArtifactRef `json:"visual_html,omitempty"`
+	VisualSource ArtifactRef `json:"visual_source,omitempty"`
+	VisualBuild  ArtifactRef `json:"visual_build,omitempty"`
 }
 
 func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
 	return ArtifactLinks{
-		QuerySQL:   buildArtifactRef(runsRoot, filepath.Join(runDir, "query.sql"), "sql"),
-		ReportMD:   buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
-		ResultJSON: buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
-		VisualHTML: buildArtifactRef(runsRoot, filepath.Join(runDir, "visual.html"), "html"),
+		QuerySQL:     buildArtifactRef(runsRoot, filepath.Join(runDir, "query.sql"), "sql"),
+		ReportMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
+		ResultJSON:   buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
+		VisualHTML:   buildArtifactRef(runsRoot, filepath.Join(runDir, "visual.html"), "html"),
+		VisualSource: buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_src"), "dir"),
+		VisualBuild:  buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_build"), "dir"),
 	}
 }
 
@@ -49,6 +54,8 @@ func buildArtifactRef(runsRoot, localPath, kind string) ArtifactRef {
 		ref.URL = publishedMarkdownURL(ref.PublishedPath)
 	case "html":
 		ref.URL = publishedVisualURL(ref.PublishedPath)
+	case "dir":
+		ref.URL = publishedTreeURL(ref.PublishedPath)
 	default:
 		ref.URL = publishedBlobURL(ref.PublishedPath)
 	}
@@ -104,6 +111,13 @@ func publishedBlobURL(publishedPath string) string {
 		return ""
 	}
 	return runsRepoJoin(runsRepoGitHubBlobBase, publishedPath)
+}
+
+func publishedTreeURL(publishedPath string) string {
+	if publishedPath == "" {
+		return ""
+	}
+	return runsRepoJoin(runsRepoGitHubTreeBase, publishedPath)
 }
 
 func runsRepoJoin(base, rel string) string {

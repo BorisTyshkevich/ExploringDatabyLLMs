@@ -1,11 +1,10 @@
-Create browser-ready HTML `visual.html` using the proper  `*-analyst-dashboard` skill.
-
-Write the file or provide a download link. Do not include the HTML source in the response. Do not open the artifact view frame.
+Create the presentation artifact using the proper `*-analyst-dashboard` skill.
 
 ### Rules
 
 - Question title: `{{question_title}}`
 - Visual mode: `{{visual_mode}}`
+- Presentation target: `{{presentation_target}}`
 - Visual type: `{{visual_type}}`
 - Derive KPIs, chart values, table rows, filters, and highlights from the actual analytical data. Do not invent or hardcode them.
 - Respect the declared visual mode and visual type shown below.
@@ -24,4 +23,3 @@ SQL query for primary data source:
 Data example/snippet:
 
 {{visual_input_summary_json}}
-

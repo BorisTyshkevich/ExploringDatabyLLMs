@@ -8,6 +8,13 @@ description: Builds visual dashboards in either static or dynamic mode, with opt
 - Use dynamic mode for browser dashboards that execute the saved SQL through the configured tokenized HTTP SQL endpoint and may run explicit enrichment or drill-down queries. See  `references/dynamic-mode.md`
 - Use static mode when embedding data into HTML dashboard. see `references/static-mode.md`
 
+## Second decision: presentation target
+
+- Use the default HTML target when the prompt asks for final `visual.html`
+- Use the React target when the prompt asks for source under `visual_src/` that will be built into the final browser artifact
+- For React dynamic dashboards, also follow `references/dynamic-react.md`
+- For React static dashboards, also follow `references/static-react.md`
+
 ## Core contract
 
 - Never hardcode KPIs or chart values; derive them from parsed data
@@ -37,4 +44,3 @@ description: Builds visual dashboards in either static or dynamic mode, with opt
 - SQL query ledger showing data provenance
 - Export control for filtered rows
 - additional elements required by static or dynamic mode
-

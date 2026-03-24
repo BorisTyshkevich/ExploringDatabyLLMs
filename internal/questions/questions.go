@@ -72,12 +72,21 @@ func Load(dir string) (model.Question, error) {
 	if strings.TrimSpace(meta.VisualMode) == "" {
 		meta.VisualMode = "dynamic"
 	}
+	if strings.TrimSpace(meta.PresentationTarget) == "" {
+		meta.PresentationTarget = "html"
+	}
+	switch strings.TrimSpace(meta.PresentationTarget) {
+	case "html", "react":
+	default:
+		return model.Question{}, fmt.Errorf("parse %s: unsupported presentation_target %q", metaPath, meta.PresentationTarget)
+	}
 	reportPromptBytes, err := os.ReadFile(reportPromptPath)
 	if err != nil {
 		return model.Question{}, err
 	}
 	visualPromptBytes, _ := os.ReadFile(visualPromptPath)
-	subquestions, err := loadSubquestions(dir, model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)))
+	reportPrompt := strings.TrimSpace(string(reportPromptBytes))
+	subquestions, err := loadSubquestions(dir, model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)), reportPrompt)
 	if err != nil {
 		return model.Question{}, err
 	}
@@ -86,7 +95,7 @@ func Load(dir string) (model.Question, error) {
 	return model.Question{
 		Dir:                 dir,
 		Meta:                meta,
-		Prompt:              strings.TrimSpace(string(reportPromptBytes)),
+		Prompt:              reportPrompt,
 		VisualPrompt:        strings.TrimSpace(string(visualPromptBytes)),
 		Subquestions:        subquestions,
 		PresentationEnabled: reportEnabled || visualEnabled,
@@ -95,13 +104,17 @@ func Load(dir string) (model.Question, error) {
 	}, nil
 }
 
-func loadSubquestions(dir string, mode model.AnalysisMode) ([]model.QuestionSubquestion, error) {
+func loadSubquestions(dir string, mode model.AnalysisMode, reportPrompt string) ([]model.QuestionSubquestion, error) {
 	path := filepath.Join(dir, "subquestions.yaml")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
 			if mode == model.AnalysisModeMultiQueryJSON {
-				return nil, fmt.Errorf("load %s: missing subquestions.yaml for analysis_mode %q", dir, mode)
+				items := extractDashboardQuestions(reportPrompt)
+				if len(items) == 0 {
+					return nil, fmt.Errorf("load %s: missing ## Dashboard Questions section for analysis_mode %q", dir, mode)
+				}
+				return items, nil
 			}
 			return nil, nil
 		}
@@ -117,6 +130,36 @@ func loadSubquestions(dir string, mode model.AnalysisMode) ([]model.QuestionSubq
 		return nil, fmt.Errorf("parse %s: subquestions list is required for analysis_mode %q", path, mode)
 	}
 	return file.Subquestions, nil
+}
+
+func extractDashboardQuestions(reportPrompt string) []model.QuestionSubquestion {
+	lines := strings.Split(reportPrompt, "\n")
+	inSection := false
+	var items []model.QuestionSubquestion
+	for _, raw := range lines {
+		line := strings.TrimSpace(raw)
+		if strings.HasPrefix(line, "## ") {
+			if strings.EqualFold(strings.TrimSpace(strings.TrimPrefix(line, "## ")), "Dashboard Questions") {
+				inSection = true
+				continue
+			}
+			if inSection {
+				break
+			}
+		}
+		if !inSection {
+			continue
+		}
+		if !strings.HasPrefix(line, "- ") {
+			continue
+		}
+		text := strings.TrimSpace(strings.TrimPrefix(line, "- "))
+		if text == "" {
+			continue
+		}
+		items = append(items, model.QuestionSubquestion{Text: text})
+	}
+	return items
 }
 
 func requiresArtifact(required, name string) bool {

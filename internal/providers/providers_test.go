@@ -59,7 +59,7 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 	if elapsed > 8*time.Second {
 		t.Fatalf("expected recovery before context timeout, elapsed=%s", elapsed)
 	}
-	if !codexVisualComplete(resp.RawOutput) {
+	if !codexVisualComplete(tmpDir, "html")(resp.RawOutput) {
 		t.Fatalf("expected complete presentation output, got: %s", resp.RawOutput)
 	}
 	if !strings.Contains(resp.RawOutput, "<!doctype html>") {
@@ -86,14 +86,14 @@ func TestCodexCompletionChecks(t *testing.T) {
 	}
 
 	presentationRaw := "```html\n<!doctype html>\n<html></html>\n```"
-	if !codexVisualComplete(presentationRaw) {
+	if !codexVisualComplete(tmpDir, "html")(presentationRaw) {
 		t.Fatalf("expected presentation completion checker to accept fenced html")
 	}
 
 	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeJSONArtifact)("") {
 		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
-	if codexVisualComplete("```report\nonly report\n```") {
+	if codexVisualComplete(tmpDir, "html")("```report\nonly report\n```") {
 		t.Fatalf("did not expect visual checker to accept non-html output")
 	}
 }

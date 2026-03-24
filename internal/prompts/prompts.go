@@ -2,7 +2,6 @@ package prompts
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,6 +15,8 @@ const (
 	commonReportMultiQueryPromptFile = "common_report_multi_query_json.md"
 	commonReportTemplatePromptFile   = "common_report_templates.md"
 	commonVisualPromptFile           = "common_visual.md"
+	commonVisualHTMLPromptFile       = "common_visual_html.md"
+	commonVisualReactPromptFile      = "common_visual_react.md"
 	commonVisualMultiQueryPromptFile = "common_visual_multi_query.md"
 	commonVisualStaticPromptFile     = "common_visual_static.md"
 	commonVisualDynamicPromptFile    = "common_visual_dynamic.md"
@@ -37,11 +38,10 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 		return "", err
 	}
 	values := map[string]string{
-		"dataset_name":                datasetPromptName(dataset),
-		"question_title":              question.Meta.Title,
-		"question_prompt_md":          question.Prompt,
-		"subquestion_requirements_md": subquestionRequirementsMarkdown(question.Subquestions),
-		"report_placeholders":         "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
+		"dataset_name":        datasetPromptName(dataset),
+		"question_title":      question.Meta.Title,
+		"question_prompt_md":  questionPromptForAnalysis(question),
+		"report_placeholders": "{{row_count}}, {{generated_at}}, {{columns_csv}}, {{question_title}}, {{data_overview_md}}, {{result_table_md}}",
 	}
 	sections := []string{
 		RenderTemplate(common, values),
@@ -80,10 +80,19 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 	if err != nil {
 		return "", err
 	}
+	targetPromptFile := commonVisualHTMLPromptFile
+	if strings.EqualFold(strings.TrimSpace(question.Meta.PresentationTarget), "react") {
+		targetPromptFile = commonVisualReactPromptFile
+	}
+	targetVisual, err := loadCommonPrompt(question, targetPromptFile)
+	if err != nil {
+		return "", err
+	}
 	values := map[string]string{
 		"dataset_name":                    datasetPromptName(dataset),
 		"question_title":                  question.Meta.Title,
 		"visual_mode":                     strings.TrimSpace(question.Meta.VisualMode),
+		"presentation_target":             presentationTarget(question.Meta.PresentationTarget),
 		"visual_type":                     question.Meta.VisualType,
 		"result_columns_csv":              strings.Join(result.Columns, ", "),
 		"saved_sql":                       strings.TrimSpace(savedSQL),
@@ -97,34 +106,8 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		sections = append(sections, RenderTemplate(multiQueryVisual, values))
 	}
 	sections = append(sections, RenderTemplate(modeVisual, values))
+	sections = append(sections, RenderTemplate(targetVisual, values))
 	return joinSections(sections), nil
-}
-
-func subquestionRequirementsMarkdown(items []model.QuestionSubquestion) string {
-	if len(items) == 0 {
-		return "No explicit subquestion contract."
-	}
-	lines := make([]string, 0, len(items))
-	for _, item := range items {
-		id := strings.TrimSpace(item.ID)
-		text := strings.TrimSpace(item.Text)
-		if id == "" && text == "" {
-			continue
-		}
-		if id == "" {
-			lines = append(lines, "- "+text)
-			continue
-		}
-		if text == "" {
-			lines = append(lines, fmt.Sprintf("- `%s`", id))
-			continue
-		}
-		lines = append(lines, fmt.Sprintf("- `%s`: %s", id, text))
-	}
-	if len(lines) == 0 {
-		return "No explicit subquestion contract."
-	}
-	return strings.Join(lines, "\n")
 }
 
 func visualInputSummaryJSON(summary model.VisualInputSummary) string {
@@ -136,6 +119,36 @@ func visualInputSummaryJSON(summary model.VisualInputSummary) string {
 		return "{}"
 	}
 	return string(data)
+}
+
+func questionPromptForAnalysis(question model.Question) string {
+	prompt := strings.TrimSpace(question.Prompt)
+	if !strings.EqualFold(strings.TrimSpace(question.Meta.AnalysisMode), string(model.AnalysisModeMultiQueryJSON)) {
+		return prompt
+	}
+	if strings.Contains(strings.ToLower(prompt), "## dashboard questions") {
+		return prompt
+	}
+	if len(question.Subquestions) == 0 {
+		return prompt
+	}
+	lines := make([]string, 0, len(question.Subquestions)+2)
+	lines = append(lines, "## Dashboard Questions", "")
+	for _, item := range question.Subquestions {
+		text := strings.TrimSpace(item.Text)
+		if text == "" {
+			continue
+		}
+		lines = append(lines, "- "+text)
+	}
+	section := strings.TrimSpace(strings.Join(lines, "\n"))
+	if section == "## Dashboard Questions" {
+		return prompt
+	}
+	if prompt == "" {
+		return section
+	}
+	return prompt + "\n\n" + section
 }
 
 func loadCommonPrompt(question model.Question, name string) (string, error) {
@@ -177,4 +190,11 @@ func datasetPromptName(dataset model.DatasetConfig) string {
 		return strings.TrimSpace(dataset.Name)
 	}
 	return "configured"
+}
+
+func presentationTarget(value string) string {
+	if strings.EqualFold(strings.TrimSpace(value), "react") {
+		return "react"
+	}
+	return "html"
 }

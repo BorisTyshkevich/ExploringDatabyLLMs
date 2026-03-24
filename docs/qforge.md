@@ -45,6 +45,10 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
   - SQL-only rules for direct `query.sql` plus `report.template.md` output
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
   - shared presentation and `visual.html` rules
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_html.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_html.md)
+  - HTML-target presentation requirements
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_react.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_react.md)
+  - React-target presentation requirements
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_dynamic.md)
   - dynamic `visual.html` requirements
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual_static.md)
@@ -60,6 +64,15 @@ Question metadata may also declare `visual_mode`:
   - self-contained benchmark artifact with embedded analytical data
 
 If `visual_mode` is absent, qforge treats the question as `dynamic` for backward compatibility.
+
+Question metadata may also declare `presentation_target`:
+
+- `html`
+  - model writes final `visual.html`
+- `react`
+  - model writes source under `visual_src/`, qforge builds it, and the built browser artifact is still published as `visual.html`
+
+If `presentation_target` is absent, qforge treats the question as `html` for backward compatibility.
 
 Template variables, prompt composition, and dataset mapping are documented in [`/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md`](/Users/bvt/work/ExploringDatabyLLMs/docs/prompt-templates.md).
 
@@ -252,6 +265,10 @@ Flags:
   - optional
   - may override only between `template_files` and `manual_templates`
   - cannot switch to or from `json_artifact`
+- `--presentation-target`
+  - optional
+  - override the question presentation target with `html` or `react`
+  - useful for benchmarking the same question in both presentation formats without editing prompt metadata
 - `--manual`
   - optional
   - alias for `--analysis-mode manual_templates`
