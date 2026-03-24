@@ -33,5 +33,8 @@ Rules:
 - Treat `report.md` as a monitoring artifact. Do not treat its one-row example table or abbreviated preview as a defect when the underlying query result preserves the required ranked or detailed rows.
 - In `## Findings`, cite concrete artifact names such as `queries/q1.sql`, `results/q1.json`, or `report.md`.
 - In `## Suggested Prompt Fixes`, propose prompt-level changes only when they would reduce the observed failure mode.
+- When proposing a prompt fix, be concrete. Prefer 1-3 short replacement or insertion snippets that could be added to the question prompt, not vague advice.
+- Tie each prompt fix to the specific failure you found. Explain what ambiguity in the current prompt allowed the bad result and how the new wording would close that gap.
+- If the prompt is already sufficiently specific and the failure is not plausibly prompt-driven, say `None.` instead of inventing weak prompt edits.
 - Do not suggest code changes to qforge in this review. Focus on the run and the prompt.
 - Write Markdown only to `review.md`.
