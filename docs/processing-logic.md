@@ -8,7 +8,7 @@ This document describes the current end-to-end processing flow for `qforge`: wha
 
 1. analysis phase
    - the exact contract is selected by the question's `analysis_mode`
-   - `json_artifact`: the provider writes `answer.raw.json`
+   - `multi_query_json`: the provider writes `answer.raw.json`
    - `template_files`: the provider writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages prompts only, then a human writes `query.sql` and `report.template.md`
    - the harness loads the saved analysis artifacts, executes SQL itself, and renders `report.md`
@@ -25,7 +25,8 @@ Phase 1 prompt assembly is implemented in [`/Users/bvt/work/ExploringDatabyLLMs/
 Current composition order:
 
 - `prompts/common.md`
-- `prompts/common_report_json.md`
+- `prompts/common_report_multi_query_json.md` for `multi_query_json`
+- `prompts/common_report_templates.md` for `template_files` and `manual_templates`
 - question `report_prompt.md`
 
 Shared prompt assets now reference dataset-specific skills directly. For OnTime, schema inspection and join guidance come from the `ontime-semantic-layer` skill rather than an inlined `semantic_layer.md` block.
@@ -34,7 +35,7 @@ Shared prompt assets now reference dataset-specific skills directly. For OnTime,
 
 Question metadata selects one of these analysis contracts via `analysis_mode`.
 
-#### `json_artifact`
+#### `multi_query_json`
 
 The provider must write `answer.raw.json` in the run directory.
 
@@ -42,21 +43,20 @@ The provider must write `answer.raw.json` in the run directory.
 
 ```json
 {
-  "sql": "-- one SQL statement",
-  "report_markdown": "# Report template using built-in placeholders and {{metric.<name>}}",
-  "metrics": {
-    "summary_facts": [],
-    "named_values": {},
-    "named_lists": {}
-  }
+  "subquestions": [
+    {
+      "subquestion": "Question text copied from ## Dashboard Questions",
+      "answer_markdown": "Direct prose answer",
+      "sql": "-- one proof query for this subquestion"
+    }
+  ]
 }
 ```
 
 Important rules:
 
-- `sql` is the only executable query
-- `report_markdown` is a template, not a filled report
-- `metrics` carries report-only derived facts
+- subquestions must follow the `## Dashboard Questions` section in order
+- each subquestion carries one direct prose answer and one proof query
 - stdout is diagnostic only and is not used for phase-1 artifact loading
 
 #### `template_files`
@@ -94,18 +94,17 @@ After the provider returns, qforge:
 2. reads the saved analysis artifact for the selected mode
 3. validates the JSON artifact
 4. writes normalized `analysis.json`
-5. writes `query.sql`
-6. writes `report.template.md`
-7. executes the SQL itself
-8. writes `result.json`
-9. writes `visual_input.json`
-10. renders final `report.md`
+5. writes normalized proof-query artifacts
+6. executes the SQL itself
+7. writes `result.json` or named per-query result summaries
+8. writes `visual_input.json`
+9. renders final `report.md`
 
 Phase 1 fails if:
 
 - the required saved analysis artifact is missing
-- `answer.raw.json` is not valid raw JSON when `analysis_mode: json_artifact`
-- required fields like `sql` or `report_markdown` are empty
+- `answer.raw.json` is not valid raw JSON when `analysis_mode: multi_query_json`
+- required subquestion fields like `subquestion`, `answer_markdown`, or `sql` are empty
 - the report template uses unsupported placeholders
 - SQL execution fails
 
@@ -115,8 +114,7 @@ Report rendering is implemented in [`/Users/bvt/work/ExploringDatabyLLMs/interna
 
 The renderer owns the final Markdown assembly. The provider supplies only:
 
-- `report_markdown`
-- `metrics`
+- `report.template.md` in template modes, or ordered subquestion answers in multi-query mode
 
 Built-in placeholders currently include:
 
@@ -126,12 +124,6 @@ Built-in placeholders currently include:
 - `{{question_title}}`
 - `{{data_overview_md}}`
 - `{{result_table_md}}`
-
-Metric placeholders use:
-
-- `{{metric.<name>}}`
-
-`metrics.named_values` is the source for metric placeholder substitution in `json_artifact` mode.
 
 ## Phase 2: Visual
 
@@ -198,7 +190,7 @@ Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 Source-of-truth artifacts:
 
 - analysis artifact:
-  - `answer.raw.json` for `json_artifact`
+  - `answer.raw.json` for `multi_query_json`
   - `query.sql` + `report.template.md` for `template_files` and `manual_templates`
 - normalized analysis snapshot: `analysis.json`
 - executed SQL: `query.sql`

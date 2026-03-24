@@ -12,7 +12,6 @@ import (
 
 const (
 	commonPromptFile                 = "common.md"
-	commonReportPromptFile           = "common_report_json.md"
 	commonReportMultiQueryPromptFile = "common_report_multi_query_json.md"
 	commonReportTemplatePromptFile   = "common_report_templates.md"
 	commonVisualPromptFile           = "common_visual.md"
@@ -28,10 +27,8 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 	if err != nil {
 		return "", err
 	}
-	contractPromptFile := commonReportPromptFile
-	if mode == model.AnalysisModeMultiQueryJSON {
-		contractPromptFile = commonReportMultiQueryPromptFile
-	} else if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
+	contractPromptFile := commonReportMultiQueryPromptFile
+	if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
 		contractPromptFile = commonReportTemplatePromptFile
 	}
 	commonReport, err := loadCommonPrompt(question, contractPromptFile)

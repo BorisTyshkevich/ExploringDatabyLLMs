@@ -19,7 +19,7 @@ This repository still contains historical Bash and Python benchmark code, but th
 1. SQL generation
    - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
    - the exact artifact contract is selected by the question's `analysis_mode`
-   - `json_artifact`: the model writes `answer.raw.json` with `sql`, `report_markdown`, and `metrics`
+   - `multi_query_json`: the model writes `answer.raw.json` with ordered subquestion answers and proof queries
    - `template_files`: the model writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
 2. Optional presentation generation
@@ -39,8 +39,8 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_json.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_json.md)
-  - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` analysis-artifact contract
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query_json.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query_json.md)
+  - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` multi-query contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for direct `query.sql` plus `report.template.md` output
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_visual.md)
@@ -264,7 +264,7 @@ Flags:
 - `--analysis-mode`
   - optional
   - may override only between `template_files` and `manual_templates`
-  - cannot switch to or from `json_artifact`
+  - cannot switch to or from `multi_query_json`
 - `--presentation-target`
   - optional
   - override the question presentation target with `html` or `react`

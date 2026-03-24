@@ -805,13 +805,6 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err != nil {
 		manifest.Status = model.RunStatusFailed
 		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		if analysisMode == model.AnalysisModeJSONArtifact {
-			if _, statErr := os.Stat(artifacts.AnswerRawJSON); statErr != nil {
-				if providerErr != nil {
-					return fmt.Errorf("provider %s sql generation: %w", opts.Runner, providerErr)
-				}
-			}
-		}
 		return err
 	}
 	if providerErr != nil {
@@ -948,7 +941,7 @@ func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysis
 func materializeSingleQueryAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
 	sqlBlock := opts.AnalysisArtifact.SQL
 	reportTemplate := opts.AnalysisArtifact.ReportMarkdown
-	if err := render.ValidateReportTemplate(reportTemplate, opts.AnalysisArtifact.Metrics); err != nil {
+	if err := render.ValidateReportTemplate(reportTemplate); err != nil {
 		opts.Manifest.Status = model.RunStatusPartial
 		opts.Manifest.Phases.SQLGeneration = model.PhaseStatusFailed
 		return materializedAnalysis{}, err
@@ -992,7 +985,7 @@ func materializeSingleQueryAnalysis(ctx context.Context, opts materializeSavedAn
 		return materializedAnalysis{}, err
 	}
 	if opts.Question.ReportEnabled {
-		renderedReport := render.RenderReport(reportTemplate, opts.Question, result, opts.AnalysisArtifact.Metrics)
+		renderedReport := render.RenderReport(reportTemplate, opts.Question, result)
 		if err := os.WriteFile(opts.Manifest.Artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
 			return materializedAnalysis{}, err
 		}
@@ -1888,8 +1881,6 @@ func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, 
 
 func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifact, error) {
 	switch source.Mode {
-	case model.AnalysisModeJSONArtifact:
-		return loadAnalysisArtifact(source.Artifacts.AnswerRawJSON)
 	case model.AnalysisModeMultiQueryJSON:
 		return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.AnswerRawJSON)
 	case model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
@@ -1897,26 +1888,6 @@ func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifa
 	default:
 		return model.AnalysisArtifact{}, fmt.Errorf("unsupported analysis mode %q", source.Mode)
 	}
-}
-
-func loadAnalysisArtifact(path string) (model.AnalysisArtifact, error) {
-	payload, err := os.ReadFile(path)
-	if err != nil {
-		return model.AnalysisArtifact{}, fmt.Errorf("read answer.raw.json: %w", err)
-	}
-	var artifact model.AnalysisArtifact
-	if err := json.Unmarshal(payload, &artifact); err != nil {
-		return model.AnalysisArtifact{}, fmt.Errorf("invalid analysis json: %w", err)
-	}
-	artifact.SQL = normalizeEscapedMultiline(strings.TrimSpace(artifact.SQL))
-	artifact.ReportMarkdown = normalizeEscapedMultiline(strings.TrimSpace(artifact.ReportMarkdown))
-	if artifact.SQL == "" {
-		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty sql")
-	}
-	if artifact.ReportMarkdown == "" {
-		return model.AnalysisArtifact{}, fmt.Errorf("analysis json missing non-empty report_markdown")
-	}
-	return artifact, nil
 }
 
 func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.AnalysisArtifact, error) {
@@ -1931,7 +1902,6 @@ func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.Analysis
 	artifact := model.AnalysisArtifact{
 		SQL:            normalizeEscapedMultiline(strings.TrimSpace(string(sqlBytes))),
 		ReportMarkdown: normalizeEscapedMultiline(strings.TrimSpace(string(reportBytes))),
-		Metrics:        model.AnalysisMetrics{},
 	}
 	if artifact.SQL == "" {
 		return model.AnalysisArtifact{}, fmt.Errorf("analysis templates missing non-empty query.sql")
@@ -1965,8 +1935,6 @@ func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model
 
 func normalizeAnalysisMode(raw string) model.AnalysisMode {
 	switch model.AnalysisMode(strings.TrimSpace(raw)) {
-	case model.AnalysisModeJSONArtifact:
-		return model.AnalysisModeJSONArtifact
 	case model.AnalysisModeMultiQueryJSON:
 		return model.AnalysisModeMultiQueryJSON
 	case model.AnalysisModeTemplateFiles:
@@ -1988,8 +1956,7 @@ func resolveRunAnalysisMode(questionModeRaw, overrideRaw string) (model.Analysis
 	if string(overrideMode) != override {
 		return "", fmt.Errorf("unsupported analysis mode override %q", override)
 	}
-	if questionMode == model.AnalysisModeJSONArtifact || overrideMode == model.AnalysisModeJSONArtifact ||
-		questionMode == model.AnalysisModeMultiQueryJSON || overrideMode == model.AnalysisModeMultiQueryJSON {
+	if questionMode == model.AnalysisModeMultiQueryJSON || overrideMode == model.AnalysisModeMultiQueryJSON {
 		return "", fmt.Errorf("analysis mode override cannot switch to or from structured json modes")
 	}
 	return overrideMode, nil

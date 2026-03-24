@@ -65,7 +65,7 @@ func Load(dir string) (model.Question, error) {
 		meta.AnalysisMode = string(model.AnalysisModeTemplateFiles)
 	}
 	switch model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) {
-	case model.AnalysisModeJSONArtifact, model.AnalysisModeMultiQueryJSON, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
+	case model.AnalysisModeMultiQueryJSON, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
 	default:
 		return model.Question{}, fmt.Errorf("parse %s: unsupported analysis_mode %q", metaPath, meta.AnalysisMode)
 	}

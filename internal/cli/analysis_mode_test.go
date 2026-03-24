@@ -31,12 +31,12 @@ func TestResolveRunAnalysisModeAllowsTemplateManualOverride(t *testing.T) {
 	}
 }
 
-func TestResolveRunAnalysisModeRejectsJSONCrossover(t *testing.T) {
-	if _, err := resolveRunAnalysisMode("json_artifact", "template_files"); err == nil {
-		t.Fatalf("expected json_artifact crossover to fail")
+func TestResolveRunAnalysisModeRejectsMultiQueryCrossover(t *testing.T) {
+	if _, err := resolveRunAnalysisMode("multi_query_json", "template_files"); err == nil {
+		t.Fatalf("expected multi_query_json crossover to fail")
 	}
-	if _, err := resolveRunAnalysisMode("manual_templates", "json_artifact"); err == nil {
-		t.Fatalf("expected manual_templates -> json_artifact to fail")
+	if _, err := resolveRunAnalysisMode("manual_templates", "multi_query_json"); err == nil {
+		t.Fatalf("expected manual_templates -> multi_query_json to fail")
 	}
 }
 
@@ -282,7 +282,7 @@ func writeTestQuestionRepoWithArtifacts(t *testing.T, repoRoot, analysisMode, ar
 	if err := os.WriteFile(filepath.Join(repoRoot, "datasets", "ontime", "mcp.yaml"), []byte("dataset: ontime\nmcp_url: "+newExecuteQueryServerURL(t)+"\ndefault_mcp_server_name: demo\n"), 0o644); err != nil {
 		t.Fatalf("write mcp.yaml: %v", err)
 	}
-	for _, name := range []string{"common.md", "common_report_json.md", "common_report_multi_query_json.md", "common_report_templates.md", "common_visual.md", "common_visual_html.md", "common_visual_react.md", "common_visual_multi_query.md", "common_visual_dynamic.md", "common_visual_static.md"} {
+	for _, name := range []string{"common.md", "common_report_multi_query_json.md", "common_report_templates.md", "common_visual.md", "common_visual_html.md", "common_visual_react.md", "common_visual_multi_query.md", "common_visual_dynamic.md", "common_visual_static.md"} {
 		src := filepath.Join("/Users/bvt/work/ExploringDatabyLLMs", "prompts", name)
 		data, err := os.ReadFile(src)
 		if err != nil {

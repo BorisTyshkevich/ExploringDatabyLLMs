@@ -20,22 +20,11 @@ var allowedReportPlaceholders = map[string]struct{}{
 	"result_table_md":  {},
 }
 
-func ValidateReportTemplate(template string, metrics model.AnalysisMetrics) error {
+func ValidateReportTemplate(template string) error {
 	matches := reportPlaceholderPattern.FindAllStringSubmatch(template, -1)
 	var unknown []string
 	for _, match := range matches {
 		name := match[1]
-		if strings.HasPrefix(name, "metric.") {
-			metricName := strings.TrimPrefix(name, "metric.")
-			if metricName == "" {
-				unknown = appendUnique(unknown, name)
-				continue
-			}
-			if _, ok := metrics.NamedValues[metricName]; !ok {
-				unknown = appendUnique(unknown, name)
-			}
-			continue
-		}
 		if _, ok := allowedReportPlaceholders[name]; !ok {
 			unknown = appendUnique(unknown, name)
 		}
@@ -50,7 +39,7 @@ func ValidateReportTemplate(template string, metrics model.AnalysisMetrics) erro
 	return nil
 }
 
-func RenderReport(template string, question model.Question, result model.CanonicalResult, metrics model.AnalysisMetrics) string {
+func RenderReport(template string, question model.Question, result model.CanonicalResult) string {
 	dataOverviewMD := renderDataOverviewMarkdown(result)
 	resultTableMD := renderResultTableMarkdown(result, 20)
 	replacements := []string{
@@ -60,9 +49,6 @@ func RenderReport(template string, question model.Question, result model.Canonic
 		"{{question_title}}", question.Meta.Title,
 		"{{data_overview_md}}", dataOverviewMD,
 		"{{result_table_md}}", resultTableMD,
-	}
-	for key, value := range metrics.NamedValues {
-		replacements = append(replacements, "{{metric."+key+"}}", value)
 	}
 	replacer := strings.NewReplacer(replacements...)
 	rendered := replacer.Replace(template)

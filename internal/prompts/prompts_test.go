@@ -13,10 +13,10 @@ import (
 func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
 		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Prompt: "Question-specific SQL guidance.",
+		Prompt: "Question-specific SQL guidance.\n\n## Dashboard Questions\n\n- Which hotspot is worst?\n- Is it persistent?",
 	}
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeJSONArtifact)
+	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeMultiQueryJSON)
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
@@ -32,14 +32,14 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if strings.Contains(got, "Dataset semantic layer:") {
 		t.Fatalf("did not expect inlined semantic layer guidance, got: %s", got)
 	}
-	if !strings.Contains(got, "answer.raw.json") || !strings.Contains(got, "\"sql\"") || !strings.Contains(got, "\"report_markdown\"") || !strings.Contains(got, "\"metrics\"") {
-		t.Fatalf("expected file-based single json analysis contract, got: %s", got)
+	if !strings.Contains(got, "answer.raw.json") || !strings.Contains(got, "\"subquestions\"") || !strings.Contains(got, "\"answer_markdown\"") {
+		t.Fatalf("expected multi-query json analysis contract, got: %s", got)
 	}
 	if !strings.Contains(got, "raw JSON, not fenced Markdown") || !strings.Contains(got, "Do not emit result rows") {
 		t.Fatalf("expected strict answer.raw.json file rules, got: %s", got)
 	}
-	if !strings.Contains(got, "{{metric.<name>}}") || !strings.Contains(got, "Do not invent any placeholder") {
-		t.Fatalf("expected explicit metric placeholder guidance, got: %s", got)
+	if !strings.Contains(got, "Read every bullet under `## Dashboard Questions`") || !strings.Contains(got, "Preserve the required `subquestion` text exactly") {
+		t.Fatalf("expected dashboard question guidance, got: %s", got)
 	}
 	if strings.Contains(got, "CLE -> BNA -> PNS") || strings.Contains(got, "\"max_hops\": \"8\"") {
 		t.Fatalf("did not expect question-specific example values in shared analysis prompt, got: %s", got)

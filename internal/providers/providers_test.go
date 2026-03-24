@@ -41,7 +41,7 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
-		AnalysisMode:  string(model.AnalysisModeJSONArtifact),
+		AnalysisMode:  string(model.AnalysisModeMultiQueryJSON),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
@@ -69,10 +69,10 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 
 func TestCodexCompletionChecks(t *testing.T) {
 	tmpDir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Title\\n\\n{{data_overview_md}}\"}"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}"), 0o644); err != nil {
 		t.Fatalf("write answer.raw.json: %v", err)
 	}
-	if !codexAnalysisComplete(tmpDir, model.AnalysisModeJSONArtifact)("") {
+	if !codexAnalysisComplete(tmpDir, model.AnalysisModeMultiQueryJSON)("") {
 		t.Fatalf("expected analysis completion checker to accept answer.raw.json")
 	}
 	if err := os.WriteFile(filepath.Join(tmpDir, "query.sql"), []byte("SELECT 1"), 0o644); err != nil {
@@ -90,7 +90,7 @@ func TestCodexCompletionChecks(t *testing.T) {
 		t.Fatalf("expected presentation completion checker to accept fenced html")
 	}
 
-	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeJSONArtifact)("") {
+	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeMultiQueryJSON)("") {
 		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
 	if codexVisualComplete(tmpDir, "html")("```report\nonly report\n```") {
@@ -106,7 +106,7 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 		"while [[ $# -gt 0 ]]; do shift; done\n" +
 		"cat >/dev/null\n" +
 		"cat > answer.raw.json <<'EOF'\n" +
-		"{\"sql\":\"SELECT 1\",\"report_markdown\":\"# Title\\n\\n{{data_overview_md}}\",\"metrics\":{\"named_values\":{\"max_hops\":\"8\"}}}\n" +
+		"{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}\n" +
 		"EOF\n" +
 		"echo 'analysis artifact written'\n" +
 		"sleep 30\n"
@@ -117,7 +117,7 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
-		AnalysisMode:  string(model.AnalysisModeJSONArtifact),
+		AnalysisMode:  string(model.AnalysisModeMultiQueryJSON),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
