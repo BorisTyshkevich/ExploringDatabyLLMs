@@ -399,6 +399,9 @@ func waitForSettledState(ctx context.Context, timeout time.Duration) (pageState,
 	var last pageState
 	for time.Now().Before(deadline) {
 		if err := ctx.Err(); err != nil {
+			if len(last.FatalMessages) == 0 && last.LoadingVisible == 0 && hasSuccessSignal(last) {
+				return last, nil
+			}
 			return pageState{}, err
 		}
 		state, err := collectPageState(ctx)

@@ -72,7 +72,7 @@ func TestLoadRejectsUnsupportedPresentationTarget(t *testing.T) {
 	}
 }
 
-func TestLoadMultiQueryModeRequiresSubquestions(t *testing.T) {
+func TestLoadMultiQueryModeRequiresDashboardQuestionsWhenNoSidecar(t *testing.T) {
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, "meta.yaml"), []byte("id: qx\nslug: qx\ntitle: Test\ndataset: ontime\nanalysis_mode: multi_query_json\nartifacts_required: report.md\n"), 0o644); err != nil {
 		t.Fatalf("write meta.yaml: %v", err)
@@ -81,6 +81,30 @@ func TestLoadMultiQueryModeRequiresSubquestions(t *testing.T) {
 		t.Fatalf("write report_prompt.md: %v", err)
 	}
 	if _, err := Load(dir); err == nil {
-		t.Fatalf("expected missing subquestions.yaml to fail")
+		t.Fatalf("expected missing dashboard questions to fail")
+	}
+}
+
+func TestLoadMultiQueryModeParsesDashboardQuestionsFromReportPrompt(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "meta.yaml"), []byte("id: qx\nslug: qx\ntitle: Test\ndataset: ontime\nanalysis_mode: multi_query_json\nartifacts_required: report.md\n"), 0o644); err != nil {
+		t.Fatalf("write meta.yaml: %v", err)
+	}
+	report := "Intro\n\n## Dashboard Questions\n\n- First question?\n- Second question?\n\nMore text."
+	if err := os.WriteFile(filepath.Join(dir, "report_prompt.md"), []byte(report), 0o644); err != nil {
+		t.Fatalf("write report_prompt.md: %v", err)
+	}
+	question, err := Load(dir)
+	if err != nil {
+		t.Fatalf("Load returned error: %v", err)
+	}
+	if len(question.Subquestions) != 2 {
+		t.Fatalf("expected 2 dashboard questions, got %d", len(question.Subquestions))
+	}
+	if question.Subquestions[0].ID != "" || question.Subquestions[0].Text != "First question?" {
+		t.Fatalf("unexpected first dashboard question: %+v", question.Subquestions[0])
+	}
+	if question.Subquestions[1].ID != "" || question.Subquestions[1].Text != "Second question?" {
+		t.Fatalf("unexpected second dashboard question: %+v", question.Subquestions[1])
 	}
 }

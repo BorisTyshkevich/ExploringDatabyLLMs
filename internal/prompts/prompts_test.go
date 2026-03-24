@@ -76,7 +76,7 @@ func TestBuildSQLPromptTemplateModeUsesDirectFileContract(t *testing.T) {
 func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
 	question := model.Question{
 		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Prompt: "Question-specific SQL guidance.",
+		Prompt: "Question-specific SQL guidance.\n\n## Dashboard Questions\n\n- Which hotspot is worst?\n- Is it persistent?",
 		Subquestions: []model.QuestionSubquestion{
 			{ID: "worst_hotspot", Text: "Which hotspot is worst?"},
 			{ID: "persistence", Text: "Is it persistent?"},
@@ -90,8 +90,31 @@ func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
 	if !strings.Contains(got, "\"subquestions\"") || !strings.Contains(got, "\"answer_markdown\"") {
 		t.Fatalf("expected multi-query json artifact contract, got: %s", got)
 	}
-	if !strings.Contains(got, "`worst_hotspot`: Which hotspot is worst?") || !strings.Contains(got, "`persistence`: Is it persistent?") {
-		t.Fatalf("expected required subquestion contract in prompt, got: %s", got)
+	if !strings.Contains(got, "Read every bullet under `## Dashboard Questions`") {
+		t.Fatalf("expected dashboard-question instruction in prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "## Dashboard Questions") || !strings.Contains(got, "- Which hotspot is worst?") || !strings.Contains(got, "- Is it persistent?") {
+		t.Fatalf("expected dashboard questions to be present in prompt, got: %s", got)
+	}
+}
+
+func TestBuildSQLPromptMultiQueryModeAppendsDashboardQuestionsFromSidecarContract(t *testing.T) {
+	question := model.Question{
+		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Meta:   model.QuestionMeta{AnalysisMode: string(model.AnalysisModeMultiQueryJSON)},
+		Prompt: "Question-specific SQL guidance.",
+		Subquestions: []model.QuestionSubquestion{
+			{ID: "worst_hotspot", Text: "Which hotspot is worst?"},
+			{ID: "persistence", Text: "Is it persistent?"},
+		},
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeMultiQueryJSON)
+	if err != nil {
+		t.Fatalf("BuildSQLPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "## Dashboard Questions") || !strings.Contains(got, "- Which hotspot is worst?") || !strings.Contains(got, "- Is it persistent?") {
+		t.Fatalf("expected injected dashboard questions in prompt, got: %s", got)
 	}
 }
 
