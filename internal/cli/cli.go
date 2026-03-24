@@ -1335,6 +1335,11 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
 			return fmt.Errorf("parse visual_input.json: %w", err)
 		}
+		primaryQuery, err := selectPrimaryVisualQuery(question, visualInput)
+		if err != nil {
+			return err
+		}
+		querySQL = []byte(primaryQuery.SQL)
 	} else {
 		visualInput, err = ensureVisualInputSummary(filepath.Join(runDir, "visual_input.json"), question, result)
 		if err != nil {
@@ -1703,6 +1708,13 @@ func writePresentationPrompt(path, visualInputPath string, question model.Questi
 }
 
 func writePresentationPromptFromSummary(path string, question model.Question, cfg model.DatasetConfig, result model.CanonicalResult, sql, mcpURL, token string, visualInput model.VisualInputSummary) error {
+	if normalizeAnalysisMode(question.Meta.AnalysisMode) == model.AnalysisModeMultiQueryJSON && strings.TrimSpace(sql) == "" {
+		primaryQuery, err := selectPrimaryVisualQuery(question, visualInput)
+		if err != nil {
+			return err
+		}
+		sql = primaryQuery.SQL
+	}
 	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, sql, dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
 		return err
@@ -1711,6 +1723,27 @@ func writePresentationPromptFromSummary(path string, question model.Question, cf
 		return err
 	}
 	return nil
+}
+
+func selectPrimaryVisualQuery(question model.Question, visualInput model.VisualInputSummary) (model.QueryResultSummary, error) {
+	preferredID := ""
+	switch strings.TrimSpace(question.Meta.ID) {
+	case "q003":
+		preferredID = "worst_hotspot"
+	}
+	if preferredID != "" {
+		for _, item := range visualInput.QuerySummaries {
+			if strings.TrimSpace(item.ID) == preferredID && strings.TrimSpace(item.SQL) != "" {
+				return item, nil
+			}
+		}
+	}
+	for _, item := range visualInput.QuerySummaries {
+		if strings.TrimSpace(item.SQL) != "" {
+			return item, nil
+		}
+	}
+	return model.QueryResultSummary{}, fmt.Errorf("multi-query visual prompt requires at least one named query with non-empty sql")
 }
 
 func visualModeHint(mode string) string {

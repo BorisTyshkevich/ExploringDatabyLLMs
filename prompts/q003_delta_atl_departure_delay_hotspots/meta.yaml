@@ -4,7 +4,7 @@ title: Delta ATL departure delay hotspots by destination and time block
 dataset: ontime
 analysis_mode: multi_query_json
 artifacts_required: query.sql,report.md,visual.html
-visual_mode: static
+visual_mode: dynamic
 visual_type: html_heatmap
 tags: delta,atl,departure-delay,heatmap,thresholds
 reference_policy: optional

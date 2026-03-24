@@ -57,20 +57,20 @@ func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfi
 func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string, visualInput model.VisualInputSummary) (string, error) {
 	commonVisualFile := commonVisualPromptFile
 	analysisMode := model.AnalysisMode(strings.TrimSpace(question.Meta.AnalysisMode))
-	if analysisMode == model.AnalysisModeMultiQueryJSON {
-		commonVisualFile = commonVisualMultiQueryPromptFile
-	}
-	var common string
-	if analysisMode != model.AnalysisModeMultiQueryJSON {
-		var err error
-		common, err = loadCommonPrompt(question, commonPromptFile)
-		if err != nil {
-			return "", err
-		}
+	common, err := loadCommonPrompt(question, commonPromptFile)
+	if err != nil {
+		return "", err
 	}
 	commonVisual, err := loadCommonPrompt(question, commonVisualFile)
 	if err != nil {
 		return "", err
+	}
+	var multiQueryVisual string
+	if analysisMode == model.AnalysisModeMultiQueryJSON {
+		multiQueryVisual, err = loadCommonPrompt(question, commonVisualMultiQueryPromptFile)
+		if err != nil {
+			return "", err
+		}
 	}
 	modePromptFile := commonVisualDynamicPromptFile
 	if strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
@@ -92,10 +92,11 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		"visual_prompt_md":                question.VisualPrompt,
 	}
 	sections := []string{RenderTemplate(commonVisual, values)}
-	if analysisMode != model.AnalysisModeMultiQueryJSON {
-		sections = append([]string{RenderTemplate(common, values)}, sections...)
-		sections = append(sections, RenderTemplate(modeVisual, values))
+	sections = append([]string{RenderTemplate(common, values)}, sections...)
+	if analysisMode == model.AnalysisModeMultiQueryJSON {
+		sections = append(sections, RenderTemplate(multiQueryVisual, values))
 	}
+	sections = append(sections, RenderTemplate(modeVisual, values))
 	return joinSections(sections), nil
 }
 

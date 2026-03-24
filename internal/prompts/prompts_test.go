@@ -95,6 +95,43 @@ func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
 	}
 }
 
+func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.T) {
+	question := model.Question{
+		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Meta:         model.QuestionMeta{ID: "q003", Title: "Delta ATL", VisualMode: "dynamic", VisualType: "html_heatmap", AnalysisMode: string(model.AnalysisModeMultiQueryJSON)},
+		VisualPrompt: "Visual guidance.",
+	}
+	visualInput := model.VisualInputSummary{
+		QuestionTitle: "Delta ATL",
+		RowCount:      3,
+		QuerySummaries: []model.QueryResultSummary{
+			{ID: "worst_hotspot", SQL: "SELECT * FROM hotspots"},
+			{ID: "persistence", SQL: "SELECT * FROM persistence"},
+		},
+		ModeHint: "First pass produced named proof queries.",
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildVisualPrompt(question, dataset, model.CanonicalResult{}, "SELECT * FROM hotspots", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", visualInput)
+	if err != nil {
+		t.Fatalf("BuildVisualPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "Use the `ontime` database to answer analytical questions") {
+		t.Fatalf("expected shared core scaffold in multi-query visual prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "The saved SQL shown below is the primary dashboard query for this page.") {
+		t.Fatalf("expected multi-query visual supplement, got: %s", got)
+	}
+	if !strings.Contains(got, "Use this endpoint template for every browser query") || !strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
+		t.Fatalf("expected dynamic-mode contract in multi-query visual prompt, got: %s", got)
+	}
+	if !strings.Contains(got, "SQL query for primary data source:") || !strings.Contains(got, "SELECT * FROM hotspots") {
+		t.Fatalf("expected primary saved SQL in multi-query visual prompt, got: %s", got)
+	}
+	if strings.Contains(got, "Do not query ClickHouse") || strings.Contains(got, "Embed the verified analysis package") {
+		t.Fatalf("did not expect legacy static-only multi-query guidance, got: %s", got)
+	}
+}
+
 func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
 		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
