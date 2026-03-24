@@ -110,8 +110,11 @@ func checkQueryLedger(html string, required bool, result *VisualValidationResult
 
 	hasExpandableSQL := strings.Contains(html, "ledger-entry") ||
 		strings.Contains(html, "toggleLedgerEntry") ||
+		strings.Contains(html, "toggleLedger(") ||
 		strings.Contains(html, "ledger-sql") ||
-		strings.Contains(html, "toggle-icon")
+		strings.Contains(html, "toggle-icon") ||
+		(strings.Contains(html, "<pre>") && strings.Contains(lower, "ledger")) ||
+		(strings.Contains(lower, "display:none") && strings.Contains(lower, "sql"))
 	if !hasExpandableSQL {
 		result.Warnings = append(result.Warnings, "query ledger may not have expandable SQL")
 	}

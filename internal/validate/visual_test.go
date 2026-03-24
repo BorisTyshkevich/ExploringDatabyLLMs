@@ -194,6 +194,41 @@ func TestValidateVisualHTML_DynamicWarningsRemainAdvisory(t *testing.T) {
 	assertContains(t, result.Warnings, "expandable SQL")
 }
 
+func TestValidateVisualHTML_DynamicLedgerTableTogglePatternDoesNotWarn(t *testing.T) {
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
+</head>
+<body>
+    <div class="ledger">
+        <div id="ledger-body"></div>
+    </div>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+    </footer>
+    <script>
+        localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');
+        function toggleLedger(id) {}
+        document.getElementById('ledger-body').innerHTML =
+          '<div class="ledger-row" onclick="toggleLedger(\'primary\')"></div>' +
+          '<div style="display:none"><pre>SELECT 1</pre></div>';
+    </script>
+</body>
+</html>`
+
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
+	if !result.Valid {
+		t.Fatalf("expected Valid=true, got errors: %v", result.Errors)
+	}
+	for _, warning := range result.Warnings {
+		if strings.Contains(warning, "expandable SQL") {
+			t.Fatalf("did not expect expandable SQL warning, got warnings: %v", result.Warnings)
+		}
+	}
+}
+
 func TestValidateVisualHTML_StaticNonMapRejectsRemoteAssets(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>

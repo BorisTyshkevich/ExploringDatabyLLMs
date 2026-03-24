@@ -62,6 +62,50 @@ In other words:
 - Authoring target: React-like component structure is often the easier generation target.
 - Delivery target: static HTML/CSS/JS is often the better browser artifact.
 
+## Early Repository Result
+
+An initial paired benchmark in this repository did not support the hypothesis that React would be faster for model authoring.
+
+Case:
+
+- question: `q001_hops_per_day`
+- runner/model: `claude/sonnet`
+- date: March 24, 2026
+- comparison:
+  - HTML run: [`run-002`](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-24/q001_hops_per_day/claude/sonnet/run-002/manifest.json)
+  - React run: [`run-003`](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-24/q001_hops_per_day/claude/sonnet/run-003/manifest.json)
+
+Observed timings from `manifest.json`:
+
+- HTML `presentation_provider_duration_ms`: `478164`
+- React `presentation_provider_duration_ms`: `502791`
+- Difference: React slower by `24627 ms`, about `5%`
+
+Build step:
+
+- HTML `presentation_build_duration_ms`: `0`
+- React `presentation_build_duration_ms`: `9140`
+
+End-to-end presentation total:
+
+- HTML: `478164 ms`
+- React: `511931 ms`
+- Difference: React slower by `33767 ms`, about `7%`
+
+Interpretation:
+
+- For this dynamic map-heavy dashboard, React was not faster for model generation.
+- The extra build step made the end-to-end presentation path slower still.
+- This is one benchmark case only, not yet a general conclusion for all dashboard types.
+
+Recommended next comparisons:
+
+- static non-map dashboard
+- dynamic non-map dashboard
+- dynamic map dashboard
+
+If React remains slower across all three categories, the original hypothesis becomes much weaker.
+
 ## Important Caveat
 
 I did not find a clean, paper-backed apples-to-apples comparison that directly measures:
@@ -74,3 +118,8 @@ So the conclusion here is evidence-based but still partly inferential:
 
 - generation favors structure and components
 - delivery favors less runtime and less JavaScript
+
+This repository's first direct comparison adds an important practical caveat:
+
+- better structure for the model does not automatically mean faster generation in practice
+- for at least one complex dashboard, React generation was slower than direct HTML generation

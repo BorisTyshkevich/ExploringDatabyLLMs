@@ -20,6 +20,7 @@ description: Builds visual dashboards in either static or dynamic mode, with opt
 - Never hardcode KPIs or chart values; derive them from parsed data
 - Treat the saved SQL and the selected visual mode as part of the page contract
 - Prefer dataset-native dimensions and lookup tables when enrichment fields are needed
+- When generating JavaScript objects keyed by data values such as carrier codes, airport codes, route strings, or years, quote keys or use `Map`; do not emit bare keys that may be invalid tokens such as `9E`
 - Use optional chaining (`?.`) and nullish coalescing (`??`) in client-side JS
 - Normalize temporal fields explicitly; if a ClickHouse `Date` arrives as ISO timestamp, derive `YYYY-MM-DD` in JS
 - Keep implementation detail in the skill and references, not in question prompts
