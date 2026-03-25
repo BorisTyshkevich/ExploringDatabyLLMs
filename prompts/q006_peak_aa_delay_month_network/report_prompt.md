@@ -1,3 +1,4 @@
+### main
 Find American Airlines' worst network-wide month for departure delays, then identify which origins and routes contributed most to that peak.
 
 Analyze completed American Airlines flights by month across the full network. Find the single month that stands out as the worst overall for departure delays.
@@ -23,12 +24,17 @@ The proof query behind the peak-month question should preserve the month-by-mont
 
 The proof query behind the breadth/concentration question must let the reviewer inspect full-network peak-month totals and the share captured by top origins and top routes against those full-network totals. Do not answer "across the network" using shares computed only from filtered subsets.
 
-## Dashboard Questions
+### q1
+Which month is the single worst American Airlines month for departure delays?
 
-- Which month is the single worst American Airlines month for departure delays?
-- Which origins contribute most to that peak month?
-- Which routes contribute most to that peak month?
-- Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?
+### q2
+Which origins contribute most to that peak month?
+
+### q3
+Which routes contribute most to that peak month?
+
+### q4
+Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?
 
 In the report, answer those questions directly in prose. Name the worst month, identify the leading origin and route contributors using the verified result, and summarize whether the peak looks broad or concentrated.
 

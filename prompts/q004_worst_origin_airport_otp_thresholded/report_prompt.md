@@ -1,3 +1,4 @@
+### main
 Identify which origin airports have the worst departure on-time performance after excluding low-volume airports.
 
 Analyze completed departures at the origin-airport level across the full available history. Focus on airports with enough traffic to make the comparison meaningful, and rank the weakest performers by departure on-time performance.
@@ -19,11 +20,14 @@ Provide one proof query for each required business question. Across those proof 
 
 The proof query behind the worst-airport question should preserve the ranked airport-level rows needed for the dashboard, not just a single top airport or summary statistic.
 
-## Dashboard Questions
+### q1
+Which airport ranks worst on departure on-time performance?
 
-- Which airport ranks worst on departure on-time performance?
-- How large is the spread between the worst airport and the middle of the ranked set?
-- Are the weakest airports mostly major hubs, or is the bottom group more mixed?
+### q2
+How large is the spread between the worst airport and the middle of the ranked set?
+
+### q3
+Are the weakest airports mostly major hubs, or is the bottom group more mixed?
 
 In the report, answer those questions directly in prose. Name the worst airport, describe the spread between the bottom and the middle using the verified result, and summarize whether the weakest group is mostly hubs or more mixed.
 

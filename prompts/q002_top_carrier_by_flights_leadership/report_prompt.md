@@ -1,3 +1,4 @@
+### main
 Determine which carrier led the industry in completed flights each calendar year, and identify where leadership changed most sharply.
 
 Analyze completed flights by year and carrier across the full available history. For each year, show the leading carriers, each carrier's share of total completed flights, and the gap between the leader and the runner-up.
@@ -13,12 +14,17 @@ Provide one proof query for each required business question. Across those proof 
 
 The proof query behind the leading-carrier question should preserve the annual carrier-by-year leadership rows needed for the dashboard, not just a final overall count of years led.
 
-## Dashboard Questions
+### q1
+Which carrier leads most often across the full time range?
 
-- Which carrier leads most often across the full time range?
-- When leadership changes, how large is the swing versus the prior leader?
-- Which transition is the sharpest?
-- Does the market show long stable eras, or frequent turnover at the top?
+### q2
+When leadership changes, how large is the swing versus the prior leader?
+
+### q3
+Which transition is the sharpest?
+
+### q4
+Does the market show long stable eras, or frequent turnover at the top?
 
 In the report, answer those questions directly in prose. Name the carrier that leads most often, identify the sharpest leadership change using the verified result, and summarize whether the market is defined more by long stable eras or by frequent turnover.
 

@@ -227,18 +227,24 @@ func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) 
 		}
 	}
 	answerPath := filepath.Join(outDir, "answer.raw.json")
-	mainSQLPath := filepath.Join(outDir, "main.sql")
 	return func(string) bool {
-		mainSQLBytes, mainSQLErr := os.ReadFile(mainSQLPath)
 		data, err := os.ReadFile(answerPath)
-		if mainSQLErr != nil || err != nil {
+		if err != nil {
 			return false
 		}
 		var artifact model.AnalysisArtifact
 		if err := json.Unmarshal(data, &artifact); err != nil {
 			return false
 		}
-		return mode == model.AnalysisModeMultiQueryJSON && strings.TrimSpace(string(mainSQLBytes)) != "" && len(artifact.Subquestions) > 0
+		if mode != model.AnalysisModeMultiQuery || len(artifact.Subquestions) == 0 {
+			return false
+		}
+		for _, item := range artifact.Subquestions {
+			if strings.TrimSpace(item.ID) == "" || strings.TrimSpace(item.AnswerMarkdown) == "" || strings.TrimSpace(item.SQL) == "" {
+				return false
+			}
+		}
+		return true
 	}
 }
 

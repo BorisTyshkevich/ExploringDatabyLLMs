@@ -390,7 +390,7 @@ func TestEnsureVisualInputSummaryBackfillsMissingFile(t *testing.T) {
 	}
 }
 
-func TestWritePresentationPromptFromSummaryUsesProvidedMainSQLForMultiQuery(t *testing.T) {
+func TestWritePresentationPromptFromSummaryUsesProvidedPrimarySQLForMultiQuery(t *testing.T) {
 	tmpDir := t.TempDir()
 	path := filepath.Join(tmpDir, "prompt.visual.md")
 	question := model.Question{
@@ -400,7 +400,7 @@ func TestWritePresentationPromptFromSummaryUsesProvidedMainSQLForMultiQuery(t *t
 			Title:        "Delta ATL",
 			VisualMode:   "dynamic",
 			VisualType:   "html_heatmap",
-			AnalysisMode: string(model.AnalysisModeMultiQueryJSON),
+			AnalysisMode: string(model.AnalysisModeMultiQuery),
 		},
 		VisualPrompt: "Visual guidance.",
 	}
@@ -421,7 +421,7 @@ func TestWritePresentationPromptFromSummaryUsesProvidedMainSQLForMultiQuery(t *t
 	}
 	got := string(data)
 	if !strings.Contains(got, "SELECT * FROM main_query") {
-		t.Fatalf("expected prompt to embed provided main.sql content, got: %s", got)
+		t.Fatalf("expected prompt to embed provided primary SQL content, got: %s", got)
 	}
 	if strings.Contains(got, "SELECT * FROM supporting") && !strings.Contains(got, "\"query_summaries\"") {
 		t.Fatalf("did not expect primary SQL to be inferred from supporting query summaries, got: %s", got)

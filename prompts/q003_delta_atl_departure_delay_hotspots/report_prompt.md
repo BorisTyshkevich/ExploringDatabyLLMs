@@ -1,3 +1,4 @@
+### main
 Find the Delta departure-delay hotspots out of ATL that appear to be persistently problematic, not just noisy one-off periods.
 
 Analyze completed Delta departures from ATL by destination and departure time block across the full available history. Focus on combinations that have enough flight volume to be credible and enough repeated monthly presence to count as sustained hotspots.
@@ -19,11 +20,14 @@ Provide one proof query for each required business question. Across those proof 
 
 The monthly trend view should include only months that are credible for interpretation, not thin low-volume months that would add noise.
 
-## Dashboard Questions
+### q1
+Which destination and time block is the worst recurring hotspot?
 
-- Which destination and time block is the worst recurring hotspot?
-- Is that hotspot consistently bad across time, or concentrated in a narrower period?
-- What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?
+### q2
+Is that hotspot consistently bad across time, or concentrated in a narrower period?
+
+### q3
+What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?
 
 In the report, answer those questions directly in prose before the table. Name the actual worst hotspot using the verified result, state whether it looks persistent or concentrated, and summarize the pattern across the leading hotspots.
 

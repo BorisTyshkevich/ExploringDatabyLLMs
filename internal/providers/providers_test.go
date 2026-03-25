@@ -41,7 +41,7 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
-		AnalysisMode:  string(model.AnalysisModeMultiQueryJSON),
+		AnalysisMode:  string(model.AnalysisModeMultiQuery),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
@@ -69,14 +69,11 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 
 func TestCodexCompletionChecks(t *testing.T) {
 	tmpDir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(tmpDir, "main.sql"), []byte("SELECT 1"), 0o644); err != nil {
-		t.Fatalf("write main.sql: %v", err)
-	}
-	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"subquestions\":[{\"id\":\"q1\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}"), 0o644); err != nil {
 		t.Fatalf("write answer.raw.json: %v", err)
 	}
-	if !codexAnalysisComplete(tmpDir, model.AnalysisModeMultiQueryJSON)("") {
-		t.Fatalf("expected analysis completion checker to accept main.sql + answer.raw.json")
+	if !codexAnalysisComplete(tmpDir, model.AnalysisModeMultiQuery)("") {
+		t.Fatalf("expected analysis completion checker to accept id-based answer.raw.json")
 	}
 	if err := os.WriteFile(filepath.Join(tmpDir, "query.sql"), []byte("SELECT 1"), 0o644); err != nil {
 		t.Fatalf("write query.sql: %v", err)
@@ -99,7 +96,7 @@ func TestCodexCompletionChecks(t *testing.T) {
 		t.Fatalf("expected review completion checker to accept review.md")
 	}
 
-	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeMultiQueryJSON)("") {
+	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeMultiQuery)("") {
 		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
 	if codexVisualComplete(tmpDir, "html")("```report\nonly report\n```") {
@@ -147,11 +144,8 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 		"set -euo pipefail\n" +
 		"while [[ $# -gt 0 ]]; do shift; done\n" +
 		"cat >/dev/null\n" +
-		"cat > main.sql <<'EOF'\n" +
-		"SELECT 1\n" +
-		"EOF\n" +
 		"cat > answer.raw.json <<'EOF'\n" +
-		"{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}\n" +
+		"{\"subquestions\":[{\"id\":\"q1\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}\n" +
 		"EOF\n" +
 		"echo 'analysis artifact written'\n" +
 		"sleep 30\n"
@@ -162,7 +156,7 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
-		AnalysisMode:  string(model.AnalysisModeMultiQueryJSON),
+		AnalysisMode:  string(model.AnalysisModeMultiQuery),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
@@ -182,9 +176,6 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(tmpDir, "answer.raw.json")); err != nil {
 		t.Fatalf("expected answer.raw.json in outDir: %v", err)
-	}
-	if _, err := os.Stat(filepath.Join(tmpDir, "main.sql")); err != nil {
-		t.Fatalf("expected main.sql in outDir: %v", err)
 	}
 	if !strings.Contains(resp.Stdout, "analysis artifact written") {
 		t.Fatalf("unexpected stdout: %q", resp.Stdout)

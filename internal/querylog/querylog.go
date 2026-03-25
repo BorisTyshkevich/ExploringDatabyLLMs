@@ -28,7 +28,7 @@ func FetchForRun(ctx context.Context, logComment string, multiQuery bool) (*mode
 	whereClause := fmt.Sprintf("WHERE log_comment = '%s'", escapeLiteral(logComment))
 	if multiQuery {
 		whereClause = fmt.Sprintf(
-			"WHERE log_comment = '%s' OR startsWith(log_comment, '%s|subquestion=')",
+			"WHERE log_comment = '%s' OR startsWith(log_comment, '%s|section=')",
 			escapeLiteral(logComment),
 			escapeLiteral(logComment),
 		)

@@ -13,7 +13,7 @@ import (
 
 const (
 	commonPromptFile                 = "common.md"
-	commonReportMultiQueryPromptFile = "common_report_multi_query_json.md"
+	commonReportMultiQueryPromptFile = "common_report_multi_query.md"
 	commonReportTemplatePromptFile   = "common_report_templates.md"
 	commonReviewPromptFile           = "common_review.md"
 	commonVisualPromptFile           = "common_visual.md"
@@ -66,7 +66,7 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		return "", err
 	}
 	var multiQueryVisual string
-	if analysisMode == model.AnalysisModeMultiQueryJSON {
+	if analysisMode == model.AnalysisModeMultiQuery {
 		multiQueryVisual, err = loadCommonPrompt(question, commonVisualMultiQueryPromptFile)
 		if err != nil {
 			return "", err
@@ -102,7 +102,7 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 	}
 	sections := []string{RenderTemplate(commonVisual, values)}
 	sections = append([]string{RenderTemplate(common, values)}, sections...)
-	if analysisMode == model.AnalysisModeMultiQueryJSON {
+	if analysisMode == model.AnalysisModeMultiQuery {
 		sections = append(sections, RenderTemplate(multiQueryVisual, values))
 	}
 	sections = append(sections, RenderTemplate(modeVisual, values))
@@ -116,7 +116,6 @@ type ReviewPromptInputs struct {
 	ReportMarkdown  string
 	AnswerRawJSON   string
 	AnalysisJSON    string
-	MainSQL         string
 	QuerySQL        string
 	ResultJSON      string
 	VisualInputJSON string
@@ -143,10 +142,7 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 		"Question-specific guidance:\n\n"+strings.TrimSpace(inputs.Question.Prompt),
 		"Generated report.md:\n\n```md\n"+strings.TrimSpace(inputs.ReportMarkdown)+"\n```",
 	)
-	if inputs.AnalysisMode == model.AnalysisModeMultiQueryJSON {
-		if strings.TrimSpace(inputs.MainSQL) != "" {
-			sections = append(sections, "Saved main.sql:\n\n```sql\n"+strings.TrimSpace(inputs.MainSQL)+"\n```")
-		}
+	if inputs.AnalysisMode == model.AnalysisModeMultiQuery {
 		if strings.TrimSpace(inputs.AnswerRawJSON) != "" {
 			sections = append(sections, "Saved answer.raw.json:\n\n```json\n"+strings.TrimSpace(inputs.AnswerRawJSON)+"\n```")
 		}
@@ -197,33 +193,7 @@ func visualInputSummaryJSON(summary model.VisualInputSummary) string {
 }
 
 func questionPromptForAnalysis(question model.Question) string {
-	prompt := strings.TrimSpace(question.Prompt)
-	if !strings.EqualFold(strings.TrimSpace(question.Meta.AnalysisMode), string(model.AnalysisModeMultiQueryJSON)) {
-		return prompt
-	}
-	if strings.Contains(strings.ToLower(prompt), "## dashboard questions") {
-		return prompt
-	}
-	if len(question.Subquestions) == 0 {
-		return prompt
-	}
-	lines := make([]string, 0, len(question.Subquestions)+2)
-	lines = append(lines, "## Dashboard Questions", "")
-	for _, item := range question.Subquestions {
-		text := strings.TrimSpace(item.Text)
-		if text == "" {
-			continue
-		}
-		lines = append(lines, "- "+text)
-	}
-	section := strings.TrimSpace(strings.Join(lines, "\n"))
-	if section == "## Dashboard Questions" {
-		return prompt
-	}
-	if prompt == "" {
-		return section
-	}
-	return prompt + "\n\n" + section
+	return strings.TrimSpace(question.Prompt)
 }
 
 func loadCommonPrompt(question model.Question, name string) (string, error) {

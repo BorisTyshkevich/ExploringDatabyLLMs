@@ -3,4 +3,7 @@
 - Use the `{{dataset_name}}` database to answer analytical questions
 - Use `{{dataset_name}}-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
 - write correct and efficient ClickHouse SQL 
-- Before finalizing your answer, self-verify the query with a quick debug execution, usually with a small `LIMIT` or `WHERE` filter in a data reading subquery or CTE. Fix any errors in a loop until done.
+- Before writing any SQL artifact, self-verify every SQL statement you intend to save.
+- Run a cheap debug execution for each query first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both applied inside the main data-reading subquery or CTE.
+- Treat successful execution as mandatory. Fix any syntax, type, aggregate, window, join, or unknown-column errors in a loop until every saved query runs successfully.
+- Do not write unchecked SQL.

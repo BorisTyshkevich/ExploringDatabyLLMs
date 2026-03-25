@@ -32,11 +32,11 @@ func TestResolveRunAnalysisModeAllowsTemplateManualOverride(t *testing.T) {
 }
 
 func TestResolveRunAnalysisModeRejectsMultiQueryCrossover(t *testing.T) {
-	if _, err := resolveRunAnalysisMode("multi_query_json", "template_files"); err == nil {
-		t.Fatalf("expected multi_query_json crossover to fail")
+	if _, err := resolveRunAnalysisMode("multi_query", "template_files"); err == nil {
+		t.Fatalf("expected multi_query crossover to fail")
 	}
-	if _, err := resolveRunAnalysisMode("manual_templates", "multi_query_json"); err == nil {
-		t.Fatalf("expected manual_templates -> multi_query_json to fail")
+	if _, err := resolveRunAnalysisMode("manual_templates", "multi_query"); err == nil {
+		t.Fatalf("expected manual_templates -> multi_query to fail")
 	}
 }
 
@@ -58,32 +58,24 @@ func TestLoadTemplateAnalysisArtifact(t *testing.T) {
 	}
 }
 
-func TestLoadMultiQueryAnalysisArtifactRequiresMainSQL(t *testing.T) {
+func TestLoadMultiQueryAnalysisArtifactUsesSectionIDs(t *testing.T) {
 	dir := t.TempDir()
 	question := model.Question{
-		Meta: model.QuestionMeta{AnalysisMode: string(model.AnalysisModeMultiQueryJSON)},
+		Meta: model.QuestionMeta{AnalysisMode: string(model.AnalysisModeMultiQuery)},
 		Subquestions: []model.QuestionSubquestion{
-			{Text: "Which one?"},
+			{ID: "main", Text: "Which one?"},
 		},
 	}
 	answerPath := filepath.Join(dir, "answer.raw.json")
-	if err := os.WriteFile(answerPath, []byte("{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 2\"}]}"), 0o644); err != nil {
+	if err := os.WriteFile(answerPath, []byte("{\"subquestions\":[{\"id\":\"main\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 2\"}]}"), 0o644); err != nil {
 		t.Fatalf("write answer.raw.json: %v", err)
 	}
 
-	if _, err := loadMultiQueryAnalysisArtifact(question, filepath.Join(dir, "main.sql"), answerPath); err == nil {
-		t.Fatalf("expected missing main.sql to fail")
-	}
-
-	mainPath := filepath.Join(dir, "main.sql")
-	if err := os.WriteFile(mainPath, []byte("SELECT 1"), 0o644); err != nil {
-		t.Fatalf("write main.sql: %v", err)
-	}
-	got, err := loadMultiQueryAnalysisArtifact(question, mainPath, answerPath)
+	got, err := loadMultiQueryAnalysisArtifact(question, answerPath)
 	if err != nil {
 		t.Fatalf("loadMultiQueryAnalysisArtifact returned error: %v", err)
 	}
-	if got.SQL != "SELECT 1" || len(got.Subquestions) != 1 {
+	if got.SQL != "SELECT 2" || len(got.Subquestions) != 1 || got.Subquestions[0].ID != "main" {
 		t.Fatalf("unexpected multi-query artifact: %+v", got)
 	}
 }
@@ -312,7 +304,7 @@ func writeTestQuestionRepoWithArtifacts(t *testing.T, repoRoot, analysisMode, ar
 	if err := os.WriteFile(filepath.Join(repoRoot, "datasets", "ontime", "mcp.yaml"), []byte("dataset: ontime\nmcp_url: "+newExecuteQueryServerURL(t)+"\ndefault_mcp_server_name: demo\n"), 0o644); err != nil {
 		t.Fatalf("write mcp.yaml: %v", err)
 	}
-	for _, name := range []string{"common.md", "common_report_multi_query_json.md", "common_report_templates.md", "common_review.md", "common_visual.md", "common_visual_html.md", "common_visual_react.md", "common_visual_multi_query.md", "common_visual_dynamic.md", "common_visual_static.md"} {
+	for _, name := range []string{"common.md", "common_report_multi_query.md", "common_report_templates.md", "common_review.md", "common_visual.md", "common_visual_html.md", "common_visual_react.md", "common_visual_multi_query.md", "common_visual_dynamic.md", "common_visual_static.md"} {
 		src := filepath.Join("/Users/bvt/work/ExploringDatabyLLMs", "prompts", name)
 		data, err := os.ReadFile(src)
 		if err != nil {

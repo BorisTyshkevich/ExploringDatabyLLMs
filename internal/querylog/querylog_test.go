@@ -17,8 +17,8 @@ func TestFetchForRunAggregatesMultiQueryRows(t *testing.T) {
 	}
 	t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
 	t.Setenv("CLICKHOUSE_CLIENT_OUTPUT", strings.Join([]string{
-		`{"log_comment":"base|subquestion=q2","query_id":"2","query_duration_ms":200,"read_rows":20,"read_bytes":2000,"result_rows":2,"result_bytes":200,"memory_usage":512,"peak_threads":4,"query":"SELECT 2","event_time":"2026-03-24 12:00:02","type":"QueryFinish"}`,
-		`{"log_comment":"base|subquestion=q1","query_id":"1","query_duration_ms":100,"read_rows":10,"read_bytes":1000,"result_rows":1,"result_bytes":100,"memory_usage":1024,"peak_threads":2,"query":"SELECT 1","event_time":"2026-03-24 12:00:01","type":"QueryFinish"}`,
+		`{"log_comment":"base|section=q2","query_id":"2","query_duration_ms":200,"read_rows":20,"read_bytes":2000,"result_rows":2,"result_bytes":200,"memory_usage":512,"peak_threads":4,"query":"SELECT 2","event_time":"2026-03-24 12:00:02","type":"QueryFinish"}`,
+		`{"log_comment":"base|section=q1","query_id":"1","query_duration_ms":100,"read_rows":10,"read_bytes":1000,"result_rows":1,"result_bytes":100,"memory_usage":1024,"peak_threads":2,"query":"SELECT 1","event_time":"2026-03-24 12:00:01","type":"QueryFinish"}`,
 	}, "\n"))
 
 	got, err := FetchForRun(context.Background(), "base", true)

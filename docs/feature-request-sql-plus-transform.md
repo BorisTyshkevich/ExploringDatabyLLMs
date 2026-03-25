@@ -12,7 +12,7 @@ This is a proposal only. It does not change current qforge behavior.
 
 ## Motivation
 
-The current `multi_query_json` mode is strong for proof-oriented workflows because each dashboard question has:
+The current `multi_query` mode is strong for proof-oriented workflows because each dashboard question has:
 
 - one direct prose answer
 - one proof SQL statement
@@ -52,7 +52,7 @@ Optional alternative:
 - `transform.js`
 - `report.template.md`
 
-The first variant is closer to current `multi_query_json`. The second variant is closer to current template-based modes.
+The first variant is closer to current `multi_query`. The second variant is closer to current template-based modes.
 
 ## High-Level Flow
 
@@ -113,7 +113,7 @@ Today, some prompt rules imply reuse across proof queries, but the harness execu
 
 The strongest argument against this mode is analytical auditability.
 
-Current `multi_query_json` gives a direct mapping:
+Current `multi_query` gives a direct mapping:
 
 - question
 - proof SQL
@@ -194,7 +194,7 @@ This would let each prose answer point to a specific derived proof object withou
 
 ## Alternative: Keep SQL-Only, But Add Better Semantics
 
-Before adding a new mode, qforge could instead tighten the wording around `multi_query_json`:
+Before adding a new mode, qforge could instead tighten the wording around `multi_query`:
 
 - each proof query is executed independently
 - later proof queries cannot consume earlier executed JSON results
@@ -226,7 +226,7 @@ This would limit complexity and keep the feature reviewable.
 
 ## Recommendation
 
-Do not replace `multi_query_json` with this mode.
+Do not replace `multi_query` with this mode.
 
 If pursued, add `sql_plus_transform` as an additional mode for questions where:
 
@@ -236,6 +236,5 @@ If pursued, add `sql_plus_transform` as an additional mode for questions where:
 
 For the current codebase, the lowest-cost next step is not implementation. It is documenting the distinction between:
 
-- independent proof-query execution in `multi_query_json`
+- independent proof-query execution in `multi_query`
 - hypothetical future local derivation from a primary query result
-

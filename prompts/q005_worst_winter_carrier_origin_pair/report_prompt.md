@@ -1,3 +1,4 @@
+### main
 Determine which airline and origin-airport combinations perform worst in winter after applying a meaningful flight threshold.
 
 Focus on winter departures only and evaluate completed flights at the `(carrier, origin airport)` level. Limit the analysis to combinations with enough winter traffic to be credible.
@@ -24,11 +25,14 @@ The proof query behind the concentration question must directly support both par
 
 The proof query behind the worst-pair question should preserve the ranked pair-level rows needed for the dashboard, not just a single worst pair or summary count.
 
-## Dashboard Questions
+### q1
+Which winter carrier-airport pair ranks worst overall?
 
-- Which winter carrier-airport pair ranks worst overall?
-- Are the worst pairs driven more by weather or by operational causes?
-- Are the weakest pairs concentrated in a small number of carriers or airports?
+### q2
+Are the worst pairs driven more by weather or by operational causes?
+
+### q3
+Are the weakest pairs concentrated in a small number of carriers or airports?
 
 In the report, answer those questions directly in prose. Name the worst winter pair, summarize whether the weakest pairs are driven more by weather or by operational causes, and state whether the weak set is concentrated in a small number of carriers or airports.
 

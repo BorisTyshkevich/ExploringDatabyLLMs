@@ -17,7 +17,7 @@ Each question lives under `prompts/qXXX_.../` and usually includes:
 - `meta.yaml`
 - `report_prompt.md`
 - `visual_prompt.md`
-- optional `subquestions.yaml` for `analysis_mode: multi_query_json`
+- optional `subquestions.yaml` for `analysis_mode: multi_query`
 
 Use them for different jobs:
 

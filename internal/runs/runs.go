@@ -45,7 +45,6 @@ func DefaultArtifacts(outDir string, presentation bool) model.ArtifactPaths {
 		PromptReportRaw: filepath.Join(outDir, "prompt.report.md"),
 		AnswerReportRaw: filepath.Join(outDir, "answer.report.raw.md"),
 		AnswerRawJSON:   filepath.Join(outDir, "answer.raw.json"),
-		MainSQL:         filepath.Join(outDir, "main.sql"),
 		AnalysisJSON:    filepath.Join(outDir, "analysis.json"),
 		PromptReviewRaw: filepath.Join(outDir, "prompt.review.md"),
 		AnswerReviewRaw: filepath.Join(outDir, "answer.review.raw.md"),

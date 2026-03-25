@@ -12,7 +12,7 @@ const (
 type AnalysisMode string
 
 const (
-	AnalysisModeMultiQueryJSON AnalysisMode = "multi_query_json"
+	AnalysisModeMultiQuery     AnalysisMode = "multi_query"
 	AnalysisModeTemplateFiles  AnalysisMode = "template_files"
 	AnalysisModeManualTemplate AnalysisMode = "manual_templates"
 )
@@ -82,7 +82,6 @@ type ArtifactPaths struct {
 	PromptReportRaw       string `json:"prompt_report_raw"`
 	AnswerReportRaw       string `json:"answer_report_raw"`
 	AnswerRawJSON         string `json:"answer_raw_json,omitempty"`
-	MainSQL               string `json:"main_sql,omitempty"`
 	AnalysisJSON          string `json:"analysis_json,omitempty"`
 	PromptReviewRaw       string `json:"prompt_review_raw,omitempty"`
 	AnswerReviewRaw       string `json:"answer_review_raw,omitempty"`
@@ -182,7 +181,7 @@ type AnalysisArtifact struct {
 
 type AnalysisSubquestion struct {
 	ID             string `json:"id,omitempty"`
-	Subquestion    string `json:"subquestion"`
+	Subquestion    string `json:"subquestion,omitempty"`
 	AnswerMarkdown string `json:"answer_markdown"`
 	SQL            string `json:"sql"`
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -65,7 +66,7 @@ func Load(dir string) (model.Question, error) {
 		meta.AnalysisMode = string(model.AnalysisModeTemplateFiles)
 	}
 	switch model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) {
-	case model.AnalysisModeMultiQueryJSON, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
+	case model.AnalysisModeMultiQuery, model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
 	default:
 		return model.Question{}, fmt.Errorf("parse %s: unsupported analysis_mode %q", metaPath, meta.AnalysisMode)
 	}
@@ -109,12 +110,8 @@ func loadSubquestions(dir string, mode model.AnalysisMode, reportPrompt string) 
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			if mode == model.AnalysisModeMultiQueryJSON {
-				items := extractDashboardQuestions(reportPrompt)
-				if len(items) == 0 {
-					return nil, fmt.Errorf("load %s: missing ## Dashboard Questions section for analysis_mode %q", dir, mode)
-				}
-				return items, nil
+			if mode == model.AnalysisModeMultiQuery {
+				return extractPromptSections(reportPrompt)
 			}
 			return nil, nil
 		}
@@ -126,40 +123,82 @@ func loadSubquestions(dir string, mode model.AnalysisMode, reportPrompt string) 
 	if err := yaml.Unmarshal(data, &file); err != nil {
 		return nil, fmt.Errorf("parse %s: %w", path, err)
 	}
-	if mode == model.AnalysisModeMultiQueryJSON && len(file.Subquestions) == 0 {
+	if mode == model.AnalysisModeMultiQuery && len(file.Subquestions) == 0 {
 		return nil, fmt.Errorf("parse %s: subquestions list is required for analysis_mode %q", path, mode)
 	}
 	return file.Subquestions, nil
 }
 
-func extractDashboardQuestions(reportPrompt string) []model.QuestionSubquestion {
+var sectionIDPattern = regexp.MustCompile(`^q[1-9][0-9]*$`)
+
+func extractPromptSections(reportPrompt string) ([]model.QuestionSubquestion, error) {
 	lines := strings.Split(reportPrompt, "\n")
-	inSection := false
-	var items []model.QuestionSubquestion
-	for _, raw := range lines {
-		line := strings.TrimSpace(raw)
-		if strings.HasPrefix(line, "## ") {
-			if strings.EqualFold(strings.TrimSpace(strings.TrimPrefix(line, "## ")), "Dashboard Questions") {
-				inSection = true
-				continue
-			}
-			if inSection {
-				break
-			}
-		}
-		if !inSection {
-			continue
-		}
-		if !strings.HasPrefix(line, "- ") {
-			continue
-		}
-		text := strings.TrimSpace(strings.TrimPrefix(line, "- "))
-		if text == "" {
-			continue
-		}
-		items = append(items, model.QuestionSubquestion{Text: text})
+	type section struct {
+		id    string
+		lines []string
 	}
-	return items
+	var current *section
+	var sections []section
+	flush := func() {
+		if current == nil {
+			return
+		}
+		sections = append(sections, *current)
+		current = nil
+	}
+	for _, raw := range lines {
+		line := strings.TrimRight(raw, "\r")
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "### ") {
+			flush()
+			id := strings.TrimSpace(strings.TrimPrefix(trimmed, "### "))
+			current = &section{id: id}
+			continue
+		}
+		if current != nil {
+			current.lines = append(current.lines, line)
+		}
+	}
+	flush()
+
+	if len(sections) == 0 {
+		text := strings.TrimSpace(reportPrompt)
+		if text == "" {
+			return nil, fmt.Errorf("missing question sections for multi_query prompt")
+		}
+		return []model.QuestionSubquestion{{ID: "q0", Text: text}}, nil
+	}
+
+	var items []model.QuestionSubquestion
+	seen := map[string]struct{}{}
+	mainCount := 0
+	for _, sec := range sections {
+		id := strings.TrimSpace(sec.id)
+		if id == "" {
+			return nil, fmt.Errorf("empty section id in multi_query prompt")
+		}
+		switch {
+		case strings.EqualFold(id, "main"):
+			id = "main"
+			mainCount++
+			if mainCount > 1 {
+				return nil, fmt.Errorf("multi_query prompt may contain at most one ### main section")
+			}
+		case sectionIDPattern.MatchString(id):
+		default:
+			return nil, fmt.Errorf("unsupported multi_query section id %q", id)
+		}
+		if _, ok := seen[id]; ok {
+			return nil, fmt.Errorf("duplicate multi_query section id %q", id)
+		}
+		seen[id] = struct{}{}
+		text := strings.TrimSpace(strings.Join(sec.lines, "\n"))
+		if text == "" {
+			return nil, fmt.Errorf("multi_query section %q is empty", id)
+		}
+		items = append(items, model.QuestionSubquestion{ID: id, Text: text})
+	}
+	return items, nil
 }
 
 func requiresArtifact(required, name string) bool {

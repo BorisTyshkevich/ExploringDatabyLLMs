@@ -19,7 +19,7 @@ This repository still contains historical Bash and Python benchmark code, but th
 1. SQL generation
    - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
    - the exact artifact contract is selected by the question's `analysis_mode`
-   - `multi_query_json`: the model writes `main.sql` plus `answer.raw.json` with ordered subquestion answers and proof queries
+   - `multi_query`: the model writes `answer.raw.json` with ordered section answers and proof queries keyed by `main`, `qN`, or implicit `q0`
    - `template_files`: the model writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
 2. Mandatory analysis review during `run`
@@ -44,7 +44,7 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query_json.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query_json.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query.md)
   - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` multi-query contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for direct `query.sql` plus `report.template.md` output
@@ -277,7 +277,7 @@ Flags:
 - `--analysis-mode`
   - optional
   - may override only between `template_files` and `manual_templates`
-  - cannot switch to or from `multi_query_json`
+  - cannot switch to or from `multi_query`
 - `--presentation-target`
   - optional
   - override the question presentation target with `html` or `react`
@@ -414,7 +414,7 @@ Flags:
 
 What `process-visual` does:
 
-- loads `manifest.json`, the saved primary SQL artifact (`query.sql` or `main.sql`), and `visual_input.json` from an existing run
+- loads `manifest.json`, the saved primary SQL artifact (`query.sql` or the selected `queries/<id>.sql`), and `visual_input.json` from an existing run
 - for static mode, also loads `result.json`
 - rebuilds the presentation prompt from question metadata and the saved artifacts
 - invokes the original provider again for `html`

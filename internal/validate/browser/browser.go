@@ -137,6 +137,11 @@ func Validate(ctx context.Context, opts Options) Result {
 		result.Errors = append(result.Errors, classifyError("page_load", err))
 		return result
 	}
+	if err := waitForDocumentComplete(browserCtx, loadTimeout); err != nil {
+		result.Valid = false
+		result.Errors = append(result.Errors, classifyError("page_ready", err))
+		return result
+	}
 
 	if strings.EqualFold(strings.TrimSpace(opts.VisualMode), "dynamic") {
 		controls, err := discoverControls(browserCtx)
@@ -387,6 +392,24 @@ func waitForMatchedResponse(ctx context.Context, t *tracker, timeout time.Durati
 			return fmt.Errorf("matching network request failed: %s", strings.Join(loadingFailures, " | "))
 		}
 		if url != "" && status > 0 {
+			return nil
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return context.DeadlineExceeded
+}
+
+func waitForDocumentComplete(ctx context.Context, timeout time.Duration) error {
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		var state string
+		if err := chromedp.Run(ctx, chromedp.Evaluate(`document.readyState`, &state)); err != nil {
+			return err
+		}
+		if state == "complete" {
 			return nil
 		}
 		time.Sleep(100 * time.Millisecond)

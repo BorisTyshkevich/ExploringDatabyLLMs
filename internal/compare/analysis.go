@@ -100,9 +100,9 @@ func querySQLPaths(items []RunSummary) []string {
 			out = append(out, path)
 			continue
 		}
-		mainPath := filepath.Join(item.RunDir, "main.sql")
-		if _, err := os.Stat(mainPath); err == nil {
-			out = append(out, mainPath)
+		primaryPath := filepath.Join(item.RunDir, "queries", "main.sql")
+		if _, err := os.Stat(primaryPath); err == nil {
+			out = append(out, primaryPath)
 		}
 	}
 	return out
