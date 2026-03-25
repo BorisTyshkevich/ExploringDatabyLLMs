@@ -296,6 +296,12 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if !strings.Contains(got, "query ledger") {
 		t.Fatalf("expected q001 prompt to inherit ledger contract, got: %s", got)
 	}
+	if !strings.Contains(got, "self-verify every browser-side SQL statement") {
+		t.Fatalf("expected q001 prompt to require browser-side query verification, got: %s", got)
+	}
+	if !strings.Contains(got, "including primary, supporting, enrichment, drill-down, and lookup queries") {
+		t.Fatalf("expected q001 prompt to cover enrichment query verification explicitly, got: %s", got)
+	}
 	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
 		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
 	}
