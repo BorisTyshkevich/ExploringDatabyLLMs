@@ -23,6 +23,9 @@ Write one JSON object to `answer.raw.json` file with shape:
 - All prose claims about a specific route's recurrence frequency or date range must be directly traceable to a row in an executed query result.
 - Each `sql` must be one executable SQL statement only and should serve as the proof query for that section.
 - Use one proof query per section question. Do not merge several section questions into one unioned or row-typed SQL result unless the question-specific guidance explicitly requires that.
+- Across the full section set, preserve enough row-level evidence to support every required ranked view, trend view, and drilldown view needed by the question.
+- Do not collapse a section to a final aggregate when the presentation needs the underlying ranked, time-series, or drilldown rows.
+- When a conclusion depends on shares, concentration, or other denominator-based comparisons, keep the denominator-bearing totals inspectable in the proof query result.
 - Derive SQL and answers only from the current question and the current query result shape.
 - Use the full available dataset history unless the question-specific prompt explicitly asks for a narrower time window.
 - For additional section questions, do not hard-code any numeric threshold derived from another section result (e.g., hop count). Filter or join dynamically instead.

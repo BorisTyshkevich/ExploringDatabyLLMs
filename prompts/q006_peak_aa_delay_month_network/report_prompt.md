@@ -15,19 +15,12 @@ Then drill into the selected peak month to show which origin airports and origin
 
 For the breadth-versus-concentration question, compute concentration against the full selected-month AA network. If you apply minimum-flight thresholds to keep origin or route tables business-meaningful, use those thresholds only for displayed contributor tables, not as the denominator for any network-wide concentration share.
 
-Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
-
-- a monthly leaderboard showing how the network performed over time
-- a drilldown into the selected peak month by origin and by route
-
-The proof query behind the peak-month question should preserve the month-by-month network rows needed for the dashboard, not just the single worst month.
-
-The proof query behind the breadth/concentration question must let the reviewer inspect full-network peak-month totals and the share captured by top origins and top routes against those full-network totals. Do not answer "across the network" using shares computed only from filtered subsets.
-
 If you use thresholded contributor tables for readability, label them as display filters only and keep the network-wide breadth/concentration conclusion tied to full-network denominators.
 
 ### q1
 Which month is the single worst American Airlines month for departure delays?
+
+Preserve the month-by-month network rows needed for the dashboard, not just the single worst month.
 
 ### q2
 Which origins contribute most to that peak month?
@@ -37,3 +30,5 @@ Which routes contribute most to that peak month?
 
 ### q4
 Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?
+
+Let the reviewer inspect full-network peak-month totals and the share captured by top origins and top routes against those full-network totals. Do not answer "across the network" using shares computed only from filtered subsets.

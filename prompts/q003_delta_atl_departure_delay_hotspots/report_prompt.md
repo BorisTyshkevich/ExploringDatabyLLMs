@@ -13,18 +13,13 @@ For each hotspot, quantify:
 - the share of flights departing 15+ minutes late
 - how many months the hotspot meaningfully appears
 
-Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
-
-- a ranked hotspot summary view
-- a monthly trend view for the leading hotspots
-
-The monthly trend view should include only months that are credible for interpretation, not thin low-volume months that would add noise.
-
 ### q1
 Which destination and time block is the worst recurring hotspot?
 
 ### q2
 Is that hotspot consistently bad across time, or concentrated in a narrower period?
+
+Preserve the monthly rows needed for that trend view, and include only months that are credible for interpretation rather than thin low-volume months that would add noise.
 
 ### q3
 What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?

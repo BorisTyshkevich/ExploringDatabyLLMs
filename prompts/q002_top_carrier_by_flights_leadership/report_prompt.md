@@ -7,21 +7,20 @@ Pay special attention to true leadership transitions, where the top carrier chan
 
 Do not invent a custom scoring formula or a narrower analysis window. Rank and compare leadership changes directly from the yearly leadership metrics needed to answer the question.
 
-Provide one proof query for each required business question. Across those proof queries, include enough evidence to support both:
-
-- an annual leadership view showing the top carriers by year
-- a transition view highlighting years when the leading carrier changed
-
-The proof query behind the leading-carrier question should preserve the annual carrier-by-year leadership rows needed for the dashboard, not just a final overall count of years led.
-
 ### q1
 Which carrier leads most often across the full time range?
+
+Preserve the year-by-year leadership rows needed to support that conclusion, not just a final aggregate such as total years led.
 
 ### q2
 When leadership changes, how large is the swing versus the prior leader?
 
+Return the transition rows needed to compare years where the leader changed, including the swing size versus the prior leader.
+
 ### q3
 Which transition is the sharpest?
+
+Return enough transition detail to identify the largest true leadership change from one year to the next.
 
 ### q4
 Does the market show long stable eras, or frequent turnover at the top?
