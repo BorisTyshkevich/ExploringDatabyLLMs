@@ -8,14 +8,14 @@ This document describes the current end-to-end processing flow for `qforge`: wha
 
 1. analysis phase
    - the exact contract is selected by the question's `analysis_mode`
-   - `multi_query_json`: the provider writes `answer.raw.json`
+   - `multi_query_json`: the provider writes `main.sql` plus `answer.raw.json`
    - `template_files`: the provider writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages prompts only, then a human writes `query.sql` and `report.template.md`
    - the harness loads the saved analysis artifacts, executes SQL itself, and renders `report.md`
    - during `qforge run`, the harness then performs a mandatory post-analysis review and writes `review.md`
 2. visual phase
    - optional, controlled by `run --with-visual` or by `process-visual`
-   - the provider receives `query.sql` plus a harness-generated visual input summary and generates only `visual.html`
+   - the provider receives the saved primary SQL artifact (`query.sql` or `main.sql`) plus a harness-generated visual input summary and generates only `visual.html`
 
 The model never executes the final SQL. The harness always executes SQL and writes the canonical `result.json`.
 
@@ -40,6 +40,8 @@ Question metadata selects one of these analysis contracts via `analysis_mode`.
 
 The provider must write `answer.raw.json` in the run directory.
 
+The provider must also write `main.sql` with one executable SQL statement for the main question / primary dashboard query.
+
 `answer.raw.json` must contain raw JSON bytes only with this shape:
 
 ```json
@@ -56,6 +58,7 @@ The provider must write `answer.raw.json` in the run directory.
 
 Important rules:
 
+- `main.sql` is the authoritative primary dashboard query used later by the visual phase
 - subquestions must follow the `## Dashboard Questions` section in order
 - each subquestion carries one direct prose answer and one proof query
 - stdout is diagnostic only and is not used for phase-1 artifact loading
@@ -142,13 +145,13 @@ Current composition order:
 
 The visual provider receives these saved artifacts as prompt context:
 
-- `query.sql`
+- the saved primary SQL artifact (`query.sql` for single-query modes, `main.sql` for `multi_query_json`)
 - `visual_input.json`
 - `result.json` in static mode only
 
 The visual phase should treat:
 
-- `query.sql` as the authoritative executed query
+- the saved primary SQL artifact as the authoritative query for the page
 - `visual_input.json` as the compact data-shape summary
 - `result.json` as the authoritative embedded data source in static mode
 
@@ -176,6 +179,7 @@ Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 - `prompt.report.md`
 - `answer.report.raw.md`
 - `answer.raw.json`
+- `main.sql`
 - `analysis.json`
 - `prompt.review.md`
 - `answer.review.raw.md`
@@ -195,11 +199,13 @@ Typical run artifacts under `YYYY-MM-DD/<question>/<runner>/<model>/run-XXX/`:
 Source-of-truth artifacts:
 
 - analysis artifact:
-  - `answer.raw.json` for `multi_query_json`
+  - `main.sql` + `answer.raw.json` for `multi_query_json`
   - `query.sql` + `report.template.md` for `template_files` and `manual_templates`
 - normalized analysis snapshot: `analysis.json`
 - review artifact: `review.md`
-- executed SQL: `query.sql`
+- executed SQL:
+  - `main.sql` plus `queries/*.sql` for `multi_query_json`
+  - `query.sql` for `template_files` and `manual_templates`
 - canonical result: `result.json`
 - visual grounding summary: `visual_input.json`
 - final rendered report: `report.md`

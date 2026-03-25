@@ -55,12 +55,19 @@ func buildQueryArtifactRefs(runsRoot, runDir string) []ArtifactRef {
 	if single.URL != "" {
 		return []ArtifactRef{single}
 	}
+	main := buildArtifactRef(runsRoot, filepath.Join(runDir, "main.sql"), "sql")
 
 	entries, err := os.ReadDir(filepath.Join(runDir, "queries"))
 	if err != nil {
+		if main.URL != "" {
+			return []ArtifactRef{main}
+		}
 		return nil
 	}
 	var refs []ArtifactRef
+	if main.URL != "" {
+		refs = append(refs, main)
+	}
 	for _, entry := range entries {
 		if entry.IsDir() || filepath.Ext(entry.Name()) != ".sql" {
 			continue

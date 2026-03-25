@@ -14,5 +14,6 @@
 - make the selected-row map behavior explicit: when the selected itinerary differs from Rank 1, the map title, plotted route, markers, bounds, and route detail panel must visibly update to that selected itinerary rather than leaving the lead route drawn
 - keep the map/detail selection state separate from the anchored hero and KPI state
 - show a clear active-row state for the selected itinerary that is distinct from simple hover styling
-- prefer a simple per-row itinerary representation from the primary query that the browser can reliably use for redraws
+- prefer the `Route` value from the primary query as the per-row itinerary representation for redraws
 - if enrichment fails or the selected itinerary lacks enough coordinates, keep the map card visible with degraded-state messaging for that selected itinerary, report the degraded map in the ledger, and continue rendering the non-map analysis
+- derive the ordered itinerary sequence for map redraws and the route detail panel by splitting `Route` on `-`

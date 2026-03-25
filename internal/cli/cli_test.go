@@ -358,6 +358,44 @@ func TestEnsureVisualInputSummaryBackfillsMissingFile(t *testing.T) {
 	}
 }
 
+func TestWritePresentationPromptFromSummaryUsesProvidedMainSQLForMultiQuery(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "prompt.visual.md")
+	question := model.Question{
+		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Meta: model.QuestionMeta{
+			ID:           "q003",
+			Title:        "Delta ATL",
+			VisualMode:   "dynamic",
+			VisualType:   "html_heatmap",
+			AnalysisMode: string(model.AnalysisModeMultiQueryJSON),
+		},
+		VisualPrompt: "Visual guidance.",
+	}
+	cfg := model.DatasetConfig{DefaultDatabase: "ontime"}
+	visualInput := model.VisualInputSummary{
+		QuestionTitle: "Delta ATL",
+		QuerySummaries: []model.QueryResultSummary{
+			{ID: "worst_hotspot", SQL: "SELECT * FROM supporting"},
+		},
+	}
+
+	if err := writePresentationPromptFromSummary(path, question, cfg, model.CanonicalResult{}, "SELECT * FROM main_query", "https://mcp.example.invalid/http", "token", visualInput); err != nil {
+		t.Fatalf("writePresentationPromptFromSummary returned error: %v", err)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("read prompt: %v", err)
+	}
+	got := string(data)
+	if !strings.Contains(got, "SELECT * FROM main_query") {
+		t.Fatalf("expected prompt to embed provided main.sql content, got: %s", got)
+	}
+	if strings.Contains(got, "SELECT * FROM supporting") && !strings.Contains(got, "\"query_summaries\"") {
+		t.Fatalf("did not expect primary SQL to be inferred from supporting query summaries, got: %s", got)
+	}
+}
+
 func TestRunComparePositionalQuestionRefScopesOutputs(t *testing.T) {
 	codeRoot := t.TempDir()
 	runRoot := t.TempDir()

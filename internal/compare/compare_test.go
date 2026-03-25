@@ -252,6 +252,9 @@ func TestBuildAnalysisPromptIncludesMultiQuerySQLArtifacts(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(runDir, "queries"), 0o755); err != nil {
 		t.Fatalf("mkdir queries dir: %v", err)
 	}
+	if err := os.WriteFile(filepath.Join(runDir, "main.sql"), []byte("SELECT peak_month"), 0o644); err != nil {
+		t.Fatalf("write main.sql: %v", err)
+	}
 	for _, name := range []string{"q1.sql", "q2.sql"} {
 		if err := os.WriteFile(filepath.Join(runDir, "queries", name), []byte("SELECT 1"), 0o644); err != nil {
 			t.Fatalf("write query artifact %s: %v", name, err)
@@ -275,8 +278,10 @@ func TestBuildAnalysisPromptIncludesMultiQuerySQLArtifacts(t *testing.T) {
 		t.Fatalf("BuildAnalysisPrompt returned error: %v", err)
 	}
 	for _, want := range []string{
+		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/main.sql",
 		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
 		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
+		"main.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/main.sql",
 		"q1.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
 		"q2.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
 	} {

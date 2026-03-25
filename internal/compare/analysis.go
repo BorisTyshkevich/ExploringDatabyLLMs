@@ -95,7 +95,15 @@ func querySQLPaths(items []RunSummary) []string {
 			}
 			continue
 		}
-		out = append(out, filepath.Join(item.RunDir, "query.sql"))
+		path := filepath.Join(item.RunDir, "query.sql")
+		if _, err := os.Stat(path); err == nil {
+			out = append(out, path)
+			continue
+		}
+		mainPath := filepath.Join(item.RunDir, "main.sql")
+		if _, err := os.Stat(mainPath); err == nil {
+			out = append(out, mainPath)
+		}
 	}
 	return out
 }
@@ -169,7 +177,11 @@ func renderPublishedRunArtifacts(items []RunSummary) string {
 func renderPublishedLinks(links ArtifactLinks) string {
 	var parts []string
 	if links.QuerySQL.URL != "" {
-		parts = append(parts, fmt.Sprintf("query.sql: %s", links.QuerySQL.URL))
+		label := filepath.Base(links.QuerySQL.PublishedPath)
+		if label == "" {
+			label = "query.sql"
+		}
+		parts = append(parts, fmt.Sprintf("%s: %s", label, links.QuerySQL.URL))
 	} else {
 		for _, ref := range links.QuerySQLs {
 			if ref.URL == "" {

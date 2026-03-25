@@ -69,11 +69,14 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 
 func TestCodexCompletionChecks(t *testing.T) {
 	tmpDir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(tmpDir, "main.sql"), []byte("SELECT 1"), 0o644); err != nil {
+		t.Fatalf("write main.sql: %v", err)
+	}
 	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}"), 0o644); err != nil {
 		t.Fatalf("write answer.raw.json: %v", err)
 	}
 	if !codexAnalysisComplete(tmpDir, model.AnalysisModeMultiQueryJSON)("") {
-		t.Fatalf("expected analysis completion checker to accept answer.raw.json")
+		t.Fatalf("expected analysis completion checker to accept main.sql + answer.raw.json")
 	}
 	if err := os.WriteFile(filepath.Join(tmpDir, "query.sql"), []byte("SELECT 1"), 0o644); err != nil {
 		t.Fatalf("write query.sql: %v", err)
@@ -144,6 +147,9 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 		"set -euo pipefail\n" +
 		"while [[ $# -gt 0 ]]; do shift; done\n" +
 		"cat >/dev/null\n" +
+		"cat > main.sql <<'EOF'\n" +
+		"SELECT 1\n" +
+		"EOF\n" +
 		"cat > answer.raw.json <<'EOF'\n" +
 		"{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}\n" +
 		"EOF\n" +
@@ -176,6 +182,9 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(tmpDir, "answer.raw.json")); err != nil {
 		t.Fatalf("expected answer.raw.json in outDir: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(tmpDir, "main.sql")); err != nil {
+		t.Fatalf("expected main.sql in outDir: %v", err)
 	}
 	if !strings.Contains(resp.Stdout, "analysis artifact written") {
 		t.Fatalf("unexpected stdout: %q", resp.Stdout)

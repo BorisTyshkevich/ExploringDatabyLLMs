@@ -1,6 +1,15 @@
 
 - Do not emit result rows or any data output.
+- Write the primary dashboard SQL to `main.sql`.
 - Write one JSON object to `answer.raw.json`.
+
+Write exactly this SQL file to `main.sql`:
+
+`main.sql`
+
+```sql
+-- one SQL statement for the main question / primary dashboard query
+```
 
 Write exactly this JSON object shape to `answer.raw.json`:
 
@@ -16,6 +25,9 @@ Write exactly this JSON object shape to `answer.raw.json`:
 
 Rules:
 
+- Write the main question / primary dashboard SQL to `main.sql`.
+- Provide one proof query for each dashboard question.
+- `main.sql` must contain executable SQL only, not Markdown fences.
 - Write the artifact to `answer.raw.json`.
 - The `answer.raw.json` file must contain raw JSON, not fenced Markdown.
 - Read every bullet under `## Dashboard Questions` in the question-specific guidance below.

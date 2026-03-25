@@ -19,7 +19,7 @@ This repository still contains historical Bash and Python benchmark code, but th
 1. SQL generation
    - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
    - the exact artifact contract is selected by the question's `analysis_mode`
-   - `multi_query_json`: the model writes `answer.raw.json` with ordered subquestion answers and proof queries
+   - `multi_query_json`: the model writes `main.sql` plus `answer.raw.json` with ordered subquestion answers and proof queries
    - `template_files`: the model writes `query.sql` and `report.template.md`
    - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
 2. Mandatory analysis review during `run`
@@ -413,7 +413,7 @@ Flags:
 
 What `process-visual` does:
 
-- loads `manifest.json`, `query.sql`, and `visual_input.json` from an existing run
+- loads `manifest.json`, the saved primary SQL artifact (`query.sql` or `main.sql`), and `visual_input.json` from an existing run
 - for static mode, also loads `result.json`
 - rebuilds the presentation prompt from question metadata and the saved artifacts
 - invokes the original provider again for `html`

@@ -58,6 +58,36 @@ func TestLoadTemplateAnalysisArtifact(t *testing.T) {
 	}
 }
 
+func TestLoadMultiQueryAnalysisArtifactRequiresMainSQL(t *testing.T) {
+	dir := t.TempDir()
+	question := model.Question{
+		Meta: model.QuestionMeta{AnalysisMode: string(model.AnalysisModeMultiQueryJSON)},
+		Subquestions: []model.QuestionSubquestion{
+			{Text: "Which one?"},
+		},
+	}
+	answerPath := filepath.Join(dir, "answer.raw.json")
+	if err := os.WriteFile(answerPath, []byte("{\"subquestions\":[{\"subquestion\":\"Which one?\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 2\"}]}"), 0o644); err != nil {
+		t.Fatalf("write answer.raw.json: %v", err)
+	}
+
+	if _, err := loadMultiQueryAnalysisArtifact(question, filepath.Join(dir, "main.sql"), answerPath); err == nil {
+		t.Fatalf("expected missing main.sql to fail")
+	}
+
+	mainPath := filepath.Join(dir, "main.sql")
+	if err := os.WriteFile(mainPath, []byte("SELECT 1"), 0o644); err != nil {
+		t.Fatalf("write main.sql: %v", err)
+	}
+	got, err := loadMultiQueryAnalysisArtifact(question, mainPath, answerPath)
+	if err != nil {
+		t.Fatalf("loadMultiQueryAnalysisArtifact returned error: %v", err)
+	}
+	if got.SQL != "SELECT 1" || len(got.Subquestions) != 1 {
+		t.Fatalf("unexpected multi-query artifact: %+v", got)
+	}
+}
+
 func TestExecuteRunManualTemplatesStagesOnly(t *testing.T) {
 	repoRoot := t.TempDir()
 	writeTestQuestionRepo(t, repoRoot, "manual_templates")

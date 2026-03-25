@@ -64,7 +64,7 @@ Presentation/report variables:
 - `{{result_columns_csv}}`
   - Source: `strings.Join(result.Columns, ", ")`.
 - `{{saved_sql}}`
-  - Source: the saved `query.sql` text passed into `BuildPresentationPrompt`.
+  - Source: the saved primary SQL artifact text (`query.sql` in single-query modes, `main.sql` in `multi_query_json`) passed into `BuildPresentationPrompt`.
 - `{{question_prompt_md}}`
   - Source: `question.Prompt`.
 - `{{visual_prompt_md}}`

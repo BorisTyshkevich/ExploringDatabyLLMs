@@ -39,6 +39,38 @@ itineraries AS (
         arraySort(x -> (x.1, x.2, x.3, x.4), groupArray((dep_ts_utc, OriginCode, DestCode, DepTime))) AS route_legs
     FROM legs
     GROUP BY TailNum, FlightNum, Carrier, FlightDate
+),
+itinerary_routes AS (
+    SELECT
+        TailNum,
+        FlightNum,
+        Carrier,
+        FlightDate,
+        hops,
+        arrayStringConcat(
+            arrayConcat(
+                [route_legs[1].2],
+                arrayMap(x -> x.3, route_legs)
+            ),
+            '-'
+        ) AS Route,
+        arrayMax(arrayMap(x -> x.1, route_legs)) AS last_dep_ts_utc
+    FROM itineraries
+    WHERE length(route_legs) > 0
+),
+ranked_routes AS (
+    SELECT
+        TailNum,
+        FlightNum,
+        Carrier,
+        FlightDate,
+        hops,
+        Route,
+        row_number() OVER (
+            PARTITION BY Route
+            ORDER BY hops DESC, last_dep_ts_utc DESC, FlightDate DESC, TailNum, FlightNum
+        ) AS route_rank
+    FROM itinerary_routes
 )
 SELECT
     TailNum,
@@ -46,7 +78,8 @@ SELECT
     Carrier,
     FlightDate,
     hops,
-    arrayStringConcat(arrayMap(x -> concat(x.2, '-', x.3), route_legs), ' | ') AS Route
-FROM itineraries
+    Route
+FROM ranked_routes
+WHERE route_rank = 1
 ORDER BY hops DESC, FlightDate DESC, TailNum, FlightNum
 LIMIT 10

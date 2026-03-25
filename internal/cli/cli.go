@@ -508,10 +508,10 @@ func runProcessVisual(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-visual --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has query.sql and any mode-specific visual inputs.")
+		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has the saved SQL artifact and any mode-specific visual inputs.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
-		fmt.Fprintln(os.Stdout, "  - loads manifest.json and query.sql from the selected run")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json and the saved SQL artifact (`query.sql` or `main.sql`) from the selected run")
 		fmt.Fprintln(os.Stdout, "  - for static mode, also loads result.json")
 		fmt.Fprintln(os.Stdout, "  - rebuilds the visual prompt from the original question and saved artifacts")
 		fmt.Fprintln(os.Stdout, "  - invokes the original provider again for visual.html only")
@@ -563,7 +563,7 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 	fs.Usage = func() {
 		fmt.Fprintln(os.Stdout, "Usage: qforge process-presentation --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
-		fmt.Fprintln(os.Stdout, "Regenerate query.sql, result.json, visual_input.json, and report.md from existing saved analysis artifacts.")
+		fmt.Fprintln(os.Stdout, "Regenerate saved SQL artifacts, result.json, visual_input.json, and report.md from existing saved analysis artifacts.")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Behavior:")
 		fmt.Fprintln(os.Stdout, "  - loads manifest.json and the analysis artifacts declared by the question mode")
@@ -1054,6 +1054,7 @@ func buildReviewPrompt(opts runAnalysisReviewOptions) (string, error) {
 		ReportMarkdown:  mustReadOptional(opts.Artifacts.ReportMD),
 		AnswerRawJSON:   mustReadOptional(opts.Artifacts.AnswerRawJSON),
 		AnalysisJSON:    mustReadOptional(opts.Artifacts.AnalysisJSON),
+		MainSQL:         mustReadOptional(opts.Artifacts.MainSQL),
 		QuerySQL:        mustReadOptional(opts.Artifacts.QuerySQL),
 		ResultJSON:      mustReadOptional(opts.Artifacts.ResultJSON),
 		VisualInputJSON: mustReadOptional(opts.Artifacts.VisualInputJSON),
@@ -1061,8 +1062,13 @@ func buildReviewPrompt(opts runAnalysisReviewOptions) (string, error) {
 	if opts.AnalysisMode == model.AnalysisModeMultiQueryJSON {
 		queryDir := filepath.Join(opts.OutDir, "queries")
 		resultDir := filepath.Join(opts.OutDir, "results")
-		inputs.QueryFiles = readDirArtifactPaths(queryDir, ".sql")
-		inputs.ResultFiles = readDirArtifactPaths(resultDir, ".json")
+		if strings.TrimSpace(opts.Artifacts.MainSQL) != "" {
+			if _, err := os.Stat(opts.Artifacts.MainSQL); err == nil {
+				inputs.QueryFiles = append(inputs.QueryFiles, filepath.Base(opts.Artifacts.MainSQL))
+			}
+		}
+		inputs.QueryFiles = append(inputs.QueryFiles, readDirArtifactPaths(queryDir, ".sql")...)
+		inputs.ResultFiles = append(inputs.ResultFiles, readDirArtifactPaths(resultDir, ".json")...)
 	}
 	return prompts.BuildReviewPrompt(inputs)
 }
@@ -1231,6 +1237,9 @@ func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAna
 	if err := os.MkdirAll(resultDir, 0o755); err != nil {
 		return materializedAnalysis{}, err
 	}
+	if err := os.WriteFile(opts.Manifest.Artifacts.MainSQL, []byte(artifact.SQL+"\n"), 0o644); err != nil {
+		return materializedAnalysis{}, err
+	}
 
 	var queryHashes []string
 	var summaries []model.QueryResultSummary
@@ -1239,6 +1248,20 @@ func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAna
 		opts.Manifest.LogComment = defaultLogComment(opts.Question.Meta.ID, filepath.Base(opts.RunDir), opts.Manifest.Runner, opts.Manifest.Model)
 	}
 	opts.Manifest.Phases.SQLGeneration = model.PhaseStatusOK
+
+	mainLogComment := opts.Manifest.LogComment + "|main"
+	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=started main=true log_comment=%s", mainLogComment)
+	_, mainResult, err := execute.ExecuteSQL(ctx, opts.MCPURL, opts.Token, artifact.SQL, mainLogComment)
+	if err != nil {
+		opts.Manifest.Status = model.RunStatusPartial
+		opts.Manifest.Phases.SQLExecution = model.PhaseStatusFailed
+		return materializedAnalysis{}, fmt.Errorf("execute main.sql: %w", err)
+	}
+	if err := execute.WriteJSON(filepath.Join(resultDir, "main.json"), mainResult); err != nil {
+		return materializedAnalysis{}, err
+	}
+	queryHashes = append(queryHashes, runs.QuerySHA256(artifact.SQL))
+	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=ok main=true row_count=%d", mainResult.RowCount)
 
 	ordered := orderMultiQuerySubquestions(opts.Question, artifact.Subquestions)
 	for _, item := range ordered {
@@ -1296,6 +1319,7 @@ func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAna
 	return materializedAnalysis{
 		Result:      monitoringResult,
 		VisualInput: visualSummary,
+		SQL:         artifact.SQL,
 	}, nil
 }
 
@@ -1550,11 +1574,13 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	logf(opts.Verbose, manifest.Model, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	var querySQL []byte
-	if analysisMode != model.AnalysisModeMultiQueryJSON {
-		querySQL, err = os.ReadFile(filepath.Join(runDir, "query.sql"))
-		if err != nil {
-			return fmt.Errorf("process-visual requires query.sql: %w", err)
-		}
+	querySQLPath := filepath.Join(runDir, "query.sql")
+	if analysisMode == model.AnalysisModeMultiQueryJSON {
+		querySQLPath = filepath.Join(runDir, "main.sql")
+	}
+	querySQL, err = os.ReadFile(querySQLPath)
+	if err != nil {
+		return fmt.Errorf("process-visual requires %s: %w", filepath.Base(querySQLPath), err)
 	}
 	if analysisMode != model.AnalysisModeMultiQueryJSON && strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
 		if _, err := os.Stat(filepath.Join(runDir, "result.json")); err != nil {
@@ -1570,11 +1596,6 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
 			return fmt.Errorf("parse visual_input.json: %w", err)
 		}
-		primaryQuery, err := selectPrimaryVisualQuery(question, visualInput)
-		if err != nil {
-			return err
-		}
-		querySQL = []byte(primaryQuery.SQL)
 	} else {
 		visualInput, err = ensureVisualInputSummary(filepath.Join(runDir, "visual_input.json"), question, result)
 		if err != nil {
@@ -1981,13 +2002,6 @@ func writePresentationPrompt(path, visualInputPath string, question model.Questi
 }
 
 func writePresentationPromptFromSummary(path string, question model.Question, cfg model.DatasetConfig, result model.CanonicalResult, sql, mcpURL, token string, visualInput model.VisualInputSummary) error {
-	if normalizeAnalysisMode(question.Meta.AnalysisMode) == model.AnalysisModeMultiQueryJSON && strings.TrimSpace(sql) == "" {
-		primaryQuery, err := selectPrimaryVisualQuery(question, visualInput)
-		if err != nil {
-			return err
-		}
-		sql = primaryQuery.SQL
-	}
 	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, sql, dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
 		return err
@@ -1998,42 +2012,11 @@ func writePresentationPromptFromSummary(path string, question model.Question, cf
 	return nil
 }
 
-func selectPrimaryVisualQuery(question model.Question, visualInput model.VisualInputSummary) (model.QueryResultSummary, error) {
-	preferredID := ""
-	switch strings.TrimSpace(question.Meta.ID) {
-	case "q001":
-		preferredID = "q1"
-	case "q003":
-		preferredID = "worst_hotspot"
-	case "q002":
-		preferredID = "most_frequent_leader"
-	case "q004":
-		preferredID = "worst_airport"
-	case "q005":
-		preferredID = "worst_pair"
-	case "q006":
-		preferredID = "peak_month"
-	}
-	if preferredID != "" {
-		for _, item := range visualInput.QuerySummaries {
-			if strings.TrimSpace(item.ID) == preferredID && strings.TrimSpace(item.SQL) != "" {
-				return item, nil
-			}
-		}
-	}
-	for _, item := range visualInput.QuerySummaries {
-		if strings.TrimSpace(item.SQL) != "" {
-			return item, nil
-		}
-	}
-	return model.QueryResultSummary{}, fmt.Errorf("multi-query visual prompt requires at least one named query with non-empty sql")
-}
-
 func visualModeHint(mode string) string {
 	if strings.EqualFold(strings.TrimSpace(mode), "static") {
 		return "Static mode embeds analytical data from result.json directly in the page."
 	}
-	return "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint."
+	return "Dynamic mode still fetches live data in the browser via the saved SQL artifact and the configured endpoint."
 }
 
 func detectFieldShapeNote(column string, rows []map[string]any) string {
@@ -2094,7 +2077,7 @@ func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, 
 func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifact, error) {
 	switch source.Mode {
 	case model.AnalysisModeMultiQueryJSON:
-		return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.AnswerRawJSON)
+		return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.MainSQL, source.Artifacts.AnswerRawJSON)
 	case model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
 		return loadTemplateAnalysisArtifact(source.Artifacts)
 	default:
@@ -2124,7 +2107,11 @@ func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.Analysis
 	return artifact, nil
 }
 
-func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model.AnalysisArtifact, error) {
+func loadMultiQueryAnalysisArtifact(question model.Question, mainSQLPath, path string) (model.AnalysisArtifact, error) {
+	mainSQLBytes, err := os.ReadFile(mainSQLPath)
+	if err != nil {
+		return model.AnalysisArtifact{}, fmt.Errorf("read main.sql: %w", err)
+	}
 	payload, err := os.ReadFile(path)
 	if err != nil {
 		return model.AnalysisArtifact{}, fmt.Errorf("read answer.raw.json: %w", err)
@@ -2133,11 +2120,15 @@ func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model
 	if err := json.Unmarshal(payload, &artifact); err != nil {
 		return model.AnalysisArtifact{}, fmt.Errorf("invalid analysis json: %w", err)
 	}
+	artifact.SQL = normalizeEscapedMultiline(strings.TrimSpace(string(mainSQLBytes)))
 	for i := range artifact.Subquestions {
 		artifact.Subquestions[i].ID = strings.TrimSpace(artifact.Subquestions[i].ID)
 		artifact.Subquestions[i].Subquestion = normalizeEscapedMultiline(strings.TrimSpace(artifact.Subquestions[i].Subquestion))
 		artifact.Subquestions[i].AnswerMarkdown = normalizeEscapedMultiline(strings.TrimSpace(artifact.Subquestions[i].AnswerMarkdown))
 		artifact.Subquestions[i].SQL = normalizeEscapedMultiline(strings.TrimSpace(artifact.Subquestions[i].SQL))
+	}
+	if artifact.SQL == "" {
+		return model.AnalysisArtifact{}, fmt.Errorf("analysis main.sql is empty")
 	}
 	if err := validateMultiQueryAnalysisArtifact(question, artifact); err != nil {
 		return model.AnalysisArtifact{}, err

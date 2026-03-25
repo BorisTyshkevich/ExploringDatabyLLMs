@@ -116,6 +116,7 @@ type ReviewPromptInputs struct {
 	ReportMarkdown  string
 	AnswerRawJSON   string
 	AnalysisJSON    string
+	MainSQL         string
 	QuerySQL        string
 	ResultJSON      string
 	VisualInputJSON string
@@ -143,6 +144,9 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 		"Generated report.md:\n\n```md\n"+strings.TrimSpace(inputs.ReportMarkdown)+"\n```",
 	)
 	if inputs.AnalysisMode == model.AnalysisModeMultiQueryJSON {
+		if strings.TrimSpace(inputs.MainSQL) != "" {
+			sections = append(sections, "Saved main.sql:\n\n```sql\n"+strings.TrimSpace(inputs.MainSQL)+"\n```")
+		}
 		if strings.TrimSpace(inputs.AnswerRawJSON) != "" {
 			sections = append(sections, "Saved answer.raw.json:\n\n```json\n"+strings.TrimSpace(inputs.AnswerRawJSON)+"\n```")
 		}

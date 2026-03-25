@@ -35,11 +35,14 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "answer.raw.json") || !strings.Contains(got, "\"subquestions\"") || !strings.Contains(got, "\"answer_markdown\"") {
 		t.Fatalf("expected multi-query json analysis contract, got: %s", got)
 	}
-	if !strings.Contains(got, "raw JSON, not fenced Markdown") || !strings.Contains(got, "Do not emit result rows") {
+	if !strings.Contains(got, "raw JSON, not fenced Markdown") || !strings.Contains(got, "Do not emit result rows") || !strings.Contains(got, "Write the primary dashboard SQL to `main.sql`.") {
 		t.Fatalf("expected strict answer.raw.json file rules, got: %s", got)
 	}
 	if !strings.Contains(got, "Read every bullet under `## Dashboard Questions`") || !strings.Contains(got, "Preserve the required `subquestion` text exactly") {
 		t.Fatalf("expected dashboard question guidance, got: %s", got)
+	}
+	if strings.Contains(got, "Provide proof query for the main question.") {
+		t.Fatalf("did not expect unsupported top-level main-question JSON contract, got: %s", got)
 	}
 	if strings.Contains(got, "CLE -> BNA -> PNS") || strings.Contains(got, "\"max_hops\": \"8\"") {
 		t.Fatalf("did not expect question-specific example values in shared analysis prompt, got: %s", got)
@@ -89,6 +92,9 @@ func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
 	}
 	if !strings.Contains(got, "\"subquestions\"") || !strings.Contains(got, "\"answer_markdown\"") {
 		t.Fatalf("expected multi-query json artifact contract, got: %s", got)
+	}
+	if !strings.Contains(got, "`main.sql`") {
+		t.Fatalf("expected explicit main.sql contract, got: %s", got)
 	}
 	if !strings.Contains(got, "Read every bullet under `## Dashboard Questions`") {
 		t.Fatalf("expected dashboard-question instruction in prompt, got: %s", got)
@@ -167,14 +173,15 @@ func TestBuildReviewPromptIncludesRunArtifacts(t *testing.T) {
 		ReportMarkdown:  "# Report",
 		AnswerRawJSON:   "{\"subquestions\":[]}",
 		AnalysisJSON:    "{\"subquestions\":[]}",
+		MainSQL:         "SELECT * FROM main_view",
 		VisualInputJSON: "{\"query_summaries\":[]}",
-		QueryFiles:      []string{"queries/q1.sql"},
-		ResultFiles:     []string{"results/q1.json"},
+		QueryFiles:      []string{"main.sql", "queries/q1.sql"},
+		ResultFiles:     []string{"results/main.json", "results/q1.json"},
 	})
 	if err != nil {
 		t.Fatalf("BuildReviewPrompt returned error: %v", err)
 	}
-	for _, want := range []string{"Return the final review by writing `review.md`", "## Dashboard Questions", "Generated report.md:", "`queries/q1.sql`", "`results/q1.json`"} {
+	for _, want := range []string{"Return the final review by writing `review.md`", "## Dashboard Questions", "Generated report.md:", "Saved main.sql:", "`main.sql`", "`queries/q1.sql`", "`results/main.json`", "`results/q1.json`"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected review prompt to contain %q, got: %s", want, got)
 		}
@@ -205,7 +212,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 			{"RowType": "summary", "DestCode": "LAX"},
 		},
 		FieldShapeNotes: map[string]string{"FlightDate": "ISO-like timestamp string"},
-		ModeHint:        "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint.",
+		ModeHint:        "Dynamic mode still fetches live data in the browser via the saved SQL artifact and the configured endpoint.",
 	}
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.fact_ontime", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", visualInput)

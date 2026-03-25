@@ -82,6 +82,7 @@ type ArtifactPaths struct {
 	PromptReportRaw       string `json:"prompt_report_raw"`
 	AnswerReportRaw       string `json:"answer_report_raw"`
 	AnswerRawJSON         string `json:"answer_raw_json,omitempty"`
+	MainSQL               string `json:"main_sql,omitempty"`
 	AnalysisJSON          string `json:"analysis_json,omitempty"`
 	PromptReviewRaw       string `json:"prompt_review_raw,omitempty"`
 	AnswerReviewRaw       string `json:"answer_review_raw,omitempty"`
