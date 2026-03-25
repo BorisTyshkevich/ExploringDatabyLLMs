@@ -2055,7 +2055,7 @@ func defaultModelForRunner(runner string) (string, error) {
 	case "codex":
 		return "gpt-5.4", nil
 	case "claude":
-		return "opus", nil
+		return "sonnet", nil
 	case "gemini":
 		return "gemini-3.1-pro-preview", nil
 	default:

@@ -34,6 +34,16 @@ func TestModelLabelForRunnersUsesResolvedModels(t *testing.T) {
 	}
 }
 
+func TestDefaultModelForRunnerUsesSonnetForClaude(t *testing.T) {
+	got, err := defaultModelForRunner("claude")
+	if err != nil {
+		t.Fatalf("defaultModelForRunner returned error: %v", err)
+	}
+	if got != "sonnet" {
+		t.Fatalf("unexpected claude default model: got %q want %q", got, "sonnet")
+	}
+}
+
 func TestModelLabelForRunnersHandlesDuplicateRunnersWithDistinctModels(t *testing.T) {
 	got, err := modelLabelForRunners([]string{"claude", "claude", "codex"}, []string{"opus", "sonnet", "gpt-5.4"})
 	if err != nil {

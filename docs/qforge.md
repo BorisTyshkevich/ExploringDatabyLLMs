@@ -252,7 +252,7 @@ Flags:
 - `--model`
   - optional, repeatable
   - override the default model for the selected runner
-  - current defaults: `codex -> gpt-5.4`, `claude -> opus`, `gemini -> gemini-3.1-pro-preview`
+  - current defaults: `codex -> gpt-5.4`, `claude -> sonnet`, `gemini -> gemini-3.1-pro-preview`
   - matched positionally with repeated `--runner` flags
   - example:
     - `--runner codex --model gpt-5.4 --runner claude --model opus`
