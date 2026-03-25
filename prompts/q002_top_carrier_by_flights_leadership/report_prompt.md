@@ -25,9 +25,3 @@ Which transition is the sharpest?
 
 ### q4
 Does the market show long stable eras, or frequent turnover at the top?
-
-In the report, answer those questions directly in prose. Name the carrier that leads most often, identify the sharpest leadership change using the verified result, and summarize whether the market is defined more by long stable eras or by frequent turnover.
-
-Do not use fallback phrases such as "the leading carrier" or "the sharpest transition" when your verified query results let you name the actual carrier and year directly.
-
-Keep the result business-readable and analytically sound.

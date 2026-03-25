@@ -18,6 +18,8 @@ Write one JSON object to `answer.raw.json` file with shape:
 - Return one object in `subquestions` for every parsed section id.
 - Preserve each required `id` exactly.
 - Each `answer_markdown` must directly answer that section's question in concise prose.
+- Answer in direct business-readable prose, not vague placeholders.
+- When verified results support naming a concrete carrier, airport, route, month, year, or other entity directly, name it instead of using fallback phrases like "the leading carrier" or "the worst route".
 - All prose claims about a specific route's recurrence frequency or date range must be directly traceable to a row in an executed query result.
 - Each `sql` must be one executable SQL statement only and should serve as the proof query for that section.
 - Use one proof query per section question. Do not merge several section questions into one unioned or row-typed SQL result unless the question-specific guidance explicitly requires that.

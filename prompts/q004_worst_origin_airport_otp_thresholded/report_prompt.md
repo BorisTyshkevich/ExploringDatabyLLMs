@@ -28,9 +28,3 @@ How large is the spread between the worst airport and the middle of the ranked s
 
 ### q3
 Are the weakest airports mostly major hubs, or is the bottom group more mixed?
-
-In the report, answer those questions directly in prose. Name the worst airport, describe the spread between the bottom and the middle using the verified result, and summarize whether the weakest group is mostly hubs or more mixed.
-
-Do not use fallback phrases such as "the worst airport" or "the bottom group" when your verified query results let you name the actual airport set directly.
-
-Keep the result business-readable and analytically sound. Exclude low-volume airports before ranking them.

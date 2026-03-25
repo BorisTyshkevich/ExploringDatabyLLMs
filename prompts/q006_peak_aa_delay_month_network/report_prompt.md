@@ -24,6 +24,8 @@ The proof query behind the peak-month question should preserve the month-by-mont
 
 The proof query behind the breadth/concentration question must let the reviewer inspect full-network peak-month totals and the share captured by top origins and top routes against those full-network totals. Do not answer "across the network" using shares computed only from filtered subsets.
 
+If you use thresholded contributor tables for readability, label them as display filters only and keep the network-wide breadth/concentration conclusion tied to full-network denominators.
+
 ### q1
 Which month is the single worst American Airlines month for departure delays?
 
@@ -35,11 +37,3 @@ Which routes contribute most to that peak month?
 
 ### q4
 Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?
-
-In the report, answer those questions directly in prose. Name the worst month, identify the leading origin and route contributors using the verified result, and summarize whether the peak looks broad or concentrated.
-
-If you use thresholded contributor tables for readability, label them as display filters only and keep the network-wide breadth/concentration conclusion tied to full-network denominators.
-
-Do not use fallback phrases such as "the peak month" or "the leading contributors" when your verified query results let you name the actual month, origins, and routes directly.
-
-Keep the result business-readable and analytically sound.

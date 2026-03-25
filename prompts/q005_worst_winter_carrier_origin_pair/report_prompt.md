@@ -25,6 +25,8 @@ The proof query behind the concentration question must directly support both par
 
 The proof query behind the worst-pair question should preserve the ranked pair-level rows needed for the dashboard, not just a single worst pair or summary count.
 
+If some leading weak pairs lack delay-cause reporting, say so directly and limit the weather-vs-operational conclusion to the subset with measured cause data.
+
 ### q1
 Which winter carrier-airport pair ranks worst overall?
 
@@ -33,11 +35,3 @@ Are the worst pairs driven more by weather or by operational causes?
 
 ### q3
 Are the weakest pairs concentrated in a small number of carriers or airports?
-
-In the report, answer those questions directly in prose. Name the worst winter pair, summarize whether the weakest pairs are driven more by weather or by operational causes, and state whether the weak set is concentrated in a small number of carriers or airports.
-
-If some leading weak pairs lack delay-cause reporting, say so directly and limit the weather-vs-operational conclusion to the subset with measured cause data.
-
-Do not use fallback phrases such as "the worst pair" or "the weakest pairs" when your verified query results let you name the actual carrier-airport combinations directly.
-
-Keep the result business-readable and analytically sound. Exclude low-volume winter pairs before ranking them.

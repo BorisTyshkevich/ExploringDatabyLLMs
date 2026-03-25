@@ -28,9 +28,3 @@ Is that hotspot consistently bad across time, or concentrated in a narrower peri
 
 ### q3
 What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?
-
-In the report, answer those questions directly in prose before the table. Name the actual worst hotspot using the verified result, state whether it looks persistent or concentrated, and summarize the pattern across the leading hotspots.
-
-Do not use fallback phrases such as "the top-ranked hotspot" or "add one short takeaway" when your verified query results let you name the destination, departure time block, and key pattern directly.
-
-Keep the result business-readable and analytically sound. Exclude low-volume noise before identifying the leading hotspots.
