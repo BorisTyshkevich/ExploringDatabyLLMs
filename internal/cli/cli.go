@@ -868,7 +868,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}); err != nil {
 		return err
 	}
-	if manifest.ReviewVerdict != "PASS" {
+	if reviewVerdictBlocksRun(manifest.ReviewVerdict) {
 		manifest.Status = model.RunStatusFailed
 		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
 		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
@@ -877,13 +877,13 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 
 	if !question.VisualEnabled || !opts.WithVisual {
-		manifest.Status = model.RunStatusOK
+		manifest.Status = successfulRunStatus(manifest.ReviewVerdict)
 		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
 		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
 		if question.VisualEnabled && !opts.WithVisual {
-			logf(opts.Verbose, opts.Model, "run status=ok visual=deferred")
+			logf(opts.Verbose, opts.Model, "run status=%s visual=deferred", manifest.Status)
 		} else {
-			logf(opts.Verbose, opts.Model, "run status=ok visual=skipped")
+			logf(opts.Verbose, opts.Model, "run status=%s visual=skipped", manifest.Status)
 		}
 		return nil
 	}
@@ -956,8 +956,8 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	}
 
 	manifest.Phases.PresentationRender = model.PhaseStatusOK
-	manifest.Status = model.RunStatusOK
-	logf(opts.Verbose, opts.Model, "run status=ok visual=rendered mode=with-visual")
+	manifest.Status = successfulRunStatus(manifest.ReviewVerdict)
+	logf(opts.Verbose, opts.Model, "run status=%s visual=rendered mode=with-visual", manifest.Status)
 	return nil
 }
 
@@ -1140,12 +1140,23 @@ func parseReviewVerdict(markdown string) (string, error) {
 			continue
 		}
 		verdict := strings.TrimSpace(strings.TrimPrefix(line, "Verdict:"))
-		if verdict == "PASS" || verdict == "FAIL" {
+		if verdict == "PASS" || verdict == "WARN" || verdict == "FAIL" {
 			return verdict, nil
 		}
 		return "", fmt.Errorf("review.md has unsupported verdict %q", verdict)
 	}
-	return "", fmt.Errorf("review.md missing Verdict: PASS|FAIL line")
+	return "", fmt.Errorf("review.md missing Verdict: PASS|WARN|FAIL line")
+}
+
+func reviewVerdictBlocksRun(verdict string) bool {
+	return strings.EqualFold(strings.TrimSpace(verdict), "FAIL")
+}
+
+func successfulRunStatus(reviewVerdict string) model.RunStatus {
+	if strings.EqualFold(strings.TrimSpace(reviewVerdict), "WARN") {
+		return model.RunStatusPartial
+	}
+	return model.RunStatusOK
 }
 
 func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
@@ -1694,7 +1705,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 
 	manifest.Phases.PresentationRender = model.PhaseStatusOK
 	if manifest.Phases.SQLGeneration == model.PhaseStatusOK && manifest.Phases.SQLExecution == model.PhaseStatusOK {
-		manifest.Status = model.RunStatusOK
+		manifest.Status = successfulRunStatus(manifest.ReviewVerdict)
 	}
 	logf(opts.Verbose, manifest.Model, "phase=presentation_render status=ok")
 	return runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
@@ -1785,7 +1796,7 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	}
 	manifest.Phases = markPresentationDeferred(manifest.Phases)
 	if presentationPhasesOK(manifest.Phases) {
-		manifest.Status = model.RunStatusOK
+		manifest.Status = successfulRunStatus(manifest.ReviewVerdict)
 	} else {
 		manifest.Status = model.RunStatusPartial
 	}

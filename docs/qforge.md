@@ -24,7 +24,8 @@ This repository still contains historical Bash and Python benchmark code, but th
    - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
 2. Mandatory analysis review during `run`
    - after qforge executes SQL and renders `report.md`, it makes a separate review-model call
-   - the reviewer writes `review.md` with `Verdict: PASS|FAIL`
+   - the reviewer writes `review.md` with `Verdict: PASS|WARN|FAIL`
+   - `WARN` means the run is materially usable but has limited issues and is marked non-clean
    - `qforge run` stops before visual generation if the review verdict is `FAIL`
 2. Optional presentation generation
    - the model writes final `html`

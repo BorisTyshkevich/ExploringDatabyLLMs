@@ -23,7 +23,8 @@ Verdict: PASS
 Rules:
 
 - Set `Verdict: PASS` only when the analysis is materially aligned with the question.
-- Set `Verdict: FAIL` when any substantive correctness, grain, metric, or evidence-support problem exists.
+- Set `Verdict: WARN` when the analysis is materially aligned overall but has limited evidence-support, wording, or minor artifact issues that should not block downstream use.
+- Set `Verdict: FAIL` when any substantive correctness, grain, metric, or evidence-support problem exists that makes the run unreliable.
 - Base your judgment only on the provided question prompt and the verified run artifacts.
 - When artifact file paths are listed, read the files directly from the run directory instead of relying only on prompt excerpts.
 - Check whether all dashboard questions were answered directly.

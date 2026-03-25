@@ -120,11 +120,33 @@ func TestParseReviewVerdict(t *testing.T) {
 	if got != "PASS" {
 		t.Fatalf("unexpected verdict: %q", got)
 	}
+	got, err = parseReviewVerdict("# Analysis Review\nVerdict: WARN\n")
+	if err != nil {
+		t.Fatalf("parseReviewVerdict returned error for WARN: %v", err)
+	}
+	if got != "WARN" {
+		t.Fatalf("unexpected WARN verdict: %q", got)
+	}
 	if _, err := parseReviewVerdict("# Analysis Review\nVerdict: MAYBE\n"); err == nil {
 		t.Fatalf("expected unsupported verdict to fail")
 	}
 	if _, err := parseReviewVerdict("# Analysis Review\n## Summary\n"); err == nil {
 		t.Fatalf("expected missing verdict to fail")
+	}
+}
+
+func TestReviewVerdictHelpers(t *testing.T) {
+	if !reviewVerdictBlocksRun("FAIL") {
+		t.Fatalf("expected FAIL to block run")
+	}
+	if reviewVerdictBlocksRun("WARN") {
+		t.Fatalf("did not expect WARN to block run")
+	}
+	if got := successfulRunStatus("PASS"); got != model.RunStatusOK {
+		t.Fatalf("expected PASS to keep ok status, got %q", got)
+	}
+	if got := successfulRunStatus("WARN"); got != model.RunStatusPartial {
+		t.Fatalf("expected WARN to downgrade to partial, got %q", got)
 	}
 }
 
