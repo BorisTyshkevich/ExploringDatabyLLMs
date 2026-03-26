@@ -5,7 +5,7 @@ Analyze completed flights by year and carrier across the most recent 5 years unl
 
 Pay special attention to true leadership transitions, where the top carrier changes from one year to the next. The result should make it easy to see both long periods of stable dominance and the years when leadership shifted most dramatically.
 
-Do not invent a custom scoring formula or a narrower analysis window. Rank and compare leadership changes directly from the yearly leadership metrics needed to answer the question.
+Do not invent a custom scoring formula or a different analysis window. Rank and compare leadership changes directly from the yearly leadership metrics needed to answer the question.
 
 ### q1
 Which carrier leads most often across the analyzed time range?
