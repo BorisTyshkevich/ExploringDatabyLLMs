@@ -282,7 +282,125 @@ func TestProcessPresentationTemplateFiles(t *testing.T) {
 	if manifest.AnalysisMode != "template_files" {
 		t.Fatalf("unexpected manifest analysis mode: %q", manifest.AnalysisMode)
 	}
+	if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
+		t.Fatalf("did not expect visual.html from processPresentation, err=%v", err)
+	}
 	_ = server
+}
+
+func TestRunReviewTemplateFilesStatusOutcomes(t *testing.T) {
+	for _, tc := range []struct {
+		name       string
+		verdict    string
+		wantStatus model.RunStatus
+	}{
+		{name: "pass", verdict: "PASS", wantStatus: model.RunStatusOK},
+		{name: "warn", verdict: "WARN", wantStatus: model.RunStatusPartial},
+		{name: "fail", verdict: "FAIL", wantStatus: model.RunStatusFailed},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			repoRoot := t.TempDir()
+			server := newExecuteQueryServer()
+			defer server.Close()
+			writeTestQuestionRepo(t, repoRoot, "template_files")
+			writeFakeReviewProvider(t, repoRoot, tc.verdict)
+			t.Setenv("QFORGE_CODE_ROOT", repoRoot)
+			t.Setenv("QFORGE_RUN_ROOT", repoRoot)
+
+			runDir := filepath.Join(repoRoot, "2026-03-21", "q901_test_question", "claude", "opus", "run-001")
+			if err := os.MkdirAll(runDir, 0o755); err != nil {
+				t.Fatalf("mkdir runDir: %v", err)
+			}
+			if err := os.WriteFile(filepath.Join(runDir, "query.sql"), []byte("SELECT 1"), 0o644); err != nil {
+				t.Fatalf("write query.sql: %v", err)
+			}
+			if err := os.WriteFile(filepath.Join(runDir, "report.template.md"), []byte("# Report\n\n{{data_overview_md}}"), 0o644); err != nil {
+				t.Fatalf("write report.template.md: %v", err)
+			}
+
+			if err := Run(context.Background(), []string{"review", "--run-dir", runDir, "--cli-bin", filepath.Join(repoRoot, "fake-review.sh")}); err != nil {
+				t.Fatalf("Run(review) returned error: %v", err)
+			}
+
+			for _, name := range []string{"prompt.review.md", "answer.review.raw.md", "review.md"} {
+				if _, err := os.Stat(filepath.Join(runDir, name)); err != nil {
+					t.Fatalf("expected %s: %v", name, err)
+				}
+			}
+			if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
+				t.Fatalf("did not expect visual.html from review, err=%v", err)
+			}
+			promptBytes, err := os.ReadFile(filepath.Join(runDir, "prompt.review.md"))
+			if err != nil {
+				t.Fatalf("read prompt.review.md: %v", err)
+			}
+			gotPrompt := string(promptBytes)
+			if !strings.Contains(gotPrompt, "Saved query.sql:") || !strings.Contains(gotPrompt, "Saved result.json:") {
+				t.Fatalf("expected template_files review prompt to include saved SQL/result artifacts, got: %s", gotPrompt)
+			}
+			manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
+			if err != nil {
+				t.Fatalf("read manifest: %v", err)
+			}
+			if manifest.Status != tc.wantStatus {
+				t.Fatalf("unexpected manifest status: got %q want %q", manifest.Status, tc.wantStatus)
+			}
+			if manifest.Phases.Review != model.PhaseStatusOK {
+				t.Fatalf("expected review phase ok, got %+v", manifest.Phases)
+			}
+			if manifest.Phases.PresentationGeneration != model.PhaseStatusSkipped || manifest.Phases.PresentationRender != model.PhaseStatusSkipped {
+				t.Fatalf("expected presentation phases skipped, got %+v", manifest.Phases)
+			}
+			if manifest.ReviewVerdict != tc.verdict {
+				t.Fatalf("unexpected review verdict: got %q want %q", manifest.ReviewVerdict, tc.verdict)
+			}
+			if manifest.ReviewRunner != "claude" || manifest.ReviewModel != "opus" {
+				t.Fatalf("expected review runner/model to default from run manifest, got %+v", manifest)
+			}
+		})
+	}
+}
+
+func TestRunReviewMultiQueryUsesSectionFiles(t *testing.T) {
+	repoRoot := t.TempDir()
+	server := newExecuteQueryServer()
+	defer server.Close()
+	writeTestQuestionRepo(t, repoRoot, "multi_query")
+	mustWriteFile(t, filepath.Join(repoRoot, "prompts", "q901_test_question", "subquestions.yaml"), "subquestions:\n  - id: main\n    text: Main question\n")
+	writeFakeReviewProvider(t, repoRoot, "PASS")
+	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
+	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
+
+	runDir := filepath.Join(repoRoot, "2026-03-21", "q901_test_question", "claude", "opus", "run-001")
+	if err := os.MkdirAll(runDir, 0o755); err != nil {
+		t.Fatalf("mkdir runDir: %v", err)
+	}
+	answer := `{"subquestions":[{"id":"main","answer_markdown":"Answer","sql":"SELECT 2"}]}`
+	if err := os.WriteFile(filepath.Join(runDir, "answer.raw.json"), []byte(answer), 0o644); err != nil {
+		t.Fatalf("write answer.raw.json: %v", err)
+	}
+
+	if err := Run(context.Background(), []string{"review", "--run-dir", runDir, "--cli-bin", filepath.Join(repoRoot, "fake-review.sh")}); err != nil {
+		t.Fatalf("Run(review) returned error: %v", err)
+	}
+	promptBytes, err := os.ReadFile(filepath.Join(runDir, "prompt.review.md"))
+	if err != nil {
+		t.Fatalf("read prompt.review.md: %v", err)
+	}
+	gotPrompt := string(promptBytes)
+	if !strings.Contains(gotPrompt, "queries/main.sql") || !strings.Contains(gotPrompt, "results/main.json") {
+		t.Fatalf("expected multi_query review prompt to include section file paths, got: %s", gotPrompt)
+	}
+	manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
+	if err != nil {
+		t.Fatalf("read manifest: %v", err)
+	}
+	if manifest.Status != model.RunStatusOK {
+		t.Fatalf("expected PASS review to keep ok status, got %q", manifest.Status)
+	}
+	if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
+		t.Fatalf("did not expect visual.html from review, err=%v", err)
+	}
 }
 
 func writeTestQuestionRepo(t *testing.T, repoRoot, analysisMode string) {
@@ -325,6 +443,14 @@ func writeFakeTemplateProvider(t *testing.T, repoRoot string) {
 	script := "#!/usr/bin/env bash\nset -euo pipefail\ncat >/dev/null\nprintf 'SELECT 1\\n' > query.sql\nprintf '# Report\\n\\n{{data_overview_md}}\\n' > report.template.md\nprintf '# Analysis Review\\nVerdict: PASS\\n\\n## Summary\\nPass.\\n\\n## Findings\\nNone.\\n\\n## Suggested Prompt Fixes\\nNone.\\n' > review.md\nprintf 'provider wrote artifacts\\n'\n"
 	if err := os.WriteFile(filepath.Join(repoRoot, "fake-provider.sh"), []byte(script), 0o755); err != nil {
 		t.Fatalf("write fake provider: %v", err)
+	}
+}
+
+func writeFakeReviewProvider(t *testing.T, repoRoot, verdict string) {
+	t.Helper()
+	script := "#!/usr/bin/env bash\nset -euo pipefail\ncat >/dev/null\ncat > review.md <<'EOF'\n# Analysis Review\nVerdict: " + verdict + "\n\n## Summary\nPass.\n\n## Findings\nNone.\n\n## Suggested Prompt Fixes\nNone.\nEOF\nprintf 'review provider wrote artifact\\n'\n"
+	if err := os.WriteFile(filepath.Join(repoRoot, "fake-review.sh"), []byte(script), 0o755); err != nil {
+		t.Fatalf("write fake review provider: %v", err)
 	}
 }
 

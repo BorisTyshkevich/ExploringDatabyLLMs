@@ -14,7 +14,7 @@ This repository still contains historical Bash and Python benchmark code, but th
 
 ## Core Model
 
-`qforge` uses a two-phase design:
+`qforge` uses a three-step design:
 
 1. SQL generation
    - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
@@ -22,17 +22,19 @@ This repository still contains historical Bash and Python benchmark code, but th
    - `multi_query`: the model writes `answer.raw.json` with ordered section answers and proof queries keyed by `main`, `qN`, or implicit `q0`
    - `template_files`: the model writes `query.sql` and `report.template.md`
    - `--manual`: runtime staging flag that skips provider invocation for the selected analysis contract; it works with both `multi_query` and `template_files`
-2. Mandatory analysis review during `run`
-   - after qforge executes SQL and renders `report.md`, it makes a separate review-model call
+2. Report and review materialization
+   - `qforge run` executes SQL, renders `report.md`, and makes a separate review-model call
+   - `qforge review` is the manual-run completion path for an existing run directory; it materializes `report.md` and writes `review.md`
+   - `process-presentation` is report-only materialization from saved analysis artifacts and does not write `review.md`
    - the reviewer writes `review.md` with `Verdict: PASS|WARN|FAIL`
    - `WARN` means the run is materially usable but has limited issues and is marked non-clean
    - `qforge run` stops before visual generation if the review verdict is `FAIL`
-2. Optional presentation generation
+3. Optional presentation generation
    - the model writes final `html`
    - the final `report.md` is rendered by the harness from the saved analysis artifact plus JSON-derived sections
    - `visual.html` is model-authored final output and is not patched by `qforge`
    - `visual.html` is validated first against the visual contract and then in a headless browser via `chromedp`
-   - this can be done later with `process-visual` or immediately with `run --with-visual`
+   - this can be done later with `visual` or immediately with `run --with-visual`
 
 The model should not emit result rows directly.
 
@@ -146,6 +148,19 @@ Stage a manual run without invoking the provider:
 ```
 
 The same `--manual` flag stages a run for either analysis contract without changing that contract.
+After the provider artifacts are saved into the run directory, finish the run with `qforge review`.
+
+Finish an existing manual run:
+
+```bash
+./scripts/qforge review --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
+
+Optionally generate visual output later:
+
+```bash
+./scripts/qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
 
 Run one question and immediately follow with a separate presentation call:
 
@@ -171,17 +186,22 @@ Run one question across selected providers:
 ./scripts/qforge run -q q001 -r codex -r claude -v
 ```
 
-Process report and visual for an existing run:
+Process report-only artifacts for an existing run:
 
 ```bash
 ./scripts/qforge process-presentation --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
-./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
+
+Process visual for an existing run:
+
+```bash
+./scripts/qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```
 
 Process report and visual but skip all visual validation:
 
 ```bash
-./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 --skip-visual-validation -v
+./scripts/qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 --skip-visual-validation -v
 ```
 
 Compare runs for a day:
@@ -293,7 +313,7 @@ Flags:
 - `--with-visual`
   - optional
   - after SQL succeeds and `report.md` is rendered, make a second independent provider call for `visual.html`
-  - this is equivalent in behavior to running `process-visual` after a successful run
+  - this is equivalent in behavior to running `visual` after a successful run
 - `--skip-visual-validation`
   - optional
   - skip both contract validation and browser validation for `visual.html`
@@ -320,12 +340,29 @@ What `run` does:
 What `run` does not do:
 
 - it does not produce `visual.html` unless `--with-visual` is set
+- it does not complete a staged manual run; use `qforge review` after saving the provider artifacts into the run directory
 - it may still prebuild `prompt.visual.md` for visual-capable questions
-- use `qforge process-visual` for HTML generation later
+- use `qforge visual` for HTML generation later
 
 Exception:
 
 - when `--with-visual` is set, `run` performs the SQL phase first and then a separate presentation call for successful runs
+
+### `qforge review`
+
+Usage:
+
+```bash
+./scripts/qforge review --run-dir <path> [flags]
+```
+
+What `review` does:
+
+- loads `manifest.json` and the saved analysis artifacts from an existing run directory
+- regenerates `report.md` from the saved analysis output
+- writes `review.md` using the same review contract as `qforge run`
+- is the recommended completion step after `qforge run --manual`
+- does not generate `visual.html`
 
 ### `qforge process-presentation`
 
@@ -370,14 +407,15 @@ What `process-presentation` does:
   - `report.template.md`
   - `report.md`
 - does not invoke a provider again
+- does not write `review.md`
 - does not generate `visual.html`
 
-### `qforge process-visual`
+### `qforge visual`
 
 Usage:
 
 ```bash
-./scripts/qforge process-visual --run-dir <path> [flags]
+./scripts/qforge visual --run-dir <path> [flags]
 ```
 
 Flags:
@@ -410,7 +448,7 @@ Flags:
   - optional
   - print phase-level progress logs
 
-What `process-visual` does:
+What `visual` does:
 
 - loads `manifest.json`, the saved primary SQL artifact (`query.sql` or the selected `queries/<id>.sql`), and `visual_input.json` from an existing run
 - for static mode, also loads `result.json`
@@ -575,7 +613,7 @@ Typical SQL-only run artifacts:
 - `stdout.log`
 - `stderr.log`
 
-When presentation is processed later with `qforge process-visual`:
+When presentation is processed later with `qforge visual`:
 
 - `prompt.visual.md`
 - `answer.presentation.raw.md`
@@ -647,7 +685,7 @@ Important caveats:
 
 - The repository still contains older Bash and Python harness code and old docs; those are not the primary path documented here.
 - Provider behavior varies. Some providers can spend a long time in self-verification loops before returning SQL.
-- Presentation is a separate explicit step by default. Use `run --with-visual` if you want `run` to also make the follow-up presentation call.
+- Presentation is a separate explicit step by default. Use `qforge review` to finish a staged manual run, `qforge process-presentation` if you only need report-only materialization, and `run --with-visual` if you want `run` to also make the follow-up presentation call.
 
 ## Recommended Workflows
 
@@ -655,6 +693,25 @@ SQL/JSON verification only:
 
 ```bash
 ./scripts/qforge run -q q001 -r claude -v
+```
+
+Manual run completion:
+
+```bash
+./scripts/qforge run -q q001 -r claude --manual -v
+./scripts/qforge review --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
+
+Optionally follow with visual generation:
+
+```bash
+./scripts/qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
+
+Report-only materialization for an existing run:
+
+```bash
+./scripts/qforge process-presentation --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```
 
 Single command with SQL plus follow-up report/visual generation:
@@ -679,8 +736,8 @@ Multi-provider comparison:
 ./scripts/qforge compare -q q001 -r codex -v
 ```
 
-Process presentation for one completed run:
+Process visual for one completed run:
 
 ```bash
-./scripts/qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+./scripts/qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
 ```

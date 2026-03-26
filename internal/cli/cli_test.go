@@ -55,7 +55,7 @@ func TestModelLabelForRunnersHandlesDuplicateRunnersWithDistinctModels(t *testin
 	}
 }
 
-func TestPrintRootUsageMentionsProcessPresentation(t *testing.T) {
+func TestPrintRootUsageMentionsProcessPresentationAndVisual(t *testing.T) {
 	origStdout := os.Stdout
 	r, w, err := os.Pipe()
 	if err != nil {
@@ -73,6 +73,15 @@ func TestPrintRootUsageMentionsProcessPresentation(t *testing.T) {
 	if !strings.Contains(buf.String(), "process-presentation") {
 		t.Fatalf("expected root usage to mention process-presentation, got: %s", buf.String())
 	}
+	if !strings.Contains(buf.String(), "review") {
+		t.Fatalf("expected root usage to mention review, got: %s", buf.String())
+	}
+	if !strings.Contains(buf.String(), "  visual           Generate visual.html for an existing run directory") {
+		t.Fatalf("expected root usage to mention visual, got: %s", buf.String())
+	}
+	if strings.Contains(buf.String(), "process-visual") {
+		t.Fatalf("did not expect root usage to mention process-visual, got: %s", buf.String())
+	}
 }
 
 func TestMarkPresentationDeferredSkipsUnsetPhases(t *testing.T) {
@@ -85,6 +94,63 @@ func TestMarkPresentationDeferredSkipsUnsetPhases(t *testing.T) {
 	}
 	if got.PresentationRender != model.PhaseStatusSkipped {
 		t.Fatalf("expected presentation_render skipped, got %q", got.PresentationRender)
+	}
+}
+
+func TestResolveReviewRunnerModelUsesExpectedPrecedence(t *testing.T) {
+	manifest := model.RunManifest{
+		Runner:       "claude",
+		Model:        "sonnet",
+		ReviewRunner: "gemini",
+		ReviewModel:  "gemini-3.1-pro-preview",
+	}
+
+	runner, modelName, err := resolveReviewRunnerModel(manifest, "codex", "gpt-5.4")
+	if err != nil {
+		t.Fatalf("resolveReviewRunnerModel returned error: %v", err)
+	}
+	if runner != "codex" || modelName != "gpt-5.4" {
+		t.Fatalf("expected explicit overrides to win, got runner=%q model=%q", runner, modelName)
+	}
+
+	runner, modelName, err = resolveReviewRunnerModel(manifest, "", "")
+	if err != nil {
+		t.Fatalf("resolveReviewRunnerModel returned error for manifest defaults: %v", err)
+	}
+	if runner != "gemini" || modelName != "gemini-3.1-pro-preview" {
+		t.Fatalf("expected manifest review values to win, got runner=%q model=%q", runner, modelName)
+	}
+
+	runner, modelName, err = resolveReviewRunnerModel(model.RunManifest{Runner: "claude", Model: "opus"}, "", "")
+	if err != nil {
+		t.Fatalf("resolveReviewRunnerModel returned error for run defaults: %v", err)
+	}
+	if runner != "claude" || modelName != "opus" {
+		t.Fatalf("expected run defaults to be used, got runner=%q model=%q", runner, modelName)
+	}
+}
+
+func TestRunReviewHelpReturnsNil(t *testing.T) {
+	if err := Run(context.Background(), []string{"review", "--help"}); err != nil {
+		t.Fatalf("expected review help to return nil, got %v", err)
+	}
+}
+
+func TestRunReviewRequiresRunDir(t *testing.T) {
+	if err := Run(context.Background(), []string{"review"}); err == nil || !strings.Contains(err.Error(), "review requires --run-dir") {
+		t.Fatalf("expected missing run-dir error, got %v", err)
+	}
+}
+
+func TestRunVisualHelpReturnsNil(t *testing.T) {
+	if err := Run(context.Background(), []string{"visual", "--help"}); err != nil {
+		t.Fatalf("expected visual help to return nil, got %v", err)
+	}
+}
+
+func TestRunVisualRequiresRunDir(t *testing.T) {
+	if err := Run(context.Background(), []string{"visual"}); err == nil || !strings.Contains(err.Error(), "visual requires --run-dir") {
+		t.Fatalf("expected missing run-dir error, got %v", err)
 	}
 }
 

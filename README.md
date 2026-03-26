@@ -4,7 +4,7 @@ This repository contains two main active areas:
 
 - [`qforge`](docs/qforge.md)
   - the Go-based benchmark harness for LLM-generated analytics workflows
-  - covers prompt assembly, SQL execution, report and visual generation, compare runs, and CLI usage
+  - covers prompt assembly, SQL execution, report/review and visual generation, compare runs, and CLI usage
 - [`datasets/ontime/download`](datasets/ontime/download/README.md)
   - the dataset rebuild and loading workflow for `ontime.fact_ontime`
   - covers source archives, table layout, loader commands, and schema rules

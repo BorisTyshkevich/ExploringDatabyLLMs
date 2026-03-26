@@ -4,17 +4,21 @@ This document describes the current end-to-end processing flow for `qforge`: wha
 
 ## Overview
 
-`qforge` runs in two phases:
+`qforge` runs in three steps:
 
 1. analysis phase
    - the exact contract is selected by the question's `analysis_mode`
    - `multi_query`: the provider writes `answer.raw.json`
    - `template_files`: the provider writes `query.sql` and `report.template.md`
    - `--manual`: runtime staging flag that skips provider invocation for the selected analysis contract; it works with both `multi_query` and `template_files`
-   - the harness loads the saved analysis artifacts, executes SQL itself, and renders `report.md`
-   - during `qforge run`, the harness then performs a mandatory post-analysis review and writes `review.md`
-2. visual phase
-   - optional, controlled by `run --with-visual` or by `process-visual`
+   - during a normal `qforge run`, the harness loads the saved analysis artifacts, executes SQL itself, and renders `report.md`
+2. report and review phase
+   - `qforge review` is the manual-run completion path for an existing run directory
+   - it loads the saved analysis artifacts, regenerates `report.md`, and writes `review.md`
+   - `qforge process-presentation` is report-only materialization from the same saved artifacts and does not write `review.md`
+   - during a normal `qforge run`, the harness then performs the review step automatically and writes `review.md`
+3. visual phase
+   - optional, controlled by `run --with-visual` or by `visual`
    - the provider receives the saved primary SQL artifact (`query.sql` or the selected `queries/<id>.sql`) plus a harness-generated visual input summary and generates only `visual.html`
 
 The model never executes the final SQL. The harness always executes SQL and writes the canonical `result.json`.
@@ -87,7 +91,8 @@ When it is set, `qforge run` saves the analysis prompt but does not call a provi
 - for `template_files`: `query.sql` and `report.template.md`
 - for `multi_query`: `answer.raw.json`
 
-`qforge process-presentation` then continues from those saved files.
+`qforge review` continues from those saved files when you want to finish a staged manual run.
+`qforge process-presentation` continues from those saved files when you only need report-only materialization.
 
 ### Harness behavior
 
@@ -105,6 +110,7 @@ After the provider returns, qforge:
 8. writes `visual_input.json`
 9. renders final `report.md`
 10. during `qforge run`, calls the review model and writes `review.md`
+11. during `qforge review`, performs the same review step from an existing run directory and writes `review.md`
 
 Phase 1 fails if:
 

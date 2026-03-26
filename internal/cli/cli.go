@@ -46,8 +46,10 @@ func Run(ctx context.Context, args []string) error {
 		return runRun(ctx, args[1:])
 	case "process-presentation":
 		return runProcessPresentation(ctx, args[1:])
-	case "process-visual":
-		return runProcessVisual(ctx, args[1:])
+	case "review":
+		return runProcessReview(ctx, args[1:])
+	case "visual":
+		return runVisual(ctx, args[1:])
 	case "compare":
 		return runCompare(ctx, args[1:])
 	case "inspect-run":
@@ -58,7 +60,7 @@ func Run(ctx context.Context, args []string) error {
 }
 
 func usageError() error {
-	return errors.New("usage: qforge <run|process-presentation|process-visual|compare|list-questions|inspect-run> ...")
+	return errors.New("usage: qforge <run|process-presentation|visual|review|compare|list-questions|inspect-run> ...")
 }
 
 func printRootUsage(out *os.File) {
@@ -71,7 +73,8 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "  list-questions   List available benchmark questions")
 	fmt.Fprintln(out, "  run              Run one question for one or more providers")
 	fmt.Fprintln(out, "  process-presentation  Regenerate query/result/report from saved analysis artifacts")
-	fmt.Fprintln(out, "  process-visual   Generate visual.html for an existing run directory")
+	fmt.Fprintln(out, "  review           Regenerate report artifacts and run the review provider")
+	fmt.Fprintln(out, "  visual           Generate visual.html for an existing run directory")
 	fmt.Fprintln(out, "  compare          Compare runs and fetch query_log metrics")
 	fmt.Fprintln(out, "  inspect-run      Print one run manifest")
 	fmt.Fprintln(out)
@@ -87,7 +90,8 @@ func printRootUsage(out *os.File) {
 	fmt.Fprintln(out, "  qforge run -q q001 -r codex -r claude -v")
 	fmt.Fprintln(out, "  qforge run -q q001 -v")
 	fmt.Fprintln(out, "  qforge process-presentation --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
-	fmt.Fprintln(out, "  qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+	fmt.Fprintln(out, "  qforge review --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+	fmt.Fprintln(out, "  qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	fmt.Fprintln(out, "  qforge compare --question q003 -r codex -v")
 	fmt.Fprintln(out)
 	fmt.Fprintln(out, "Use `qforge <command> --help` for detailed subcommand help.")
@@ -159,7 +163,7 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout, "  - optionally performs a separate follow-up provider call for visual.html only")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Important:")
-		fmt.Fprintln(os.Stdout, "  Visual generation is handled separately by `qforge process-visual`, or by `--with-visual`.")
+		fmt.Fprintln(os.Stdout, "  Visual generation is handled separately by `qforge visual`, or by `--with-visual`.")
 		fmt.Fprintln(os.Stdout, "  `--with-visual` makes a second independent provider call after SQL execution and report rendering succeed.")
 		fmt.Fprintln(os.Stdout, "  `--manual` / `-m` stages prompt.report.md and skips provider execution, SQL execution, and review.")
 		fmt.Fprintln(os.Stdout, "  If --runner is omitted, qforge runs claude/opus, claude/sonnet, and codex/gpt-5.4.")
@@ -502,11 +506,11 @@ func loadCompareReportArtifact(rawOutput, outDir string, notBefore time.Time) (s
 	return extractCompareMarkdown(rawOutput)
 }
 
-func runProcessVisual(ctx context.Context, args []string) error {
-	fs := flag.NewFlagSet("process-visual", flag.ContinueOnError)
+func runVisual(ctx context.Context, args []string) error {
+	fs := flag.NewFlagSet("visual", flag.ContinueOnError)
 	fs.SetOutput(os.Stdout)
 	fs.Usage = func() {
-		fmt.Fprintln(os.Stdout, "Usage: qforge process-visual --run-dir <path> [flags]")
+		fmt.Fprintln(os.Stdout, "Usage: qforge visual --run-dir <path> [flags]")
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Generate visual.html for an existing run that already has the saved SQL artifact and any mode-specific visual inputs.")
 		fmt.Fprintln(os.Stdout)
@@ -521,7 +525,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 		fs.PrintDefaults()
 		fmt.Fprintln(os.Stdout)
 		fmt.Fprintln(os.Stdout, "Example:")
-		fmt.Fprintln(os.Stdout, "  qforge process-visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+		fmt.Fprintln(os.Stdout, "  qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
 	}
 	runDir := fs.String("run-dir", "", "Path to an existing qforge run directory")
 	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http")
@@ -541,7 +545,7 @@ func runProcessVisual(ctx context.Context, args []string) error {
 		return err
 	}
 	if *runDir == "" {
-		return errors.New("process-visual requires --run-dir")
+		return errors.New("visual requires --run-dir")
 	}
 	return processVisual(ctx, processVisualOptions{
 		RunDir:               *runDir,
@@ -601,6 +605,63 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 		MCPServer:          *mcpServer,
 		MCPToken:           *mcpToken,
 		MCPTokenFile:       *mcpTokenFile,
+		PresentationTarget: *presentationTarget,
+		Verbose:            *verbose,
+	})
+}
+
+func runProcessReview(ctx context.Context, args []string) error {
+	fs := flag.NewFlagSet("review", flag.ContinueOnError)
+	fs.SetOutput(os.Stdout)
+	fs.Usage = func() {
+		fmt.Fprintln(os.Stdout, "Usage: qforge review --run-dir <path> [flags]")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Materialize saved analysis artifacts and run the review provider for an existing run directory.")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Behavior:")
+		fmt.Fprintln(os.Stdout, "  - loads manifest.json and the saved analysis artifacts declared by the question mode")
+		fmt.Fprintln(os.Stdout, "  - extracts SQL and report inputs from the saved analysis artifact")
+		fmt.Fprintln(os.Stdout, "  - executes SQL itself and rewrites result.json plus visual_input.json")
+		fmt.Fprintln(os.Stdout, "  - renders final report.md in the same run directory")
+		fmt.Fprintln(os.Stdout, "  - prebuilds prompt.visual.md for a later manual visual run when the question has visual artifacts")
+		fmt.Fprintln(os.Stdout, "  - builds prompt.review.md, calls the review provider, and writes answer.review.raw.md plus review.md")
+		fmt.Fprintln(os.Stdout, "  - never generates visual.html")
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Flags:")
+		fs.PrintDefaults()
+		fmt.Fprintln(os.Stdout)
+		fmt.Fprintln(os.Stdout, "Example:")
+		fmt.Fprintln(os.Stdout, "  qforge review --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v")
+	}
+	runDir := fs.String("run-dir", "", "Path to an existing qforge run directory")
+	mcpURL := fs.String("mcp-url", "", "Explicit MCP base URL ending in /http")
+	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
+	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
+	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
+	reviewRunner := fs.String("review-runner", "", "Runner for the review provider; default: manifest review runner or run runner")
+	reviewModel := fs.String("review-model", "", "Model for the review provider; default: manifest review model or run model")
+	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
+	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
+	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
+	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
+	if err := fs.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return nil
+		}
+		return err
+	}
+	if *runDir == "" {
+		return errors.New("review requires --run-dir")
+	}
+	return processReview(ctx, processReviewOptions{
+		RunDir:             *runDir,
+		MCPURL:             *mcpURL,
+		MCPServer:          *mcpServer,
+		MCPToken:           *mcpToken,
+		MCPTokenFile:       *mcpTokenFile,
+		ReviewRunner:       *reviewRunner,
+		ReviewModel:        *reviewModel,
+		CLIBin:             *cliBin,
 		PresentationTarget: *presentationTarget,
 		Verbose:            *verbose,
 	})
@@ -682,6 +743,19 @@ type processPresentationOptions struct {
 	MCPServer          string
 	MCPToken           string
 	MCPTokenFile       string
+	PresentationTarget string
+	Verbose            bool
+}
+
+type processReviewOptions struct {
+	RunDir             string
+	MCPURL             string
+	MCPServer          string
+	MCPToken           string
+	MCPTokenFile       string
+	ReviewRunner       string
+	ReviewModel        string
+	CLIBin             string
 	PresentationTarget string
 	Verbose            bool
 }
@@ -1538,7 +1612,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if analysisMode != model.AnalysisModeMultiQuery {
 		resultBytes, err := os.ReadFile(filepath.Join(runDir, "result.json"))
 		if err != nil {
-			return fmt.Errorf("process-visual requires result.json: %w", err)
+			return fmt.Errorf("visual requires result.json: %w", err)
 		}
 		if err := json.Unmarshal(resultBytes, &result); err != nil {
 			return err
@@ -1569,25 +1643,25 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "4"
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
-	logf(opts.Verbose, manifest.Model, "process-visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
+	logf(opts.Verbose, manifest.Model, "visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	querySQLPath := filepath.Join(runDir, "query.sql")
 	if analysisMode == model.AnalysisModeMultiQuery {
 		querySQLPath = primaryMultiQuerySQLPath(runDir, question)
 	}
 	querySQL, err := os.ReadFile(querySQLPath)
 	if err != nil {
-		return fmt.Errorf("process-visual requires %s: %w", filepath.Base(querySQLPath), err)
+		return fmt.Errorf("visual requires %s: %w", filepath.Base(querySQLPath), err)
 	}
 	if analysisMode != model.AnalysisModeMultiQuery && strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
 		if _, err := os.Stat(filepath.Join(runDir, "result.json")); err != nil {
-			return fmt.Errorf("process-visual requires result.json for static mode: %w", err)
+			return fmt.Errorf("visual requires result.json for static mode: %w", err)
 		}
 	}
 	var visualInput model.VisualInputSummary
 	if analysisMode == model.AnalysisModeMultiQuery {
 		visualInputBytes, err := os.ReadFile(filepath.Join(runDir, "visual_input.json"))
 		if err != nil {
-			return fmt.Errorf("process-visual requires visual_input.json for multi_query mode: %w", err)
+			return fmt.Errorf("visual requires visual_input.json for multi_query mode: %w", err)
 		}
 		if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
 			return fmt.Errorf("parse visual_input.json: %w", err)
@@ -1751,26 +1825,14 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	logf(opts.Verbose, manifest.Model, "process-presentation run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=%s", analysisMode)
-	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
-		Mode:      analysisMode,
-		Question:  question,
-		Artifacts: manifest.Artifacts,
-	})
-	if err != nil {
-		manifest.Status = model.RunStatusFailed
-		manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
-		return err
-	}
-	materialized, err := materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
-		RunDir:           runDir,
-		Question:         question,
-		Manifest:         &manifest,
-		MCPURL:           mcpURL,
-		Token:            token,
-		Verbose:          opts.Verbose,
-		AnalysisMode:     analysisMode,
-		AnalysisArtifact: analysisArtifact,
+	materialized, err := materializeExistingAnalysis(ctx, materializeExistingAnalysisOptions{
+		RunDir:       runDir,
+		Question:     question,
+		Manifest:     &manifest,
+		MCPURL:       mcpURL,
+		Token:        token,
+		Verbose:      opts.Verbose,
+		AnalysisMode: analysisMode,
 	})
 	if err != nil {
 		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
@@ -1789,6 +1851,146 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 		manifest.Status = model.RunStatusPartial
 	}
 	return nil
+}
+
+func processReview(ctx context.Context, opts processReviewOptions) error {
+	codeRoot, err := repoRoot()
+	if err != nil {
+		return err
+	}
+	runRoot := runsRoot(codeRoot)
+	runDir := opts.RunDir
+	if !filepath.IsAbs(runDir) {
+		runDir = filepath.Join(runRoot, runDir)
+	}
+	manifest, question, err := readOrInferRunManifest(codeRoot, runDir)
+	if err != nil {
+		return err
+	}
+	startedAt := time.Now().UTC()
+	if manifest.StartedAt.IsZero() {
+		manifest.StartedAt = startedAt
+	}
+	defer func() {
+		manifest.FinishedAt = time.Now().UTC()
+		manifest.DurationSec = int64(manifest.FinishedAt.Sub(startedAt).Seconds())
+		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+	}()
+	cfg, err := datasets.Load(codeRoot, manifest.Dataset)
+	if err != nil {
+		return err
+	}
+	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
+		return err
+	}
+	mcpURL, token, err := datasets.ResolveMCPURL(cfg, opts.MCPURL)
+	if err != nil {
+		return err
+	}
+	if opts.MCPTokenFile != "" && opts.MCPToken == "" {
+		bytes, err := os.ReadFile(opts.MCPTokenFile)
+		if err != nil {
+			return err
+		}
+		opts.MCPToken = strings.TrimSpace(string(bytes))
+	}
+	if opts.MCPToken != "" {
+		token = opts.MCPToken
+	}
+	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
+	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
+	manifest.SchemaVersion = "4"
+	analysisMode, ok := parseAnalysisMode(question.Meta.AnalysisMode)
+	if !ok {
+		analysisMode = model.AnalysisModeTemplateFiles
+	}
+	manifest.AnalysisMode = string(analysisMode)
+	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
+	reviewRunner, reviewModel, err := resolveReviewRunnerModel(manifest, opts.ReviewRunner, opts.ReviewModel)
+	if err != nil {
+		return err
+	}
+	manifest.ReviewRunner = reviewRunner
+	manifest.ReviewModel = reviewModel
+	logf(opts.Verbose, manifest.Model, "process-review run_dir=%s question=%s runner=%s model=%s review_runner=%s review_model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model, manifest.ReviewRunner, manifest.ReviewModel)
+	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=%s", analysisMode)
+	materialized, err := materializeExistingAnalysis(ctx, materializeExistingAnalysisOptions{
+		RunDir:       runDir,
+		Question:     question,
+		Manifest:     &manifest,
+		MCPURL:       mcpURL,
+		Token:        token,
+		Verbose:      opts.Verbose,
+		AnalysisMode: analysisMode,
+	})
+	if err != nil {
+		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+		return err
+	}
+	if question.VisualEnabled {
+		if err := writePresentationPromptFromSummary(manifest.Artifacts.PromptPresentationRaw, question, cfg, materialized.Result, materialized.SQL, mcpURL, token, materialized.VisualInput); err != nil {
+			_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+			return err
+		}
+	}
+	if err := runAnalysisReview(ctx, runAnalysisReviewOptions{
+		Question:     question,
+		Config:       cfg,
+		Manifest:     &manifest,
+		Artifacts:    manifest.Artifacts,
+		OutDir:       runDir,
+		AnalysisMode: analysisMode,
+		CLIBin:       opts.CLIBin,
+		MCPURL:       mcpURL,
+		MCPToken:     token,
+		Verbose:      opts.Verbose,
+	}); err != nil {
+		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
+		return err
+	}
+	manifest.Phases = markPresentationDeferred(manifest.Phases)
+	switch {
+	case reviewVerdictBlocksRun(manifest.ReviewVerdict):
+		manifest.Status = model.RunStatusFailed
+	case strings.EqualFold(strings.TrimSpace(manifest.ReviewVerdict), "WARN"):
+		manifest.Status = model.RunStatusPartial
+	default:
+		manifest.Status = model.RunStatusOK
+	}
+	return nil
+}
+
+type materializeExistingAnalysisOptions struct {
+	RunDir       string
+	Question     model.Question
+	Manifest     *model.RunManifest
+	MCPURL       string
+	Token        string
+	Verbose      bool
+	AnalysisMode model.AnalysisMode
+}
+
+func materializeExistingAnalysis(ctx context.Context, opts materializeExistingAnalysisOptions) (materializedAnalysis, error) {
+	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
+		Mode:      opts.AnalysisMode,
+		Question:  opts.Question,
+		Artifacts: opts.Manifest.Artifacts,
+	})
+	if err != nil {
+		opts.Manifest.Status = model.RunStatusFailed
+		opts.Manifest.Phases.SQLGeneration = model.PhaseStatusFailed
+		return materializedAnalysis{}, err
+	}
+	return materializeSavedAnalysis(ctx, materializeSavedAnalysisOptions{
+		RunDir:           opts.RunDir,
+		Question:         opts.Question,
+		Manifest:         opts.Manifest,
+		MCPURL:           opts.MCPURL,
+		Token:            opts.Token,
+		Verbose:          opts.Verbose,
+		AnalysisMode:     opts.AnalysisMode,
+		AnalysisArtifact: analysisArtifact,
+	})
 }
 
 func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Question, error) {
@@ -1844,6 +2046,22 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func resolveReviewRunnerModel(manifest model.RunManifest, reviewRunnerOverride, reviewModelOverride string) (string, string, error) {
+	reviewRunner := firstNonEmpty(strings.TrimSpace(reviewRunnerOverride), strings.TrimSpace(manifest.ReviewRunner), strings.TrimSpace(manifest.Runner))
+	if reviewRunner == "" {
+		return "", "", errors.New("unable to resolve review runner")
+	}
+	reviewModel := firstNonEmpty(strings.TrimSpace(reviewModelOverride), strings.TrimSpace(manifest.ReviewModel), strings.TrimSpace(manifest.Model))
+	if reviewModel == "" {
+		var err error
+		reviewModel, err = defaultModelForRunner(reviewRunner)
+		if err != nil {
+			return "", "", err
+		}
+	}
+	return reviewRunner, reviewModel, nil
 }
 
 func applyPresentationTargetOverride(question *model.Question, override string) error {
