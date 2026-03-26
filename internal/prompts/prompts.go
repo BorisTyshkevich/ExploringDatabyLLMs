@@ -30,7 +30,7 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 		return "", err
 	}
 	contractPromptFile := commonReportMultiQueryPromptFile
-	if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
+	if mode == model.AnalysisModeTemplateFiles {
 		contractPromptFile = commonReportTemplatePromptFile
 	}
 	commonReport, err := loadCommonPrompt(question, contractPromptFile)

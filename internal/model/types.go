@@ -12,9 +12,8 @@ const (
 type AnalysisMode string
 
 const (
-	AnalysisModeMultiQuery     AnalysisMode = "multi_query"
-	AnalysisModeTemplateFiles  AnalysisMode = "template_files"
-	AnalysisModeManualTemplate AnalysisMode = "manual_templates"
+	AnalysisModeMultiQuery    AnalysisMode = "multi_query"
+	AnalysisModeTemplateFiles AnalysisMode = "template_files"
 )
 
 type RunStatus string

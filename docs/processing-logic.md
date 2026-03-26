@@ -10,7 +10,7 @@ This document describes the current end-to-end processing flow for `qforge`: wha
    - the exact contract is selected by the question's `analysis_mode`
    - `multi_query`: the provider writes `answer.raw.json`
    - `template_files`: the provider writes `query.sql` and `report.template.md`
-   - `manual_templates`: `qforge run` stages prompts only, then a human writes `query.sql` and `report.template.md`
+   - `--manual`: runtime staging flag that skips provider invocation for the selected analysis contract; it works with both `multi_query` and `template_files`
    - the harness loads the saved analysis artifacts, executes SQL itself, and renders `report.md`
    - during `qforge run`, the harness then performs a mandatory post-analysis review and writes `review.md`
 2. visual phase
@@ -27,8 +27,10 @@ Current composition order:
 
 - `prompts/common.md`
 - `prompts/common_report_multi_query.md` for `multi_query`
-- `prompts/common_report_templates.md` for `template_files` and `manual_templates`
+- `prompts/common_report_templates.md` for `template_files`
 - question `report_prompt.md`
+
+`--manual` does not change prompt assembly. It only skips the provider call and leaves the selected analysis contract in place for later human completion.
 
 Shared prompt assets now reference dataset-specific skills directly. For OnTime, schema inspection and join guidance come from the `ontime-semantic-layer` skill rather than an inlined `semantic_layer.md` block.
 
@@ -76,14 +78,14 @@ Important rules:
 - qforge does not parse a phase-1 JSON artifact in this mode
 - metric placeholders are not supported in this mode because no metrics artifact is collected
 
-#### `manual_templates`
+#### `--manual`
 
-`qforge run` saves the analysis prompt but does not call a provider.
+`--manual` is a runtime staging flag, not a separate analysis mode.
 
-The human later uses that prompt in ChatGPT, Claude, or another external UI and saves:
+When it is set, `qforge run` saves the analysis prompt but does not call a provider. The human later uses that prompt in ChatGPT, Claude, or another external UI and saves:
 
-- `query.sql`
-- `report.template.md`
+- for `template_files`: `query.sql` and `report.template.md`
+- for `multi_query`: `answer.raw.json`
 
 `qforge process-presentation` then continues from those saved files.
 
@@ -200,12 +202,12 @@ Source-of-truth artifacts:
 
 - analysis artifact:
   - `answer.raw.json` for `multi_query`
-  - `query.sql` + `report.template.md` for `template_files` and `manual_templates`
+  - `query.sql` + `report.template.md` for `template_files`
 - normalized analysis snapshot: `analysis.json`
 - review artifact: `review.md`
 - executed SQL:
   - `queries/*.sql` for `multi_query`
-  - `query.sql` for `template_files` and `manual_templates`
+  - `query.sql` for `template_files`
 - canonical result: `result.json`
 - visual grounding summary: `visual_input.json`
 - final rendered report: `report.md`

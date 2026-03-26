@@ -21,7 +21,7 @@ This repository still contains historical Bash and Python benchmark code, but th
    - the exact artifact contract is selected by the question's `analysis_mode`
    - `multi_query`: the model writes `answer.raw.json` with ordered section answers and proof queries keyed by `main`, `qN`, or implicit `q0`
    - `template_files`: the model writes `query.sql` and `report.template.md`
-   - `manual_templates`: `qforge run` stages the prompt only and a human later writes `query.sql` and `report.template.md`
+   - `--manual`: runtime staging flag that skips provider invocation for the selected analysis contract; it works with both `multi_query` and `template_files`
 2. Mandatory analysis review during `run`
    - after qforge executes SQL and renders `report.md`, it makes a separate review-model call
    - the reviewer writes `review.md` with `Verdict: PASS|WARN|FAIL`
@@ -139,17 +139,13 @@ Run one question with an explicit separate reviewer:
 ./scripts/qforge run -q q001 -r claude --model sonnet --review-runner codex --review-model gpt-5.4 -v
 ```
 
-Stage a manual-template run without invoking the provider:
-
-```bash
-./scripts/qforge run -q q001 -r claude --analysis-mode manual_templates -v
-```
-
-Equivalent shortcut:
+Stage a manual run without invoking the provider:
 
 ```bash
 ./scripts/qforge run -q q001 -r claude --manual -v
 ```
+
+The same `--manual` flag stages a run for either analysis contract without changing that contract.
 
 Run one question and immediately follow with a separate presentation call:
 
@@ -276,15 +272,17 @@ Flags:
   - override the provider CLI executable
 - `--analysis-mode`
   - optional
-  - may override only between `template_files` and `manual_templates`
+  - may override only for non-`multi_query` questions
   - cannot switch to or from `multi_query`
+  - does not control whether the run is staged manually
 - `--presentation-target`
   - optional
   - override the question presentation target with `html` or `react`
   - useful for benchmarking the same question in both presentation formats without editing prompt metadata
 - `--manual`
   - optional
-  - alias for `--analysis-mode manual_templates`
+  - runtime staging flag that skips provider invocation and leaves the selected analysis contract unchanged
+  - works with both `template_files` and `multi_query`
 - `-m`
   - shorthand for `--manual`
 - `--verbose`
@@ -309,7 +307,7 @@ What `run` does:
 2. selects one or more providers
 3. resolves the effective analysis mode from question metadata plus any allowed CLI override
 4. builds the SQL prompt for each selected provider
-5. either invokes the provider or stages a manual run, depending on the effective analysis mode
+5. either invokes the provider or stages a manual run, depending on `--manual`
 6. loads the saved analysis artifact for that mode
 7. executes SQL directly against the OpenAPI endpoint when analysis artifacts are available
 8. writes canonical `result.json`
@@ -360,7 +358,7 @@ Flags:
 
 What `process-presentation` does:
 
-- loads `manifest.json` and the saved analysis artifacts for the question's declared `analysis_mode`
+- loads `manifest.json` and the saved analysis artifacts for the question's declared `analysis_mode`, whether they were provider-generated or staged with `--manual`
 - extracts SQL and report inputs from the saved analysis artifact
 - executes SQL directly against the OpenAPI endpoint
 - rewrites:

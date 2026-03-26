@@ -214,7 +214,7 @@ func readFileText(path string) string {
 }
 
 func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) bool {
-	if mode == model.AnalysisModeTemplateFiles || mode == model.AnalysisModeManualTemplate {
+	if mode == model.AnalysisModeTemplateFiles {
 		sqlPath := filepath.Join(outDir, "query.sql")
 		reportPath := filepath.Join(outDir, "report.template.md")
 		return func(string) bool {

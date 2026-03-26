@@ -13,21 +13,20 @@ import (
 	"qforge/internal/runs"
 )
 
-func TestResolveRunAnalysisModeAllowsTemplateManualOverride(t *testing.T) {
-	got, err := resolveRunAnalysisMode("template_files", "manual_templates")
-	if err != nil {
-		t.Fatalf("resolveRunAnalysisMode returned error: %v", err)
-	}
-	if got != model.AnalysisModeManualTemplate {
-		t.Fatalf("unexpected override result: %q", got)
-	}
-
-	got, err = resolveRunAnalysisMode("manual_templates", "template_files")
+func TestResolveRunAnalysisModeAcceptsTemplateFilesAndRejectsManualTemplates(t *testing.T) {
+	got, err := resolveRunAnalysisMode("template_files", "")
 	if err != nil {
 		t.Fatalf("resolveRunAnalysisMode returned error: %v", err)
 	}
 	if got != model.AnalysisModeTemplateFiles {
 		t.Fatalf("unexpected override result: %q", got)
+	}
+
+	if _, err := resolveRunAnalysisMode("manual_templates", ""); err == nil {
+		t.Fatalf("expected manual_templates question mode to fail")
+	}
+	if _, err := resolveRunAnalysisMode("template_files", "manual_templates"); err == nil {
+		t.Fatalf("expected manual_templates override to fail")
 	}
 }
 
@@ -80,9 +79,9 @@ func TestLoadMultiQueryAnalysisArtifactUsesSectionIDs(t *testing.T) {
 	}
 }
 
-func TestExecuteRunManualTemplatesStagesOnly(t *testing.T) {
+func TestExecuteRunManualTemplateFilesStagesOnly(t *testing.T) {
 	repoRoot := t.TempDir()
-	writeTestQuestionRepo(t, repoRoot, "manual_templates")
+	writeTestQuestionRepo(t, repoRoot, "template_files")
 	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
 	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
 
@@ -90,6 +89,7 @@ func TestExecuteRunManualTemplatesStagesOnly(t *testing.T) {
 		QuestionRef: "q901",
 		Runner:      "claude",
 		Model:       "opus",
+		Manual:      true,
 		CLIBin:      "/path/that/should/not/run",
 	})
 	if err != nil {
@@ -107,7 +107,7 @@ func TestExecuteRunManualTemplatesStagesOnly(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read manifest: %v", err)
 	}
-	if manifest.AnalysisMode != "manual_templates" {
+	if manifest.AnalysisMode != "template_files" {
 		t.Fatalf("unexpected manifest analysis mode: %q", manifest.AnalysisMode)
 	}
 }
@@ -116,7 +116,7 @@ func TestExecuteRunTemplateFilesOverrideInvokesProvider(t *testing.T) {
 	repoRoot := t.TempDir()
 	server := newExecuteQueryServer()
 	defer server.Close()
-	writeTestQuestionRepo(t, repoRoot, "manual_templates")
+	writeTestQuestionRepo(t, repoRoot, "template_files")
 	writeFakeTemplateProvider(t, repoRoot)
 	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
 	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
@@ -150,36 +150,6 @@ func TestExecuteRunTemplateFilesOverrideInvokesProvider(t *testing.T) {
 		t.Fatalf("expected successful automated template run, got %q", manifest.Status)
 	}
 	_ = server
-}
-
-func TestExecuteRunTemplateFilesOverrideToManualStagesOnly(t *testing.T) {
-	repoRoot := t.TempDir()
-	writeTestQuestionRepo(t, repoRoot, "template_files")
-	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
-	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
-
-	err := executeRun(context.Background(), runOptions{
-		QuestionRef:          "q901",
-		Runner:               "claude",
-		Model:                "opus",
-		AnalysisModeOverride: "manual_templates",
-		CLIBin:               "/path/that/should/not/run",
-	})
-	if err != nil {
-		t.Fatalf("executeRun returned error: %v", err)
-	}
-
-	runDir := latestRunDir(t, repoRoot)
-	if _, err := os.Stat(filepath.Join(runDir, "query.sql")); !os.IsNotExist(err) {
-		t.Fatalf("did not expect query.sql in manual override run, err=%v", err)
-	}
-	manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
-	if err != nil {
-		t.Fatalf("read manifest: %v", err)
-	}
-	if manifest.AnalysisMode != "manual_templates" {
-		t.Fatalf("unexpected manifest analysis mode: %q", manifest.AnalysisMode)
-	}
 }
 
 func TestExecuteRunStagesPresentationPromptWithoutWithVisual(t *testing.T) {
@@ -218,9 +188,9 @@ func TestExecuteRunStagesPresentationPromptWithoutWithVisual(t *testing.T) {
 	_ = server
 }
 
-func TestExecuteRunManualTemplatesStagesVisualPromptForVisualQuestions(t *testing.T) {
+func TestExecuteRunManualStagesVisualPromptForVisualQuestions(t *testing.T) {
 	repoRoot := t.TempDir()
-	writeTestQuestionRepoWithArtifacts(t, repoRoot, "manual_templates", "report.md,visual.html")
+	writeTestQuestionRepoWithArtifacts(t, repoRoot, "multi_query", "report.md,visual.html")
 	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
 	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
 
@@ -228,6 +198,7 @@ func TestExecuteRunManualTemplatesStagesVisualPromptForVisualQuestions(t *testin
 		QuestionRef: "q901",
 		Runner:      "claude",
 		Model:       "opus",
+		Manual:      true,
 		CLIBin:      "/path/that/should/not/run",
 	})
 	if err != nil {
@@ -240,6 +211,39 @@ func TestExecuteRunManualTemplatesStagesVisualPromptForVisualQuestions(t *testin
 	}
 	if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
 		t.Fatalf("did not expect visual.html in manual staging run, err=%v", err)
+	}
+}
+
+func TestExecuteRunManualMultiQueryStagesOnly(t *testing.T) {
+	repoRoot := t.TempDir()
+	writeTestQuestionRepo(t, repoRoot, "multi_query")
+	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
+	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
+
+	err := executeRun(context.Background(), runOptions{
+		QuestionRef: "q901",
+		Runner:      "claude",
+		Model:       "opus",
+		Manual:      true,
+		CLIBin:      "/path/that/should/not/run",
+	})
+	if err != nil {
+		t.Fatalf("executeRun returned error: %v", err)
+	}
+
+	runDir := latestRunDir(t, repoRoot)
+	if _, err := os.Stat(filepath.Join(runDir, "prompt.report.md")); err != nil {
+		t.Fatalf("expected staged prompt.report.md: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(runDir, "query.sql")); !os.IsNotExist(err) {
+		t.Fatalf("did not expect query.sql in multi_query manual staging run, err=%v", err)
+	}
+	manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
+	if err != nil {
+		t.Fatalf("read manifest: %v", err)
+	}
+	if manifest.AnalysisMode != "multi_query" {
+		t.Fatalf("unexpected manifest analysis mode: %q", manifest.AnalysisMode)
 	}
 }
 

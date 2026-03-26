@@ -161,7 +161,7 @@ func runRun(ctx context.Context, args []string) error {
 		fmt.Fprintln(os.Stdout, "Important:")
 		fmt.Fprintln(os.Stdout, "  Visual generation is handled separately by `qforge process-visual`, or by `--with-visual`.")
 		fmt.Fprintln(os.Stdout, "  `--with-visual` makes a second independent provider call after SQL execution and report rendering succeed.")
-		fmt.Fprintln(os.Stdout, "  `--manual` / `-m` is a shortcut for `--analysis-mode manual_templates`.")
+		fmt.Fprintln(os.Stdout, "  `--manual` / `-m` stages prompt.report.md and skips provider execution, SQL execution, and review.")
 		fmt.Fprintln(os.Stdout, "  If --runner is omitted, qforge runs claude/opus, claude/sonnet, and codex/gpt-5.4.")
 		fmt.Fprintln(os.Stdout, "  Repeated --model flags are matched positionally to repeated --runner flags.")
 		fmt.Fprintln(os.Stdout)
@@ -188,10 +188,10 @@ func runRun(ctx context.Context, args []string) error {
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	reviewRunner := fs.String("review-runner", "", "Runner for the mandatory post-analysis review; default: same as the generation runner")
 	reviewModel := fs.String("review-model", "", "Model for the mandatory post-analysis review; default: same as the generation model")
-	analysisMode := fs.String("analysis-mode", "", "Override analysis mode only between template_files and manual_templates")
+	analysisMode := fs.String("analysis-mode", "", "Override analysis mode for template_files questions; cannot switch to or from multi_query")
 	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
-	manual := fs.Bool("manual", false, "Alias for --analysis-mode manual_templates")
-	fs.BoolVar(manual, "m", false, "Alias for --analysis-mode manual_templates (shorthand)")
+	manual := fs.Bool("manual", false, "Stage prompt.report.md and skip provider execution, SQL execution, and review")
+	fs.BoolVar(manual, "m", false, "Stage prompt.report.md and skip provider execution, SQL execution, and review (shorthand)")
 	withVisual := fs.Bool("with-visual", false, "After SQL and report rendering succeed, make a separate presentation call for visual.html")
 	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
 	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
@@ -211,7 +211,6 @@ func runRun(ctx context.Context, args []string) error {
 	if *questionRef == "" {
 		return errors.New("run requires --question")
 	}
-	requestedAnalysisMode := resolveRequestedAnalysisMode(*analysisMode, *manual)
 	if len(runners) == 0 {
 		runners = multiFlag{"claude", "claude", "codex"}
 		models = multiFlag{"opus", "sonnet", "gpt-5.4"}
@@ -242,7 +241,8 @@ func runRun(ctx context.Context, args []string) error {
 			MCPToken:             *mcpToken,
 			MCPTokenFile:         *mcpTokenFile,
 			CLIBin:               *cliBin,
-			AnalysisModeOverride: requestedAnalysisMode,
+			AnalysisModeOverride: strings.TrimSpace(*analysisMode),
+			Manual:               *manual,
 			PresentationTarget:   *presentationTarget,
 			WithVisual:           *withVisual,
 			SkipVisualValidation: *skipVisualValidation,
@@ -650,6 +650,7 @@ type runOptions struct {
 	ReviewModel          string
 	Dataset              string
 	AnalysisModeOverride string
+	Manual               bool
 	MCPURL               string
 	MCPServer            string
 	MCPToken             string
@@ -781,6 +782,21 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	if err := os.WriteFile(artifacts.PromptReportRaw, []byte(sqlPrompt), 0o644); err != nil {
 		return err
 	}
+	if opts.Manual {
+		if question.VisualEnabled {
+			if err := writePresentationPrompt(artifacts.PromptPresentationRaw, artifacts.VisualInputJSON, question, cfg, model.CanonicalResult{}, "", mcpURL, token); err != nil {
+				return err
+			}
+		}
+		manifest.Phases.SQLGeneration = model.PhaseStatusSkipped
+		manifest.Phases.SQLExecution = model.PhaseStatusSkipped
+		manifest.Phases.Review = model.PhaseStatusSkipped
+		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
+		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
+		manifest.Status = model.RunStatusPartial
+		logf(opts.Verbose, opts.Model, "run status=partial analysis=manual_staged")
+		return nil
+	}
 	provider, err := providers.New(opts.Runner)
 	if err != nil {
 		return err
@@ -797,21 +813,6 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		MCPToken:      token,
 		CLIBin:        opts.CLIBin,
 		Verbose:       opts.Verbose,
-	}
-	if analysisMode == model.AnalysisModeManualTemplate {
-		if question.VisualEnabled {
-			if err := writePresentationPrompt(artifacts.PromptPresentationRaw, artifacts.VisualInputJSON, question, cfg, model.CanonicalResult{}, "", mcpURL, token); err != nil {
-				return err
-			}
-		}
-		manifest.Phases.SQLGeneration = model.PhaseStatusSkipped
-		manifest.Phases.SQLExecution = model.PhaseStatusNotRun
-		manifest.Phases.Review = model.PhaseStatusSkipped
-		manifest.Phases.PresentationGeneration = model.PhaseStatusSkipped
-		manifest.Phases.PresentationRender = model.PhaseStatusSkipped
-		manifest.Status = model.RunStatusPartial
-		logf(opts.Verbose, opts.Model, "run status=partial analysis=manual_staged")
-		return nil
 	}
 
 	sqlCtx, cancelSQL := context.WithTimeout(ctx, time.Duration(commandTimeoutSec)*time.Second)
@@ -1530,7 +1531,10 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
 		return err
 	}
-	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
+	analysisMode, ok := parseAnalysisMode(question.Meta.AnalysisMode)
+	if !ok {
+		analysisMode = model.AnalysisModeTemplateFiles
+	}
 	if analysisMode != model.AnalysisModeMultiQuery {
 		resultBytes, err := os.ReadFile(filepath.Join(runDir, "result.json"))
 		if err != nil {
@@ -1739,7 +1743,10 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "4"
-	analysisMode := normalizeAnalysisMode(question.Meta.AnalysisMode)
+	analysisMode, ok := parseAnalysisMode(question.Meta.AnalysisMode)
+	if !ok {
+		analysisMode = model.AnalysisModeTemplateFiles
+	}
 	manifest.AnalysisMode = string(analysisMode)
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	logf(opts.Verbose, manifest.Model, "process-presentation run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
@@ -1854,13 +1861,6 @@ func applyPresentationTargetOverride(question *model.Question, override string) 
 	default:
 		return fmt.Errorf("unsupported presentation target override %q", override)
 	}
-}
-
-func resolveRequestedAnalysisMode(analysisMode string, manual bool) string {
-	if manual {
-		return string(model.AnalysisModeManualTemplate)
-	}
-	return analysisMode
 }
 
 func modelLabelForRunners(runners, explicitModels []string) (string, error) {
@@ -2120,7 +2120,7 @@ func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifa
 	switch source.Mode {
 	case model.AnalysisModeMultiQuery:
 		return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.AnswerRawJSON)
-	case model.AnalysisModeTemplateFiles, model.AnalysisModeManualTemplate:
+	case model.AnalysisModeTemplateFiles:
 		return loadTemplateAnalysisArtifact(source.Artifacts)
 	default:
 		return model.AnalysisArtifact{}, fmt.Errorf("unsupported analysis mode %q", source.Mode)
@@ -2167,33 +2167,38 @@ func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model
 	return artifact, nil
 }
 
-func normalizeAnalysisMode(raw string) model.AnalysisMode {
-	switch model.AnalysisMode(strings.TrimSpace(raw)) {
-	case model.AnalysisModeMultiQuery:
-		return model.AnalysisModeMultiQuery
-	case model.AnalysisModeTemplateFiles:
-		return model.AnalysisModeTemplateFiles
-	case model.AnalysisModeManualTemplate:
-		return model.AnalysisModeManualTemplate
-	default:
-		return model.AnalysisModeTemplateFiles
-	}
-}
-
 func resolveRunAnalysisMode(questionModeRaw, overrideRaw string) (model.AnalysisMode, error) {
-	questionMode := normalizeAnalysisMode(questionModeRaw)
+	questionMode, ok := parseAnalysisMode(questionModeRaw)
+	if !ok {
+		if strings.TrimSpace(questionModeRaw) == "" {
+			questionMode = model.AnalysisModeTemplateFiles
+		} else {
+			return "", fmt.Errorf("unsupported analysis mode %q", strings.TrimSpace(questionModeRaw))
+		}
+	}
 	override := strings.TrimSpace(overrideRaw)
 	if override == "" {
 		return questionMode, nil
 	}
-	overrideMode := normalizeAnalysisMode(override)
-	if string(overrideMode) != override {
+	overrideMode, ok := parseAnalysisMode(override)
+	if !ok {
 		return "", fmt.Errorf("unsupported analysis mode override %q", override)
 	}
 	if questionMode == model.AnalysisModeMultiQuery || overrideMode == model.AnalysisModeMultiQuery {
 		return "", fmt.Errorf("analysis mode override cannot switch to or from structured json modes")
 	}
 	return overrideMode, nil
+}
+
+func parseAnalysisMode(raw string) (model.AnalysisMode, bool) {
+	switch model.AnalysisMode(strings.TrimSpace(raw)) {
+	case model.AnalysisModeMultiQuery:
+		return model.AnalysisModeMultiQuery, true
+	case model.AnalysisModeTemplateFiles:
+		return model.AnalysisModeTemplateFiles, true
+	default:
+		return "", false
+	}
 }
 
 func normalizeEscapedMultiline(value string) string {
