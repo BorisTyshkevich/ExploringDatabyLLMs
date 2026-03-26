@@ -537,12 +537,33 @@ def save_meta(month_ref: MonthRef, payload: dict[str, object]) -> None:
     log(f"meta saved: {month_ref.stem}")
 
 
+def load_meta(month_ref: MonthRef) -> dict[str, object]:
+    return json.loads(month_meta_path(month_ref).read_text())
+
+
 def create_tables(connection: str) -> None:
     for sql_file in (SCRIPT_DIR / "schema.sql", SCRIPT_DIR / "stage_schema.sql"):
         log(f"apply ddl: {sql_file.name}")
         result = run_clickhouse(connection, query_file=sql_file)
         if result.returncode != 0:
             raise RuntimeError(f"failed to apply {sql_file.name}: {result.stderr.strip()}")
+
+
+def count_rows_for_year(connection: str, table: str, year: int) -> int:
+    counted = run_clickhouse(connection, query=f"SELECT count() FROM {table} WHERE Year = {year}")
+    if counted.returncode != 0:
+        raise RuntimeError(counted.stderr.strip())
+    return int(counted.stdout.strip() or "0")
+
+
+def deduplicate_stage_year(connection: str, year: int) -> None:
+    optimize = run_clickhouse(
+        connection,
+        query=f"OPTIMIZE TABLE ontime.stage_ontime PARTITION {year} FINAL DEDUPLICATE",
+    )
+    if optimize.returncode != 0:
+        raise RuntimeError(optimize.stderr.strip())
+    log(f"stage deduplicate done: year={year}")
 
 
 def load_year(
@@ -588,14 +609,36 @@ def load_year(
         year_rows += inserted_rows
         log(f"month done: {month_ref.stem} rows={inserted_rows} skipped={skipped_rows}")
 
-    count_query = f"SELECT count() FROM ontime.stage_ontime WHERE Year = {year}"
-    counted = run_clickhouse(connection, query=count_query)
-    if counted.returncode != 0:
-        raise RuntimeError(counted.stderr.strip())
-    stage_rows = int(counted.stdout.strip() or "0")
-    if stage_rows != year_rows:
-        raise RuntimeError(f"stage row count mismatch for {year}: inserted={year_rows}, counted={stage_rows}")
-    log(f"stage validated: year={year} rows={stage_rows}")
+    stage_rows_before_dedup = count_rows_for_year(connection, "ontime.stage_ontime", year)
+    if stage_rows_before_dedup != year_rows:
+        raise RuntimeError(
+            f"stage row count mismatch for {year}: inserted={year_rows}, counted={stage_rows_before_dedup}"
+        )
+    log(f"stage validated before dedup: year={year} rows={stage_rows_before_dedup}")
+
+    deduplicate_stage_year(connection, year)
+
+    stage_rows_after_dedup = count_rows_for_year(connection, "ontime.stage_ontime", year)
+    deduplicated_rows = stage_rows_before_dedup - stage_rows_after_dedup
+    if deduplicated_rows < 0:
+        raise RuntimeError(
+            f"stage row count increased after dedup for {year}: before={stage_rows_before_dedup}, after={stage_rows_after_dedup}"
+        )
+    log(
+        f"stage validated after dedup: year={year} rows={stage_rows_after_dedup} "
+        f"removed={deduplicated_rows}"
+    )
+
+    for month_ref in target_months:
+        payload = load_meta(month_ref)
+        payload.update(
+            {
+                "year_stage_rows_before_dedup": stage_rows_before_dedup,
+                "year_stage_rows_after_dedup": stage_rows_after_dedup,
+                "year_exact_duplicate_rows_removed": deduplicated_rows,
+            }
+        )
+        save_meta(month_ref, payload)
 
     replace = run_clickhouse(
         connection,

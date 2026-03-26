@@ -34,6 +34,14 @@ REPLACE PARTITION <year>
 FROM ontime.stage_ontime
 ```
 
+Before publish, the loader runs:
+
+```sql
+OPTIMIZE TABLE ontime.stage_ontime PARTITION <year> FINAL DEDUPLICATE
+```
+
+This removes exact duplicate rows within the staged year before `REPLACE PARTITION`. It does not collapse rows that share the same analytical leg key but differ in other columns.
+
 ## Loader Commands
 
 Create tables:
@@ -73,6 +81,13 @@ python3 datasets/ontime/download/load_ontime_v2.py load-year --year 2025 --allow
 - IDs use `0` as the missing sentinel.
 - Metrics and HHMM operational time fields stay `Nullable`.
 - Strings use empty string when source values are blank.
+
+## Deduplication
+
+- Raw normalized rows are inserted into `ontime.stage_ontime`.
+- After the full target year is loaded, the loader runs `OPTIMIZE TABLE ... PARTITION <year> FINAL DEDUPLICATE` on the stage table.
+- This step removes only exact duplicate rows for the target year.
+- Month metadata in `.cache/meta/*.json` records the staged year row count before deduplication, after deduplication, and the number of exact duplicate rows removed.
 
 ## Existing-Table Analysis
 
