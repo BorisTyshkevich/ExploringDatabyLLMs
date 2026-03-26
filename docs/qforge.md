@@ -463,6 +463,38 @@ What `visual` does:
   - `answer.presentation.raw.md`
   - `visual.html`
 
+Manual visual generation in ChatGPT.com:
+
+1. First make sure the run already has up-to-date analysis artifacts.
+   - For staged manual runs, use `qforge review --run-dir <path>` first.
+   - If you only want report-only materialization, use `qforge process-presentation --run-dir <path>` first.
+2. Open `<run-dir>/prompt.visual.md`.
+   - This is the complete visual-generation prompt assembled by qforge from question metadata plus the saved SQL and visual grounding artifacts.
+3. Paste the full contents of `prompt.visual.md` into ChatGPT.com.
+4. Ask ChatGPT.com to return only the final HTML artifact.
+   - For normal `html` presentation targets, the response should be the full `visual.html` document.
+5. Save the returned HTML into `<run-dir>/visual.html`.
+6. If you want qforge's automated validation, run `qforge visual --run-dir <path>` instead of this manual path.
+
+Files required before a manual visual pass:
+
+- always:
+  - `prompt.visual.md`
+- produced by the earlier qforge materialization step:
+  - `visual_input.json`
+  - the primary saved SQL artifact:
+    - `query.sql` for `template_files`
+    - `queries/<id>.sql` for `multi_query`
+- for static visual mode:
+  - `result.json`
+
+Practical notes:
+
+- In the normal manual ChatGPT.com workflow, `prompt.visual.md` is the only file you need to paste into the external UI.
+- You do not need to separately paste `visual_input.json` or `query.sql` when `prompt.visual.md` is already current; qforge has already embedded the needed context into that prompt.
+- This manual path is most straightforward for `presentation_target: html`.
+- If a question uses `presentation_target: react`, prefer `qforge visual` because the automated path can handle source-artifact extraction and build steps.
+
 Report placeholder contract:
 
 - scalar placeholders:
@@ -706,6 +738,16 @@ Optionally follow with visual generation:
 
 ```bash
 ./scripts/qforge visual --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+```
+
+Manual visual generation in ChatGPT.com after materialization:
+
+```bash
+./scripts/qforge run -q q001 -r claude --manual -v
+./scripts/qforge review --run-dir 2026-03-15/q001_hops_per_day/claude/opus/run-004 -v
+# open 2026-03-15/q001_hops_per_day/claude/opus/run-004/prompt.visual.md
+# paste it into ChatGPT.com
+# save the returned HTML to 2026-03-15/q001_hops_per_day/claude/opus/run-004/visual.html
 ```
 
 Report-only materialization for an existing run:
