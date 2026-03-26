@@ -30,33 +30,34 @@ type RunMetrics struct {
 }
 
 type RunSummary struct {
-	RunDir             string          `json:"run_dir"`
-	RunID              string          `json:"run_id,omitempty"`
-	RunNumber          int             `json:"run_number,omitempty"`
-	QuestionID         string          `json:"question_id"`
-	QuestionSlug       string          `json:"question_slug"`
-	QuestionTitle      string          `json:"question_title"`
-	Dataset            string          `json:"dataset"`
-	Runner             string          `json:"runner"`
-	Model              string          `json:"model"`
-	Status             model.RunStatus `json:"status"`
-	Phases             model.RunPhases `json:"phases"`
-	StartedAt          time.Time       `json:"started_at"`
-	FinishedAt         time.Time       `json:"finished_at"`
-	DurationSec        int64           `json:"duration_sec"`
-	SQLGenMS           int64           `json:"sql_generation_provider_duration_ms,omitempty"`
-	VisualGenMS        int64           `json:"presentation_provider_duration_ms,omitempty"`
-	VisualBuildMS      int64           `json:"presentation_build_duration_ms,omitempty"`
-	PresentationTarget string          `json:"presentation_target,omitempty"`
-	ReviewVerdict      string          `json:"review_verdict,omitempty"`
-	QuerySHA256        string          `json:"query_sha256,omitempty"`
-	ResultRowCount     int             `json:"result_row_count"`
-	SyntheticRowCount  int             `json:"synthetic_row_count,omitempty"`
-	MultiQuery         bool            `json:"multi_query,omitempty"`
-	Columns            []string        `json:"columns,omitempty"`
-	Metrics            *RunMetrics     `json:"metrics,omitempty"`
-	Artifacts          ArtifactLinks   `json:"artifacts,omitempty"`
-	Warnings           []string        `json:"warnings,omitempty"`
+	RunDir                string          `json:"run_dir"`
+	RunID                 string          `json:"run_id,omitempty"`
+	RunNumber             int             `json:"run_number,omitempty"`
+	QuestionID            string          `json:"question_id"`
+	QuestionSlug          string          `json:"question_slug"`
+	QuestionTitle         string          `json:"question_title"`
+	Dataset               string          `json:"dataset"`
+	Runner                string          `json:"runner"`
+	Model                 string          `json:"model"`
+	Status                model.RunStatus `json:"status"`
+	Phases                model.RunPhases `json:"phases"`
+	StartedAt             time.Time       `json:"started_at"`
+	FinishedAt            time.Time       `json:"finished_at"`
+	DurationSec           int64           `json:"duration_sec"`
+	SQLGenMS              int64           `json:"sql_generation_provider_duration_ms,omitempty"`
+	VisualGenMS           int64           `json:"presentation_provider_duration_ms,omitempty"`
+	VisualBuildMS         int64           `json:"presentation_build_duration_ms,omitempty"`
+	PresentationTarget    string          `json:"presentation_target,omitempty"`
+	ReviewVerdict         string          `json:"review_verdict,omitempty"`
+	QuerySHA256           string          `json:"query_sha256,omitempty"`
+	ResultRowCount        int             `json:"result_row_count"`
+	SyntheticRowCount     int             `json:"synthetic_row_count,omitempty"`
+	MultiQuery            bool            `json:"multi_query,omitempty"`
+	VisualArtifactPresent bool            `json:"visual_artifact_present,omitempty"`
+	Columns               []string        `json:"columns,omitempty"`
+	Metrics               *RunMetrics     `json:"metrics,omitempty"`
+	Artifacts             ArtifactLinks   `json:"artifacts,omitempty"`
+	Warnings              []string        `json:"warnings,omitempty"`
 }
 
 type Report struct {
@@ -208,7 +209,12 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 		fmt.Sscanf(item.RunID, "run-%d", &item.RunNumber)
 	}
 	item.Artifacts = buildRunArtifactLinks(runsRoot, runDir)
+	item.VisualArtifactPresent = item.Artifacts.VisualHTML.LocalPath != ""
 	var warnings []string
+
+	if item.VisualArtifactPresent && (manifest.Phases.PresentationGeneration == model.PhaseStatusSkipped || manifest.Phases.PresentationRender == model.PhaseStatusSkipped) {
+		warnings = append(warnings, fmt.Sprintf("%s: visual.html exists even though manifest presentation phases are marked skipped", runID(item)))
+	}
 
 	resultPath := filepath.Join(runDir, "result.json")
 	resultBytes, err := os.ReadFile(resultPath)

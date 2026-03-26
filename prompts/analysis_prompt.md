@@ -61,6 +61,7 @@ Your job:
 - use `prompt.report.md` and `prompt.visual.md` when discussing prompt differences or prompt-alignment issues
 - describe SQL-shape differences only when supported by the actual `query.sql` files
 - cite `report.md` and `visual.html` artifacts when discussing presentation outputs
+- treat actual `visual.html` artifact existence as the source of truth for whether a visual is available; if manifest phases say presentation was skipped but `visual.html` exists, report that the visual artifact is present and note the mismatch instead of saying no visual was produced
 - prefer links to local artifacts instead of long pasted SQL
 - use only the published URLs provided above in the final Markdown for run artifacts; never emit absolute filesystem paths
 - for `report.md`, use the provided `md.html?file=...` URL

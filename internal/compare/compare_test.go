@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"qforge/internal/model"
+	"qforge/internal/runs"
 )
 
 func TestRenderMarkdownHighlightsSummaryAndWarnings(t *testing.T) {
@@ -78,16 +79,17 @@ func TestWriteOutputsWritesCompactJSON(t *testing.T) {
 		Day:         "2026-03-16",
 		Runs: []RunSummary{
 			{
-				RunDir:         "/tmp/run-001",
-				QuestionID:     "q004",
-				QuestionTitle:  "Worst origin airports by departure on-time performance",
-				Runner:         "claude",
-				Model:          "opus",
-				Status:         model.RunStatusOK,
-				StartedAt:      time.Unix(0, 0).UTC(),
-				FinishedAt:     time.Unix(1, 0).UTC(),
-				ResultRowCount: 25,
-				Columns:        []string{"OriginCode", "DepartureOtpPct"},
+				RunDir:                "/tmp/run-001",
+				QuestionID:            "q004",
+				QuestionTitle:         "Worst origin airports by departure on-time performance",
+				Runner:                "claude",
+				Model:                 "opus",
+				Status:                model.RunStatusOK,
+				StartedAt:             time.Unix(0, 0).UTC(),
+				FinishedAt:            time.Unix(1, 0).UTC(),
+				ResultRowCount:        25,
+				VisualArtifactPresent: true,
+				Columns:               []string{"OriginCode", "DepartureOtpPct"},
 			},
 		},
 	}
@@ -110,6 +112,58 @@ func TestWriteOutputsWritesCompactJSON(t *testing.T) {
 	}
 	if !strings.Contains(string(data), "\"columns\"") || !strings.Contains(string(data), "\"result_row_count\"") {
 		t.Fatalf("expected summary fields in compare json, got: %s", string(data))
+	}
+	if !strings.Contains(string(data), "\"visual_artifact_present\"") {
+		t.Fatalf("expected visual artifact presence in compare json, got: %s", string(data))
+	}
+}
+
+func TestSummarizeRunWarnsWhenVisualExistsButManifestSaysSkipped(t *testing.T) {
+	runsRoot := t.TempDir()
+	codeRoot := t.TempDir()
+	runDir := filepath.Join(runsRoot, "2026-03-26", "q001_hops_per_day", "codex", "gpt-5.4", "run-001")
+	if err := os.MkdirAll(runDir, 0o755); err != nil {
+		t.Fatalf("mkdir run dir: %v", err)
+	}
+	manifest := model.RunManifest{
+		QuestionID:    "q001",
+		QuestionSlug:  "q001_hops_per_day",
+		QuestionTitle: "Hops per day",
+		Dataset:       "ontime",
+		Runner:        "codex",
+		Model:         "gpt-5.4",
+		Status:        model.RunStatusOK,
+		StartedAt:     time.Unix(0, 0).UTC(),
+		FinishedAt:    time.Unix(1, 0).UTC(),
+		DurationSec:   1,
+		Phases: model.RunPhases{
+			PresentationGeneration: model.PhaseStatusSkipped,
+			PresentationRender:     model.PhaseStatusSkipped,
+		},
+		Artifacts: model.ArtifactPaths{
+			ManifestJSON: filepath.Join(runDir, "manifest.json"),
+		},
+	}
+	if err := runs.WriteManifest(filepath.Join(runDir, "manifest.json"), manifest); err != nil {
+		t.Fatalf("write manifest: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(runDir, "visual.html"), []byte("<html></html>"), 0o644); err != nil {
+		t.Fatalf("write visual.html: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(runDir, "result.json"), []byte(`{"columns":["c"],"row_count":1}`), 0o644); err != nil {
+		t.Fatalf("write result.json: %v", err)
+	}
+
+	got, warnings, err := summarizeRun(t.Context(), codeRoot, runsRoot, runDir, "", "")
+	if err != nil {
+		t.Fatalf("summarizeRun returned error: %v", err)
+	}
+	if !got.VisualArtifactPresent {
+		t.Fatalf("expected visual artifact to be present")
+	}
+	want := "codex/gpt-5.4/run-001: visual.html exists even though manifest presentation phases are marked skipped"
+	if strings.Join(warnings, "\n") == "" || !strings.Contains(strings.Join(warnings, "\n"), want) {
+		t.Fatalf("expected warning %q, got %v", want, warnings)
 	}
 }
 
