@@ -131,6 +131,10 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		t.Fatalf("mkdir prompts: %v", err)
 	}
 	template := strings.Join([]string{
+		"PROMPT_REPORT:",
+		"{{prompt_report_paths_md}}",
+		"PROMPT_VISUAL:",
+		"{{prompt_visual_paths_md}}",
 		"SQL:",
 		"{{query_sql_paths_md}}",
 		"REPORT:",
@@ -184,9 +188,14 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		if err := os.MkdirAll(runDir, 0o755); err != nil {
 			t.Fatalf("mkdir run dir: %v", err)
 		}
-		for _, name := range []string{"query.sql", "report.md", "review.md", "visual.html", "result.json"} {
+		for _, name := range []string{"prompt.report.md", "query.sql", "report.md", "review.md", "visual.html", "result.json"} {
 			if err := os.WriteFile(filepath.Join(runDir, name), []byte("x"), 0o644); err != nil {
 				t.Fatalf("write artifact %s: %v", name, err)
+			}
+		}
+		if runDir == report.Runs[0].RunDir {
+			if err := os.WriteFile(filepath.Join(runDir, "prompt.visual.md"), []byte("x"), 0o644); err != nil {
+				t.Fatalf("write prompt.visual.md: %v", err)
 			}
 		}
 		if err := os.MkdirAll(filepath.Join(runDir, "visual_src"), 0o755); err != nil {
@@ -205,6 +214,9 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 	}
 
 	for _, want := range []string{
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/prompt.report.md",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/prompt.report.md",
+		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/prompt.visual.md",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/report.md",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/review.md",
@@ -213,6 +225,8 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/visual.html",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freport.md",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freview.md",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Fprompt.report.md",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Fprompt.visual.md",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
 		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
 		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_src",
@@ -220,6 +234,17 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)
+		}
+	}
+	for _, unwanted := range []string{
+		"prompts/q003_delta_atl_departure_delay_hotspots/report_prompt.md",
+		"prompts/q003_delta_atl_departure_delay_hotspots/visual_prompt.md",
+		"## q003: Delta ATL departure delay hotspots",
+		"Fastest successful run:",
+		"gemini/gemini-3.1-pro-preview/run-001/prompt.visual.md",
+	} {
+		if strings.Contains(got, unwanted) {
+			t.Fatalf("expected prompt not to contain %q, got:\n%s", unwanted, got)
 		}
 	}
 }

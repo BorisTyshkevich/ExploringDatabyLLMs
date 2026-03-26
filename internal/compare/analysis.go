@@ -25,10 +25,8 @@ func BuildAnalysisPrompt(codeRoot, runsRoot string, question model.Question, rep
 		"compare_day":                report.Day,
 		"compare_json_path":          repoRelativePath(runsRoot, compareJSONPath),
 		"compare_json_url":           publishedBlobURL(publishedRelativePath(runsRoot, compareJSONPath)),
-		"question_prompt_path":       repoRelativePath(codeRoot, filepath.Join(question.Dir, "report_prompt.md")),
-		"question_prompt_url":        qforgeRepoURL(codeRoot, filepath.Join(question.Dir, "report_prompt.md")),
-		"visual_prompt_path":         optionalPath(codeRoot, filepath.Join(question.Dir, "visual_prompt.md")),
-		"visual_prompt_url":          optionalURL(codeRoot, filepath.Join(question.Dir, "visual_prompt.md")),
+		"prompt_report_paths_md":     bulletList(promptReportPaths(report.Runs)),
+		"prompt_visual_paths_md":     bulletList(promptVisualPaths(report.Runs)),
 		"run_dirs_md":                bulletList(repoRelativePaths(runsRoot, runDirs(report.Runs))),
 		"query_sql_paths_md":         bulletList(repoRelativePaths(runsRoot, querySQLPaths(report.Runs))),
 		"report_md_paths_md":         bulletList(repoRelativePaths(runsRoot, reportMDPaths(report.Runs))),
@@ -36,25 +34,8 @@ func BuildAnalysisPrompt(codeRoot, runsRoot string, question model.Question, rep
 		"visual_html_paths_md":       bulletList(repoRelativePaths(runsRoot, visualHTMLPaths(report.Runs))),
 		"result_json_paths_md":       bulletList(repoRelativePaths(runsRoot, resultJSONPaths(report.Runs))),
 		"published_run_artifacts_md": renderPublishedRunArtifacts(report.Runs),
-		"compare_summary_md":         renderMarkdown(report),
 	}
 	return prompts.RenderTemplate(string(data), values), nil
-}
-
-func optionalPath(repoRoot, path string) string {
-	if _, err := os.Stat(path); err == nil {
-		return repoRelativePath(repoRoot, path)
-	}
-	return "(not present)"
-}
-
-func optionalURL(repoRoot, path string) string {
-	if _, err := os.Stat(path); err == nil {
-		if url := qforgeRepoURL(repoRoot, path); url != "" {
-			return url
-		}
-	}
-	return "(not present)"
 }
 
 func repoRelativePaths(repoRoot string, values []string) []string {
@@ -103,6 +84,26 @@ func querySQLPaths(items []RunSummary) []string {
 		primaryPath := filepath.Join(item.RunDir, "queries", "main.sql")
 		if _, err := os.Stat(primaryPath); err == nil {
 			out = append(out, primaryPath)
+		}
+	}
+	return out
+}
+
+func promptReportPaths(items []RunSummary) []string {
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		if item.Artifacts.PromptReportMD.LocalPath != "" {
+			out = append(out, item.Artifacts.PromptReportMD.LocalPath)
+		}
+	}
+	return out
+}
+
+func promptVisualPaths(items []RunSummary) []string {
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		if item.Artifacts.PromptVisualMD.LocalPath != "" {
+			out = append(out, item.Artifacts.PromptVisualMD.LocalPath)
 		}
 	}
 	return out
@@ -197,6 +198,12 @@ func renderPublishedLinks(links ArtifactLinks) string {
 	if links.ReportMD.URL != "" {
 		parts = append(parts, fmt.Sprintf("report.md: %s", links.ReportMD.URL))
 	}
+	if links.PromptReportMD.URL != "" {
+		parts = append(parts, fmt.Sprintf("prompt.report.md: %s", links.PromptReportMD.URL))
+	}
+	if links.PromptVisualMD.URL != "" {
+		parts = append(parts, fmt.Sprintf("prompt.visual.md: %s", links.PromptVisualMD.URL))
+	}
 	if links.ReviewMD.URL != "" {
 		parts = append(parts, fmt.Sprintf("review.md: %s", links.ReviewMD.URL))
 	}
@@ -230,7 +237,7 @@ func existingLocalPaths(links ArtifactLinks) []string {
 			out = append(out, ref.LocalPath)
 		}
 	}
-	for _, ref := range []ArtifactRef{links.QuerySQL, links.ReportMD, links.ReviewMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
+	for _, ref := range []ArtifactRef{links.QuerySQL, links.PromptReportMD, links.PromptVisualMD, links.ReportMD, links.ReviewMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
 		if ref.LocalPath != "" {
 			if _, ok := seen[ref.LocalPath]; ok {
 				continue

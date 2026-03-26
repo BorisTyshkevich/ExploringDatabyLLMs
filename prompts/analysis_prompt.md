@@ -14,10 +14,12 @@ Primary structured compare artifact:
 - Local path: `{{compare_json_path}}`
 - Published URL: `{{compare_json_url}}`
 
-Question files:
+Exact run prompt artifacts:
 
-- Question prompt: `{{question_prompt_path}}` (`{{question_prompt_url}}`)
-- Visual prompt: `{{visual_prompt_path}}` (`{{visual_prompt_url}}`)
+- `prompt.report.md` files:
+{{prompt_report_paths_md}}
+- `prompt.visual.md` files:
+{{prompt_visual_paths_md}}
 
 Published run artifact links to use in the final Markdown:
 
@@ -47,18 +49,16 @@ Result JSON files:
 
 {{result_json_paths_md}}
 
-Deterministic compare summary:
-
-{{compare_summary_md}}
-
 Your job:
 
 - write one evidence-based Markdown report suitable for `compare_report.md`
 - use the real local artifacts above as the source of truth
+- treat every file listed above as a reference to inspect directly; do not assume its contents are embedded in this prompt
 - verify whether outputs actually differ before claiming they differ
 - quantify differences when they exist
 - mention performance differences only from verified query-log metrics
 - use `review.md` when discussing correctness, prompt-alignment issues, or known failures
+- use `prompt.report.md` and `prompt.visual.md` when discussing prompt differences or prompt-alignment issues
 - describe SQL-shape differences only when supported by the actual `query.sql` files
 - cite `report.md` and `visual.html` artifacts when discussing presentation outputs
 - prefer links to local artifacts instead of long pasted SQL

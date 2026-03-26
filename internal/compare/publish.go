@@ -12,7 +12,6 @@ const (
 	runsRepoGitHubBlobBase = "https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main"
 	runsRepoGitHubTreeBase = "https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main"
 	runsRepoPagesBase      = "https://boristyshkevich.github.io/ExploringDatabyLLMs-runs"
-	qforgeRepoGitHubBlob   = "https://github.com/boristyshkevich/ExploringDatabyLLMs/blob/main"
 )
 
 type ArtifactRef struct {
@@ -22,14 +21,16 @@ type ArtifactRef struct {
 }
 
 type ArtifactLinks struct {
-	QuerySQL     ArtifactRef   `json:"query_sql,omitempty"`
-	QuerySQLs    []ArtifactRef `json:"query_sqls,omitempty"`
-	ReportMD     ArtifactRef   `json:"report_md,omitempty"`
-	ReviewMD     ArtifactRef   `json:"review_md,omitempty"`
-	ResultJSON   ArtifactRef   `json:"result_json,omitempty"`
-	VisualHTML   ArtifactRef   `json:"visual_html,omitempty"`
-	VisualSource ArtifactRef   `json:"visual_source,omitempty"`
-	VisualBuild  ArtifactRef   `json:"visual_build,omitempty"`
+	PromptReportMD ArtifactRef   `json:"prompt_report_md,omitempty"`
+	PromptVisualMD ArtifactRef   `json:"prompt_visual_md,omitempty"`
+	QuerySQL       ArtifactRef   `json:"query_sql,omitempty"`
+	QuerySQLs      []ArtifactRef `json:"query_sqls,omitempty"`
+	ReportMD       ArtifactRef   `json:"report_md,omitempty"`
+	ReviewMD       ArtifactRef   `json:"review_md,omitempty"`
+	ResultJSON     ArtifactRef   `json:"result_json,omitempty"`
+	VisualHTML     ArtifactRef   `json:"visual_html,omitempty"`
+	VisualSource   ArtifactRef   `json:"visual_source,omitempty"`
+	VisualBuild    ArtifactRef   `json:"visual_build,omitempty"`
 }
 
 func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
@@ -39,14 +40,16 @@ func buildRunArtifactLinks(runsRoot, runDir string) ArtifactLinks {
 		querySQL = querySQLs[0]
 	}
 	return ArtifactLinks{
-		QuerySQL:     querySQL,
-		QuerySQLs:    querySQLs,
-		ReportMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
-		ReviewMD:     buildArtifactRef(runsRoot, filepath.Join(runDir, "review.md"), "md"),
-		ResultJSON:   buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
-		VisualHTML:   buildArtifactRef(runsRoot, filepath.Join(runDir, "visual.html"), "html"),
-		VisualSource: buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_src"), "dir"),
-		VisualBuild:  buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_build"), "dir"),
+		PromptReportMD: buildArtifactRef(runsRoot, filepath.Join(runDir, "prompt.report.md"), "md"),
+		PromptVisualMD: buildArtifactRef(runsRoot, filepath.Join(runDir, "prompt.visual.md"), "md"),
+		QuerySQL:       querySQL,
+		QuerySQLs:      querySQLs,
+		ReportMD:       buildArtifactRef(runsRoot, filepath.Join(runDir, "report.md"), "md"),
+		ReviewMD:       buildArtifactRef(runsRoot, filepath.Join(runDir, "review.md"), "md"),
+		ResultJSON:     buildArtifactRef(runsRoot, filepath.Join(runDir, "result.json"), "json"),
+		VisualHTML:     buildArtifactRef(runsRoot, filepath.Join(runDir, "visual.html"), "html"),
+		VisualSource:   buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_src"), "dir"),
+		VisualBuild:    buildArtifactRef(runsRoot, filepath.Join(runDir, "visual_build"), "dir"),
 	}
 }
 
@@ -113,14 +116,6 @@ func publishedRelativePath(repoRoot, path string) string {
 		return filepath.ToSlash(rel)
 	}
 	return repoRelativePath(repoRoot, path)
-}
-
-func qforgeRepoURL(repoRoot, path string) string {
-	rel := repoRelativePath(repoRoot, path)
-	if rel == "" || strings.HasPrefix(rel, "/") || strings.HasPrefix(rel, "..") {
-		return ""
-	}
-	return runsRepoJoin(qforgeRepoGitHubBlob, rel)
 }
 
 func publishedMarkdownURL(publishedPath string) string {
