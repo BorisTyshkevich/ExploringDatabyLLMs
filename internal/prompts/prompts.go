@@ -128,6 +128,14 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	contractPromptFile := commonReportMultiQueryPromptFile
+	if inputs.AnalysisMode == model.AnalysisModeTemplateFiles {
+		contractPromptFile = commonReportTemplatePromptFile
+	}
+	analysisContract, err := loadCommonPrompt(inputs.Question, contractPromptFile)
+	if err != nil {
+		return "", err
+	}
 	review, err := loadCommonPrompt(inputs.Question, commonReviewPromptFile)
 	if err != nil {
 		return "", err
@@ -137,7 +145,11 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 		"dataset_name":       strings.TrimSpace(inputs.Question.Meta.Dataset),
 		"question_prompt_md": questionPromptForAnalysis(inputs.Question),
 	}
-	sections := []string{RenderTemplate(common, values), RenderTemplate(review, values)}
+	sections := []string{
+		RenderTemplate(common, values),
+		RenderTemplate(analysisContract, values),
+		RenderTemplate(review, values),
+	}
 	sections = append(sections,
 		"Question-specific guidance:\n\n"+strings.TrimSpace(inputs.Question.Prompt),
 		"Generated report.md:\n\n```md\n"+strings.TrimSpace(inputs.ReportMarkdown)+"\n```",

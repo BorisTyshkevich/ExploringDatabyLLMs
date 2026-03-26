@@ -3,7 +3,7 @@ Find American Airlines' worst network-wide month for departure delays, then iden
 
 Analyze completed American Airlines flights by month across the full network. Find the single month that stands out as the worst overall for departure delays.
 
-Use the full available history unless the question explicitly asks for a narrower period. Do not invent a custom score for the peak month; identify it directly from the monthly delay metrics needed to answer the question.
+Use the most recent 5 years unless the question explicitly asks for a narrower or wider period. Do not invent a custom score for the peak month; identify it directly from the monthly delay metrics needed to answer the question.
 
 For the monthly view, quantify:
 

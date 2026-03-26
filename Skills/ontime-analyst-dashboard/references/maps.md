@@ -43,8 +43,8 @@ Typical map dashboards need:
 - Make markers clickable or hoverable
 - Do not place narrative cards, KPI summaries, or lead-itinerary copy as overlays on top of the map surface; keep that content in normal panels adjacent to or below the map
 - Check dataset-native coordinate and lookup tables first when the primary query lacks lat/lon
-- Coordinate enrichment queries are acceptable when they are explicit, user-visible, and tied to the map
-- Cache coordinate enrichment results and reuse them for selection changes instead of issuing new per-click queries
+- Coordinate lookup queries are acceptable when they are explicit, user-visible, and tied to the map
+- Cache coordinate lookup results and reuse them for selection changes instead of issuing new per-click queries
 - If the map card is cloned from a template, initialize Leaflet against a live scoped element reference, not a duplicated global `id` that may still exist inside the template
 - Prefer initializing Leaflet only after the map container is visible in layout; do not create the map while its parent region is hidden if delayed init is practical
 - If layout or visibility changes after map creation, call `invalidateSize()` after reveal and after major layout moves as a safety fallback
@@ -65,6 +65,6 @@ Typical map dashboards need:
 If coordinates are missing:
 
 - render KPIs, table, and supporting chart anyway
-- attempt an explicit enrichment query against dataset-native lookup tables from the allowed dataset scope before degrading
-- keep the map card visible and degrade the map state with a visible warning or placeholder message if enrichment is unavailable or fails
+- attempt an explicit lookup query against dataset-native lookup tables from the allowed dataset scope before degrading
+- keep the map card visible and degrade the map state with a visible warning or placeholder message if lookup is unavailable or fails
 - do not keep a slippy map only to place summary text on top of it

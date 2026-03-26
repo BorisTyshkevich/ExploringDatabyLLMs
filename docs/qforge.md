@@ -454,6 +454,7 @@ What `visual` does:
 - for static mode, also loads `result.json`
 - rebuilds the presentation prompt from question metadata and the saved artifacts
 - invokes the original provider again for `html`
+- allows the provider to author visual-only lookup queries directly into `visual.html`; those queries are self-verified in the visual pass and are not part of reviewed analysis artifacts
 - validates `visual.html` in two stages unless `--skip-visual-validation` is set:
   - contract validation against the shared visual rules
   - browser validation using `chromedp`

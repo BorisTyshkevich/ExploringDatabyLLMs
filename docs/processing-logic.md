@@ -20,6 +20,7 @@ This document describes the current end-to-end processing flow for `qforge`: wha
 3. visual phase
    - optional, controlled by `run --with-visual` or by `visual`
    - the provider receives the saved primary SQL artifact (`query.sql` or the selected `queries/<id>.sql`) plus a harness-generated visual input summary and generates only `visual.html`
+   - during this second pass, the provider may also author visual-only lookup queries directly into the page; those are not part of reviewed analysis artifacts
 
 The model never executes the final SQL. The harness always executes SQL and writes the canonical `result.json`.
 
@@ -155,6 +156,13 @@ The visual provider receives these saved artifacts as prompt context:
 - the saved primary SQL artifact (`query.sql` for single-query modes, or the selected `queries/<id>.sql` for `multi_query`)
 - `visual_input.json`
 - `result.json` in static mode only
+
+The visual pass may also create lookup queries that are:
+
+- authored only in the second pass
+- self-verified before shipping in `visual.html`
+- visible in the query ledger
+- not written back into `answer.raw.json`, `queries/*.sql`, or `review.md`
 
 The visual phase should treat:
 

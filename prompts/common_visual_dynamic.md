@@ -12,6 +12,9 @@
 - Keep one unified query ledger that records each execution with query id, role, effective date range, status, rows, and expandable SQL text.
 - Prefer an explicit SQL wrapping or parameter-insertion strategy for date predicates instead of brittle string replacement.
 - If a supporting query cannot be safely date-parameterized, keep it editable and manually runnable, and surface that limitation in the UI.
+- Saved supporting queries come from reviewed analysis artifacts; lookup queries are visual-only second-pass queries authored directly into the page for a concrete panel, lookup, or drill-down need.
+- A lookup query may depend on the currently selected primary-result context or current dashboard state when that dependency is explicit in the UI.
+- If a lookup query fails, degrade only the dependent panel, keep the primary analysis visible, and record the lookup failure in the ledger and visible status UI.
 - Before writing `visual.html`, self-verify every browser-side SQL statement you intend to ship, including primary, supporting, enrichment, drill-down, and lookup queries.
 - For each query, run a cheap live check against the real endpoint and schema first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both when that preserves the query shape.
 - Treat successful execution as mandatory. Fix any syntax, type, aggregate, join, or unknown-column errors in a loop until every shipped browser query runs successfully.

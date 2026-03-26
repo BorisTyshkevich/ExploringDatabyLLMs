@@ -201,6 +201,10 @@ func extractPromptSections(reportPrompt string) ([]model.QuestionSubquestion, er
 	return items, nil
 }
 
+func ExtractPromptSections(reportPrompt string) ([]model.QuestionSubquestion, error) {
+	return extractPromptSections(reportPrompt)
+}
+
 func requiresArtifact(required, name string) bool {
 	parts := strings.Split(required, ",")
 	for _, part := range parts {

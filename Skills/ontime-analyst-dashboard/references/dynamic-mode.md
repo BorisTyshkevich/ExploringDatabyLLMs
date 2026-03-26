@@ -1,7 +1,7 @@
 ## Dynamic mode 
 
 - The saved SQL runs in the browser as the primary query for the page
-- Additional browser queries are allowed only for explicit enrichment or drill-down
+- Additional browser queries are allowed only for explicit saved supporting panels, lookup queries, or drill-down
 - Do not embed the primary analytical dataset or examples as stati payloads 
 - Default analysis to the most recent 5 years unless the question explicitly asks for a different window
 
@@ -12,11 +12,12 @@
 - Provide a visible date-range selector with start and end controls
 - The primary SQL editor is the authoritative analytical query source for the page
 - If the page uses supporting queries, expose editable SQL controls for them too
+- Visual-only lookup queries may be authored directly into the page for a concrete panel or lookup need even though they are not part of reviewed analysis artifacts
 - The JWE/SQL control form must live in a real `<footer>` block at the very end of the page
 - That control block is a footer-style utility panel, not part of the hero or empty-state layout
 - After data loads, the control block must still remain at the bottom of the document, below the analytical content
 - Do not place the JWE/SQL controls inside the hero, KPI strip, or main analytical card grid
-- Provide a visible query ledger or provenance section that lists the primary query and any enrichment queries
+- Provide a visible query ledger or provenance section that lists the primary query, any saved supporting queries, and any lookup queries
 - Provide:
   - JWE token input field (allow to enter new and show locally stored as ***)
   - forget stored token button
@@ -48,7 +49,7 @@ use provided JSON data as an example that can be received by executing the SQL q
 12. Run through the same normalization pipeline as static mode
 13. Normalize temporal fields before UI formatting, grouping, filtering, or comparison logic
 14. Apply the selected date range through SQL reruns for the primary query and any supporting queries that support date filtering
-15. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
+15. If needed, run explicit supporting, lookup, or drill-down queries with a concrete purpose and record them in the query ledger
 16. Re-enable run buttons only after the active run has finished or failed
 17. Show content and render dashboard while keeping the control block at the bottom
 
@@ -67,14 +68,14 @@ use provided JSON data as an example that can be received by executing the SQL q
 - On malformed payload, report that `columns`/`rows` were not usable
 - Never print or echo the token in status messages
 - If the result set is empty, keep KPI/chart containers stable and show a clear warning panel instead of a broken dashboard
-- If an enrichment query fails, report the failed query in the ledger, explain which visual degraded, and continue rendering the rest of the page
+- If a lookup or enrichment query fails, report the failed query in the ledger, explain which visual degraded, and continue rendering the rest of the page
 - Surface empty, failed, and degraded states in visible page UI, not only in console output or logs
 - Keep primary-query failures separate from secondary-render failures; a component error must degrade that component instead of being reported as a primary-query failure
 - Never expose the token in status messages or visible UI text
 
 ## Query ledger contract
 
-- Every query (primary and enrichment) must appear in a single unified ledger
+- Every query (primary, saved supporting, and lookup) must appear in a single unified ledger
 - Each ledger entry must include: query id, label, role, effective date range, status, rows, and the full SQL text
 - SQL query text is hidden by default with a clickable row to expand/reveal
 - Use ▶ toggle icon to expand and show query text
@@ -88,6 +89,7 @@ use provided JSON data as an example that can be received by executing the SQL q
 - The embedded saved SQL is authoritative for the artifact; browser storage must not silently replace it.
 - Additional browser queries are allowed for enrichment or drill-down when they materially improve the visualization and remain within dataset policy.
 - Supporting queries that are shipped with the dashboard must be editable and individually executable.
+- Lookup queries are authored in the visual-only second pass and are not part of reviewed `answer.raw.json` artifacts.
 - When multiple shipped queries are present, provide a `Run all` path that reruns the date-compatible query set against the selected range.
 - Primary-query success must be enough to render the main dashboard shell and any visuals driven directly by the primary result set.
 - Enrichment and drill-down queries upgrade dependent visuals or details; they must not gate whether the dashboard shell renders at all.

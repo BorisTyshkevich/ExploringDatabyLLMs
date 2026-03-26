@@ -178,7 +178,7 @@ func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.
 	if !strings.Contains(got, "The saved SQL shown below is the primary section query for this page.") {
 		t.Fatalf("expected multi-query visual supplement, got: %s", got)
 	}
-	for _, want := range []string{"visible start/end date selector", "editable SQL controls for the primary query and every supporting query", "Run all", "effective date range"} {
+	for _, want := range []string{"visible start/end date selector", "editable SQL controls for the primary query and every supporting query", "Run all", "effective date range", "lookup query"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected multi-query visual prompt to contain %q, got: %s", want, got)
 		}
@@ -213,7 +213,7 @@ func TestBuildReviewPromptIncludesRunArtifacts(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildReviewPrompt returned error: %v", err)
 	}
-	for _, want := range []string{"Return the final review by writing `review.md`", "### main", "Generated report.md:", "`queries/main.sql`", "`queries/q1.sql`", "`results/main.json`", "`results/q1.json`"} {
+	for _, want := range []string{"Return the final review by writing `review.md`", "### main", "Generated report.md:", "`queries/main.sql`", "`queries/q1.sql`", "`results/main.json`", "`results/q1.json`", "most recent 5 years by default"} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected review prompt to contain %q, got: %s", want, got)
 		}
@@ -300,7 +300,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 }
 
-func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
+func TestBuildPresentationPromptQ001UsesLookupContract(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	question, err := questions.Resolve(repoRoot, "q001")
 	if err != nil {
@@ -324,8 +324,15 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 	if !strings.Contains(got, "*-analyst-dashboard") || !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected q001 prompt to reference dashboard and semantic skill guidance, got: %s", got)
 	}
-	if !strings.Contains(got, "airport-coordinate enrichment") {
-		t.Fatalf("expected q001 prompt to label map enrichment clearly, got: %s", got)
+	for _, want := range []string{
+		"### key connectors",
+		"airport-coordinate lookup",
+		"visual-only operational-stress lookup query",
+		"label that pane query as an operational-stress lookup",
+	} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected q001 prompt to contain %q, got: %s", want, got)
+		}
 	}
 	if !strings.Contains(got, "query ledger") {
 		t.Fatalf("expected q001 prompt to inherit ledger contract, got: %s", got)
@@ -334,10 +341,15 @@ func TestBuildPresentationPromptQ001UsesEnrichmentContract(t *testing.T) {
 		t.Fatalf("expected q001 prompt to require browser-side query verification, got: %s", got)
 	}
 	if !strings.Contains(got, "including primary, supporting, enrichment, drill-down, and lookup queries") {
-		t.Fatalf("expected q001 prompt to cover enrichment query verification explicitly, got: %s", got)
+		t.Fatalf("expected q001 prompt to cover lookup query verification explicitly, got: %s", got)
 	}
-	if !strings.Contains(got, "keep the map card visible with degraded-state messaging") {
-		t.Fatalf("expected q001 prompt to require degraded map state, got: %s", got)
+	for _, want := range []string{
+		"keep the map card visible with degraded-state messaging",
+		"keep the operational-stress pane visible with degraded-state messaging",
+	} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected q001 prompt to contain %q, got: %s", want, got)
+		}
 	}
 	if strings.Contains(got, "Dataset semantic layer:") {
 		t.Fatalf("did not expect semantic layer heading when using skill references, got: %s", got)

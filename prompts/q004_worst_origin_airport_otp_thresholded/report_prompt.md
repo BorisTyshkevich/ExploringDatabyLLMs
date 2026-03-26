@@ -1,7 +1,7 @@
 ### main
 Identify which origin airports have the worst departure on-time performance after excluding low-volume airports.
 
-Analyze completed departures at the origin-airport level across the full available history. Focus on airports with enough traffic to make the comparison meaningful, and rank the weakest performers by departure on-time performance.
+Analyze completed departures at the origin-airport level across the most recent 5 years unless the question explicitly asks for a different window. Focus on airports with enough traffic to make the comparison meaningful, and rank the weakest performers by departure on-time performance.
 
 You may apply a reasonable minimum-volume filter to remove noise, but do not invent a custom score or redefine on-time performance.
 

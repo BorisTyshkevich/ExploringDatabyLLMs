@@ -128,3 +128,17 @@ func TestLoadMultiQueryModeParsesPromptSectionsFromReportPrompt(t *testing.T) {
 		t.Fatalf("unexpected third section: %+v", question.Subquestions[2])
 	}
 }
+
+func TestResolveQ001NoLongerIncludesReviewedQ3Section(t *testing.T) {
+	repoRoot := filepath.Join("..", "..")
+	question, err := Resolve(repoRoot, "q001")
+	if err != nil {
+		t.Fatalf("Resolve returned error: %v", err)
+	}
+	if len(question.Subquestions) != 3 {
+		t.Fatalf("expected q001 to expose 3 reviewed sections, got %d", len(question.Subquestions))
+	}
+	if question.Subquestions[0].ID != "main" || question.Subquestions[1].ID != "q1" || question.Subquestions[2].ID != "q2" {
+		t.Fatalf("unexpected q001 reviewed sections: %+v", question.Subquestions)
+	}
+}

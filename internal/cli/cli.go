@@ -1906,6 +1906,10 @@ func processReview(ctx context.Context, opts processReviewOptions) error {
 	if !ok {
 		analysisMode = model.AnalysisModeTemplateFiles
 	}
+	question, err = overlayQuestionFromSavedPromptReport(question, manifest.Artifacts.PromptReportRaw, analysisMode)
+	if err != nil {
+		return err
+	}
 	manifest.AnalysisMode = string(analysisMode)
 	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
 	reviewRunner, reviewModel, err := resolveReviewRunnerModel(manifest, opts.ReviewRunner, opts.ReviewModel)
@@ -1960,6 +1964,42 @@ func processReview(ctx context.Context, opts processReviewOptions) error {
 		manifest.Status = model.RunStatusOK
 	}
 	return nil
+}
+
+func overlayQuestionFromSavedPromptReport(question model.Question, promptPath string, analysisMode model.AnalysisMode) (model.Question, error) {
+	data, err := os.ReadFile(promptPath)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return question, nil
+		}
+		return model.Question{}, fmt.Errorf("read saved prompt.report.md: %w", err)
+	}
+	guidance, ok := extractQuestionSpecificGuidance(string(data))
+	if !ok {
+		return question, nil
+	}
+	question.Prompt = guidance
+	if analysisMode == model.AnalysisModeMultiQuery {
+		subquestions, err := questions.ExtractPromptSections(guidance)
+		if err != nil {
+			return model.Question{}, fmt.Errorf("parse saved question guidance from prompt.report.md: %w", err)
+		}
+		question.Subquestions = subquestions
+	}
+	return question, nil
+}
+
+func extractQuestionSpecificGuidance(prompt string) (string, bool) {
+	const marker = "Question-specific guidance:"
+	idx := strings.Index(prompt, marker)
+	if idx < 0 {
+		return "", false
+	}
+	guidance := strings.TrimSpace(prompt[idx+len(marker):])
+	if guidance == "" {
+		return "", false
+	}
+	return guidance, true
 }
 
 type materializeExistingAnalysisOptions struct {

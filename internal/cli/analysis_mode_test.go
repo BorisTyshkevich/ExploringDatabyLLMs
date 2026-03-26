@@ -338,6 +338,9 @@ func TestRunReviewTemplateFilesStatusOutcomes(t *testing.T) {
 			if !strings.Contains(gotPrompt, "Saved query.sql:") || !strings.Contains(gotPrompt, "Saved result.json:") {
 				t.Fatalf("expected template_files review prompt to include saved SQL/result artifacts, got: %s", gotPrompt)
 			}
+			if !strings.Contains(gotPrompt, "most recent 5 years by default") {
+				t.Fatalf("expected template_files review prompt to include shared analysis contract, got: %s", gotPrompt)
+			}
 			manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
 			if err != nil {
 				t.Fatalf("read manifest: %v", err)
@@ -391,6 +394,9 @@ func TestRunReviewMultiQueryUsesSectionFiles(t *testing.T) {
 	if !strings.Contains(gotPrompt, "queries/main.sql") || !strings.Contains(gotPrompt, "results/main.json") {
 		t.Fatalf("expected multi_query review prompt to include section file paths, got: %s", gotPrompt)
 	}
+	if !strings.Contains(gotPrompt, "most recent 5 years by default") {
+		t.Fatalf("expected multi_query review prompt to include shared analysis contract, got: %s", gotPrompt)
+	}
 	manifest, err := runs.ReadManifest(filepath.Join(runDir, "manifest.json"))
 	if err != nil {
 		t.Fatalf("read manifest: %v", err)
@@ -400,6 +406,45 @@ func TestRunReviewMultiQueryUsesSectionFiles(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(runDir, "visual.html")); !os.IsNotExist(err) {
 		t.Fatalf("did not expect visual.html from review, err=%v", err)
+	}
+}
+
+func TestRunReviewUsesSavedPromptReportWhenQuestionShapeChanged(t *testing.T) {
+	repoRoot := t.TempDir()
+	server := newExecuteQueryServer()
+	defer server.Close()
+	writeTestQuestionRepo(t, repoRoot, "multi_query")
+	writeFakeReviewProvider(t, repoRoot, "PASS")
+	t.Setenv("QFORGE_CODE_ROOT", repoRoot)
+	t.Setenv("QFORGE_RUN_ROOT", repoRoot)
+
+	if err := os.WriteFile(filepath.Join(repoRoot, "prompts", "q901_test_question", "report_prompt.md"), []byte("### main\nCurrent main\n\n### q1\nCurrent q1\n"), 0o644); err != nil {
+		t.Fatalf("write current report_prompt.md: %v", err)
+	}
+
+	runDir := filepath.Join(repoRoot, "2026-03-21", "q901_test_question", "claude", "opus", "run-001")
+	if err := os.MkdirAll(runDir, 0o755); err != nil {
+		t.Fatalf("mkdir runDir: %v", err)
+	}
+	answer := `{"subquestions":[{"id":"main","subquestion":"Old main","answer_markdown":"Answer","sql":"SELECT 2"},{"id":"q1","subquestion":"Old q1","answer_markdown":"Answer","sql":"SELECT 3"},{"id":"q2","subquestion":"Old q2","answer_markdown":"Answer","sql":"SELECT 4"}]}`
+	if err := os.WriteFile(filepath.Join(runDir, "answer.raw.json"), []byte(answer), 0o644); err != nil {
+		t.Fatalf("write answer.raw.json: %v", err)
+	}
+	savedPrompt := "Question-specific guidance:\n\n### main\nOld main\n\n### q1\nOld q1\n\n### q2\nOld q2\n"
+	if err := os.WriteFile(filepath.Join(runDir, "prompt.report.md"), []byte(savedPrompt), 0o644); err != nil {
+		t.Fatalf("write prompt.report.md: %v", err)
+	}
+
+	if err := Run(context.Background(), []string{"review", "--run-dir", runDir, "--cli-bin", filepath.Join(repoRoot, "fake-review.sh")}); err != nil {
+		t.Fatalf("Run(review) returned error: %v", err)
+	}
+	promptBytes, err := os.ReadFile(filepath.Join(runDir, "prompt.review.md"))
+	if err != nil {
+		t.Fatalf("read prompt.review.md: %v", err)
+	}
+	gotPrompt := string(promptBytes)
+	if !strings.Contains(gotPrompt, "### q2") {
+		t.Fatalf("expected review prompt to use saved prompt.report.md question sections, got: %s", gotPrompt)
 	}
 }
 

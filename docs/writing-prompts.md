@@ -88,7 +88,7 @@ Models drift when the prompt leaves key business definitions open.
 For report prompts, explicitly constrain:
 
 - analysis window
-  - use full history unless the question asks for a narrower period
+  - use the most recent 5 years unless the question asks for a different period
 - business definition
   - do not redefine “hotspot”, “leadership”, “persistent”, or similar terms unless asked
 - ranking logic
@@ -98,7 +98,7 @@ For report prompts, explicitly constrain:
 
 This is usually enough:
 
-- “Use the full available history unless the question explicitly asks otherwise.”
+- “Use the most recent 5 years unless the question explicitly asks otherwise.”
 - “Do not invent a custom score or narrower time window.”
 - “Exclude low-volume noise before identifying leaders.”
 
@@ -153,9 +153,10 @@ So the question-specific visual prompt should focus on:
 
 - which query is the primary dashboard view
 - which supporting queries matter
+- whether the page needs a visual-only lookup query that will be authored in the second pass
 - which charts or panels should exist
 - what narrative should anchor the page
-- what degraded behavior is acceptable if a supporting query fails
+- what degraded behavior is acceptable if a supporting or lookup query fails
 
 ### Good pattern
 
@@ -163,6 +164,7 @@ Use wording like:
 
 - “Use `worst_hotspot` as the primary saved SQL”
 - “Use `persistence` as a supporting query for the monthly trend panel”
+- “Use a visual-only lookup query for the map coordinate panel”
 - “Show supporting queries in the ledger when used”
 - “The dashboard does not need to mirror `report.md`”
 - “Use the prose answers as framing, and fetched query results for charts and tables”

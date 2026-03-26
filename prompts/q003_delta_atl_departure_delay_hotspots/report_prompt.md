@@ -1,7 +1,7 @@
 ### main
 Find the Delta departure-delay hotspots out of ATL that appear to be persistently problematic, not just noisy one-off periods.
 
-Analyze completed Delta departures from ATL by destination and departure time block across the full available history. Focus on combinations that have enough flight volume to be credible and enough repeated monthly presence to count as sustained hotspots.
+Analyze completed Delta departures from ATL by destination and departure time block across the most recent 5 years unless the question explicitly asks for a different window. Focus on combinations that have enough flight volume to be credible and enough repeated monthly presence to count as sustained hotspots.
 
 You may apply reasonable minimum-volume filters to remove noise, but do not invent a custom hotspot score or a narrower analysis window.
 
