@@ -3,12 +3,15 @@
 - The saved SQL runs in the browser as the primary query for the page
 - Additional browser queries are allowed only for explicit enrichment or drill-down
 - Do not embed the primary analytical dataset or examples as stati payloads 
+- Default analysis to the most recent 5 years unless the question explicitly asks for a different window
 
 ## Required UI
 
 - Header remains visible before data loads
 - Main dashboard content hidden before successful fetch
-- The saved SQL textarea is the primary analytical query source for the page
+- Provide a visible date-range selector with start and end controls
+- The primary SQL editor is the authoritative analytical query source for the page
+- If the page uses supporting queries, expose editable SQL controls for them too
 - The JWE/SQL control form must live in a real `<footer>` block at the very end of the page
 - That control block is a footer-style utility panel, not part of the hero or empty-state layout
 - After data loads, the control block must still remain at the bottom of the document, below the analytical content
@@ -17,8 +20,11 @@
 - Provide:
   - JWE token input field (allow to enter new and show locally stored as ***)
   - forget stored token button
-  - SQL textarea
-  - fetch button
+  - start date input
+  - end date input
+  - at least one SQL editor
+  - per-query run button
+  - `Run all` button when multiple queries are present
   - status text
   - empty-state hint
 
@@ -34,16 +40,17 @@ use provided JSON data as an example that can be received by executing the SQL q
 4. Read token and SQL from inputs
 5. Validate both are non-empty
 6. Persist the JWE token to `localStorage` after every successful token entry so subsequent dashboards can reuse it
-7. Call endpoint with `fetch` using the saved SQL shown in the textarea
+7. Call endpoint with `fetch` using the current SQL shown in the active query editor
 8. If `response.ok` is false, read the response text and surface that API error directly instead of trying to parse it as JSON first
 9. Parse JSON payload with `columns` and `rows` only for successful responses
 10. Treat empty results as valid when `count = 0`, even if `rows` is returned as `null`
 11. Convert row arrays into objects
 12. Run through the same normalization pipeline as static mode
 13. Normalize temporal fields before UI formatting, grouping, filtering, or comparison logic
-14. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
-15. Re-enable the fetch button only after the active run has finished or failed
-16. Show content and render dashboard while keeping the control block at the bottom
+14. Apply the selected date range through SQL reruns for the primary query and any supporting queries that support date filtering
+15. If needed, run explicit enrichment or drill-down queries with a concrete purpose and record them in the query ledger
+16. Re-enable run buttons only after the active run has finished or failed
+17. Show content and render dashboard while keeping the control block at the bottom
 
 ## Response-shape contract
 
@@ -68,7 +75,7 @@ use provided JSON data as an example that can be received by executing the SQL q
 ## Query ledger contract
 
 - Every query (primary and enrichment) must appear in a single unified ledger
-- Each ledger entry must include: label, role, status, rows, and the full SQL text
+- Each ledger entry must include: query id, label, role, effective date range, status, rows, and the full SQL text
 - SQL query text is hidden by default with a clickable row to expand/reveal
 - Use ▶ toggle icon to expand and show query text
 - Use ▼ toggle icon to collapse query text
@@ -80,10 +87,13 @@ use provided JSON data as an example that can be received by executing the SQL q
 - Dynamic dashboards default to one primary query: the saved SQL prefilled into the page.
 - The embedded saved SQL is authoritative for the artifact; browser storage must not silently replace it.
 - Additional browser queries are allowed for enrichment or drill-down when they materially improve the visualization and remain within dataset policy.
+- Supporting queries that are shipped with the dashboard must be editable and individually executable.
+- When multiple shipped queries are present, provide a `Run all` path that reruns the date-compatible query set against the selected range.
 - Primary-query success must be enough to render the main dashboard shell and any visuals driven directly by the primary result set.
 - Enrichment and drill-down queries upgrade dependent visuals or details; they must not gate whether the dashboard shell renders at all.
 - If a secondary query fails, degrade only the dependent component, keep the primary-query analysis visible, and record the failure in both status text and the query ledger.
 - Do not generate hidden follow-up SQL or alternate result shapes without surfacing them to the user.
+- Prefer explicit query templates, wrappers, or parameters for date filtering instead of brittle SQL string surgery.
 - Prefer dataset-native dimensions and lookup tables rather than inferred or geocoded data when enrichment is needed.
 - Prefer `data-role` selectors or stored element references for card internals so map/chart initialization always targets the rendered node rather than inert template content.
 - For Leaflet maps, prefer delayed initialization after the dashboard or map card becomes visible. If the map must be created before final layout settles, call `invalidateSize()` after reveal.

@@ -38,6 +38,9 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	if !strings.Contains(got, "Write one JSON object to `answer.raw.json` file with shape:") || !strings.Contains(got, "Do not emit result rows") || !strings.Contains(got, "\"id\"") {
 		t.Fatalf("expected strict answer.raw.json file rules, got: %s", got)
 	}
+	if !strings.Contains(got, "most recent 5 years by default") {
+		t.Fatalf("expected shared 5-year default in analysis prompt, got: %s", got)
+	}
 	if !strings.Contains(got, "Read every top-level `###` section") || !strings.Contains(got, "Return one object in `subquestions` for every parsed section id") {
 		t.Fatalf("expected section-id guidance, got: %s", got)
 	}
@@ -65,6 +68,9 @@ func TestBuildSQLPromptTemplateModeUsesDirectFileContract(t *testing.T) {
 	if !strings.Contains(got, "Write the final verified SQL to `query.sql`.") {
 		t.Fatalf("expected query.sql contract, got: %s", got)
 	}
+	if !strings.Contains(got, "most recent 5 years by default") {
+		t.Fatalf("expected shared 5-year default in template mode prompt, got: %s", got)
+	}
 	if !strings.Contains(got, "Write the Markdown report template to `report.template.md`.") {
 		t.Fatalf("expected report.template.md contract, got: %s", got)
 	}
@@ -73,6 +79,24 @@ func TestBuildSQLPromptTemplateModeUsesDirectFileContract(t *testing.T) {
 	}
 	if !strings.Contains(got, "Allowed built-in placeholders:") || !strings.Contains(got, "Do not invent any placeholder outside the built-in list.") {
 		t.Fatalf("expected placeholder constraints in template mode, got: %s", got)
+	}
+}
+
+func TestBuildSQLPromptPreservesExplicitQuestionTimeWindowGuidance(t *testing.T) {
+	question := model.Question{
+		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
+		Prompt: "Analyze only calendar year 2024.",
+	}
+	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
+	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeTemplateFiles)
+	if err != nil {
+		t.Fatalf("BuildSQLPrompt returned error: %v", err)
+	}
+	if !strings.Contains(got, "most recent 5 years by default") {
+		t.Fatalf("expected shared default window guidance, got: %s", got)
+	}
+	if !strings.Contains(got, "Analyze only calendar year 2024.") {
+		t.Fatalf("expected explicit question time window guidance to be preserved, got: %s", got)
 	}
 }
 
@@ -153,6 +177,11 @@ func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.
 	}
 	if !strings.Contains(got, "The saved SQL shown below is the primary section query for this page.") {
 		t.Fatalf("expected multi-query visual supplement, got: %s", got)
+	}
+	for _, want := range []string{"visible start/end date selector", "editable SQL controls for the primary query and every supporting query", "Run all", "effective date range"} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected multi-query visual prompt to contain %q, got: %s", want, got)
+		}
 	}
 	if !strings.Contains(got, "Use this endpoint template for every browser query") || !strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
 		t.Fatalf("expected dynamic-mode contract in multi-query visual prompt, got: %s", got)
@@ -239,6 +268,11 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 	if !strings.Contains(got, "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...") || !strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
 		t.Fatalf("expected dynamic endpoint/auth contract, got: %s", got)
+	}
+	for _, want := range []string{"visible start/end date selector", "Drive the date selector through SQL reruns", "editable SQL controls for the primary query", "Run all"} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected dynamic visual contract to contain %q, got: %s", want, got)
+		}
 	}
 	if !strings.Contains(got, "Do not embed the primary analytical dataset") {
 		t.Fatalf("expected no-embedded-dataset contract, got: %s", got)

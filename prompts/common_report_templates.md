@@ -41,7 +41,7 @@ Rules:
 - If the question-specific prompt asks multiple business questions, answer each of them explicitly in prose.
 - Do not invent a custom scoring formula, analysis window, ranking rule, or business definition unless the question-specific prompt explicitly asks for it.
 - If a reasonable guardrail or assumption is necessary to remove noise, keep it minimal and make it consistent with the question's business framing.
-- Use the full available dataset history unless the question-specific prompt explicitly asks for a narrower time window.
+- Use the most recent 5 years by default unless the question-specific prompt explicitly asks for a narrower or wider time window.
 - Do not leave report prose as generic placeholders such as "top-ranked hotspot" or "add one takeaway" when your verified query result lets you name the actual entity or finding.
 - When the question asks for the top item, a transition, a worst month, or a worst hotspot, name it directly in the report using the verified result.
 - Allowed built-in placeholders: {{report_placeholders}}

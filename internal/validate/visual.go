@@ -153,14 +153,31 @@ func checkFooterControls(html string, required bool, result *VisualValidationRes
 		(strings.Contains(footerHTML, "token") && strings.Contains(footerHTML, "<input"))
 	hasSQLTextarea := strings.Contains(footerHTML, "<textarea") &&
 		(strings.Contains(footerHTML, "sql") || strings.Contains(footerHTML, "query"))
+	hasDateInput := strings.Count(footerHTML, `type="date"`) >= 2 ||
+		(strings.Contains(footerHTML, "start date") && strings.Contains(footerHTML, "end date") && strings.Contains(footerHTML, "<input"))
+	hasRunButton := strings.Contains(footerHTML, ">run<") ||
+		strings.Contains(footerHTML, ">run all<") ||
+		strings.Contains(footerHTML, ">fetch<") ||
+		strings.Contains(footerHTML, ">execute<") ||
+		strings.Contains(footerHTML, `value="run"`) ||
+		strings.Contains(footerHTML, `value="run all"`) ||
+		strings.Contains(footerHTML, `value="fetch"`)
 
 	if !hasTokenInput {
 		result.Valid = false
 		result.Errors = append(result.Errors, "missing token input control in footer")
 	}
+	if !hasDateInput {
+		result.Valid = false
+		result.Errors = append(result.Errors, "missing date selector controls in footer")
+	}
 	if !hasSQLTextarea {
 		result.Valid = false
 		result.Errors = append(result.Errors, "missing SQL textarea control in footer")
+	}
+	if !hasRunButton {
+		result.Valid = false
+		result.Errors = append(result.Errors, "missing query run control in footer")
 	}
 }
 

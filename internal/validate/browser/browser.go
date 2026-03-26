@@ -20,7 +20,7 @@ import (
 
 const (
 	defaultLoadTimeout      = 20 * time.Second
-	defaultLiveFetchTimeout = 30 * time.Second
+	defaultLiveFetchTimeout = 200 * time.Second
 	defaultRequestMatch     = "/openapi/execute_query"
 )
 
@@ -54,6 +54,7 @@ type controlsState struct {
 	HasFooter      bool     `json:"hasFooter"`
 	HasLedger      bool     `json:"hasLedger"`
 	HasTokenInput  bool     `json:"hasTokenInput"`
+	HasDateInput   bool     `json:"hasDateInput"`
 	HasTextarea    bool     `json:"hasTextarea"`
 	HasFetchButton bool     `json:"hasFetchButton"`
 	HasStatus      bool     `json:"hasStatus"`
@@ -124,15 +125,14 @@ func Validate(ctx context.Context, opts Options) Result {
 	}
 	tr.attach(browserCtx)
 
-	loadCtx, cancelLoad := context.WithTimeout(browserCtx, loadTimeout)
-	defer cancelLoad()
-	if err := chromedp.Run(loadCtx,
+	err = runWithTimeout(browserCtx, loadTimeout,
 		network.Enable(),
 		runtime.Enable(),
 		log.Enable(),
 		chromedp.Navigate(targetURL),
 		chromedp.WaitReady("body", chromedp.ByQuery),
-	); err != nil {
+	)
+	if err != nil {
 		result.Valid = false
 		result.Errors = append(result.Errors, classifyError("page_load", err))
 		return result
@@ -154,6 +154,11 @@ func Validate(ctx context.Context, opts Options) Result {
 		if len(controls.Missing) > 0 {
 			result.Valid = false
 			result.Errors = append(result.Errors, "browser validation missing required controls: "+strings.Join(controls.Missing, ", "))
+		}
+		if err := waitForInteractiveControls(browserCtx, loadTimeout); err != nil {
+			result.Valid = false
+			result.Errors = append(result.Errors, classifyError("control_ready", err))
+			return result
 		}
 	}
 
@@ -274,6 +279,22 @@ func classifyError(stage string, err error) string {
 		return fmt.Sprintf("%s timeout: %s", stage, msg)
 	default:
 		return fmt.Sprintf("%s failed: %s", stage, msg)
+	}
+}
+
+func runWithTimeout(ctx context.Context, timeout time.Duration, actions ...chromedp.Action) error {
+	if timeout <= 0 {
+		return chromedp.Run(ctx, actions...)
+	}
+	errCh := make(chan error, 1)
+	go func() {
+		errCh <- chromedp.Run(ctx, actions...)
+	}()
+	select {
+	case err := <-errCh:
+		return err
+	case <-time.After(timeout):
+		return context.DeadlineExceeded
 	}
 }
 
@@ -458,6 +479,33 @@ func discoverControls(ctx context.Context) (controlsState, error) {
 	return state, nil
 }
 
+func waitForInteractiveControls(ctx context.Context, timeout time.Duration) error {
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		var ready bool
+		if err := chromedp.Run(ctx, chromedp.Evaluate(`(() => {
+			const footer = document.querySelector('footer') || document.querySelector('.footer-controls') || document.querySelector('[data-role="controls"]');
+			const scope = footer || document;
+			const input = scope.querySelector('input[type="password"]') || document.querySelector('input[type="password"]');
+			const dateInputs = Array.from(scope.querySelectorAll('input[type="date"]'));
+			const textarea = scope.querySelector('textarea') || document.querySelector('textarea');
+			const buttons = Array.from(scope.querySelectorAll('button,input[type="button"],input[type="submit"]'));
+			const fetchButton = buttons.find((btn) => /fetch|run|execute|load|query|refresh|save/i.test([btn.innerText, btn.value, btn.id, btn.className].join(' ')));
+			return Boolean(input && dateInputs.length >= 2 && textarea && textarea.value.trim().length > 0 && fetchButton);
+		})()`, &ready)); err != nil {
+			return err
+		}
+		if ready {
+			return nil
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return context.DeadlineExceeded
+}
+
 func collectPageState(ctx context.Context) (pageState, error) {
 	var state pageState
 	if err := chromedp.Run(ctx, chromedp.Evaluate(collectPageStateJS, &state)); err != nil {
@@ -467,7 +515,20 @@ func collectPageState(ctx context.Context) (pageState, error) {
 }
 
 func setTokenAndClick(ctx context.Context, token string) error {
-	return chromedp.Run(ctx, chromedp.Evaluate(setTokenAndClickJS(token), nil))
+	if err := chromedp.Run(ctx, chromedp.Evaluate(markInteractiveControlsJS, nil)); err != nil {
+		return err
+	}
+	return chromedp.Run(ctx,
+		chromedp.SetValue(`[data-qforge-token="1"]`, token, chromedp.ByQuery),
+		chromedp.Evaluate(`(() => {
+			const input = document.querySelector('[data-qforge-token="1"]');
+			if (!input) throw new Error('missing marked token input');
+			input.dispatchEvent(new Event('input', {bubbles: true}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
+			return true;
+		})()`, nil),
+		chromedp.Click(`[data-qforge-fetch="1"]`, chromedp.ByQuery),
+	)
 }
 
 func discoverControlsJSFunc() string {
@@ -476,6 +537,7 @@ func discoverControlsJSFunc() string {
 		const footer = document.querySelector('footer') || document.querySelector('.footer-controls') || document.querySelector('[data-role="controls"]');
 		const scope = footer || document;
 		const input = scope.querySelector('input[type="password"]') || document.querySelector('input[type="password"]');
+		const dateInputs = Array.from(scope.querySelectorAll('input[type="date"]'));
 		const textarea = scope.querySelector('textarea') || document.querySelector('textarea');
 		const buttons = Array.from(scope.querySelectorAll('button,input[type="button"],input[type="submit"]'));
 		const fetchButton = buttons.find((btn) => /fetch|run|execute|load|query|refresh|save/i.test([btn.innerText, btn.value, btn.id, btn.className].join(' ')));
@@ -485,6 +547,7 @@ func discoverControlsJSFunc() string {
 		if (!footer) missing.push('footer control block');
 		if (!ledger) missing.push('query ledger');
 		if (!input) missing.push('password token input');
+		if (dateInputs.length < 2) missing.push('date range selector');
 		if (!textarea) missing.push('SQL textarea');
 		if (!fetchButton) missing.push('fetch action button');
 		if (!status) missing.push('status text');
@@ -492,6 +555,7 @@ func discoverControlsJSFunc() string {
 			hasFooter: Boolean(footer),
 			hasLedger: Boolean(ledger),
 			hasTokenInput: Boolean(input),
+			hasDateInput: dateInputs.length >= 2,
 			hasTextarea: Boolean(textarea),
 			hasFetchButton: Boolean(fetchButton),
 			hasStatus: Boolean(status),
@@ -571,22 +635,19 @@ func collectPageStateJSFunc() string {
 
 var collectPageStateJS = collectPageStateJSFunc()
 
-func setTokenAndClickJS(token string) string {
-	return fmt.Sprintf(`(() => {
+func markInteractiveControlsJSFunc() string {
+	return `(() => {
 		const footer = document.querySelector('footer') || document.querySelector('.footer-controls') || document.querySelector('[data-role="controls"]');
 		const scope = footer || document;
 		const input = scope.querySelector('input[type="password"]') || document.querySelector('input[type="password"]');
-		const textarea = scope.querySelector('textarea') || document.querySelector('textarea');
 		const buttons = Array.from(scope.querySelectorAll('button,input[type="button"],input[type="submit"]'));
 		const fetchButton = buttons.find((btn) => /fetch|run|execute|load|query|refresh|save/i.test([btn.innerText, btn.value, btn.id, btn.className].join(' ')));
 		if (!input) throw new Error('missing password token input');
-		if (!textarea) throw new Error('missing SQL textarea');
 		if (!fetchButton) throw new Error('missing fetch action button');
-		input.focus();
-		input.value = %q;
-		input.dispatchEvent(new Event('input', {bubbles: true}));
-		input.dispatchEvent(new Event('change', {bubbles: true}));
-		fetchButton.click();
+		input.setAttribute('data-qforge-token', '1');
+		fetchButton.setAttribute('data-qforge-fetch', '1');
 		return true;
-	})()`, token)
+	})()`
 }
+
+var markInteractiveControlsJS = markInteractiveControlsJSFunc()

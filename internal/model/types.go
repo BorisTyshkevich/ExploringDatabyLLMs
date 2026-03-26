@@ -190,6 +190,8 @@ type QueryResultSummary struct {
 	Subquestion    string         `json:"subquestion"`
 	AnswerMarkdown string         `json:"answer_markdown"`
 	SQL            string         `json:"sql"`
+	IsPrimary      bool           `json:"is_primary,omitempty"`
+	DateFieldHint  string         `json:"date_field_hint,omitempty"`
 	RowCount       int            `json:"row_count"`
 	ResultColumns  []string       `json:"result_columns"`
 	FirstRow       map[string]any `json:"first_row,omitempty"`

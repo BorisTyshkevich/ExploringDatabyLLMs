@@ -35,7 +35,10 @@ func TestValidateVisualHTML_DynamicValidHTML(t *testing.T) {
     </div>
     <footer>
         <input type="password" id="jwe-token" placeholder="JWE Token">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT * FROM flights</textarea>
+        <button type="button">Run all</button>
     </footer>
     <script>
         const key = 'OnTimeAnalystDashboard::auth::jwe';
@@ -64,7 +67,10 @@ func TestValidateVisualHTML_DynamicMissingLedgerFails(t *testing.T) {
     <main>dashboard</main>
     <footer>
         <input type="password">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
     </footer>
     <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
 </body>
@@ -87,7 +93,10 @@ func TestValidateVisualHTML_DynamicMissingLocalStorageKeyFails(t *testing.T) {
     <div id="query-ledger"></div>
     <footer>
         <input type="password">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
     </footer>
 </body>
 </html>`
@@ -118,6 +127,30 @@ func TestValidateVisualHTML_DynamicMissingFooterControlsFail(t *testing.T) {
 	assertContains(t, result.Errors, "missing footer control block")
 }
 
+func TestValidateVisualHTML_DynamicMissingDateSelectorFails(t *testing.T) {
+	html := `<!DOCTYPE html>
+<html>
+<head>
+    <style>:root { --navy: #0e3a52; --sky: #3c88b5; --teal: #1f8a70; --amber: #d48a1f; }</style>
+</head>
+<body>
+    <div id="query-ledger"></div>
+    <footer>
+        <input type="password">
+        <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
+    </footer>
+    <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
+</body>
+</html>`
+
+	result := ValidateVisualHTML(html, "dynamic", "html_timeseries")
+	if result.Valid {
+		t.Fatal("expected missing date selector to fail validation")
+	}
+	assertContains(t, result.Errors, "missing date selector")
+}
+
 func TestValidateVisualHTML_DynamicMissingLeafletWithMapFails(t *testing.T) {
 	html := `<!DOCTYPE html>
 <html>
@@ -129,7 +162,10 @@ func TestValidateVisualHTML_DynamicMissingLeafletWithMapFails(t *testing.T) {
     <div id="map"></div>
     <footer>
         <input type="password">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
     </footer>
     <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe'); L.map('map');</script>
 </body>
@@ -152,7 +188,10 @@ func TestValidateVisualHTML_DynamicEmbeddedTokenFails(t *testing.T) {
     <div id="query-ledger"></div>
     <footer>
         <input type="password">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
     </footer>
     <script>
         const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U";
@@ -180,7 +219,10 @@ func TestValidateVisualHTML_DynamicWarningsRemainAdvisory(t *testing.T) {
     </div>
     <footer>
         <input type="password">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
     </footer>
     <script>localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');</script>
 </body>
@@ -206,7 +248,10 @@ func TestValidateVisualHTML_DynamicLedgerTableTogglePatternDoesNotWarn(t *testin
     </div>
     <footer>
         <input type="password">
+        <input type="date" id="start-date" value="2021-01-01">
+        <input type="date" id="end-date" value="2025-12-31">
         <textarea id="sql-query">SELECT 1</textarea>
+        <button type="button">Run</button>
     </footer>
     <script>
         localStorage.getItem('OnTimeAnalystDashboard::auth::jwe');

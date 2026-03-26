@@ -44,6 +44,23 @@ func TestDefaultModelForRunnerUsesSonnetForClaude(t *testing.T) {
 	}
 }
 
+func TestInferDateFieldHintPrefersAnalyticalDateColumns(t *testing.T) {
+	got := inferDateFieldHint([]string{"Carrier", "FlightDate", "Flights"}, nil)
+	if got != "FlightDate" {
+		t.Fatalf("unexpected date field hint: got %q want %q", got, "FlightDate")
+	}
+}
+
+func TestInferDateFieldHintFallsBackToDateLikeStringValues(t *testing.T) {
+	rows := []map[string]any{
+		{"WindowLabel": "2025-03-01", "Flights": 10},
+	}
+	got := inferDateFieldHint([]string{"WindowLabel", "Flights"}, rows)
+	if got != "WindowLabel" {
+		t.Fatalf("unexpected fallback date field hint: got %q want %q", got, "WindowLabel")
+	}
+}
+
 func TestModelLabelForRunnersHandlesDuplicateRunnersWithDistinctModels(t *testing.T) {
 	got, err := modelLabelForRunners([]string{"claude", "claude", "codex"}, []string{"opus", "sonnet", "gpt-5.4"})
 	if err != nil {

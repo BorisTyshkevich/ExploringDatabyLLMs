@@ -1353,6 +1353,8 @@ func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAna
 			Subquestion:    item.Subquestion,
 			AnswerMarkdown: item.AnswerMarkdown,
 			SQL:            item.SQL,
+			IsPrimary:      item.ID == primaryMultiQueryID(opts.Question),
+			DateFieldHint:  inferDateFieldHint(result.Columns, result.Rows),
 			RowCount:       result.RowCount,
 			ResultColumns:  append([]string(nil), result.Columns...),
 		}
@@ -2231,6 +2233,56 @@ func toQueryResultSummaries(items []model.AnalysisSubquestion) []model.QueryResu
 		})
 	}
 	return summaries
+}
+
+func inferDateFieldHint(columns []string, rows []map[string]any) string {
+	preferred := []string{
+		"flight_date",
+		"flightdate",
+		"date",
+		"event_date",
+		"eventdate",
+		"month",
+		"year_month",
+		"yearmonth",
+		"year",
+	}
+	for _, target := range preferred {
+		for _, col := range columns {
+			if normalizeFieldHint(col) == target {
+				return col
+			}
+		}
+	}
+	for _, col := range columns {
+		norm := normalizeFieldHint(col)
+		if strings.Contains(norm, "date") || strings.Contains(norm, "month") || strings.Contains(norm, "year") {
+			return col
+		}
+	}
+	for _, row := range rows {
+		for _, col := range columns {
+			value, ok := row[col]
+			if !ok || value == nil {
+				continue
+			}
+			text, ok := value.(string)
+			if !ok {
+				continue
+			}
+			text = strings.TrimSpace(text)
+			if len(text) >= 4 && strings.Count(text, "-") >= 1 {
+				return col
+			}
+		}
+	}
+	return ""
+}
+
+func normalizeFieldHint(value string) string {
+	value = strings.TrimSpace(strings.ToLower(value))
+	replacer := strings.NewReplacer(" ", "", "_", "", "-", "", ".", "")
+	return replacer.Replace(value)
 }
 
 func ensureVisualInputSummary(path string, question model.Question, result model.CanonicalResult) (model.VisualInputSummary, error) {

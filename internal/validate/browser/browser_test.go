@@ -143,8 +143,10 @@ func TestValidatePublicLiveFetch(t *testing.T) {
 <section id="query-ledger"><span class="ledger-status">pending</span></section>
 <footer>
   <input type="password" id="tokenInput">
+  <input type="date" id="startDate" value="2021-01-01">
+  <input type="date" id="endDate" value="2025-12-31">
   <textarea id="sqlTextarea">SELECT 1 AS value</textarea>
-  <button id="fetchBtn" type="button" onclick="runQuery()">Fetch</button>
+  <button id="fetchBtn" type="button" onclick="runQuery()">Run all</button>
   <div id="statusText">ready</div>
 </footer>
 <script>
@@ -216,8 +218,10 @@ func newGlobalStatusFixtureServer() *httptest.Server {
   <section id="query-ledger"><span class="ledger-status">pending</span></section>
   <footer>
     <input type="password" id="tokenInput">
+    <input type="date" id="startDate" value="2021-01-01">
+    <input type="date" id="endDate" value="2025-12-31">
     <textarea id="sqlTextarea">SELECT 1</textarea>
-    <button id="fetchBtn" type="button" onclick="runQuery()">Fetch</button>
+    <button id="fetchBtn" type="button" onclick="runQuery()">Run</button>
   </footer>
   <script>
     async function runQuery() {
@@ -269,8 +273,10 @@ func fixtureHTML(throwException bool, missingControls bool) string {
   </section>
   <footer>
     <input type="password" id="tokenInput">
+    <input type="date" id="startDate" value="2021-01-01">
+    <input type="date" id="endDate" value="2025-12-31">
     <textarea id="sqlTextarea">SELECT 1</textarea>
-    <button id="fetchBtn" type="button" onclick="runQuery()">Fetch</button>
+    <button id="fetchBtn" type="button" onclick="runQuery()">Run</button>
     <div id="statusText">idle</div>
   </footer>
   <script>

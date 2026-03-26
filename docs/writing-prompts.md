@@ -143,7 +143,8 @@ Assume the shared contract already handles:
 
 - JWE token storage
 - footer controls
-- saved SQL textarea
+- date selector
+- primary and supporting SQL editors
 - live fetch
 - query ledger
 - validation expectations
