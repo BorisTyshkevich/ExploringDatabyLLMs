@@ -50,8 +50,10 @@ use provided JSON data as an example that can be received by executing the SQL q
 13. Normalize temporal fields before UI formatting, grouping, filtering, or comparison logic
 14. Apply the selected date range through SQL reruns for the primary query and any supporting queries that support date filtering
 15. If needed, run explicit supporting, lookup, or drill-down queries with a concrete purpose and record them in the query ledger
-16. Re-enable run buttons only after the active run has finished or failed
-17. Show content and render dashboard while keeping the control block at the bottom
+16. If a query template uses placeholder filter variables such as `__START_DATE__`, `__END_DATE__`, or selection-context tokens, resolve them through one shared helper before execution
+17. Use that same substitution path for manual query runs, `Run all`, auto-load, and selection-driven lookup reruns; never send raw placeholder tokens to the SQL endpoint
+18. Re-enable run buttons only after the active run has finished or failed
+19. Show content and render dashboard while keeping the control block at the bottom
 
 ## Response-shape contract
 
@@ -91,6 +93,7 @@ use provided JSON data as an example that can be received by executing the SQL q
 - Supporting queries that are shipped with the dashboard must be editable and individually executable.
 - Lookup queries are authored in the visual-only second pass and are not part of reviewed `answer.raw.json` artifacts.
 - When multiple shipped queries are present, provide a `Run all` path that reruns the date-compatible query set against the selected range.
+- If query templates contain placeholder variables, route every execution path through one shared substitution helper so date and selection filters are applied consistently.
 - Primary-query success must be enough to render the main dashboard shell and any visuals driven directly by the primary result set.
 - Enrichment and drill-down queries upgrade dependent visuals or details; they must not gate whether the dashboard shell renders at all.
 - If a secondary query fails, degrade only the dependent component, keep the primary-query analysis visible, and record the failure in both status text and the query ledger.

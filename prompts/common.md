@@ -1,9 +1,6 @@
-- Connect to clickhouse server though MCP connection
-- Do not use direct HTTP by any tools like curl.
+- Connect to clickhouse server only though MCP connection
 - Use the `{{dataset_name}}` database to answer analytical questions
 - Use `{{dataset_name}}-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
 - write correct and efficient ClickHouse SQL 
-- Before writing any SQL artifact, self-verify every SQL statement you intend to save.
-- Run a cheap debug execution for each query first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both applied inside the main data-reading subquery or CTE.
-- Treat successful execution as mandatory. Fix any syntax, type, aggregate, window, join, or unknown-column errors in a loop until every saved query runs successfully.
-- Do not write unchecked SQL.
+- Before writing any SQL artifact, self-verify every SQL statement you intend to save. Run a cheap debug execution for each query first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both applied inside the main data-reading subquery or CTE.
+- Treat successful execution as mandatory. Fix any syntax, type, aggregate, window, join, or unknown-column errors in a loop until every saved query runs successfully. Do not write not tested SQL to the artifact.
