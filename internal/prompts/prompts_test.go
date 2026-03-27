@@ -175,8 +175,15 @@ func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.
 	if !strings.Contains(got, "Use the `ontime` database to answer analytical questions") {
 		t.Fatalf("expected shared core scaffold in multi-query visual prompt, got: %s", got)
 	}
-	if !strings.Contains(got, "The saved SQL shown below is the primary section query for this page.") {
-		t.Fatalf("expected multi-query visual supplement, got: %s", got)
+	for _, want := range []string{
+		"### Multi-query additions",
+		"### additional questions",
+		"label that panel query in the query ledger with the header name",
+		"additional lookup query use the currently selected context from the primary/main query result set",
+	} {
+		if !strings.Contains(got, want) {
+			t.Fatalf("expected multi-query visual prompt to contain %q, got: %s", want, got)
+		}
 	}
 	for _, want := range []string{"visible start/end date selector", "editable SQL controls for the primary query and every supporting query", "Run all", "effective date range", "lookup query"} {
 		if !strings.Contains(got, want) {
@@ -325,10 +332,12 @@ func TestBuildPresentationPromptQ001UsesLookupContract(t *testing.T) {
 		t.Fatalf("expected q001 prompt to reference dashboard and semantic skill guidance, got: %s", got)
 	}
 	for _, want := range []string{
+		"### operational-stress",
 		"### key connectors",
+		"### geographically extreme",
 		"airport-coordinate lookup",
-		"visual-only operational-stress lookup query",
-		"label that pane query as an operational-stress lookup",
+		"Which airports or legs are the main operational stress points within the top 10 unique maximum-hop itineraries?",
+		"How geographically extreme is each of the top 10 unique maximum-hop itineraries?",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected q001 prompt to contain %q, got: %s", want, got)
@@ -345,7 +354,7 @@ func TestBuildPresentationPromptQ001UsesLookupContract(t *testing.T) {
 	}
 	for _, want := range []string{
 		"keep the map card visible with degraded-state messaging",
-		"keep the operational-stress pane visible with degraded-state messaging",
+		"degrade only the dependent panel",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected q001 prompt to contain %q, got: %s", want, got)

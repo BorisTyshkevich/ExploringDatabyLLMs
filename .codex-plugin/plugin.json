@@ -1,0 +1,40 @@
+{
+  "name": "exploring-databyllms",
+  "version": "0.1.0",
+  "description": "Codex plugin for the ExploringDataByLLMs repository, exposing the OnTime analytics skills used by qforge.",
+  "author": {
+    "name": "Boris Tyshkevich",
+    "url": "https://github.com/BorisTyshkevich"
+  },
+  "homepage": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/",
+  "repository": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/",
+  "license": "MIT",
+  "keywords": [
+    "analytics",
+    "clickhouse",
+    "dashboard",
+    "ontime",
+    "qforge",
+    "skills"
+  ],
+  "skills": "./Skills/",
+  "interface": {
+    "displayName": "ExploringDataByLLMs",
+    "shortDescription": "OnTime analytics and dashboard skills",
+    "longDescription": "Use the repository's OnTime semantic-layer and dashboard skills to inspect schema, guide SQL generation, and build benchmark-ready visual artifacts for qforge workflows.",
+    "developerName": "Boris Tyshkevich",
+    "category": "Data & Analytics",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/",
+    "defaultPrompt": [
+      "Use the ExploringDataByLLMs OnTime skills to inspect schema, reason about joins, and build benchmark-ready dashboards."
+    ],
+    "composerIcon": "./assets/exploring-databyllms.svg",
+    "logo": "./assets/exploring-databyllms.svg",
+    "screenshots": [],
+    "brandColor": "#0B5FA5"
+  }
+}

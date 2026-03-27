@@ -149,6 +149,8 @@ Current composition order:
 - mode-specific visual asset
 - question `visual_prompt.md`
 
+`BuildVisualPrompt` passes the question-specific visual prose through unchanged. qforge does not extract structured visual subquestions from `visual_prompt.md`.
+
 ### Inputs
 
 The visual provider receives these saved artifacts as prompt context:
@@ -163,6 +165,8 @@ The visual pass may also create lookup queries that are:
 - self-verified before shipping in `visual.html`
 - visible in the query ledger
 - not written back into `answer.raw.json`, `queries/*.sql`, or `review.md`
+
+Additional question headings in `visual_prompt.md` are therefore presentation guidance only. They may motivate extra visual-only lookup or enrichment queries, but those queries remain runtime behavior of the authored dashboard rather than harness-owned analytical artifacts.
 
 The visual phase should treat:
 

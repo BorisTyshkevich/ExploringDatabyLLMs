@@ -26,6 +26,23 @@ Skills are separate from prompt templates:
 - prompts provide question-specific and shared benchmark instructions
 - skills provide focused implementation guidance for a narrower task (visual dashboard generation)
 
+## Codex plugin
+
+This repository now includes a repo-root Codex plugin manifest at [`.codex-plugin/plugin.json`](.codex-plugin/plugin.json).
+
+The plugin currently exposes the existing [`Skills`](Skills) tree:
+
+- [`ontime-analyst-dashboard`](Skills/ontime-analyst-dashboard/SKILL.md)
+- [`ontime-semantic-layer`](Skills/ontime-semantic-layer/SKILL.md)
+
+To package just the plugin payload instead of the entire repository, run:
+
+```bash
+./scripts/package-plugin.sh
+```
+
+That produces `.tmp/plugin-zips/exploring-databyllms-plugin.zip`.
+
 Start with [`qforge.md`](docs/qforge.md) if you want to run benchmarks or compare providers.
 Start with [`datasets/ontime/download/README.md`](datasets/ontime/download/README.md) if you want to rebuild or inspect the OnTime dataset.
 

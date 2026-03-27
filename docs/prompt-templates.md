@@ -39,6 +39,8 @@ Current composition order:
 - Presentation phase: `common.md` + `common_visual.md` + mode-specific visual asset + question `visual_prompt.md`
 - Target-specific presentation guidance is added after the mode-specific visual asset.
 
+During presentation prompt assembly, `BuildVisualPrompt` treats `question.VisualPrompt` as prose. qforge does not parse `visual_prompt.md` into structured visual subquestions, even when that file uses multiple headings for extra panels or visual-only questions.
+
 `--manual` does not change which prompt assets are assembled. It only skips provider invocation during `run` and leaves the underlying analysis contract in place.
 
 The shared `common.md` file is rendered in both phases, so any template variables used there must be available to both builders.

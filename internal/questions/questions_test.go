@@ -3,6 +3,7 @@ package questions
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -129,16 +130,19 @@ func TestLoadMultiQueryModeParsesPromptSectionsFromReportPrompt(t *testing.T) {
 	}
 }
 
-func TestResolveQ001NoLongerIncludesReviewedQ3Section(t *testing.T) {
+func TestResolveQ001UsesReportPromptSectionsOnly(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	question, err := Resolve(repoRoot, "q001")
 	if err != nil {
 		t.Fatalf("Resolve returned error: %v", err)
 	}
-	if len(question.Subquestions) != 3 {
-		t.Fatalf("expected q001 to expose 3 reviewed sections, got %d", len(question.Subquestions))
+	if len(question.Subquestions) != 1 {
+		t.Fatalf("expected q001 to expose only report-prompt sections, got %d", len(question.Subquestions))
 	}
-	if question.Subquestions[0].ID != "main" || question.Subquestions[1].ID != "q1" || question.Subquestions[2].ID != "q2" {
-		t.Fatalf("unexpected q001 reviewed sections: %+v", question.Subquestions)
+	if question.Subquestions[0].ID != "main" {
+		t.Fatalf("unexpected q001 section ids: %+v", question.Subquestions)
+	}
+	if !strings.Contains(question.Subquestions[0].Text, "Find the longest itineraries with the highest number of hops") {
+		t.Fatalf("unexpected q001 main section text: %+v", question.Subquestions[0])
 	}
 }

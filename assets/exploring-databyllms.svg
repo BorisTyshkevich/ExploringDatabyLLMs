@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title>ExploringDataByLLMs</title>
+  <desc>Stylized bar chart and route line for the ExploringDataByLLMs Codex plugin.</desc>
+  <rect width="128" height="128" rx="24" fill="#0B2239"/>
+  <path d="M20 92h88" stroke="#7EC8E3" stroke-width="6" stroke-linecap="round"/>
+  <rect x="26" y="64" width="14" height="28" rx="4" fill="#2EC4B6"/>
+  <rect x="48" y="48" width="14" height="44" rx="4" fill="#7EC8E3"/>
+  <rect x="70" y="34" width="14" height="58" rx="4" fill="#FFB703"/>
+  <path d="M30 44c12-14 24-18 36-12 11 5 21 5 32-2l8-5" fill="none" stroke="#E1F5FE" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="30" cy="44" r="5" fill="#E1F5FE"/>
+  <circle cx="66" cy="32" r="5" fill="#E1F5FE"/>
+  <circle cx="106" cy="25" r="5" fill="#E1F5FE"/>
+</svg>

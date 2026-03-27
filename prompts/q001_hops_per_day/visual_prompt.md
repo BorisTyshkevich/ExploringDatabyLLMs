@@ -1,4 +1,4 @@
-### main
+### main query
 
 - use main query as the primary source of information for visualizing
 - use the other/supporting queries when they materially improve the narrative or supporting panels
@@ -23,12 +23,15 @@
 
 ### operational-stress
 
+Which airports or legs are the main operational stress points within the top 10 unique maximum-hop itineraries?
+Return per-airport and per-leg average departure delay, average arrival delay, rate of 15-plus-minute delays, and diversion incidence, and identify the stop positions most associated with disruption.
+
+### key connectors
+
 Which airports act as the key connectors, origins, and termini within the top 10 unique maximum-hop itineraries?
 Classify airport appearances by route position and return airport code, airport name, city/state, total appearances, origin appearances, intermediate-stop appearances, final-destination appearances, and share of itineraries containing that airport.
 
-- author a sql query 
-- include a panel with results below the map panel.
-- label that panel query as an operational-stress lookup in the query ledger
-- have the operational-stress lookup query use the currently selected itinerary context from the primary result set and fetch per-airport and per-leg average departure delay, average arrival delay, 15-plus-minute delay rate, diversion incidence, and stop-position stress signals
-- make itinerary table row selection also refresh the operational-stress lookup panel for that same itinerary
-- if the operational-stress lookup fails, keep the operational-stress panel visible with degraded-state messaging for the selected itinerary, report that degraded panel in the ledger, and continue rendering the rest of the dashboard
+### geographically extreme
+
+How geographically extreme is each of the top 10 unique maximum-hop itineraries?
+Return total flown distance, unique airports, unique city markets, unique states, unique local-time offsets, and whether the route is entirely domestic, then summarize which routes are the most geographically expansive.

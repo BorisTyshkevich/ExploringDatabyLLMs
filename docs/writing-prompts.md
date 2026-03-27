@@ -153,10 +153,17 @@ So the question-specific visual prompt should focus on:
 
 - which query is the primary dashboard view
 - which supporting queries matter
-- whether the page needs a visual-only lookup query that will be authored in the second pass
+- whether the page needs extra visual-only questions that may lead the model to author second-pass lookup or enrichment queries
 - which charts or panels should exist
 - what narrative should anchor the page
 - what degraded behavior is acceptable if a supporting or lookup query fails
+
+Additional question headings in `visual_prompt.md` are prose-only author guidance for the presentation phase.
+
+- qforge passes those sections through unchanged in `BuildVisualPrompt`
+- qforge does not parse them into structured visual subquestions or saved analysis artifacts
+- any SQL they trigger is visual-only second-pass SQL owned by the authored dashboard, not `queries/*.sql`, `answer.raw.json`, or `review.md`
+- tests should cover shared prompt-contract guarantees and stable wording boundaries, not exact per-panel behavior implied by those prose sections
 
 ### Good pattern
 
@@ -164,7 +171,7 @@ Use wording like:
 
 - “Use `worst_hotspot` as the primary saved SQL”
 - “Use `persistence` as a supporting query for the monthly trend panel”
-- “Use a visual-only lookup query for the map coordinate panel”
+- “Ask an additional visual-only question for the map coordinate panel”
 - “Show supporting queries in the ledger when used”
 - “The dashboard does not need to mirror `report.md`”
 - “Use the prose answers as framing, and fetched query results for charts and tables”
