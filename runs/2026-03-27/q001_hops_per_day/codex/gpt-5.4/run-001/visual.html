@@ -1072,8 +1072,186 @@ ORDER BY sa.position_index`
       els.sqlOperationalStress.value = defaultSql.operational_stress;
     }
 
-    function getToken() {
-      return String(els.tokenInput.value || '').trim();
+    function loadAuthState() {
+      try {
+        oauthState = JSON.parse(localStorage.getItem(OAUTH_STORAGE_KEY)) || {};
+      } catch (err) {
+        oauthState = {};
+      }
+    }
+
+    function saveAuthState() {
+      localStorage.setItem(OAUTH_STORAGE_KEY, JSON.stringify(oauthState));
+    }
+
+    function clearAuthState() {
+      localStorage.removeItem(OAUTH_STORAGE_KEY);
+      oauthState = {};
+    }
+
+    function hasValidAccessToken() {
+      return Boolean(
+        oauthState.access_token &&
+        (!oauthState.expires_at || Date.now() < oauthState.expires_at)
+      );
+    }
+
+    function currentRedirectUri() {
+      return window.location.origin + window.location.pathname;
+    }
+
+    function randomString(len) {
+      const arr = new Uint8Array(len);
+      crypto.getRandomValues(arr);
+      return Array.from(arr, (b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function sha256(plain) {
+      const data = new TextEncoder().encode(plain);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return btoa(String.fromCharCode(...new Uint8Array(hash)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+
+    async function registerOAuthClient() {
+      const response = await fetch(MCP_BASE + '/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_name: 'OnTime Analyst Dashboard',
+          redirect_uris: [currentRedirectUri()],
+          grant_types: ['authorization_code'],
+          response_types: ['code'],
+          token_endpoint_auth_method: 'none'
+        })
+      });
+      if (!response.ok) {
+        throw new Error('OAuth registration failed: ' + await response.text());
+      }
+      return response.json();
+    }
+
+    function updateAuthUi() {
+      if (hasValidAccessToken()) {
+        els.authSummary.textContent =
+          'Authenticated with OAuth2. The saved SQL editors remain authoritative for this page, and query runs use the stored bearer token until it expires or you log out.';
+        els.loginBtn.style.display = 'none';
+        els.logoutBtn.style.display = 'inline-flex';
+      } else if (oauthState.expires_at && Date.now() >= oauthState.expires_at) {
+        els.authSummary.textContent =
+          'OAuth2 session expired. Sign in again to rerun the date anchor, main query, and follow-up lookups from this page.';
+        els.loginBtn.style.display = 'inline-flex';
+        els.logoutBtn.style.display = 'none';
+      } else {
+        els.authSummary.textContent =
+          'OAuth2 redirect auth is required. The dashboard uses this page as its callback target, so the deployed page URL must be registered as an allowed redirect URI in Google Console and the Altinity MCP provider setup.';
+        els.loginBtn.style.display = 'inline-flex';
+        els.logoutBtn.style.display = 'none';
+      }
+    }
+
+    async function startLogin() {
+      try {
+        els.statusText.textContent = 'Registering OAuth client and redirecting to Google sign-in.';
+        const registration = await registerOAuthClient();
+        const codeVerifier = randomString(32);
+        const codeChallenge = await sha256(codeVerifier);
+        const authState = randomString(16);
+
+        oauthState.client_id = registration.client_id;
+        oauthState.code_verifier = codeVerifier;
+        oauthState.state = authState;
+        saveAuthState();
+
+        const params = new URLSearchParams({
+          response_type: 'code',
+          client_id: registration.client_id,
+          redirect_uri: currentRedirectUri(),
+          scope: 'openid email',
+          state: authState,
+          code_challenge: codeChallenge,
+          code_challenge_method: 'S256'
+        });
+
+        window.location.href = MCP_BASE + '/authorize?' + params.toString();
+      } catch (err) {
+        els.statusText.textContent = `Login failed: ${err.message}`;
+        updateAuthUi();
+      }
+    }
+
+    async function exchangeCode(code) {
+      const response = await fetch(MCP_BASE + '/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          redirect_uri: currentRedirectUri(),
+          client_id: oauthState.client_id,
+          code_verifier: oauthState.code_verifier
+        })
+      });
+      if (!response.ok) {
+        throw new Error('Token exchange failed: ' + await response.text());
+      }
+      return response.json();
+    }
+
+    async function initAuth() {
+      loadAuthState();
+
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const callbackState = params.get('state');
+
+      if (code && callbackState) {
+        window.history.replaceState({}, '', window.location.pathname);
+        if (callbackState !== oauthState.state) {
+          clearAuthState();
+          els.statusText.textContent = 'OAuth state mismatch. Please login again.';
+          updateAuthUi();
+          return false;
+        }
+
+        try {
+          els.statusText.textContent = 'Exchanging OAuth authorization code.';
+          const token = await exchangeCode(code);
+          oauthState.access_token = token.access_token;
+          oauthState.token_type = token.token_type || 'Bearer';
+          if (token.expires_in) {
+            oauthState.expires_at = Date.now() + Number(token.expires_in) * 1000;
+          } else {
+            delete oauthState.expires_at;
+          }
+          delete oauthState.code_verifier;
+          delete oauthState.state;
+          saveAuthState();
+        } catch (err) {
+          clearAuthState();
+          els.statusText.textContent = `OAuth callback failed: ${err.message}`;
+          updateAuthUi();
+          return false;
+        }
+      }
+
+      if (oauthState.expires_at && Date.now() >= oauthState.expires_at) {
+        clearAuthState();
+        els.statusText.textContent = 'OAuth session expired. Sign in again to run queries.';
+        updateAuthUi();
+        return false;
+      }
+
+      updateAuthUi();
+      return hasValidAccessToken();
+    }
+
+    function logout() {
+      clearAuthState();
+      updateAuthUi();
+      els.statusText.textContent = 'Logged out. Sign in again to rerun the dashboard queries.';
     }
 
     function normalizeDate(value) {
@@ -1496,14 +1674,25 @@ ORDER BY sa.position_index`
     }
 
     async function executeQuery({ id, label, role, sql, range }) {
-      const token = getToken();
-      if (!token) throw new Error('A JWE token is required.');
+      if (!hasValidAccessToken()) {
+        updateAuthUi();
+        throw new Error('OAuth login is required.');
+      }
       const entry = registerLedgerEntry(id, label, role, sql, range);
-      const endpoint = `https://mcp.demo.altinity.cloud/${encodeURIComponent(token)}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
-      const response = await fetch(endpoint);
+      const endpoint = `${MCP_BASE}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${oauthState.access_token}`
+        }
+      });
       if (!response.ok) {
         const text = await response.text();
         updateLedgerEntry(entry, { status: 'failed', rows: 0 });
+        if (response.status === 401 || response.status === 403) {
+          clearAuthState();
+          updateAuthUi();
+          throw new Error('Authentication expired. Please login again.');
+        }
         throw new Error(text || `HTTP ${response.status}`);
       }
       const payload = await response.json();
@@ -1514,7 +1703,6 @@ ORDER BY sa.position_index`
       const rows = Array.isArray(payload.rows) ? payload.rows : [];
       const objects = rows.map((arr) => Object.fromEntries(payload.columns.map((col, idx) => [col, arr[idx]])));
       updateLedgerEntry(entry, { status: 'ok', rows: objects.length, sql });
-      localStorage.setItem(STORAGE_KEY, token);
       return objects;
     }
 
@@ -1690,7 +1878,7 @@ ORDER BY sa.position_index`
 
     function toggleButtons(disabled) {
       document.querySelectorAll('button').forEach((btn) => {
-        if (btn.id === 'forget-token-btn') return;
+        if (btn.id === 'login-btn' || btn.id === 'logout-btn') return;
         btn.disabled = disabled;
       });
     }
@@ -1749,38 +1937,34 @@ ORDER BY sa.position_index`
       URL.revokeObjectURL(url);
     }
 
-    function initFromStorage() {
-      const token = localStorage.getItem(STORAGE_KEY);
-      if (token) {
-        els.tokenInput.value = token;
-      }
-    }
-
     function wireEvents() {
+      els.loginBtn.addEventListener('click', startLogin);
+      els.logoutBtn.addEventListener('click', logout);
       els.runAllBtn.addEventListener('click', runAll);
-      els.forgetTokenBtn.addEventListener('click', () => {
-        localStorage.removeItem(STORAGE_KEY);
-        els.tokenInput.value = '';
-        els.statusText.textContent = 'Stored token removed.';
-      });
       els.exportBtn.addEventListener('click', exportCsv);
       document.querySelectorAll('[data-run-query]').forEach((btn) => {
         btn.addEventListener('click', () => runSingleQuery(btn.dataset.runQuery));
       });
       [els.startDateInput, els.endDateInput].forEach((input) => {
         input.addEventListener('change', () => {
-          if (getToken()) runAll();
+          if (hasValidAccessToken()) runAll();
         });
       });
     }
 
-    setDefaultSqlEditors();
-    initFromStorage();
-    wireEvents();
-
-    if (getToken()) {
-      runAll();
+    async function init() {
+      setDefaultSqlEditors();
+      wireEvents();
+      const isAuthenticated = await initAuth();
+      if (isAuthenticated) {
+        els.statusText.textContent = 'Authenticated. Running the dashboard queries.';
+        runAll();
+      } else if (!els.statusText.textContent.trim()) {
+        els.statusText.textContent = 'Sign in to run the dashboard queries.';
+      }
     }
+
+    init();
   </script>
 </body>
 </html>
