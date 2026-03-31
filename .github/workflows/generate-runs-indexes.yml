@@ -1,0 +1,311 @@
+name: Generate Runs Indexes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'runs/**'
+      - 'md.html'
+      - '.github/workflows/generate-runs-indexes.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate root and runs index.html files
+        run: |
+          python3 <<'PY'
+          import html
+          import os
+          from pathlib import Path
+
+          ROOT = Path(".")
+          RUNS = ROOT / "runs"
+          GITHUB_BLOB = "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main"
+
+          if not RUNS.exists():
+              raise SystemExit("runs/ does not exist")
+
+          def rel_url(path: Path) -> str:
+              return path.as_posix()
+
+          def root_prefix(rel_dir: Path) -> str:
+              return "../" * len(rel_dir.parts)
+
+          def md_href(rel_path: Path) -> str:
+              rel_posix = rel_url(rel_path)
+              prefix = root_prefix(rel_path.parent)
+              return f"{prefix}md.html?file={rel_posix}"
+
+          def github_blob(rel_path: Path) -> str:
+              return f"{GITHUB_BLOB}/{rel_url(rel_path)}"
+
+          def write_dir_index(dir_path: Path) -> None:
+              rel_dir = dir_path.relative_to(ROOT)
+              title = dir_path.name
+              lines = [
+                  "<!DOCTYPE html>",
+                  "<html>",
+                  "<head>",
+                  f"  <title>{html.escape(title)}</title>",
+                  "  <style>",
+                  "    body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; background: #f6fafc; }",
+                  "    h1 { color: #0e3a52; border-bottom: 2px solid #3c88b5; padding-bottom: 0.5rem; }",
+                  "    a { color: #3c88b5; text-decoration: none; }",
+                  "    a:hover { text-decoration: underline; }",
+                  "    ul { list-style: none; padding: 0; }",
+                  "    li { padding: 0.4rem 0; }",
+                  "    li a { display: inline-block; padding: 0.3rem 0.6rem; background: white; border-radius: 4px; border: 1px solid #e0e0e0; }",
+                  "    li a:hover { background: #eaf3f8; }",
+                  "    .dir::before { content: '📁 '; }",
+                  "    .html::before { content: '📊 '; }",
+                  "    .md::before { content: '📄 '; }",
+                  "    .json::before { content: '📋 '; }",
+                  "    .sql::before { content: '🔍 '; }",
+                  "    .up { margin-bottom: 1rem; }",
+                  "  </style>",
+                  "</head>",
+                  "<body>",
+                  f"  <h1>{html.escape(title)}</h1>",
+              ]
+              if rel_dir != Path("runs"):
+                  lines.append('  <p class="up"><a href="../index.html">⬆️ Parent Directory</a></p>')
+              else:
+                  lines.append('  <p class="up"><a href="../index.html">⬆️ Site Home</a></p>')
+
+              lines.append("  <ul>")
+
+              subdirs = sorted(
+                  [p for p in dir_path.iterdir() if p.is_dir() and not p.name.startswith(".")],
+                  key=lambda p: p.name,
+              )
+              for subdir in subdirs:
+                  lines.append(f'    <li><a class="dir" href="{html.escape(subdir.name)}/index.html">{html.escape(subdir.name)}/</a></li>')
+
+              ordered_names = [
+                  "visual.html",
+                  "compare_report.md",
+                  "report.md",
+                  "review.md",
+                  "compare.json",
+                  "query.sql",
+                  "manifest.json",
+              ]
+              for name in ordered_names:
+                  path = dir_path / name
+                  if not path.is_file():
+                      continue
+                  ext = path.suffix.lstrip(".")
+                  if ext == "md":
+                      href = md_href(path.relative_to(ROOT))
+                  else:
+                      href = path.name
+                  lines.append(f'    <li><a class="{html.escape(ext)}" href="{html.escape(href)}">{html.escape(path.name)}</a></li>')
+
+              lines.extend([
+                  "  </ul>",
+                  "</body>",
+                  "</html>",
+              ])
+              (dir_path / "index.html").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+          for dir_path, dirnames, _filenames in os.walk(RUNS):
+              dirnames[:] = sorted(d for d in dirnames if not d.startswith("."))
+              write_dir_index(Path(dir_path))
+
+          days = sorted(
+              [p for p in RUNS.iterdir() if p.is_dir() and p.name[:4].isdigit()],
+              key=lambda p: p.name,
+              reverse=True,
+          )
+
+          out = []
+          out.append("""<!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>ExploringDatabyLLMs Runs</title>
+            <style>
+              :root {
+                --bg-top: #eaf3f8;
+                --bg-bottom: #f6fafc;
+                --panel: #ffffff;
+                --panel-alt: #f3f7fa;
+                --ink: #163244;
+                --muted: #5d7485;
+                --navy: #0e3a52;
+                --sky: #3c88b5;
+                --teal: #1f8a70;
+                --amber: #d48a1f;
+                --grid: rgba(22, 50, 68, 0.12);
+                --border: rgba(22, 50, 68, 0.10);
+                --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+              }
+              * { box-sizing: border-box; }
+              body {
+                margin: 0;
+                color: var(--ink);
+                font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+                background:
+                  radial-gradient(circle at top left, rgba(60, 136, 181, 0.16), transparent 30%),
+                  linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+              }
+              .page { max-width: 1180px; margin: 0 auto; padding: 28px 18px 40px; }
+              .hero, .date-card, .question-card {
+                background: var(--panel);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                box-shadow: var(--shadow);
+              }
+              .hero {
+                padding: 26px 28px;
+                background: linear-gradient(135deg, rgba(14,58,82,0.96), rgba(60,136,181,0.88));
+                color: #f8fbfd;
+              }
+              .hero h1 { margin: 0 0 10px; font-size: clamp(2rem, 4vw, 3.1rem); }
+              .hero p { margin: 0; max-width: 860px; line-height: 1.6; color: rgba(248,251,253,0.92); }
+              .date-card { margin-top: 22px; padding: 18px 20px 22px; }
+              .date-card h2 { margin: 0 0 14px; color: var(--navy); }
+              .questions { display: grid; gap: 16px; }
+              .question-card { padding: 16px 18px 18px; background: rgba(255,255,255,0.9); }
+              .question-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+              }
+              .question-head h3 { margin: 0; color: var(--navy); font-size: 1.05rem; }
+              .provider-grid { display: grid; gap: 10px; }
+              .provider-row {
+                display: grid;
+                grid-template-columns: minmax(220px, 260px) 1fr;
+                gap: 14px;
+                align-items: start;
+                padding: 12px 0;
+                border-top: 1px solid var(--grid);
+              }
+              .provider-row:first-child { border-top: 0; }
+              .provider-label { font-weight: 700; color: var(--navy); }
+              .runs { display: grid; gap: 8px; }
+              .run-row {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                flex-wrap: wrap;
+              }
+              .run-id {
+                display: inline-flex;
+                align-items: center;
+                min-width: 72px;
+                padding: 4px 10px;
+                border-radius: 999px;
+                background: var(--panel-alt);
+                border: 1px solid var(--border);
+                color: var(--muted);
+                font-size: 0.85rem;
+                font-weight: 700;
+              }
+              .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+              .chip {
+                display: inline-flex;
+                align-items: center;
+                padding: 5px 10px;
+                border-radius: 999px;
+                text-decoration: none;
+                font-size: 0.84rem;
+                font-weight: 700;
+              }
+              .compare { background: rgba(212,138,31,0.12); color: var(--amber); }
+              .visual { background: rgba(31,138,112,0.12); color: var(--teal); }
+              .report { background: rgba(60,136,181,0.12); color: var(--sky); }
+              .sql, .json { background: var(--panel-alt); color: var(--ink); border: 1px solid var(--border); }
+              .muted { color: var(--muted); font-size: 0.92rem; }
+              @media (max-width: 760px) {
+                .provider-row { grid-template-columns: 1fr; gap: 8px; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="page">
+              <section class="hero">
+                <h1>ExploringDatabyLLMs Runs</h1>
+                <p>Published benchmark runs, compare notes, and dashboards across Claude, Codex, and Gemini. Reports open through the Markdown viewer, dashboards open as live HTML, and SQL / JSON artifacts link to the public GitHub repo.</p>
+              </section>
+          """)
+
+          for day in days:
+              out.append(f'<section class="date-card"><h2>{html.escape(day.name)}</h2><div class="questions">')
+              question_dirs = sorted([p for p in day.iterdir() if p.is_dir()], key=lambda p: p.name)
+              for question_dir in question_dirs:
+                  providers = {}
+                  for runner_dir in sorted([p for p in question_dir.iterdir() if p.is_dir() and p.name != "compare"], key=lambda p: p.name):
+                      for model_dir in sorted([p for p in runner_dir.iterdir() if p.is_dir()], key=lambda p: p.name):
+                          runs = []
+                          for run_dir in sorted([p for p in model_dir.iterdir() if p.is_dir() and p.name.startswith("run-")], key=lambda p: p.name):
+                              rel_run = run_dir.relative_to(ROOT)
+                              runs.append({
+                                  "id": run_dir.name,
+                                  "visual": rel_url(rel_run / "visual.html") if (run_dir / "visual.html").exists() else "",
+                                  "report": md_href(rel_run / "report.md") if (run_dir / "report.md").exists() else "",
+                                  "sql": github_blob(rel_run / "query.sql") if (run_dir / "query.sql").exists() else "",
+                                  "json": github_blob(rel_run / "result.json") if (run_dir / "result.json").exists() else "",
+                              })
+                          if runs:
+                              providers[f"{runner_dir.name} / {model_dir.name}"] = runs
+
+                  compare_path = question_dir / "compare_report.md"
+                  compare_href = md_href(compare_path.relative_to(ROOT)) if compare_path.exists() else ""
+
+                  out.append('<article class="question-card">')
+                  out.append('<div class="question-head">')
+                  out.append(f'<h3>{html.escape(question_dir.name)}</h3>')
+                  if compare_href:
+                      out.append(f'<a class="chip compare" href="{html.escape(compare_href)}">Compare</a>')
+                  out.append('</div>')
+
+                  if not providers:
+                      out.append('<p class="muted">No provider runs found.</p>')
+                  else:
+                      out.append('<div class="provider-grid">')
+                      for label, runs in providers.items():
+                          out.append('<div class="provider-row">')
+                          out.append(f'<div class="provider-label">{html.escape(label)}</div>')
+                          out.append('<div class="runs">')
+                          for run in runs:
+                              out.append('<div class="run-row">')
+                              out.append(f'<span class="run-id">{html.escape(run["id"])}</span>')
+                              out.append('<div class="chip-row">')
+                              if run["visual"]:
+                                  out.append(f'<a class="chip visual" href="{html.escape(run["visual"])}">Visual</a>')
+                              if run["report"]:
+                                  out.append(f'<a class="chip report" href="{html.escape(run["report"])}">Report</a>')
+                              if run["sql"]:
+                                  out.append(f'<a class="chip sql" href="{html.escape(run["sql"])}">SQL</a>')
+                              if run["json"]:
+                                  out.append(f'<a class="chip json" href="{html.escape(run["json"])}">JSON</a>')
+                              out.append('</div></div>')
+                          out.append('</div></div>')
+                      out.append('</div>')
+                  out.append('</article>')
+              out.append('</div></section>')
+
+          out.append("</div></body></html>")
+          (ROOT / "index.html").write_text("\n".join(out) + "\n", encoding="utf-8")
+          PY
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html runs
+          git diff --staged --quiet || git commit -m "Auto-generate runs index files"
+          git push
