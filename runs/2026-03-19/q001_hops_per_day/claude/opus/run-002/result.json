@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "IATA_CODE_Reporting_Airline",
+    "FlightDate",
+    "Hops",
+    "Route",
+    "DepSchedule"
+  ],
+  "rows": [
+    {
+      "DepSchedule": "ISP 05:43, BWI 08:10, MYR 10:20, BNA 11:42, VPS 14:01, DAL 16:43, LAS 18:28, OAK 20:41",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "366",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "ISP -\u003e BWI -\u003e MYR -\u003e BNA -\u003e VPS -\u003e DAL -\u003e LAS -\u003e OAK -\u003e SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "DepSchedule": "CLE 06:21, BNA 08:01, PNS 10:07, HOU 12:34, MCI 15:14, PHX 17:47, BUR 19:02, OAK 21:17",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N7835A"
+    },
+    {
+      "DepSchedule": "CLE 06:18, BNA 08:00, PNS 10:12, HOU 12:39, MCI 15:15, PHX 17:56, BUR 18:59, OAK 20:59",
+      "FlightDate": "2024-01-28T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N429WN"
+    },
+    {
+      "DepSchedule": "CLE 06:20, BNA 08:10, PNS 10:17, HOU 12:37, MCI 15:10, PHX 18:00, BUR 19:03, OAK 21:02",
+      "FlightDate": "2024-01-21T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N228WN"
+    },
+    {
+      "DepSchedule": "CLE 06:25, BNA 08:05, PNS 10:11, HOU 12:41, MCI 16:07, PHX 19:09, BUR 20:06, OAK 21:56",
+      "FlightDate": "2024-01-14T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N569WN"
+    },
+    {
+      "DepSchedule": "ELP 06:27, DAL 09:39, LIT 11:24, ATL 14:34, RIC 16:56, MDW 18:31, MCI 20:40, PHX 22:46",
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "ELP -\u003e DAL -\u003e LIT -\u003e ATL -\u003e RIC -\u003e MDW -\u003e MCI -\u003e PHX -\u003e SAN",
+      "Tail_Number": "N7742B"
+    },
+    {
+      "DepSchedule": "ELP 06:22, DAL 09:41, LIT 11:22, ATL 14:33, RIC 16:59, MDW 18:32, MCI 20:41, PHX 22:26",
+      "FlightDate": "2023-04-16T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "ELP -\u003e DAL -\u003e LIT -\u003e ATL -\u003e RIC -\u003e MDW -\u003e MCI -\u003e PHX -\u003e SAN",
+      "Tail_Number": "N929WN"
+    },
+    {
+      "DepSchedule": "MSY 06:08, ATL 09:44, CMH 11:56, BWI 13:54, RDU 15:53, BNA 17:29, DTW 20:45, MDW 21:49",
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX",
+      "Tail_Number": "N8631A"
+    },
+    {
+      "DepSchedule": "MSY 06:10, ATL 09:17, CMH 11:42, BWI 13:55, RDU 15:36, BNA 17:16, DTW 20:40, MDW 21:47",
+      "FlightDate": "2022-10-02T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX",
+      "Tail_Number": "N8809L"
+    },
+    {
+      "DepSchedule": "MSY 06:01, ATL 09:18, CMH 11:41, BWI 13:47, RDU 15:39, BNA 17:24, DTW 21:12, MDW 22:42",
+      "FlightDate": "2022-09-25T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX",
+      "Tail_Number": "N8811L"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-19T08:34:12.34045Z",
+  "source_query_sha256": "b87c28288608b346d9491fe718cdcb7ddd0f7a5418338dbc9cc00424ee47fa84",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=opus|phase=full"
+}

@@ -1,0 +1,78 @@
+{
+  "columns": [
+    "DestCode",
+    "hotspot_slots",
+    "total_flights",
+    "mean_avg_delay",
+    "mean_pct_del15"
+  ],
+  "rows": [
+    {
+      "DestCode": "OKC",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 24.7,
+      "mean_pct_del15": 21.9,
+      "total_flights": 4143
+    },
+    {
+      "DestCode": "EWR",
+      "hotspot_slots": 5,
+      "mean_avg_delay": 24.6,
+      "mean_pct_del15": 36.7,
+      "total_flights": 37359
+    },
+    {
+      "DestCode": "JFK",
+      "hotspot_slots": 3,
+      "mean_avg_delay": 23.7,
+      "mean_pct_del15": 33.7,
+      "total_flights": 8099
+    },
+    {
+      "DestCode": "SHV",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 23.2,
+      "mean_pct_del15": 23.6,
+      "total_flights": 712
+    },
+    {
+      "DestCode": "IAH",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 22.4,
+      "mean_pct_del15": 26.2,
+      "total_flights": 3384
+    },
+    {
+      "DestCode": "TUL",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 22.1,
+      "mean_pct_del15": 17.1,
+      "total_flights": 1307
+    },
+    {
+      "DestCode": "EYW",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 22,
+      "mean_pct_del15": 18.2,
+      "total_flights": 1085
+    },
+    {
+      "DestCode": "LGA",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 21.6,
+      "mean_pct_del15": 34.7,
+      "total_flights": 9998
+    },
+    {
+      "DestCode": "PDX",
+      "hotspot_slots": 1,
+      "mean_avg_delay": 21.6,
+      "mean_pct_del15": 36.3,
+      "total_flights": 798
+    }
+  ],
+  "row_count": 9,
+  "generated_at": "2026-03-24T11:57:06.727625Z",
+  "source_query_sha256": "0f6ac440deeec1ecf450ba6b54f3dfc2eeb21f4014215a78761b9de158bbf55c",
+  "log_comment": "qforge|question=q003|run=run-005|runner=claude|model=sonnet|phase=full|subquestion=q3"
+}

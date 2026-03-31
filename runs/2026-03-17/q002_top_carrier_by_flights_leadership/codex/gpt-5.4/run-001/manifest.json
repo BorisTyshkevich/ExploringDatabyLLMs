@@ -1,0 +1,43 @@
+{
+  "schema_version": "2",
+  "status": "ok",
+  "question_id": "q002",
+  "question_slug": "q002_top_carrier_by_flights_leadership",
+  "question_title": "Yearly carrier leadership by completed flights",
+  "dataset": "ontime_v2",
+  "runner": "codex",
+  "model": "gpt-5.4",
+  "cli_bin": "codex",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime_v2/mcp.yaml",
+  "started_at": "2026-03-17T14:07:01.945785Z",
+  "finished_at": "2026-03-17T14:16:54.116888Z",
+  "duration_sec": 592,
+  "log_comment": "qforge|question=q002|run=run-001|runner=codex|model=gpt-5.4|phase=full",
+  "query_sha256": "da019c9db476aec87db60676cab647174b7c2832af72d71fc53ddb29cfca4470",
+  "result_row_count": 195,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "ok"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/answer.sql.raw.md",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/visual.html"
+  },
+  "metadata": {
+    "execution_response_bytes": "17926"
+  }
+}

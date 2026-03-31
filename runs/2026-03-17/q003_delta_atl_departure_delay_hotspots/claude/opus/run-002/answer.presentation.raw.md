@@ -1,0 +1,1000 @@
+Now I have all the references. Let me create the report and visual.html artifacts.
+
+```report
+# {{question_title}}
+
+*Generated: {{generated_at}} | Rows: {{row_count}}*
+
+## Overview
+
+{{data_overview_md}}
+
+This analysis identifies departure delay hotspots for Delta Air Lines (DL) flights originating from Atlanta Hartsfield–Jackson (ATL). A hotspot is defined as a destination–time block combination that has had at least 1,000 completed flights across months where the monthly count exceeded 40.
+
+## Key Findings
+
+### Worst Hotspot
+
+The top-ranked hotspot represents the destination and departure time block with the highest average departure delay. The ranking considers average delay, 90th-percentile delay, and percentage of flights delayed 15+ minutes.
+
+### Persistence vs. Concentration
+
+The `QualifyingMonths` column indicates how many months the hotspot met the monthly activity threshold. A high count suggests a persistent structural issue, while a low count with a narrow date range may indicate a temporary bottleneck.
+
+### Top 5 Implications
+
+The top 5 hotspot cells reveal which combinations of destination and departure window generate the most consistent delay pressure at ATL for Delta. These patterns may reflect:
+
+- Hub connection timing conflicts
+- Downstream airport constraints
+- Seasonal demand spikes on specific routes
+- Gate and runway congestion during peak time blocks
+
+## Hotspot Summary
+
+{{result_table_md}}
+
+---
+
+*Data filtered to DL carrier, ATL origin, non-cancelled flights. Hotspots require ≥1,000 flights across months with ≥40 monthly flights.*
+```
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta ATL Departure Delay Hotspots</title>
+    <style>
+        :root {
+            --bg-top: #eaf3f8;
+            --bg-bottom: #f6fafc;
+            --panel: #ffffff;
+            --panel-alt: #f3f7fa;
+            --ink: #163244;
+            --muted: #5d7485;
+            --navy: #0e3a52;
+            --slate: #5c7080;
+            --sky: #3c88b5;
+            --teal: #1f8a70;
+            --amber: #d48a1f;
+            --red: #c54f36;
+            --grid: rgba(22, 50, 68, 0.12);
+            --border: rgba(22, 50, 68, 0.10);
+            --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+            --radius-xl: 22px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            color: var(--ink);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a5a7a 100%);
+            color: #fff;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .kpi-card {
+            background: var(--panel);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .kpi-card .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+        .kpi-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+        .kpi-card .detail {
+            font-size: 0.8rem;
+            color: var(--slate);
+            margin-top: 0.25rem;
+        }
+        .kpi-card.worst .value { color: var(--red); }
+        .card {
+            background: var(--panel);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .card-header {
+            background: var(--panel-alt);
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--navy);
+        }
+        .card-body { padding: 1.25rem; }
+        .heatmap-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .heatmap {
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            min-width: 600px;
+        }
+        .heatmap th, .heatmap td {
+            padding: 0.5rem 0.75rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .heatmap th {
+            background: var(--panel-alt);
+            color: var(--navy);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .heatmap th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            background: var(--panel-alt);
+        }
+        .heatmap td:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--panel);
+            font-weight: 600;
+            color: var(--navy);
+            z-index: 1;
+        }
+        .heatmap .cell {
+            min-width: 60px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .heatmap .cell.worst-cell {
+            outline: 3px solid var(--red);
+            outline-offset: -2px;
+        }
+        .legend {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--slate);
+        }
+        .legend-bar {
+            display: flex;
+            height: 16px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .legend-bar span {
+            width: 40px;
+        }
+        .trend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .trend-card {
+            background: var(--panel-alt);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+        }
+        .trend-card h4 {
+            font-size: 0.9rem;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+        .trend-chart {
+            height: 120px;
+            position: relative;
+        }
+        .trend-chart svg {
+            width: 100%;
+            height: 100%;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table.data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        .data-table th, .data-table td {
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .data-table th {
+            background: var(--panel-alt);
+            color: var(--navy);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .data-table tbody tr:hover {
+            background: rgba(60, 136, 181, 0.05);
+        }
+        .data-table .rank-1 {
+            background: rgba(197, 79, 54, 0.1);
+            font-weight: 600;
+        }
+        .data-table .rank-top3 {
+            background: rgba(212, 138, 31, 0.08);
+        }
+        .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .warning-panel {
+            background: rgba(212, 138, 31, 0.1);
+            border: 1px solid var(--amber);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            color: var(--amber);
+            text-align: center;
+        }
+        .control-footer {
+            background: var(--panel-alt);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-top: 2rem;
+        }
+        .control-footer h3 {
+            font-size: 0.9rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .control-group label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .control-group input, .control-group textarea {
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--panel);
+        }
+        .control-group input { width: 260px; }
+        .control-group textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            font-family: "SF Mono", "Consolas", monospace;
+            font-size: 0.75rem;
+        }
+        .btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary { background: var(--sky); color: #fff; }
+        .btn-primary:hover { background: var(--navy); }
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn-danger:hover { background: #a3402c; }
+        .btn-secondary { background: var(--slate); color: #fff; }
+        .btn-secondary:hover { background: var(--navy); }
+        .status-text {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+        .status-text.error { color: var(--red); }
+        .status-text.success { color: var(--teal); }
+        .query-ledger {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+        }
+        .query-ledger table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .query-ledger th, .query-ledger td {
+            padding: 0.4rem 0.6rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .query-ledger th { background: var(--panel); color: var(--navy); }
+        .query-ledger .status-ok { color: var(--teal); }
+        .query-ledger .status-pending { color: var(--amber); }
+        .query-ledger .status-error { color: var(--red); }
+        #dashboard-content { display: none; }
+        #empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--muted);
+        }
+        #empty-state h2 {
+            font-family: Georgia, serif;
+            color: var(--navy);
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Delta ATL Departure Delay Hotspots</h1>
+        <p class="subtitle">Destination × Time Block Analysis for DL Departures from Atlanta</p>
+    </header>
+
+    <main class="container">
+        <div id="empty-state">
+            <h2>Ready to Load Data</h2>
+            <p>Enter your JWE token and click Fetch to load the hotspot analysis.</p>
+        </div>
+
+        <div id="dashboard-content">
+            <section class="kpi-strip" id="kpi-strip"></section>
+
+            <section class="card">
+                <div class="card-header">Departure Delay Heatmap — Destination × Time Block</div>
+                <div class="card-body">
+                    <div class="heatmap-wrapper">
+                        <table class="heatmap" id="heatmap-table">
+                            <thead id="heatmap-head"></thead>
+                            <tbody id="heatmap-body"></tbody>
+                        </table>
+                    </div>
+                    <div class="legend" id="heatmap-legend"></div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">Monthly Trend — Top 3 Hotspot Cells</div>
+                <div class="card-body">
+                    <div class="trend-grid" id="trend-grid"></div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">Top 20 Hotspot Cells — Ranked by Avg Departure Delay</div>
+                <div class="card-body">
+                    <div class="table-wrapper">
+                        <table class="data-table" id="hotspot-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Destination</th>
+                                    <th>Time Block</th>
+                                    <th class="num">Avg Delay</th>
+                                    <th class="num">P90 Delay</th>
+                                    <th class="num">Del15%</th>
+                                    <th class="num">Flights</th>
+                                    <th class="num">Months</th>
+                                    <th>Period</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hotspot-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">Export</div>
+                <div class="card-body">
+                    <button class="btn btn-secondary" id="export-btn">Export Top 20 as CSV</button>
+                </div>
+            </section>
+        </div>
+
+        <footer class="control-footer">
+            <h3>Data Controls</h3>
+            <div class="control-row">
+                <div class="control-group">
+                    <label>JWE Token</label>
+                    <input type="password" id="jwe-input" placeholder="Enter JWE token">
+                </div>
+                <button class="btn btn-danger" id="forget-btn">Forget</button>
+                <button class="btn btn-primary" id="fetch-btn">Fetch Data</button>
+            </div>
+            <div class="control-group" style="width:100%">
+                <label>SQL Query</label>
+                <textarea id="sql-input"></textarea>
+            </div>
+            <p class="status-text" id="status-text"></p>
+
+            <div class="query-ledger">
+                <h4>Query Ledger</h4>
+                <table>
+                    <thead>
+                        <tr><th>Query</th><th>Role</th><th>Status</th><th>Rows</th></tr>
+                    </thead>
+                    <tbody id="ledger-body">
+                        <tr>
+                            <td>Primary hotspot query</td>
+                            <td>primary</td>
+                            <td class="status-pending" id="ledger-primary-status">pending</td>
+                            <td id="ledger-primary-rows">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </footer>
+    </main>
+
+<script>
+(function() {
+    const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+    const ENDPOINT_BASE = 'https://mcp.demo.altinity.cloud';
+
+    const SAVED_SQL = `WITH
+-- Base filtered flights
+base_flights AS (
+    SELECT
+        toStartOfMonth(FlightDate) AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        DepDelayMinutes,
+        DepDel15
+    FROM default.ontime_v2
+    WHERE IATA_CODE_Reporting_Airline = 'DL'
+      AND Origin = 'ATL'
+      AND Cancelled = 0
+),
+
+-- Monthly aggregation with qualification filter (>=40 flights)
+monthly_qualified AS (
+    SELECT
+        MonthStart,
+        Dest,
+        DepTimeBlk,
+        count() AS MonthlyFlights
+    FROM base_flights
+    GROUP BY MonthStart, Dest, DepTimeBlk
+    HAVING MonthlyFlights >= 40
+),
+
+-- Hotspots with >=1000 total flights across qualifying months
+hotspot_qualified AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        count() AS QualifyingMonths,
+        sum(MonthlyFlights) AS TotalQualifyingFlights,
+        min(MonthStart) AS FirstQualifyingMonth,
+        max(MonthStart) AS LastQualifyingMonth
+    FROM monthly_qualified
+    GROUP BY Dest, DepTimeBlk
+    HAVING TotalQualifyingFlights >= 1000
+),
+
+-- Recompute hotspot metrics from raw flights belonging to qualifying monthly cells
+hotspot_metrics AS (
+    SELECT
+        bf.Dest AS Dest,
+        bf.DepTimeBlk AS DepTimeBlk,
+        hq.QualifyingMonths AS QualifyingMonths,
+        hq.FirstQualifyingMonth AS FirstQualifyingMonth,
+        hq.LastQualifyingMonth AS LastQualifyingMonth,
+        count() AS CompletedFlights,
+        avg(bf.DepDelayMinutes) AS AvgDepDelayMinutes,
+        quantile(0.9)(bf.DepDelayMinutes) AS P90DepDelayMinutes,
+        100.0 * sum(bf.DepDel15) / count() AS DepDel15Pct
+    FROM base_flights bf
+    INNER JOIN monthly_qualified mq
+        ON bf.MonthStart = mq.MonthStart
+       AND bf.Dest = mq.Dest
+       AND bf.DepTimeBlk = mq.DepTimeBlk
+    INNER JOIN hotspot_qualified hq
+        ON bf.Dest = hq.Dest
+       AND bf.DepTimeBlk = hq.DepTimeBlk
+    GROUP BY bf.Dest, bf.DepTimeBlk, hq.QualifyingMonths, hq.FirstQualifyingMonth, hq.LastQualifyingMonth
+),
+
+-- Rank hotspots
+hotspot_ranked AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        row_number() OVER (
+            ORDER BY AvgDepDelayMinutes DESC, P90DepDelayMinutes DESC, DepDel15Pct DESC, CompletedFlights DESC
+        ) AS HotspotRank
+    FROM hotspot_metrics
+),
+
+-- Top 20 hotspots
+top20_hotspots AS (
+    SELECT * FROM hotspot_ranked WHERE HotspotRank <= 20
+),
+
+-- Monthly trend metrics for top 20 hotspots (recomputed from raw flights)
+monthly_trend_metrics AS (
+    SELECT
+        bf.MonthStart AS MonthStart,
+        bf.Dest AS Dest,
+        bf.DepTimeBlk AS DepTimeBlk,
+        t20.HotspotRank AS HotspotRank,
+        t20.FirstQualifyingMonth AS FirstQualifyingMonth,
+        t20.LastQualifyingMonth AS LastQualifyingMonth,
+        count() AS CompletedFlights,
+        avg(bf.DepDelayMinutes) AS AvgDepDelayMinutes,
+        quantile(0.9)(bf.DepDelayMinutes) AS P90DepDelayMinutes,
+        100.0 * sum(bf.DepDel15) / count() AS DepDel15Pct
+    FROM base_flights bf
+    INNER JOIN monthly_qualified mq
+        ON bf.MonthStart = mq.MonthStart
+       AND bf.Dest = mq.Dest
+       AND bf.DepTimeBlk = mq.DepTimeBlk
+    INNER JOIN top20_hotspots t20
+        ON bf.Dest = t20.Dest
+       AND bf.DepTimeBlk = t20.DepTimeBlk
+    GROUP BY bf.MonthStart, bf.Dest, bf.DepTimeBlk, t20.HotspotRank, t20.FirstQualifyingMonth, t20.LastQualifyingMonth
+),
+
+-- Hotspot summary rows
+hotspot_summary_rows AS (
+    SELECT
+        'hotspot_summary' AS RowType,
+        CAST(NULL AS Nullable(Date)) AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        round(AvgDepDelayMinutes, 2) AS AvgDepDelayMinutes,
+        round(P90DepDelayMinutes, 2) AS P90DepDelayMinutes,
+        round(DepDel15Pct, 2) AS DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        HotspotRank
+    FROM top20_hotspots
+),
+
+-- Monthly trend rows
+monthly_trend_rows AS (
+    SELECT
+        'monthly_trend' AS RowType,
+        CAST(MonthStart AS Nullable(Date)) AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        CAST(0 AS UInt64) AS QualifyingMonths,
+        CompletedFlights,
+        round(AvgDepDelayMinutes, 2) AS AvgDepDelayMinutes,
+        round(P90DepDelayMinutes, 2) AS P90DepDelayMinutes,
+        round(DepDel15Pct, 2) AS DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        HotspotRank
+    FROM monthly_trend_metrics
+)
+
+-- Final union
+SELECT * FROM hotspot_summary_rows
+UNION ALL
+SELECT * FROM monthly_trend_rows
+ORDER BY RowType, HotspotRank ASC, MonthStart ASC, Dest, DepTimeBlk`;
+
+    const jweInput = document.getElementById('jwe-input');
+    const sqlInput = document.getElementById('sql-input');
+    const fetchBtn = document.getElementById('fetch-btn');
+    const forgetBtn = document.getElementById('forget-btn');
+    const statusText = document.getElementById('status-text');
+    const emptyState = document.getElementById('empty-state');
+    const dashboardContent = document.getElementById('dashboard-content');
+    const ledgerPrimaryStatus = document.getElementById('ledger-primary-status');
+    const ledgerPrimaryRows = document.getElementById('ledger-primary-rows');
+
+    function normalizeDate(val) {
+        return String(val ?? '').slice(0, 10);
+    }
+
+    function init() {
+        const storedJwe = localStorage.getItem(STORAGE_KEY);
+        if (storedJwe) {
+            jweInput.value = '••••••••';
+            jweInput.dataset.stored = storedJwe;
+        }
+        sqlInput.value = SAVED_SQL;
+    }
+
+    function setStatus(msg, type) {
+        statusText.textContent = msg;
+        statusText.className = 'status-text' + (type ? ' ' + type : '');
+    }
+
+    function getJwe() {
+        if (jweInput.dataset.stored && jweInput.value === '••••••••') {
+            return jweInput.dataset.stored;
+        }
+        return jweInput.value.trim();
+    }
+
+    jweInput.addEventListener('focus', function() {
+        if (jweInput.dataset.stored && jweInput.value === '••••••••') {
+            jweInput.value = '';
+        }
+    });
+
+    jweInput.addEventListener('blur', function() {
+        if (!jweInput.value && jweInput.dataset.stored) {
+            jweInput.value = '••••••••';
+        }
+    });
+
+    forgetBtn.addEventListener('click', function() {
+        localStorage.removeItem(STORAGE_KEY);
+        jweInput.value = '';
+        delete jweInput.dataset.stored;
+        setStatus('Token forgotten.', '');
+    });
+
+    fetchBtn.addEventListener('click', async function() {
+        const jwe = getJwe();
+        const sql = sqlInput.value.trim();
+
+        if (!jwe) {
+            setStatus('Please enter a JWE token.', 'error');
+            return;
+        }
+        if (!sql) {
+            setStatus('SQL query is empty.', 'error');
+            return;
+        }
+
+        setStatus('Fetching data...', '');
+        ledgerPrimaryStatus.textContent = 'pending';
+        ledgerPrimaryStatus.className = 'status-pending';
+        ledgerPrimaryRows.textContent = '—';
+
+        try {
+            const url = `${ENDPOINT_BASE}/${encodeURIComponent(jwe)}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+            const resp = await fetch(url);
+
+            if (!resp.ok) {
+                const errText = await resp.text();
+                throw new Error(`HTTP ${resp.status}: ${errText.slice(0, 200)}`);
+            }
+
+            const data = await resp.json();
+
+            if (!jweInput.dataset.stored || jweInput.value !== '••••••••') {
+                localStorage.setItem(STORAGE_KEY, jwe);
+                jweInput.dataset.stored = jwe;
+                jweInput.value = '••••••••';
+            }
+
+            const columns = data.columns ?? [];
+            const rows = data.rows ?? [];
+            const count = data.count ?? rows.length;
+
+            ledgerPrimaryStatus.textContent = 'ok';
+            ledgerPrimaryStatus.className = 'status-ok';
+            ledgerPrimaryRows.textContent = count;
+
+            if (count === 0 || rows.length === 0) {
+                setStatus('Query returned no rows.', 'error');
+                emptyState.innerHTML = '<h2>No Data</h2><p>The query returned an empty result set.</p>';
+                emptyState.style.display = 'block';
+                dashboardContent.style.display = 'none';
+                return;
+            }
+
+            const records = rows.map(r => {
+                const obj = {};
+                columns.forEach((c, i) => { obj[c] = r[i]; });
+                return obj;
+            });
+
+            const summaryRows = records.filter(r => r.RowType === 'hotspot_summary');
+            const trendRows = records.filter(r => r.RowType === 'monthly_trend');
+
+            renderDashboard(summaryRows, trendRows);
+
+            emptyState.style.display = 'none';
+            dashboardContent.style.display = 'block';
+            setStatus(`Loaded ${count} rows.`, 'success');
+
+        } catch (err) {
+            ledgerPrimaryStatus.textContent = 'error';
+            ledgerPrimaryStatus.className = 'status-error';
+            setStatus(err.message, 'error');
+        }
+    });
+
+    function renderDashboard(summaryRows, trendRows) {
+        renderKPIs(summaryRows);
+        renderHeatmap(summaryRows);
+        renderTrends(summaryRows, trendRows);
+        renderTable(summaryRows);
+        setupExport(summaryRows);
+    }
+
+    function renderKPIs(summaryRows) {
+        const strip = document.getElementById('kpi-strip');
+        strip.innerHTML = '';
+
+        if (summaryRows.length === 0) {
+            strip.innerHTML = '<div class="warning-panel">No hotspot data available.</div>';
+            return;
+        }
+
+        const worst = summaryRows[0];
+        const maxAvg = Math.max(...summaryRows.map(r => r.AvgDepDelayMinutes ?? 0));
+        const maxP90 = Math.max(...summaryRows.map(r => r.P90DepDelayMinutes ?? 0));
+        const totalMonths = summaryRows.reduce((s, r) => s + (r.QualifyingMonths ?? 0), 0);
+
+        const kpis = [
+            { label: 'Worst Hotspot', value: `${worst.Dest} / ${worst.DepTimeBlk}`, detail: `Rank #1`, worst: true },
+            { label: 'Worst Avg Delay', value: `${maxAvg.toFixed(1)} min`, detail: 'Across top 20 cells', worst: false },
+            { label: 'Worst P90 Delay', value: `${maxP90.toFixed(1)} min`, detail: '90th percentile', worst: false },
+            { label: 'Total Qual. Months', value: totalMonths, detail: 'Sum of all hotspot months', worst: false }
+        ];
+
+        kpis.forEach(k => {
+            const card = document.createElement('div');
+            card.className = 'kpi-card' + (k.worst ? ' worst' : '');
+            card.innerHTML = `
+                <div class="label">${k.label}</div>
+                <div class="value">${k.value}</div>
+                <div class="detail">${k.detail}</div>
+            `;
+            strip.appendChild(card);
+        });
+    }
+
+    function renderHeatmap(summaryRows) {
+        const head = document.getElementById('heatmap-head');
+        const body = document.getElementById('heatmap-body');
+        const legend = document.getElementById('heatmap-legend');
+        head.innerHTML = '';
+        body.innerHTML = '';
+        legend.innerHTML = '';
+
+        if (summaryRows.length === 0) {
+            body.innerHTML = '<tr><td colspan="10" class="warning-panel">No data for heatmap.</td></tr>';
+            return;
+        }
+
+        const destinations = [...new Set(summaryRows.map(r => r.Dest))].sort();
+        const timeBlocks = [...new Set(summaryRows.map(r => r.DepTimeBlk))].sort();
+
+        const dataMap = {};
+        let minVal = Infinity, maxVal = -Infinity;
+        summaryRows.forEach(r => {
+            const key = `${r.Dest}|${r.DepTimeBlk}`;
+            const val = r.AvgDepDelayMinutes ?? 0;
+            dataMap[key] = { val, rank: r.HotspotRank };
+            if (val < minVal) minVal = val;
+            if (val > maxVal) maxVal = val;
+        });
+
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = '<th>Dest \\ Time</th>' + timeBlocks.map(t => `<th>${t}</th>`).join('');
+        head.appendChild(headerRow);
+
+        destinations.forEach(dest => {
+            const tr = document.createElement('tr');
+            let cells = `<td>${dest}</td>`;
+            timeBlocks.forEach(tb => {
+                const key = `${dest}|${tb}`;
+                const d = dataMap[key];
+                if (d) {
+                    const color = getHeatColor(d.val, minVal, maxVal);
+                    const isWorst = d.rank === 1;
+                    cells += `<td class="cell${isWorst ? ' worst-cell' : ''}" style="background:${color}">${d.val.toFixed(1)}</td>`;
+                } else {
+                    cells += `<td class="cell" style="background:#f9f9f9;color:#ccc">—</td>`;
+                }
+            });
+            tr.innerHTML = cells;
+            body.appendChild(tr);
+        });
+
+        legend.innerHTML = `
+            <span>Avg Delay (min):</span>
+            <div class="legend-bar">
+                <span style="background:${getHeatColor(minVal, minVal, maxVal)}"></span>
+                <span style="background:${getHeatColor((minVal+maxVal)/2, minVal, maxVal)}"></span>
+                <span style="background:${getHeatColor(maxVal, minVal, maxVal)}"></span>
+            </div>
+            <span>${minVal.toFixed(1)} — ${maxVal.toFixed(1)}</span>
+            <span style="margin-left:1rem;">⬜ Outlined = #1 worst hotspot</span>
+        `;
+    }
+
+    function getHeatColor(val, min, max) {
+        const range = max - min || 1;
+        const t = (val - min) / range;
+        const r = Math.round(31 + t * (197 - 31));
+        const g = Math.round(138 - t * (138 - 79));
+        const b = Math.round(112 - t * (112 - 54));
+        return `rgb(${r},${g},${b})`;
+    }
+
+    function renderTrends(summaryRows, trendRows) {
+        const grid = document.getElementById('trend-grid');
+        grid.innerHTML = '';
+
+        const top3 = summaryRows.slice(0, 3);
+
+        if (top3.length === 0) {
+            grid.innerHTML = '<div class="warning-panel">No trend data available.</div>';
+            return;
+        }
+
+        top3.forEach(hotspot => {
+            const cellTrend = trendRows.filter(r => r.Dest === hotspot.Dest && r.DepTimeBlk === hotspot.DepTimeBlk)
+                .sort((a, b) => normalizeDate(a.MonthStart).localeCompare(normalizeDate(b.MonthStart)));
+
+            const card = document.createElement('div');
+            card.className = 'trend-card';
+            card.innerHTML = `<h4>#${hotspot.HotspotRank}: ${hotspot.Dest} / ${hotspot.DepTimeBlk}</h4>`;
+
+            if (cellTrend.length < 2) {
+                card.innerHTML += '<p style="color:var(--muted);font-size:0.8rem;">Insufficient trend data.</p>';
+                grid.appendChild(card);
+                return;
+            }
+
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'trend-chart';
+
+            const values = cellTrend.map(r => r.AvgDepDelayMinutes ?? 0);
+            const minY = Math.min(...values) * 0.9;
+            const maxY = Math.max(...values) * 1.1 || 1;
+
+            const width = 280;
+            const height = 100;
+            const padL = 30, padR = 10, padT = 10, padB = 20;
+            const plotW = width - padL - padR;
+            const plotH = height - padT - padB;
+
+            const points = cellTrend.map((r, i) => {
+                const x = padL + (i / (cellTrend.length - 1)) * plotW;
+                const y = padT + plotH - ((r.AvgDepDelayMinutes - minY) / (maxY - minY)) * plotH;
+                return `${x},${y}`;
+            });
+
+            const svg = `<svg viewBox="0 0 ${width} ${height}">
+                <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${height - padB}" stroke="var(--border)" />
+                <line x1="${padL}" y1="${height - padB}" x2="${width - padR}" y2="${height - padB}" stroke="var(--border)" />
+                <polyline fill="none" stroke="var(--red)" stroke-width="2" points="${points.join(' ')}" />
+                ${cellTrend.map((r, i) => {
+                    const x = padL + (i / (cellTrend.length - 1)) * plotW;
+                    const y = padT + plotH - ((r.AvgDepDelayMinutes - minY) / (maxY - minY)) * plotH;
+                    return `<circle cx="${x}" cy="${y}" r="3" fill="var(--red)" />`;
+                }).join('')}
+                <text x="${padL - 5}" y="${padT + 5}" font-size="9" fill="var(--muted)" text-anchor="end">${maxY.toFixed(0)}</text>
+                <text x="${padL - 5}" y="${height - padB}" font-size="9" fill="var(--muted)" text-anchor="end">${minY.toFixed(0)}</text>
+                <text x="${padL}" y="${height - 5}" font-size="8" fill="var(--muted)">${normalizeDate(cellTrend[0].MonthStart)}</text>
+                <text x="${width - padR}" y="${height - 5}" font-size="8" fill="var(--muted)" text-anchor="end">${normalizeDate(cellTrend[cellTrend.length-1].MonthStart)}</text>
+            </svg>`;
+
+            chartDiv.innerHTML = svg;
+            card.appendChild(chartDiv);
+            grid.appendChild(card);
+        });
+    }
+
+    function renderTable(summaryRows) {
+        const tbody = document.getElementById('hotspot-body');
+        tbody.innerHTML = '';
+
+        if (summaryRows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" class="warning-panel">No hotspot data.</td></tr>';
+            return;
+        }
+
+        summaryRows.forEach(r => {
+            const tr = document.createElement('tr');
+            if (r.HotspotRank === 1) tr.className = 'rank-1';
+            else if (r.HotspotRank <= 3) tr.className = 'rank-top3';
+
+            const first = normalizeDate(r.FirstQualifyingMonth);
+            const last = normalizeDate(r.LastQualifyingMonth);
+
+            tr.innerHTML = `
+                <td>${r.HotspotRank}</td>
+                <td>${r.Dest}</td>
+                <td>${r.DepTimeBlk}</td>
+                <td class="num">${(r.AvgDepDelayMinutes ?? 0).toFixed(2)}</td>
+                <td class="num">${(r.P90DepDelayMinutes ?? 0).toFixed(2)}</td>
+                <td class="num">${(r.DepDel15Pct ?? 0).toFixed(1)}%</td>
+                <td class="num">${(r.CompletedFlights ?? 0).toLocaleString()}</td>
+                <td class="num">${r.QualifyingMonths ?? 0}</td>
+                <td>${first} — ${last}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function setupExport(summaryRows) {
+        const btn = document.getElementById('export-btn');
+        btn.onclick = function() {
+            if (summaryRows.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+            const headers = ['Rank','Dest','DepTimeBlk','AvgDepDelayMinutes','P90DepDelayMinutes','DepDel15Pct','CompletedFlights','QualifyingMonths','FirstQualifyingMonth','LastQualifyingMonth'];
+            const csvRows = [headers.join(',')];
+            summaryRows.forEach(r => {
+                csvRows.push([
+                    r.HotspotRank,
+                    r.Dest,
+                    r.DepTimeBlk,
+                    r.AvgDepDelayMinutes,
+                    r.P90DepDelayMinutes,
+                    r.DepDel15Pct,
+                    r.CompletedFlights,
+                    r.QualifyingMonths,
+                    normalizeDate(r.FirstQualifyingMonth),
+                    normalizeDate(r.LastQualifyingMonth)
+                ].join(','));
+            });
+            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'delta_atl_hotspots_top20.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+    }
+
+    init();
+})();
+</script>
+</body>
+</html>
+```

@@ -1,0 +1,3221 @@
+{
+  "columns": [
+    "Year",
+    "Month",
+    "FlightVolume",
+    "AvgDepDelay",
+    "PctDel15"
+  ],
+  "rows": [
+    {
+      "AvgDepDelay": 36.33,
+      "FlightVolume": 86083,
+      "Month": 7,
+      "PctDel15": 0.3804,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 32.74,
+      "FlightVolume": 83760,
+      "Month": 5,
+      "PctDel15": 0.3488,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 31.35,
+      "FlightVolume": 84893,
+      "Month": 7,
+      "PctDel15": 0.3515,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 29.56,
+      "FlightVolume": 81667,
+      "Month": 7,
+      "PctDel15": 0.3136,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 29.05,
+      "FlightVolume": 83639,
+      "Month": 6,
+      "PctDel15": 0.3324,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 26.66,
+      "FlightVolume": 79462,
+      "Month": 6,
+      "PctDel15": 0.2909,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 26.38,
+      "FlightVolume": 83502,
+      "Month": 8,
+      "PctDel15": 0.3088,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 26.25,
+      "FlightVolume": 83323,
+      "Month": 6,
+      "PctDel15": 0.3158,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 24.91,
+      "FlightVolume": 81421,
+      "Month": 8,
+      "PctDel15": 0.3041,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 24.69,
+      "FlightVolume": 83959,
+      "Month": 8,
+      "PctDel15": 0.2612,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 23.41,
+      "FlightVolume": 70266,
+      "Month": 6,
+      "PctDel15": 0.3076,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 23.39,
+      "FlightVolume": 50141,
+      "Month": 6,
+      "PctDel15": 0.3358,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 22.59,
+      "FlightVolume": 76098,
+      "Month": 1,
+      "PctDel15": 0.271,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 21.66,
+      "FlightVolume": 81367,
+      "Month": 3,
+      "PctDel15": 0.2619,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 21.3,
+      "FlightVolume": 74166,
+      "Month": 7,
+      "PctDel15": 0.2873,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 20.98,
+      "FlightVolume": 74975,
+      "Month": 12,
+      "PctDel15": 0.264,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 20.65,
+      "FlightVolume": 49819,
+      "Month": 6,
+      "PctDel15": 0.3205,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 20.15,
+      "FlightVolume": 40521,
+      "Month": 9,
+      "PctDel15": 0.3289,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 20.14,
+      "FlightVolume": 68026,
+      "Month": 6,
+      "PctDel15": 0.2714,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 19.93,
+      "FlightVolume": 50792,
+      "Month": 12,
+      "PctDel15": 0.3362,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 19.23,
+      "FlightVolume": 52747,
+      "Month": 7,
+      "PctDel15": 0.2918,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 19.19,
+      "FlightVolume": 71742,
+      "Month": 7,
+      "PctDel15": 0.2651,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 19.08,
+      "FlightVolume": 44619,
+      "Month": 6,
+      "PctDel15": 0.2895,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 19.01,
+      "FlightVolume": 76419,
+      "Month": 6,
+      "PctDel15": 0.2807,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 18.94,
+      "FlightVolume": 75804,
+      "Month": 4,
+      "PctDel15": 0.2395,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 18.63,
+      "FlightVolume": 77846,
+      "Month": 3,
+      "PctDel15": 0.2409,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 18.12,
+      "FlightVolume": 76956,
+      "Month": 12,
+      "PctDel15": 0.2345,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 18.04,
+      "FlightVolume": 58906,
+      "Month": 7,
+      "PctDel15": 0.2752,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 18,
+      "FlightVolume": 84814,
+      "Month": 5,
+      "PctDel15": 0.2505,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 17.83,
+      "FlightVolume": 69904,
+      "Month": 8,
+      "PctDel15": 0.2463,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 17.67,
+      "FlightVolume": 78894,
+      "Month": 5,
+      "PctDel15": 0.2563,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 17.63,
+      "FlightVolume": 80429,
+      "Month": 4,
+      "PctDel15": 0.2346,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 17.58,
+      "FlightVolume": 45321,
+      "Month": 6,
+      "PctDel15": 0.2781,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 17.49,
+      "FlightVolume": 46317,
+      "Month": 2,
+      "PctDel15": 0.2968,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 17.42,
+      "FlightVolume": 49113,
+      "Month": 3,
+      "PctDel15": 0.2908,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 17.38,
+      "FlightVolume": 75025,
+      "Month": 8,
+      "PctDel15": 0.2501,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 16.8,
+      "FlightVolume": 78863,
+      "Month": 7,
+      "PctDel15": 0.2605,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 16.67,
+      "FlightVolume": 57962,
+      "Month": 12,
+      "PctDel15": 0.2698,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 16.54,
+      "FlightVolume": 79381,
+      "Month": 5,
+      "PctDel15": 0.2106,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 16.43,
+      "FlightVolume": 52290,
+      "Month": 12,
+      "PctDel15": 0.2826,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 16.42,
+      "FlightVolume": 44863,
+      "Month": 6,
+      "PctDel15": 0.26,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 16.41,
+      "FlightVolume": 80246,
+      "Month": 7,
+      "PctDel15": 0.25,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 16.27,
+      "FlightVolume": 58217,
+      "Month": 6,
+      "PctDel15": 0.241,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 16.18,
+      "FlightVolume": 79247,
+      "Month": 7,
+      "PctDel15": 0.2361,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 16.16,
+      "FlightVolume": 46525,
+      "Month": 2,
+      "PctDel15": 0.2873,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 16,
+      "FlightVolume": 77156,
+      "Month": 11,
+      "PctDel15": 0.2323,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 15.96,
+      "FlightVolume": 81083,
+      "Month": 4,
+      "PctDel15": 0.2288,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 15.91,
+      "FlightVolume": 43296,
+      "Month": 4,
+      "PctDel15": 0.2459,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 15.9,
+      "FlightVolume": 57281,
+      "Month": 12,
+      "PctDel15": 0.2387,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 15.85,
+      "FlightVolume": 81281,
+      "Month": 3,
+      "PctDel15": 0.2166,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 15.84,
+      "FlightVolume": 50753,
+      "Month": 1,
+      "PctDel15": 0.2729,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 15.78,
+      "FlightVolume": 84927,
+      "Month": 10,
+      "PctDel15": 0.2288,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 15.49,
+      "FlightVolume": 52602,
+      "Month": 1,
+      "PctDel15": 0.2721,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 15.47,
+      "FlightVolume": 52262,
+      "Month": 1,
+      "PctDel15": 0.2585,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 15.42,
+      "FlightVolume": 52407,
+      "Month": 1,
+      "PctDel15": 0.2399,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 15.39,
+      "FlightVolume": 46271,
+      "Month": 12,
+      "PctDel15": 0.2533,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 15.28,
+      "FlightVolume": 76373,
+      "Month": 9,
+      "PctDel15": 0.2118,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 15.24,
+      "FlightVolume": 53761,
+      "Month": 6,
+      "PctDel15": 0.2218,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 15.1,
+      "FlightVolume": 43536,
+      "Month": 5,
+      "PctDel15": 0.2384,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 15.09,
+      "FlightVolume": 43291,
+      "Month": 9,
+      "PctDel15": 0.2568,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 15.08,
+      "FlightVolume": 52829,
+      "Month": 8,
+      "PctDel15": 0.2531,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 15.02,
+      "FlightVolume": 78817,
+      "Month": 6,
+      "PctDel15": 0.235,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 14.82,
+      "FlightVolume": 78743,
+      "Month": 8,
+      "PctDel15": 0.2337,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 14.7,
+      "FlightVolume": 76332,
+      "Month": 9,
+      "PctDel15": 0.1974,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 14.68,
+      "FlightVolume": 77897,
+      "Month": 7,
+      "PctDel15": 0.2309,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 14.66,
+      "FlightVolume": 80820,
+      "Month": 8,
+      "PctDel15": 0.2279,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 14.63,
+      "FlightVolume": 52105,
+      "Month": 7,
+      "PctDel15": 0.2522,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 14.48,
+      "FlightVolume": 78989,
+      "Month": 8,
+      "PctDel15": 0.2352,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 14.47,
+      "FlightVolume": 73582,
+      "Month": 1,
+      "PctDel15": 0.2023,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 14.3,
+      "FlightVolume": 69842,
+      "Month": 2,
+      "PctDel15": 0.2051,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 14.22,
+      "FlightVolume": 47043,
+      "Month": 7,
+      "PctDel15": 0.2446,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 14.15,
+      "FlightVolume": 44995,
+      "Month": 12,
+      "PctDel15": 0.2454,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 14.13,
+      "FlightVolume": 43821,
+      "Month": 6,
+      "PctDel15": 0.2274,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 14.13,
+      "FlightVolume": 70498,
+      "Month": 5,
+      "PctDel15": 0.2119,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 14.07,
+      "FlightVolume": 53174,
+      "Month": 3,
+      "PctDel15": 0.2388,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 14.07,
+      "FlightVolume": 75835,
+      "Month": 6,
+      "PctDel15": 0.2258,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 13.96,
+      "FlightVolume": 76966,
+      "Month": 6,
+      "PctDel15": 0.2321,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 13.92,
+      "FlightVolume": 54751,
+      "Month": 7,
+      "PctDel15": 0.2239,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 13.75,
+      "FlightVolume": 73103,
+      "Month": 11,
+      "PctDel15": 0.194,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 13.74,
+      "FlightVolume": 52131,
+      "Month": 5,
+      "PctDel15": 0.2525,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 13.68,
+      "FlightVolume": 50556,
+      "Month": 4,
+      "PctDel15": 0.2353,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 13.68,
+      "FlightVolume": 51978,
+      "Month": 8,
+      "PctDel15": 0.2399,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 13.6,
+      "FlightVolume": 54441,
+      "Month": 12,
+      "PctDel15": 0.2377,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 13.56,
+      "FlightVolume": 58721,
+      "Month": 8,
+      "PctDel15": 0.2125,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 13.56,
+      "FlightVolume": 46358,
+      "Month": 7,
+      "PctDel15": 0.2424,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 13.53,
+      "FlightVolume": 57668,
+      "Month": 6,
+      "PctDel15": 0.227,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 13.34,
+      "FlightVolume": 42755,
+      "Month": 12,
+      "PctDel15": 0.2497,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 13.3,
+      "FlightVolume": 43941,
+      "Month": 4,
+      "PctDel15": 0.2322,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 13.28,
+      "FlightVolume": 68951,
+      "Month": 2,
+      "PctDel15": 0.1908,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 13.21,
+      "FlightVolume": 46854,
+      "Month": 7,
+      "PctDel15": 0.2338,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 13.21,
+      "FlightVolume": 54036,
+      "Month": 5,
+      "PctDel15": 0.2108,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 13.18,
+      "FlightVolume": 65827,
+      "Month": 4,
+      "PctDel15": 0.2011,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 13.02,
+      "FlightVolume": 44888,
+      "Month": 4,
+      "PctDel15": 0.2166,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 13.02,
+      "FlightVolume": 53932,
+      "Month": 12,
+      "PctDel15": 0.2532,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 13.01,
+      "FlightVolume": 45032,
+      "Month": 12,
+      "PctDel15": 0.2363,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 12.98,
+      "FlightVolume": 70672,
+      "Month": 10,
+      "PctDel15": 0.1984,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 12.98,
+      "FlightVolume": 45698,
+      "Month": 8,
+      "PctDel15": 0.2289,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 12.91,
+      "FlightVolume": 57480,
+      "Month": 12,
+      "PctDel15": 0.2362,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 12.89,
+      "FlightVolume": 72286,
+      "Month": 1,
+      "PctDel15": 0.1877,
+      "Year": 2025
+    },
+    {
+      "AvgDepDelay": 12.88,
+      "FlightVolume": 45100,
+      "Month": 5,
+      "PctDel15": 0.2138,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 12.79,
+      "FlightVolume": 59505,
+      "Month": 2,
+      "PctDel15": 0.1943,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 12.75,
+      "FlightVolume": 56742,
+      "Month": 6,
+      "PctDel15": 0.2194,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 12.75,
+      "FlightVolume": 74131,
+      "Month": 4,
+      "PctDel15": 0.2044,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 12.71,
+      "FlightVolume": 55472,
+      "Month": 1,
+      "PctDel15": 0.2331,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 12.62,
+      "FlightVolume": 56116,
+      "Month": 7,
+      "PctDel15": 0.1958,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 12.6,
+      "FlightVolume": 61832,
+      "Month": 7,
+      "PctDel15": 0.2012,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 12.54,
+      "FlightVolume": 70908,
+      "Month": 9,
+      "PctDel15": 0.1871,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 12.49,
+      "FlightVolume": 43864,
+      "Month": 6,
+      "PctDel15": 0.2179,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 12.27,
+      "FlightVolume": 55258,
+      "Month": 12,
+      "PctDel15": 0.2246,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 12.26,
+      "FlightVolume": 47552,
+      "Month": 4,
+      "PctDel15": 0.2354,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 12.12,
+      "FlightVolume": 41931,
+      "Month": 10,
+      "PctDel15": 0.2398,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 11.98,
+      "FlightVolume": 53999,
+      "Month": 7,
+      "PctDel15": 0.2078,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 11.98,
+      "FlightVolume": 43876,
+      "Month": 12,
+      "PctDel15": 0.2322,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 11.98,
+      "FlightVolume": 58593,
+      "Month": 1,
+      "PctDel15": 0.2276,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 11.95,
+      "FlightVolume": 77023,
+      "Month": 10,
+      "PctDel15": 0.1744,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 11.88,
+      "FlightVolume": 59684,
+      "Month": 5,
+      "PctDel15": 0.1787,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 11.83,
+      "FlightVolume": 55912,
+      "Month": 8,
+      "PctDel15": 0.2078,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 11.81,
+      "FlightVolume": 58567,
+      "Month": 7,
+      "PctDel15": 0.2001,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 11.71,
+      "FlightVolume": 55304,
+      "Month": 3,
+      "PctDel15": 0.207,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 11.62,
+      "FlightVolume": 52561,
+      "Month": 5,
+      "PctDel15": 0.2188,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 11.55,
+      "FlightVolume": 43783,
+      "Month": 8,
+      "PctDel15": 0.2041,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 11.45,
+      "FlightVolume": 52770,
+      "Month": 4,
+      "PctDel15": 0.1856,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 11.44,
+      "FlightVolume": 44210,
+      "Month": 7,
+      "PctDel15": 0.2003,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 11.39,
+      "FlightVolume": 62315,
+      "Month": 8,
+      "PctDel15": 0.1917,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 11.34,
+      "FlightVolume": 80163,
+      "Month": 9,
+      "PctDel15": 0.1829,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 11.27,
+      "FlightVolume": 76991,
+      "Month": 5,
+      "PctDel15": 0.1917,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 11.27,
+      "FlightVolume": 46729,
+      "Month": 3,
+      "PctDel15": 0.2128,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 11.22,
+      "FlightVolume": 45310,
+      "Month": 8,
+      "PctDel15": 0.2056,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 11.16,
+      "FlightVolume": 53293,
+      "Month": 6,
+      "PctDel15": 0.1919,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 11.15,
+      "FlightVolume": 53631,
+      "Month": 1,
+      "PctDel15": 0.2025,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 11.12,
+      "FlightVolume": 43827,
+      "Month": 1,
+      "PctDel15": 0.2177,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 11.11,
+      "FlightVolume": 60804,
+      "Month": 3,
+      "PctDel15": 0.1804,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 11.1,
+      "FlightVolume": 78308,
+      "Month": 3,
+      "PctDel15": 0.1894,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 11.08,
+      "FlightVolume": 44700,
+      "Month": 5,
+      "PctDel15": 0.2044,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 11.07,
+      "FlightVolume": 44538,
+      "Month": 3,
+      "PctDel15": 0.2093,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 11.06,
+      "FlightVolume": 58230,
+      "Month": 4,
+      "PctDel15": 0.177,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 11.03,
+      "FlightVolume": 80910,
+      "Month": 10,
+      "PctDel15": 0.164,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 11.03,
+      "FlightVolume": 59461,
+      "Month": 3,
+      "PctDel15": 0.2005,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 11.03,
+      "FlightVolume": 43826,
+      "Month": 5,
+      "PctDel15": 0.1931,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 10.98,
+      "FlightVolume": 60580,
+      "Month": 6,
+      "PctDel15": 0.176,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 10.98,
+      "FlightVolume": 46258,
+      "Month": 7,
+      "PctDel15": 0.2045,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 10.97,
+      "FlightVolume": 57811,
+      "Month": 8,
+      "PctDel15": 0.2052,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 10.91,
+      "FlightVolume": 39076,
+      "Month": 2,
+      "PctDel15": 0.2098,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 10.91,
+      "FlightVolume": 45375,
+      "Month": 10,
+      "PctDel15": 0.2075,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 10.9,
+      "FlightVolume": 39081,
+      "Month": 2,
+      "PctDel15": 0.2187,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 10.9,
+      "FlightVolume": 44721,
+      "Month": 6,
+      "PctDel15": 0.1997,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 10.81,
+      "FlightVolume": 44598,
+      "Month": 5,
+      "PctDel15": 0.1953,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 10.8,
+      "FlightVolume": 54664,
+      "Month": 3,
+      "PctDel15": 0.181,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 10.8,
+      "FlightVolume": 70199,
+      "Month": 2,
+      "PctDel15": 0.1986,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 10.79,
+      "FlightVolume": 53216,
+      "Month": 6,
+      "PctDel15": 0.1996,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 10.73,
+      "FlightVolume": 54421,
+      "Month": 12,
+      "PctDel15": 0.1834,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 10.67,
+      "FlightVolume": 55245,
+      "Month": 2,
+      "PctDel15": 0.1891,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 10.62,
+      "FlightVolume": 46981,
+      "Month": 8,
+      "PctDel15": 0.2054,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 10.6,
+      "FlightVolume": 54803,
+      "Month": 5,
+      "PctDel15": 0.1985,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 10.59,
+      "FlightVolume": 43159,
+      "Month": 1,
+      "PctDel15": 0.2049,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 10.59,
+      "FlightVolume": 74745,
+      "Month": 2,
+      "PctDel15": 0.1726,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 10.55,
+      "FlightVolume": 45844,
+      "Month": 7,
+      "PctDel15": 0.2,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 10.53,
+      "FlightVolume": 44416,
+      "Month": 4,
+      "PctDel15": 0.1896,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 10.51,
+      "FlightVolume": 60236,
+      "Month": 6,
+      "PctDel15": 0.1678,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 10.4,
+      "FlightVolume": 44722,
+      "Month": 10,
+      "PctDel15": 0.1996,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 10.35,
+      "FlightVolume": 59374,
+      "Month": 12,
+      "PctDel15": 0.1863,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 10.33,
+      "FlightVolume": 52670,
+      "Month": 6,
+      "PctDel15": 0.1701,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 10.28,
+      "FlightVolume": 40026,
+      "Month": 2,
+      "PctDel15": 0.2043,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 10.24,
+      "FlightVolume": 54417,
+      "Month": 8,
+      "PctDel15": 0.1985,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 10.23,
+      "FlightVolume": 63356,
+      "Month": 8,
+      "PctDel15": 0.1736,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 10.22,
+      "FlightVolume": 53213,
+      "Month": 2,
+      "PctDel15": 0.2124,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 10.16,
+      "FlightVolume": 46071,
+      "Month": 1,
+      "PctDel15": 0.1976,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 10.14,
+      "FlightVolume": 75372,
+      "Month": 12,
+      "PctDel15": 0.1668,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 10.13,
+      "FlightVolume": 61673,
+      "Month": 3,
+      "PctDel15": 0.178,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 10.13,
+      "FlightVolume": 37281,
+      "Month": 2,
+      "PctDel15": 0.1853,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 10.08,
+      "FlightVolume": 60666,
+      "Month": 3,
+      "PctDel15": 0.1947,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 10.08,
+      "FlightVolume": 60504,
+      "Month": 1,
+      "PctDel15": 0.1835,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 10.06,
+      "FlightVolume": 50106,
+      "Month": 11,
+      "PctDel15": 0.1854,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 10.05,
+      "FlightVolume": 50684,
+      "Month": 11,
+      "PctDel15": 0.2049,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 10.03,
+      "FlightVolume": 60425,
+      "Month": 5,
+      "PctDel15": 0.1501,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 9.97,
+      "FlightVolume": 48679,
+      "Month": 2,
+      "PctDel15": 0.1916,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 9.96,
+      "FlightVolume": 42286,
+      "Month": 11,
+      "PctDel15": 0.197,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 9.93,
+      "FlightVolume": 59500,
+      "Month": 11,
+      "PctDel15": 0.1846,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 9.93,
+      "FlightVolume": 70494,
+      "Month": 3,
+      "PctDel15": 0.169,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 9.93,
+      "FlightVolume": 52306,
+      "Month": 2,
+      "PctDel15": 0.1795,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 9.91,
+      "FlightVolume": 50742,
+      "Month": 9,
+      "PctDel15": 0.1825,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 9.87,
+      "FlightVolume": 49664,
+      "Month": 2,
+      "PctDel15": 0.1739,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 9.83,
+      "FlightVolume": 44841,
+      "Month": 5,
+      "PctDel15": 0.1717,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 9.83,
+      "FlightVolume": 79228,
+      "Month": 12,
+      "PctDel15": 0.1766,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 9.78,
+      "FlightVolume": 50079,
+      "Month": 2,
+      "PctDel15": 0.1801,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 9.78,
+      "FlightVolume": 54628,
+      "Month": 8,
+      "PctDel15": 0.158,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 9.77,
+      "FlightVolume": 46762,
+      "Month": 3,
+      "PctDel15": 0.1887,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 9.77,
+      "FlightVolume": 63839,
+      "Month": 8,
+      "PctDel15": 0.1813,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 9.73,
+      "FlightVolume": 78287,
+      "Month": 10,
+      "PctDel15": 0.1754,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 9.7,
+      "FlightVolume": 80872,
+      "Month": 7,
+      "PctDel15": 0.1859,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 9.68,
+      "FlightVolume": 42904,
+      "Month": 6,
+      "PctDel15": 0.172,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 9.66,
+      "FlightVolume": 52949,
+      "Month": 10,
+      "PctDel15": 0.1903,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 9.65,
+      "FlightVolume": 72911,
+      "Month": 4,
+      "PctDel15": 0.1767,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 9.62,
+      "FlightVolume": 58065,
+      "Month": 1,
+      "PctDel15": 0.1897,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 9.61,
+      "FlightVolume": 71561,
+      "Month": 11,
+      "PctDel15": 0.1735,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 9.6,
+      "FlightVolume": 78275,
+      "Month": 8,
+      "PctDel15": 0.1828,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 9.58,
+      "FlightVolume": 71369,
+      "Month": 12,
+      "PctDel15": 0.1668,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 9.54,
+      "FlightVolume": 45980,
+      "Month": 5,
+      "PctDel15": 0.1829,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 9.51,
+      "FlightVolume": 80161,
+      "Month": 10,
+      "PctDel15": 0.1726,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 9.49,
+      "FlightVolume": 54406,
+      "Month": 1,
+      "PctDel15": 0.1731,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 9.44,
+      "FlightVolume": 52702,
+      "Month": 10,
+      "PctDel15": 0.1843,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 9.44,
+      "FlightVolume": 73687,
+      "Month": 9,
+      "PctDel15": 0.1759,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 9.43,
+      "FlightVolume": 39963,
+      "Month": 2,
+      "PctDel15": 0.1973,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 9.42,
+      "FlightVolume": 76266,
+      "Month": 11,
+      "PctDel15": 0.16,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 9.33,
+      "FlightVolume": 73252,
+      "Month": 12,
+      "PctDel15": 0.1743,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 9.33,
+      "FlightVolume": 78958,
+      "Month": 8,
+      "PctDel15": 0.1807,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 9.26,
+      "FlightVolume": 55309,
+      "Month": 2,
+      "PctDel15": 0.1637,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 9.25,
+      "FlightVolume": 53140,
+      "Month": 4,
+      "PctDel15": 0.1887,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 9.2,
+      "FlightVolume": 86046,
+      "Month": 10,
+      "PctDel15": 0.1601,
+      "Year": 2024
+    },
+    {
+      "AvgDepDelay": 9.13,
+      "FlightVolume": 64668,
+      "Month": 7,
+      "PctDel15": 0.1757,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 9.11,
+      "FlightVolume": 58919,
+      "Month": 3,
+      "PctDel15": 0.1617,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 9.1,
+      "FlightVolume": 45955,
+      "Month": 8,
+      "PctDel15": 0.1753,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 9.07,
+      "FlightVolume": 53381,
+      "Month": 4,
+      "PctDel15": 0.1485,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 9.06,
+      "FlightVolume": 57993,
+      "Month": 3,
+      "PctDel15": 0.1782,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 9.03,
+      "FlightVolume": 75284,
+      "Month": 12,
+      "PctDel15": 0.1746,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 8.98,
+      "FlightVolume": 51170,
+      "Month": 10,
+      "PctDel15": 0.1916,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 8.95,
+      "FlightVolume": 63539,
+      "Month": 7,
+      "PctDel15": 0.1574,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 8.89,
+      "FlightVolume": 56042,
+      "Month": 7,
+      "PctDel15": 0.1514,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 8.88,
+      "FlightVolume": 43985,
+      "Month": 1,
+      "PctDel15": 0.1907,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 8.78,
+      "FlightVolume": 46395,
+      "Month": 8,
+      "PctDel15": 0.1796,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 8.78,
+      "FlightVolume": 62025,
+      "Month": 12,
+      "PctDel15": 0.1715,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 8.77,
+      "FlightVolume": 71677,
+      "Month": 2,
+      "PctDel15": 0.1534,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 8.74,
+      "FlightVolume": 67155,
+      "Month": 3,
+      "PctDel15": 0.1459,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 8.73,
+      "FlightVolume": 53546,
+      "Month": 12,
+      "PctDel15": 0.1605,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 8.71,
+      "FlightVolume": 54259,
+      "Month": 10,
+      "PctDel15": 0.141,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 8.69,
+      "FlightVolume": 54096,
+      "Month": 5,
+      "PctDel15": 0.1417,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 8.67,
+      "FlightVolume": 54193,
+      "Month": 4,
+      "PctDel15": 0.1465,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 8.65,
+      "FlightVolume": 59155,
+      "Month": 12,
+      "PctDel15": 0.1903,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 8.65,
+      "FlightVolume": 41613,
+      "Month": 11,
+      "PctDel15": 0.1857,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 8.58,
+      "FlightVolume": 44545,
+      "Month": 12,
+      "PctDel15": 0.1759,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 8.57,
+      "FlightVolume": 50373,
+      "Month": 9,
+      "PctDel15": 0.1669,
+      "Year": 2007
+    },
+    {
+      "AvgDepDelay": 8.57,
+      "FlightVolume": 54179,
+      "Month": 6,
+      "PctDel15": 0.1465,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 8.55,
+      "FlightVolume": 58067,
+      "Month": 1,
+      "PctDel15": 0.1589,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 8.55,
+      "FlightVolume": 45170,
+      "Month": 3,
+      "PctDel15": 0.1758,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 8.49,
+      "FlightVolume": 54441,
+      "Month": 12,
+      "PctDel15": 0.1792,
+      "Year": 1987
+    },
+    {
+      "AvgDepDelay": 8.45,
+      "FlightVolume": 74054,
+      "Month": 11,
+      "PctDel15": 0.1591,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 8.32,
+      "FlightVolume": 78185,
+      "Month": 5,
+      "PctDel15": 0.1591,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 8.3,
+      "FlightVolume": 54111,
+      "Month": 1,
+      "PctDel15": 0.148,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 8.3,
+      "FlightVolume": 76830,
+      "Month": 5,
+      "PctDel15": 0.1674,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 8.25,
+      "FlightVolume": 76396,
+      "Month": 11,
+      "PctDel15": 0.1421,
+      "Year": 2023
+    },
+    {
+      "AvgDepDelay": 8.25,
+      "FlightVolume": 58636,
+      "Month": 11,
+      "PctDel15": 0.1429,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 8.21,
+      "FlightVolume": 59642,
+      "Month": 12,
+      "PctDel15": 0.1661,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 8.2,
+      "FlightVolume": 45388,
+      "Month": 3,
+      "PctDel15": 0.1661,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 8.17,
+      "FlightVolume": 55100,
+      "Month": 3,
+      "PctDel15": 0.146,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 8.13,
+      "FlightVolume": 45393,
+      "Month": 3,
+      "PctDel15": 0.1689,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 8.11,
+      "FlightVolume": 45871,
+      "Month": 3,
+      "PctDel15": 0.1672,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 8.08,
+      "FlightVolume": 54300,
+      "Month": 2,
+      "PctDel15": 0.1438,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 8.08,
+      "FlightVolume": 54359,
+      "Month": 3,
+      "PctDel15": 0.1456,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 8.06,
+      "FlightVolume": 74735,
+      "Month": 12,
+      "PctDel15": 0.1611,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 7.97,
+      "FlightVolume": 60605,
+      "Month": 4,
+      "PctDel15": 0.1469,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 7.97,
+      "FlightVolume": 52856,
+      "Month": 2,
+      "PctDel15": 0.149,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 7.95,
+      "FlightVolume": 55826,
+      "Month": 2,
+      "PctDel15": 0.183,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 7.94,
+      "FlightVolume": 54072,
+      "Month": 1,
+      "PctDel15": 0.1715,
+      "Year": 2006
+    },
+    {
+      "AvgDepDelay": 7.94,
+      "FlightVolume": 76533,
+      "Month": 9,
+      "PctDel15": 0.1527,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 7.92,
+      "FlightVolume": 62009,
+      "Month": 1,
+      "PctDel15": 0.1524,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 7.9,
+      "FlightVolume": 73432,
+      "Month": 12,
+      "PctDel15": 0.1584,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 7.9,
+      "FlightVolume": 66461,
+      "Month": 1,
+      "PctDel15": 0.1522,
+      "Year": 2022
+    },
+    {
+      "AvgDepDelay": 7.89,
+      "FlightVolume": 71590,
+      "Month": 6,
+      "PctDel15": 0.1517,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 7.88,
+      "FlightVolume": 60537,
+      "Month": 10,
+      "PctDel15": 0.1134,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 7.87,
+      "FlightVolume": 54772,
+      "Month": 11,
+      "PctDel15": 0.1512,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 7.87,
+      "FlightVolume": 45415,
+      "Month": 1,
+      "PctDel15": 0.1773,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 7.79,
+      "FlightVolume": 44538,
+      "Month": 2,
+      "PctDel15": 0.1431,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 7.77,
+      "FlightVolume": 76889,
+      "Month": 3,
+      "PctDel15": 0.1597,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 7.77,
+      "FlightVolume": 75506,
+      "Month": 1,
+      "PctDel15": 0.1597,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 7.74,
+      "FlightVolume": 59533,
+      "Month": 12,
+      "PctDel15": 0.1556,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 7.73,
+      "FlightVolume": 57757,
+      "Month": 5,
+      "PctDel15": 0.1572,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 7.73,
+      "FlightVolume": 66817,
+      "Month": 9,
+      "PctDel15": 0.1442,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 7.71,
+      "FlightVolume": 44661,
+      "Month": 1,
+      "PctDel15": 0.1727,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 7.7,
+      "FlightVolume": 66724,
+      "Month": 12,
+      "PctDel15": 0.1505,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 7.68,
+      "FlightVolume": 57433,
+      "Month": 8,
+      "PctDel15": 0.143,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 7.68,
+      "FlightVolume": 55794,
+      "Month": 3,
+      "PctDel15": 0.149,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 7.64,
+      "FlightVolume": 61478,
+      "Month": 1,
+      "PctDel15": 0.1561,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 7.64,
+      "FlightVolume": 78688,
+      "Month": 3,
+      "PctDel15": 0.1613,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 7.63,
+      "FlightVolume": 75591,
+      "Month": 1,
+      "PctDel15": 0.1454,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 7.62,
+      "FlightVolume": 54520,
+      "Month": 7,
+      "PctDel15": 0.1374,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 7.58,
+      "FlightVolume": 53683,
+      "Month": 1,
+      "PctDel15": 0.1491,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 7.47,
+      "FlightVolume": 72152,
+      "Month": 1,
+      "PctDel15": 0.1606,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 7.47,
+      "FlightVolume": 42844,
+      "Month": 9,
+      "PctDel15": 0.1553,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 7.34,
+      "FlightVolume": 67534,
+      "Month": 2,
+      "PctDel15": 0.1583,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 7.29,
+      "FlightVolume": 42508,
+      "Month": 11,
+      "PctDel15": 0.1643,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 7.28,
+      "FlightVolume": 64659,
+      "Month": 12,
+      "PctDel15": 0.1381,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 7.27,
+      "FlightVolume": 58322,
+      "Month": 11,
+      "PctDel15": 0.134,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 7.27,
+      "FlightVolume": 43201,
+      "Month": 9,
+      "PctDel15": 0.1528,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 7.27,
+      "FlightVolume": 77179,
+      "Month": 11,
+      "PctDel15": 0.1408,
+      "Year": 2019
+    },
+    {
+      "AvgDepDelay": 7.24,
+      "FlightVolume": 56671,
+      "Month": 4,
+      "PctDel15": 0.1184,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 7.22,
+      "FlightVolume": 65572,
+      "Month": 1,
+      "PctDel15": 0.1467,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 7.17,
+      "FlightVolume": 53840,
+      "Month": 10,
+      "PctDel15": 0.1253,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 7.13,
+      "FlightVolume": 42194,
+      "Month": 4,
+      "PctDel15": 0.1379,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 7.12,
+      "FlightVolume": 60110,
+      "Month": 3,
+      "PctDel15": 0.1566,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 7.11,
+      "FlightVolume": 59148,
+      "Month": 9,
+      "PctDel15": 0.1409,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 7.1,
+      "FlightVolume": 75708,
+      "Month": 7,
+      "PctDel15": 0.1511,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 7.1,
+      "FlightVolume": 67435,
+      "Month": 12,
+      "PctDel15": 0.1447,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 7.09,
+      "FlightVolume": 58523,
+      "Month": 6,
+      "PctDel15": 0.1256,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 7.09,
+      "FlightVolume": 72860,
+      "Month": 1,
+      "PctDel15": 0.1522,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 7.07,
+      "FlightVolume": 57487,
+      "Month": 7,
+      "PctDel15": 0.1342,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 7.07,
+      "FlightVolume": 44378,
+      "Month": 4,
+      "PctDel15": 0.1536,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 6.96,
+      "FlightVolume": 60695,
+      "Month": 1,
+      "PctDel15": 0.1235,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 6.95,
+      "FlightVolume": 45149,
+      "Month": 10,
+      "PctDel15": 0.1631,
+      "Year": 2013
+    },
+    {
+      "AvgDepDelay": 6.91,
+      "FlightVolume": 55496,
+      "Month": 6,
+      "PctDel15": 0.1191,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 6.9,
+      "FlightVolume": 72120,
+      "Month": 1,
+      "PctDel15": 0.1512,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 6.89,
+      "FlightVolume": 41957,
+      "Month": 2,
+      "PctDel15": 0.1564,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 6.86,
+      "FlightVolume": 42603,
+      "Month": 12,
+      "PctDel15": 0.1583,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 6.83,
+      "FlightVolume": 61621,
+      "Month": 7,
+      "PctDel15": 0.1184,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 6.82,
+      "FlightVolume": 63455,
+      "Month": 12,
+      "PctDel15": 0.1475,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 6.77,
+      "FlightVolume": 43432,
+      "Month": 4,
+      "PctDel15": 0.1508,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 6.76,
+      "FlightVolume": 64337,
+      "Month": 6,
+      "PctDel15": 0.1135,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 6.75,
+      "FlightVolume": 57787,
+      "Month": 8,
+      "PctDel15": 0.1233,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 6.74,
+      "FlightVolume": 61520,
+      "Month": 10,
+      "PctDel15": 0.1385,
+      "Year": 2000
+    },
+    {
+      "AvgDepDelay": 6.74,
+      "FlightVolume": 53238,
+      "Month": 11,
+      "PctDel15": 0.1564,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 6.73,
+      "FlightVolume": 55987,
+      "Month": 11,
+      "PctDel15": 0.1554,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 6.7,
+      "FlightVolume": 51461,
+      "Month": 2,
+      "PctDel15": 0.154,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 6.7,
+      "FlightVolume": 66358,
+      "Month": 7,
+      "PctDel15": 0.1082,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 6.67,
+      "FlightVolume": 51696,
+      "Month": 2,
+      "PctDel15": 0.1274,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 6.66,
+      "FlightVolume": 58392,
+      "Month": 9,
+      "PctDel15": 0.1385,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 6.64,
+      "FlightVolume": 73928,
+      "Month": 4,
+      "PctDel15": 0.145,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 6.62,
+      "FlightVolume": 51983,
+      "Month": 12,
+      "PctDel15": 0.1428,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 6.61,
+      "FlightVolume": 43001,
+      "Month": 9,
+      "PctDel15": 0.1554,
+      "Year": 2014
+    },
+    {
+      "AvgDepDelay": 6.51,
+      "FlightVolume": 41275,
+      "Month": 11,
+      "PctDel15": 0.1503,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 6.49,
+      "FlightVolume": 59977,
+      "Month": 7,
+      "PctDel15": 0.1045,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 6.45,
+      "FlightVolume": 53439,
+      "Month": 11,
+      "PctDel15": 0.1202,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 6.43,
+      "FlightVolume": 73319,
+      "Month": 11,
+      "PctDel15": 0.1408,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 6.43,
+      "FlightVolume": 66356,
+      "Month": 6,
+      "PctDel15": 0.0951,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 6.41,
+      "FlightVolume": 56990,
+      "Month": 5,
+      "PctDel15": 0.1364,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 6.39,
+      "FlightVolume": 32116,
+      "Month": 2,
+      "PctDel15": 0.1228,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 6.35,
+      "FlightVolume": 62512,
+      "Month": 5,
+      "PctDel15": 0.1343,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 6.34,
+      "FlightVolume": 66170,
+      "Month": 4,
+      "PctDel15": 0.1046,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 6.32,
+      "FlightVolume": 64451,
+      "Month": 1,
+      "PctDel15": 0.121,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 6.31,
+      "FlightVolume": 47511,
+      "Month": 9,
+      "PctDel15": 0.1462,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 6.29,
+      "FlightVolume": 51648,
+      "Month": 9,
+      "PctDel15": 0.1306,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 6.21,
+      "FlightVolume": 71121,
+      "Month": 3,
+      "PctDel15": 0.1373,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 6.2,
+      "FlightVolume": 75719,
+      "Month": 3,
+      "PctDel15": 0.1424,
+      "Year": 2018
+    },
+    {
+      "AvgDepDelay": 6.13,
+      "FlightVolume": 53672,
+      "Month": 5,
+      "PctDel15": 0.1111,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 6.08,
+      "FlightVolume": 44194,
+      "Month": 10,
+      "PctDel15": 0.1421,
+      "Year": 2011
+    },
+    {
+      "AvgDepDelay": 6.04,
+      "FlightVolume": 56168,
+      "Month": 10,
+      "PctDel15": 0.129,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 6.02,
+      "FlightVolume": 43089,
+      "Month": 9,
+      "PctDel15": 0.1446,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 5.99,
+      "FlightVolume": 59339,
+      "Month": 8,
+      "PctDel15": 0.1019,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 5.97,
+      "FlightVolume": 61845,
+      "Month": 5,
+      "PctDel15": 0.1071,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 5.97,
+      "FlightVolume": 63392,
+      "Month": 10,
+      "PctDel15": 0.1022,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 5.95,
+      "FlightVolume": 60197,
+      "Month": 2,
+      "PctDel15": 0.1119,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 5.92,
+      "FlightVolume": 72217,
+      "Month": 9,
+      "PctDel15": 0.1395,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 5.91,
+      "FlightVolume": 44428,
+      "Month": 11,
+      "PctDel15": 0.1382,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 5.89,
+      "FlightVolume": 61824,
+      "Month": 6,
+      "PctDel15": 0.1419,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 5.88,
+      "FlightVolume": 70437,
+      "Month": 2,
+      "PctDel15": 0.1372,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 5.87,
+      "FlightVolume": 60669,
+      "Month": 8,
+      "PctDel15": 0.1042,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 5.82,
+      "FlightVolume": 74199,
+      "Month": 4,
+      "PctDel15": 0.1323,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 5.81,
+      "FlightVolume": 52669,
+      "Month": 9,
+      "PctDel15": 0.1169,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 5.79,
+      "FlightVolume": 52647,
+      "Month": 9,
+      "PctDel15": 0.1349,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 5.78,
+      "FlightVolume": 55019,
+      "Month": 10,
+      "PctDel15": 0.1181,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 5.66,
+      "FlightVolume": 49323,
+      "Month": 11,
+      "PctDel15": 0.1258,
+      "Year": 2001
+    },
+    {
+      "AvgDepDelay": 5.58,
+      "FlightVolume": 53210,
+      "Month": 10,
+      "PctDel15": 0.1283,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 5.54,
+      "FlightVolume": 61165,
+      "Month": 10,
+      "PctDel15": 0.1202,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 5.5,
+      "FlightVolume": 63193,
+      "Month": 3,
+      "PctDel15": 0.1012,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 5.5,
+      "FlightVolume": 57485,
+      "Month": 11,
+      "PctDel15": 0.1188,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 5.46,
+      "FlightVolume": 66983,
+      "Month": 8,
+      "PctDel15": 0.0982,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 5.4,
+      "FlightVolume": 56297,
+      "Month": 5,
+      "PctDel15": 0.1126,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 5.39,
+      "FlightVolume": 51425,
+      "Month": 11,
+      "PctDel15": 0.1178,
+      "Year": 1996
+    },
+    {
+      "AvgDepDelay": 5.37,
+      "FlightVolume": 56859,
+      "Month": 3,
+      "PctDel15": 0.1116,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 5.35,
+      "FlightVolume": 65297,
+      "Month": 9,
+      "PctDel15": 0.0786,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 5.31,
+      "FlightVolume": 61484,
+      "Month": 5,
+      "PctDel15": 0.0842,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 5.3,
+      "FlightVolume": 76565,
+      "Month": 10,
+      "PctDel15": 0.1232,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 5.28,
+      "FlightVolume": 58878,
+      "Month": 11,
+      "PctDel15": 0.1129,
+      "Year": 1999
+    },
+    {
+      "AvgDepDelay": 5.26,
+      "FlightVolume": 52555,
+      "Month": 11,
+      "PctDel15": 0.1111,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 5.17,
+      "FlightVolume": 49212,
+      "Month": 2,
+      "PctDel15": 0.1058,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 5.14,
+      "FlightVolume": 56349,
+      "Month": 8,
+      "PctDel15": 0.108,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 5.14,
+      "FlightVolume": 53056,
+      "Month": 4,
+      "PctDel15": 0.0992,
+      "Year": 1998
+    },
+    {
+      "AvgDepDelay": 5.14,
+      "FlightVolume": 61233,
+      "Month": 10,
+      "PctDel15": 0.1046,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 5.14,
+      "FlightVolume": 55415,
+      "Month": 4,
+      "PctDel15": 0.1279,
+      "Year": 2005
+    },
+    {
+      "AvgDepDelay": 5.11,
+      "FlightVolume": 49467,
+      "Month": 10,
+      "PctDel15": 0.1325,
+      "Year": 2008
+    },
+    {
+      "AvgDepDelay": 5.1,
+      "FlightVolume": 66667,
+      "Month": 8,
+      "PctDel15": 0.0951,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 5.06,
+      "FlightVolume": 75350,
+      "Month": 10,
+      "PctDel15": 0.1223,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 5.06,
+      "FlightVolume": 52853,
+      "Month": 11,
+      "PctDel15": 0.1,
+      "Year": 1987
+    },
+    {
+      "AvgDepDelay": 4.99,
+      "FlightVolume": 43010,
+      "Month": 11,
+      "PctDel15": 0.1307,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 4.96,
+      "FlightVolume": 73026,
+      "Month": 9,
+      "PctDel15": 0.1276,
+      "Year": 2015
+    },
+    {
+      "AvgDepDelay": 4.95,
+      "FlightVolume": 43891,
+      "Month": 9,
+      "PctDel15": 0.1246,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 4.95,
+      "FlightVolume": 43013,
+      "Month": 1,
+      "PctDel15": 0.136,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 4.93,
+      "FlightVolume": 58914,
+      "Month": 8,
+      "PctDel15": 0.0921,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 4.87,
+      "FlightVolume": 44262,
+      "Month": 10,
+      "PctDel15": 0.1193,
+      "Year": 2010
+    },
+    {
+      "AvgDepDelay": 4.86,
+      "FlightVolume": 57432,
+      "Month": 11,
+      "PctDel15": 0.0894,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 4.84,
+      "FlightVolume": 74297,
+      "Month": 8,
+      "PctDel15": 0.12,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 4.84,
+      "FlightVolume": 69356,
+      "Month": 1,
+      "PctDel15": 0.1215,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 4.83,
+      "FlightVolume": 51969,
+      "Month": 4,
+      "PctDel15": 0.1084,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 4.83,
+      "FlightVolume": 60678,
+      "Month": 5,
+      "PctDel15": 0.0998,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 4.79,
+      "FlightVolume": 58202,
+      "Month": 9,
+      "PctDel15": 0.094,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 4.69,
+      "FlightVolume": 58556,
+      "Month": 7,
+      "PctDel15": 0.0929,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 4.69,
+      "FlightVolume": 64527,
+      "Month": 10,
+      "PctDel15": 0.0996,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 4.66,
+      "FlightVolume": 57599,
+      "Month": 11,
+      "PctDel15": 0.087,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 4.61,
+      "FlightVolume": 59825,
+      "Month": 4,
+      "PctDel15": 0.0941,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 4.59,
+      "FlightVolume": 74346,
+      "Month": 10,
+      "PctDel15": 0.126,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 4.59,
+      "FlightVolume": 59284,
+      "Month": 6,
+      "PctDel15": 0.0918,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 4.56,
+      "FlightVolume": 55799,
+      "Month": 4,
+      "PctDel15": 0.0845,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 4.48,
+      "FlightVolume": 58240,
+      "Month": 4,
+      "PctDel15": 0.091,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 4.47,
+      "FlightVolume": 56125,
+      "Month": 6,
+      "PctDel15": 0.0791,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 4.43,
+      "FlightVolume": 52109,
+      "Month": 11,
+      "PctDel15": 0.0959,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 4.36,
+      "FlightVolume": 47352,
+      "Month": 3,
+      "PctDel15": 0.1017,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 4.36,
+      "FlightVolume": 58206,
+      "Month": 4,
+      "PctDel15": 0.1306,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 4.34,
+      "FlightVolume": 63853,
+      "Month": 11,
+      "PctDel15": 0.0848,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 4.34,
+      "FlightVolume": 55803,
+      "Month": 5,
+      "PctDel15": 0.0895,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 4.33,
+      "FlightVolume": 71145,
+      "Month": 4,
+      "PctDel15": 0.1124,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 4.29,
+      "FlightVolume": 66332,
+      "Month": 2,
+      "PctDel15": 0.1169,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 4.29,
+      "FlightVolume": 60511,
+      "Month": 7,
+      "PctDel15": 0.0802,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 4.28,
+      "FlightVolume": 56779,
+      "Month": 2,
+      "PctDel15": 0.124,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 4.27,
+      "FlightVolume": 55871,
+      "Month": 10,
+      "PctDel15": 0.088,
+      "Year": 1987
+    },
+    {
+      "AvgDepDelay": 4.27,
+      "FlightVolume": 62076,
+      "Month": 8,
+      "PctDel15": 0.0699,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 4.23,
+      "FlightVolume": 71638,
+      "Month": 11,
+      "PctDel15": 0.1232,
+      "Year": 2016
+    },
+    {
+      "AvgDepDelay": 4.17,
+      "FlightVolume": 60194,
+      "Month": 10,
+      "PctDel15": 0.0788,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 4.14,
+      "FlightVolume": 57346,
+      "Month": 5,
+      "PctDel15": 0.0743,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 4.13,
+      "FlightVolume": 43543,
+      "Month": 11,
+      "PctDel15": 0.1162,
+      "Year": 2009
+    },
+    {
+      "AvgDepDelay": 4.12,
+      "FlightVolume": 56823,
+      "Month": 10,
+      "PctDel15": 0.0893,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 4.09,
+      "FlightVolume": 68733,
+      "Month": 9,
+      "PctDel15": 0.1148,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 4.09,
+      "FlightVolume": 60796,
+      "Month": 4,
+      "PctDel15": 0.0777,
+      "Year": 1989
+    },
+    {
+      "AvgDepDelay": 4.06,
+      "FlightVolume": 59667,
+      "Month": 2,
+      "PctDel15": 0.0804,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 3.99,
+      "FlightVolume": 58378,
+      "Month": 4,
+      "PctDel15": 0.069,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.89,
+      "FlightVolume": 60151,
+      "Month": 11,
+      "PctDel15": 0.076,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.82,
+      "FlightVolume": 66579,
+      "Month": 7,
+      "PctDel15": 0.0675,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 3.79,
+      "FlightVolume": 41377,
+      "Month": 2,
+      "PctDel15": 0.1127,
+      "Year": 2012
+    },
+    {
+      "AvgDepDelay": 3.77,
+      "FlightVolume": 58810,
+      "Month": 9,
+      "PctDel15": 0.0686,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 3.77,
+      "FlightVolume": 61497,
+      "Month": 6,
+      "PctDel15": 0.0636,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.75,
+      "FlightVolume": 58122,
+      "Month": 3,
+      "PctDel15": 0.0677,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.72,
+      "FlightVolume": 67893,
+      "Month": 10,
+      "PctDel15": 0.0614,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 3.7,
+      "FlightVolume": 65363,
+      "Month": 5,
+      "PctDel15": 0.07,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 3.68,
+      "FlightVolume": 61065,
+      "Month": 10,
+      "PctDel15": 0.0749,
+      "Year": 1990
+    },
+    {
+      "AvgDepDelay": 3.66,
+      "FlightVolume": 57274,
+      "Month": 9,
+      "PctDel15": 0.0704,
+      "Year": 1988
+    },
+    {
+      "AvgDepDelay": 3.53,
+      "FlightVolume": 61788,
+      "Month": 3,
+      "PctDel15": 0.0815,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 3.5,
+      "FlightVolume": 49591,
+      "Month": 2,
+      "PctDel15": 0.0649,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.49,
+      "FlightVolume": 73628,
+      "Month": 5,
+      "PctDel15": 0.1051,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 3.49,
+      "FlightVolume": 68938,
+      "Month": 5,
+      "PctDel15": 0.0596,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 3.49,
+      "FlightVolume": 63548,
+      "Month": 7,
+      "PctDel15": 0.0658,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.45,
+      "FlightVolume": 63734,
+      "Month": 8,
+      "PctDel15": 0.067,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 3.4,
+      "FlightVolume": 40606,
+      "Month": 10,
+      "PctDel15": 0.1016,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 3.36,
+      "FlightVolume": 69574,
+      "Month": 11,
+      "PctDel15": 0.1032,
+      "Year": 2017
+    },
+    {
+      "AvgDepDelay": 3.3,
+      "FlightVolume": 38286,
+      "Month": 12,
+      "PctDel15": 0.0955,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 3.25,
+      "FlightVolume": 63489,
+      "Month": 9,
+      "PctDel15": 0.0698,
+      "Year": 1993
+    },
+    {
+      "AvgDepDelay": 3.24,
+      "FlightVolume": 37968,
+      "Month": 1,
+      "PctDel15": 0.0988,
+      "Year": 2021
+    },
+    {
+      "AvgDepDelay": 3.16,
+      "FlightVolume": 54470,
+      "Month": 9,
+      "PctDel15": 0.0809,
+      "Year": 1995
+    },
+    {
+      "AvgDepDelay": 3.12,
+      "FlightVolume": 53271,
+      "Month": 9,
+      "PctDel15": 0.0719,
+      "Year": 1997
+    },
+    {
+      "AvgDepDelay": 3.06,
+      "FlightVolume": 63221,
+      "Month": 4,
+      "PctDel15": 0.0631,
+      "Year": 1992
+    },
+    {
+      "AvgDepDelay": 2.94,
+      "FlightVolume": 62701,
+      "Month": 2,
+      "PctDel15": 0.094,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 2.84,
+      "FlightVolume": 59254,
+      "Month": 9,
+      "PctDel15": 0.0678,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 2.76,
+      "FlightVolume": 62401,
+      "Month": 5,
+      "PctDel15": 0.0989,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 2.73,
+      "FlightVolume": 52278,
+      "Month": 9,
+      "PctDel15": 0.0889,
+      "Year": 2004
+    },
+    {
+      "AvgDepDelay": 2.7,
+      "FlightVolume": 61278,
+      "Month": 9,
+      "PctDel15": 0.0569,
+      "Year": 1991
+    },
+    {
+      "AvgDepDelay": 2.69,
+      "FlightVolume": 65048,
+      "Month": 3,
+      "PctDel15": 0.1075,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 2.44,
+      "FlightVolume": 65833,
+      "Month": 1,
+      "PctDel15": 0.1004,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 2.3,
+      "FlightVolume": 61898,
+      "Month": 4,
+      "PctDel15": 0.0955,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 2.21,
+      "FlightVolume": 65775,
+      "Month": 11,
+      "PctDel15": 0.0861,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 2.14,
+      "FlightVolume": 61649,
+      "Month": 5,
+      "PctDel15": 0.0582,
+      "Year": 1994
+    },
+    {
+      "AvgDepDelay": 1.77,
+      "FlightVolume": 59938,
+      "Month": 9,
+      "PctDel15": 0.0914,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 1.56,
+      "FlightVolume": 71337,
+      "Month": 10,
+      "PctDel15": 0.0795,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": 1.46,
+      "FlightVolume": 64963,
+      "Month": 3,
+      "PctDel15": 0.087,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 1.19,
+      "FlightVolume": 62876,
+      "Month": 10,
+      "PctDel15": 0.0771,
+      "Year": 2003
+    },
+    {
+      "AvgDepDelay": 1.13,
+      "FlightVolume": 38435,
+      "Month": 11,
+      "PctDel15": 0.0762,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 1.08,
+      "FlightVolume": 38721,
+      "Month": 9,
+      "PctDel15": 0.078,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 0.98,
+      "FlightVolume": 45854,
+      "Month": 7,
+      "PctDel15": 0.0812,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": 0.67,
+      "FlightVolume": 68725,
+      "Month": 9,
+      "PctDel15": 0.0756,
+      "Year": 2002
+    },
+    {
+      "AvgDepDelay": -0.09,
+      "FlightVolume": 46609,
+      "Month": 8,
+      "PctDel15": 0.0746,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": -0.27,
+      "FlightVolume": 27046,
+      "Month": 6,
+      "PctDel15": 0.0635,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": -2.21,
+      "FlightVolume": 21883,
+      "Month": 5,
+      "PctDel15": 0.0515,
+      "Year": 2020
+    },
+    {
+      "AvgDepDelay": -3.12,
+      "FlightVolume": 25788,
+      "Month": 4,
+      "PctDel15": 0.0638,
+      "Year": 2020
+    }
+  ],
+  "row_count": 458,
+  "generated_at": "2026-03-24T16:36:01.193537Z",
+  "source_query_sha256": "0b777b979010bdf25fdd3656bfba6e075e3fe97bd9e720f0921730096189f17e",
+  "log_comment": "qforge|question=q006|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full|subquestion=q1"
+}

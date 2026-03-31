@@ -1,0 +1,148 @@
+{
+  "columns": [
+    "Route",
+    "occurrences",
+    "state_count",
+    "states_sample"
+  ],
+  "rows": [
+    {
+      "Route": "FLL-JAX-IND-MDW-MCI-DAL-ABQ-LAX-SJC",
+      "occurrences": 99,
+      "state_count": 7,
+      "states_sample": [
+        "NM",
+        "TX",
+        "FL",
+        "IN",
+        "CA",
+        "MO",
+        "IL"
+      ]
+    },
+    {
+      "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO",
+      "occurrences": 61,
+      "state_count": 6,
+      "states_sample": [
+        "OH",
+        "TX",
+        "MO",
+        "IL",
+        "AZ",
+        "CA"
+      ]
+    },
+    {
+      "Route": "PIT-TPA-MSY-DEN-SFO-SNA-LAS-SMF-PDX",
+      "occurrences": 56,
+      "state_count": 6,
+      "states_sample": [
+        "CO",
+        "NV",
+        "LA",
+        "PA",
+        "CA",
+        "FL"
+      ]
+    },
+    {
+      "Route": "HOU-STL-CMH-BWI-LIT-DAL-AUS-SJC-ONT",
+      "occurrences": 54,
+      "state_count": 6,
+      "states_sample": [
+        "TX",
+        "MD",
+        "OH",
+        "AR",
+        "CA",
+        "MO"
+      ]
+    },
+    {
+      "Route": "BDL-BWI-PBI-TPA-STL-DEN-GEG-SEA-OAK",
+      "occurrences": 54,
+      "state_count": 6,
+      "states_sample": [
+        "CT",
+        "MD",
+        "CO",
+        "WA",
+        "FL",
+        "MO"
+      ]
+    },
+    {
+      "Route": "FLL-MCO-ECP-BNA-MDW-PDX-OAK-LAS-AUS",
+      "occurrences": 52,
+      "state_count": 6,
+      "states_sample": [
+        "TN",
+        "FL",
+        "NV",
+        "IL",
+        "CA",
+        "OR"
+      ]
+    },
+    {
+      "Route": "RIC-ATL-OKC-DEN-PHX-LAS-BOI-OAK-ONT",
+      "occurrences": 50,
+      "state_count": 8,
+      "states_sample": [
+        "GA",
+        "ID",
+        "CO",
+        "NV",
+        "CA",
+        "OK",
+        "AZ",
+        "VA"
+      ]
+    },
+    {
+      "Route": "PHL-MDW-JAN-HOU-DAL-TUL-PHX-BUR-OAK",
+      "occurrences": 49,
+      "state_count": 7,
+      "states_sample": [
+        "CA",
+        "TX",
+        "MS",
+        "IL",
+        "PA",
+        "AZ",
+        "OK"
+      ]
+    },
+    {
+      "Route": "JAX-BNA-MDW-SLC-GEG-SEA-SMF-SAN-MCI",
+      "occurrences": 47,
+      "state_count": 6,
+      "states_sample": [
+        "TN",
+        "WA",
+        "FL",
+        "IL",
+        "CA",
+        "UT"
+      ]
+    },
+    {
+      "Route": "PIT-MCO-HOU-DEN-OKC-DAL-AUS-SJC-LAS",
+      "occurrences": 47,
+      "state_count": 6,
+      "states_sample": [
+        "TX",
+        "CO",
+        "FL",
+        "OK",
+        "PA",
+        "CA"
+      ]
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-25T17:40:38.850254Z",
+  "source_query_sha256": "da3110e210730ce7b1a9ba0b8111b6d2b4c065e3582a75aa0279033a3a73a48c",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q2"
+}

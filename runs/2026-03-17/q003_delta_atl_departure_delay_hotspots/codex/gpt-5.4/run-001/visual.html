@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Delta ATL departure delay hotspots by destination and time block</title>
+  <style>
+    :root {
+      --bg-top: #eaf3f8;
+      --bg-bottom: #f6fafc;
+      --panel: #ffffff;
+      --panel-alt: #f3f7fa;
+      --ink: #163244;
+      --muted: #5d7485;
+      --navy: #0e3a52;
+      --slate: #5c7080;
+      --sky: #3c88b5;
+      --teal: #1f8a70;
+      --amber: #d48a1f;
+      --red: #c54f36;
+      --grid: rgba(22, 50, 68, 0.12);
+      --border: rgba(22, 50, 68, 0.10);
+      --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(60, 136, 181, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(31, 138, 112, 0.12), transparent 24%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(14, 58, 82, 0.96), rgba(28, 96, 132, 0.90)),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0));
+      color: #f4fbff;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 28px 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(255,255,255,0.18), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(244, 251, 255, 0.76);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, ui-serif, serif;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      max-width: 12ch;
+    }
+
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 66ch;
+      color: rgba(244, 251, 255, 0.88);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .hero-pill {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #f4fbff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+
+    .dashboard {
+      display: none;
+      margin-top: 22px;
+    }
+
+    .dashboard.visible {
+      display: block;
+    }
+
+    .warning-banner {
+      display: none;
+      margin-top: 18px;
+      background: rgba(212, 138, 31, 0.12);
+      color: #7b5114;
+      border: 1px solid rgba(212, 138, 31, 0.22);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .warning-banner.visible {
+      display: block;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .kpi-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      min-height: 126px;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: clamp(1.45rem, 2.4vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--navy);
+    }
+
+    .kpi-subtext {
+      margin-top: 10px;
+      color: var(--slate);
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.95fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-family: Georgia, ui-serif, serif;
+      font-size: 1.45rem;
+      color: var(--navy);
+    }
+
+    .panel .section-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.94rem;
+    }
+
+    .callout {
+      margin-top: 16px;
+      border-radius: var(--radius-md);
+      padding: 14px 15px;
+      background: linear-gradient(135deg, rgba(197, 79, 54, 0.10), rgba(212, 138, 31, 0.10));
+      border: 1px solid rgba(197, 79, 54, 0.18);
+    }
+
+    .callout strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .callout p {
+      margin: 0;
+      color: var(--ink);
+      line-height: 1.45;
+      font-size: 0.94rem;
+    }
+
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .legend-bar {
+      width: min(100%, 260px);
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #dff4ef 0%, #79bca7 35%, #e6c37a 70%, #c54f36 100%);
+      border: 1px solid rgba(22, 50, 68, 0.12);
+    }
+
+    .legend-labels {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      flex-wrap: wrap;
+    }
+
+    .heatmap-scroll {
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-top: 16px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .heatmap-table {
+      min-width: 760px;
+    }
+
+    .heatmap-table th,
+    .heatmap-table td {
+      border: 1px solid var(--border);
+      text-align: center;
+      padding: 10px 8px;
+      vertical-align: middle;
+    }
+
+    .heatmap-table th {
+      background: #f5f9fb;
+      color: var(--navy);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      font-size: 0.86rem;
+    }
+
+    .heatmap-table th:first-child,
+    .heatmap-table td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: #f8fbfd;
+      text-align: left;
+      min-width: 78px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .heatmap-cell {
+      min-width: 84px;
+      min-height: 60px;
+      border-radius: 10px;
+      padding: 6px 4px;
+      line-height: 1.15;
+      color: #0f2430;
+      font-variant-numeric: tabular-nums;
+      position: relative;
+    }
+
+    .heatmap-cell.empty {
+      background: #eef4f7;
+      color: #93a6b2;
+    }
+
+    .heatmap-cell .delay {
+      display: block;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .heatmap-cell .meta {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.74rem;
+      opacity: 0.9;
+    }
+
+    .heatmap-cell.worst {
+      outline: 3px solid var(--red);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.72);
+    }
+
+    .heatmap-cell.worst::after {
+      content: "Worst";
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 0.64rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: rgba(14, 58, 82, 0.82);
+      color: white;
+      padding: 3px 6px;
+      border-radius: 999px;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .trend-card {
+      background: linear-gradient(180deg, #ffffff, #fbfdfe);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .trend-card.worst {
+      border-color: rgba(197, 79, 54, 0.32);
+      box-shadow: 0 10px 28px rgba(197, 79, 54, 0.12);
+    }
+
+    .trend-title {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 1rem;
+    }
+
+    .trend-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .trend-svg {
+      width: 100%;
+      height: 178px;
+      display: block;
+      margin-top: 10px;
+      overflow: visible;
+    }
+
+    .trend-stats {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      color: var(--slate);
+      font-size: 0.84rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    .rank-table {
+      min-width: 980px;
+    }
+
+    .rank-table thead th {
+      background: var(--navy);
+      color: #f4fbff;
+      font-size: 0.83rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .rank-table th,
+    .rank-table td {
+      border: 1px solid var(--border);
+      padding: 10px 10px;
+      text-align: left;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rank-table tbody tr:nth-child(even) {
+      background: #fbfdfe;
+    }
+
+    .rank-table tbody tr:hover {
+      background: #eef5f9;
+    }
+
+    .rank-table tbody tr.rank-1 {
+      background: rgba(197, 79, 54, 0.08);
+    }
+
+    .rank-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 28px;
+      border-radius: 999px;
+      font-weight: 700;
+      background: rgba(60, 136, 181, 0.12);
+      color: var(--navy);
+    }
+
+    .rank-chip.rank-1 {
+      background: rgba(197, 79, 54, 0.16);
+      color: #8e301d;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .bullet-panel ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    .bullet-panel li + li {
+      margin-top: 10px;
+    }
+
+    .query-ledger table {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .query-ledger th,
+    .query-ledger td {
+      border: 1px solid var(--border);
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.92rem;
+    }
+
+    .query-ledger th {
+      background: #f4f8fb;
+      color: var(--navy);
+    }
+
+    .status-ok {
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .status-warn {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    .status-error {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .utility-footer {
+      margin-top: 22px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      backdrop-filter: blur(6px);
+    }
+
+    .utility-footer h2 {
+      margin: 0;
+      font-family: Georgia, ui-serif, serif;
+      font-size: 1.3rem;
+      color: var(--navy);
+    }
+
+    .utility-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .utility-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    input[type="password"],
+    textarea,
+    button {
+      font: inherit;
+    }
+
+    input[type="password"],
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(22, 50, 68, 0.18);
+      border-radius: var(--radius-sm);
+      padding: 11px 12px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 230px;
+      resize: vertical;
+      line-height: 1.4;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.87rem;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(14, 58, 82, 0.10);
+      color: var(--navy);
+    }
+
+    .footer-status {
+      margin-top: 10px;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .empty-card {
+      margin-top: 14px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px dashed rgba(22, 50, 68, 0.20);
+      background: #fbfdfe;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    @media (max-width: 960px) {
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .control-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 18px 14px 28px;
+      }
+
+      .hero {
+        padding: 22px 18px 18px;
+      }
+
+      .panel,
+      .utility-footer,
+      .kpi-card {
+        padding: 16px;
+      }
+
+      .heatmap-table {
+        min-width: 680px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div class="eyebrow">ATL Delta Departure Pressure</div>
+      <h1>Delta ATL departure delay hotspots by destination and time block</h1>
+      <p class="subtitle">
+        Hotspot cells are ranked from Delta departures out of ATL after monthly qualification thresholds are applied.
+        The matrix below shows where average departure delay is most concentrated, while the supporting trend view tests whether the worst cells are persistent or confined to narrower periods.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-pill" id="hero-generated">Generated artifact awaiting data</div>
+        <div class="hero-pill" id="hero-rows">Rows: —</div>
+        <div class="hero-pill">Primary fact table: <strong>default.ontime_v2</strong></div>
+      </div>
+    </header>
+
+    <div class="warning-banner" id="warning-banner"></div>
+
+    <main class="dashboard" id="dashboard">
+      <section class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-label">Worst Hotspot</div>
+          <div class="kpi-value" id="kpi-hotspot">—</div>
+          <div class="kpi-subtext" id="kpi-hotspot-sub">Awaiting hotspot summary rows.</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Worst Avg Delay</div>
+          <div class="kpi-value" id="kpi-avg-delay">—</div>
+          <div class="kpi-subtext" id="kpi-avg-delay-sub">Average departure delay minutes for the top-ranked hotspot cell.</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Worst P90 Delay</div>
+          <div class="kpi-value" id="kpi-p90-delay">—</div>
+          <div class="kpi-subtext" id="kpi-p90-delay-sub">90th percentile departure delay minutes for the same cell.</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Qualifying Months</div>
+          <div class="kpi-value" id="kpi-months">—</div>
+          <div class="kpi-subtext" id="kpi-months-sub">Coverage and persistence for the worst hotspot cell.</div>
+        </article>
+      </section>
+
+      <section class="section-grid">
+        <article class="panel">
+          <h2>Hotspot Heatmap</h2>
+          <p class="section-note">
+            Rows are destinations, columns are departure time blocks, and cell color encodes average departure delay minutes. Redder cells indicate worse structural pressure out of ATL after qualification filters.
+          </p>
+          <div class="callout" id="worst-callout">
+            <strong>Reading the matrix</strong>
+            <p>The top-ranked hotspot cell will be highlighted once data loads.</p>
+          </div>
+          <div class="legend">
+            <div class="legend-bar" aria-hidden="true"></div>
+            <div class="legend-labels">
+              <span>Lower delay</span>
+              <span>Moderate pressure</span>
+              <span>Severe hotspot</span>
+            </div>
+          </div>
+          <div class="heatmap-scroll" id="heatmap-wrap"></div>
+        </article>
+
+        <article class="panel bullet-panel">
+          <h2>Interpretation Frame</h2>
+          <p class="section-note">
+            This dashboard separates ranked hotspot cells from their monthly traces so the top-ranked destination-bank combinations can be assessed for severity, repeatability, and ATL bank congestion patterns.
+          </p>
+          <ul id="insight-list">
+            <li>The worst hotspot will be summarized here after the ranking rows load.</li>
+            <li>Persistence will be inferred from qualifying-month coverage and the first-to-last qualifying span.</li>
+            <li>The top 5 cells will be used to describe whether pressure is concentrated in a few ATL departure banks or spread more broadly.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="panel" style="margin-top: 18px;">
+        <h2>Monthly Trend View For Top 3 Hotspot Cells</h2>
+        <p class="section-note">
+          The trend cards are derived directly from the top 3 ranked hotspot cells in the fetched result set. This view shows whether the highest-delay cells are steady recurring pressure points or narrow spikes.
+        </p>
+        <div class="trend-grid" id="trend-grid"></div>
+      </section>
+
+      <section class="panel" style="margin-top: 18px;">
+        <h2>Top 20 Hotspot Ranking</h2>
+        <p class="section-note">
+          Ranking priority follows average departure delay first, then p90 delay, then the share of flights delayed 15+ minutes, with completed volume as the final tiebreaker.
+        </p>
+        <div class="table-wrap">
+          <table class="rank-table" id="rank-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Dest</th>
+                <th>DepTimeBlk</th>
+                <th>Avg Delay</th>
+                <th>P90 Delay</th>
+                <th>DepDel15%</th>
+                <th>Flights</th>
+                <th>Qualifying Months</th>
+                <th>First Month</th>
+                <th>Last Month</th>
+              </tr>
+            </thead>
+            <tbody id="rank-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="analysis-grid">
+        <article class="panel query-ledger" id="query-ledger">
+          <h2>Query Ledger</h2>
+          <p class="section-note">
+            Data provenance is kept explicit. This artifact renders the canonical result produced by qforge after the saved SQL was executed against the configured MCP server within the allowed dataset scope.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Rows</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-body"></tbody>
+          </table>
+        </article>
+
+        <article class="panel">
+          <h2>Dataset Scope</h2>
+          <p class="section-note">
+            The saved query is constrained to Delta departures from ATL using <strong>default.ontime_v2</strong>. No references to <strong>default.ontime</strong> are required for this artifact.
+          </p>
+          <div class="empty-card">
+            The page remains useful even if the result set is empty. Header context, query provenance, saved SQL, and explanatory framing remain visible, and all analytical panels degrade to clear empty states instead of broken visuals.
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="utility-footer">
+      <h2>Data Controls</h2>
+      <p class="utility-note">
+        qforge already executed the saved SQL and wrote a canonical <code>result.json</code>. This page renders that artifact directly and preserves the shared JWE token field for compatibility with the dashboard workflow.
+      </p>
+      <div class="utility-grid">
+        <div>
+          <label for="jwe-token">Stored JWE Token</label>
+          <div class="control-row">
+            <input id="jwe-token" type="password" placeholder="Enter shared JWE token">
+            <button class="btn-secondary" id="forget-token" type="button">Forget Token</button>
+            <button class="btn-primary" id="reload-data" type="button">Reload result.json</button>
+          </div>
+        </div>
+        <div>
+          <label for="sql-query">Saved SQL</label>
+          <textarea id="sql-query" spellcheck="false">WITH
+base_flights AS (
+    SELECT
+        toStartOfMonth(FlightDate) AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        DepDelayMinutes,
+        DepDel15
+    FROM default.ontime_v2
+    WHERE IATA_CODE_Reporting_Airline = 'DL'
+      AND Origin = 'ATL'
+      AND Cancelled = 0
+),
+qualifying_monthly_cells AS (
+    SELECT
+        MonthStart,
+        Dest,
+        DepTimeBlk,
+        count() AS CompletedFlights
+    FROM base_flights
+    GROUP BY
+        MonthStart,
+        Dest,
+        DepTimeBlk
+    HAVING count() &gt;= 40
+),
+qualified_flights AS (
+    SELECT
+        bf.MonthStart,
+        bf.Dest,
+        bf.DepTimeBlk,
+        bf.DepDelayMinutes,
+        bf.DepDel15
+    FROM base_flights AS bf
+    INNER JOIN qualifying_monthly_cells AS qmc
+        ON bf.MonthStart = qmc.MonthStart
+       AND bf.Dest = qmc.Dest
+       AND bf.DepTimeBlk = qmc.DepTimeBlk
+),
+hotspot_rollup AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        count() AS CompletedFlights,
+        CAST(round(avg(DepDelayMinutes), 2), 'Nullable(Decimal(18,2))') AS AvgDepDelayMinutes,
+        CAST(round(quantile(0.9)(DepDelayMinutes), 2), 'Nullable(Decimal(18,2))') AS P90DepDelayMinutes,
+        CAST(round(100.0 * avg(toFloat64(DepDel15)), 2), 'Decimal(18,2)') AS DepDel15Pct,
+        countDistinct(MonthStart) AS QualifyingMonths,
+        min(MonthStart) AS FirstQualifyingMonth,
+        max(MonthStart) AS LastQualifyingMonth
+    FROM qualified_flights
+    GROUP BY
+        Dest,
+        DepTimeBlk
+    HAVING count() &gt;= 1000
+),
+ranked_hotspots AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        row_number() OVER (
+            ORDER BY
+                AvgDepDelayMinutes DESC,
+                P90DepDelayMinutes DESC,
+                DepDel15Pct DESC,
+                CompletedFlights DESC,
+                Dest ASC,
+                DepTimeBlk ASC
+        ) AS HotspotRank
+    FROM hotspot_rollup
+),
+top_hotspots AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        HotspotRank
+    FROM ranked_hotspots
+    WHERE HotspotRank &lt;= 20
+),
+monthly_trends AS (
+    SELECT
+        qf.MonthStart,
+        qf.Dest,
+        qf.DepTimeBlk,
+        th.QualifyingMonths,
+        count() AS CompletedFlights,
+        CAST(round(avg(qf.DepDelayMinutes), 2), 'Nullable(Decimal(18,2))') AS AvgDepDelayMinutes,
+        CAST(round(quantile(0.9)(qf.DepDelayMinutes), 2), 'Nullable(Decimal(18,2))') AS P90DepDelayMinutes,
+        CAST(round(100.0 * avg(toFloat64(qf.DepDel15)), 2), 'Decimal(18,2)') AS DepDel15Pct,
+        th.FirstQualifyingMonth,
+        th.LastQualifyingMonth,
+        th.HotspotRank
+    FROM qualified_flights AS qf
+    INNER JOIN top_hotspots AS th
+        ON qf.Dest = th.Dest
+       AND qf.DepTimeBlk = th.DepTimeBlk
+    GROUP BY
+        qf.MonthStart,
+        qf.Dest,
+        qf.DepTimeBlk,
+        th.QualifyingMonths,
+        th.FirstQualifyingMonth,
+        th.LastQualifyingMonth,
+        th.HotspotRank
+)
+SELECT
+    RowType,
+    MonthStart,
+    Dest,
+    DepTimeBlk,
+    QualifyingMonths,
+    CompletedFlights,
+    AvgDepDelayMinutes,
+    P90DepDelayMinutes,
+    DepDel15Pct,
+    FirstQualifyingMonth,
+    LastQualifyingMonth,
+    HotspotRank
+FROM (
+    SELECT
+        'hotspot_summary' AS RowType,
+        CAST(NULL, 'Nullable(Date)') AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        HotspotRank
+    FROM top_hotspots
+
+    UNION ALL
+
+    SELECT
+        'monthly_trend' AS RowType,
+        MonthStart,
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        HotspotRank
+    FROM monthly_trends
+)
+ORDER BY
+    RowType,
+    HotspotRank ASC,
+    MonthStart ASC,
+    Dest ASC,
+    DepTimeBlk ASC</textarea>
+        </div>
+      </div>
+      <div class="footer-status" id="footer-status">Ready to render <code>result.json</code>.</div>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const AUTH_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+      const DASHBOARD_ID = 'delta-atl-departure-delay-hotspots';
+      const QUERY_KEY = `OnTimeAnalystDashboard::${DASHBOARD_ID}::query`;
+
+      const el = {
+        dashboard: document.getElementById('dashboard'),
+        warningBanner: document.getElementById('warning-banner'),
+        heroGenerated: document.getElementById('hero-generated'),
+        heroRows: document.getElementById('hero-rows'),
+        footerStatus: document.getElementById('footer-status'),
+        token: document.getElementById('jwe-token'),
+        sql: document.getElementById('sql-query'),
+        reload: document.getElementById('reload-data'),
+        forget: document.getElementById('forget-token'),
+        heatmapWrap: document.getElementById('heatmap-wrap'),
+        trendGrid: document.getElementById('trend-grid'),
+        rankTableBody: document.getElementById('rank-table-body'),
+        ledgerBody: document.getElementById('ledger-body'),
+        worstCallout: document.getElementById('worst-callout'),
+        insightList: document.getElementById('insight-list'),
+        kpiHotspot: document.getElementById('kpi-hotspot'),
+        kpiHotspotSub: document.getElementById('kpi-hotspot-sub'),
+        kpiAvgDelay: document.getElementById('kpi-avg-delay'),
+        kpiP90Delay: document.getElementById('kpi-p90-delay'),
+        kpiMonths: document.getElementById('kpi-months'),
+        kpiMonthsSub: document.getElementById('kpi-months-sub')
+      };
+
+      const state = {
+        result: null
+      };
+
+      function setStatus(message, kind = 'muted') {
+        el.footerStatus.className = 'footer-status';
+        if (kind === 'ok') el.footerStatus.classList.add('status-ok');
+        if (kind === 'warn') el.footerStatus.classList.add('status-warn');
+        if (kind === 'error') el.footerStatus.classList.add('status-error');
+        el.footerStatus.textContent = message;
+      }
+
+      function showWarning(message) {
+        el.warningBanner.textContent = message;
+        el.warningBanner.classList.add('visible');
+      }
+
+      function hideWarning() {
+        el.warningBanner.textContent = '';
+        el.warningBanner.classList.remove('visible');
+      }
+
+      function normalizeDate(value) {
+        return String(value ?? '').slice(0, 10);
+      }
+
+      function monthLabel(value) {
+        const key = normalizeDate(value);
+        if (!key) return '—';
+        return key.slice(0, 7);
+      }
+
+      function num(value) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function intFmt(value) {
+        const n = num(value);
+        return n == null ? '—' : Math.round(n).toLocaleString();
+      }
+
+      function decFmt(value, digits = 2) {
+        const n = num(value);
+        return n == null ? '—' : n.toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+      }
+
+      function pctFmt(value) {
+        const n = num(value);
+        return n == null ? '—' : `${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`;
+      }
+
+      function spanText(firstMonth, lastMonth, qualifyingMonths) {
+        const first = monthLabel(firstMonth);
+        const last = monthLabel(lastMonth);
+        const months = intFmt(qualifyingMonths);
+        if (first === '—' && last === '—') return `${months} qualifying months`;
+        return `${months} qualifying months from ${first} to ${last}`;
+      }
+
+      function isPersistent(row) {
+        const qm = num(row?.QualifyingMonths) ?? 0;
+        const first = monthLabel(row?.FirstQualifyingMonth);
+        const last = monthLabel(row?.LastQualifyingMonth);
+        return qm >= 12 && first !== '—' && last !== '—';
+      }
+
+      function summarizePersistence(row) {
+        if (!row) return 'Persistence could not be assessed.';
+        const qm = num(row.QualifyingMonths) ?? 0;
+        if (qm >= 24) return `This hotspot looks structural, with ${intFmt(qm)} qualifying months across a broad observed span.`;
+        if (qm >= 12) return `This hotspot is persistent rather than isolated, with ${intFmt(qm)} qualifying months.`;
+        return `This hotspot appears more concentrated, with only ${intFmt(qm)} qualifying months meeting the threshold.`;
+      }
+
+      function getRows(payload) {
+        const columns = Array.isArray(payload?.columns) ? payload.columns : [];
+        const rows = payload?.rows;
+        if (Array.isArray(rows) && rows.every((row) => row && !Array.isArray(row) && typeof row === 'object')) {
+          return rows;
+        }
+        if (Array.isArray(rows) && Array.isArray(columns) && rows.every(Array.isArray)) {
+          return rows.map((arr) => Object.fromEntries(columns.map((col, idx) => [col, arr[idx] ?? null])));
+        }
+        return [];
+      }
+
+      function splitData(rows) {
+        const summary = rows
+          .filter((row) => String(row?.RowType ?? '') === 'hotspot_summary')
+          .map((row) => ({
+            ...row,
+            HotspotRank: num(row.HotspotRank),
+            AvgDepDelayMinutes: num(row.AvgDepDelayMinutes),
+            P90DepDelayMinutes: num(row.P90DepDelayMinutes),
+            DepDel15Pct: num(row.DepDel15Pct),
+            CompletedFlights: num(row.CompletedFlights),
+            QualifyingMonths: num(row.QualifyingMonths),
+            MonthStartKey: normalizeDate(row.MonthStart),
+            FirstQualifyingMonthKey: normalizeDate(row.FirstQualifyingMonth),
+            LastQualifyingMonthKey: normalizeDate(row.LastQualifyingMonth)
+          }))
+          .sort((a, b) => (a.HotspotRank ?? 9999) - (b.HotspotRank ?? 9999));
+
+        const trends = rows
+          .filter((row) => String(row?.RowType ?? '') === 'monthly_trend')
+          .map((row) => ({
+            ...row,
+            HotspotRank: num(row.HotspotRank),
+            AvgDepDelayMinutes: num(row.AvgDepDelayMinutes),
+            P90DepDelayMinutes: num(row.P90DepDelayMinutes),
+            DepDel15Pct: num(row.DepDel15Pct),
+            CompletedFlights: num(row.CompletedFlights),
+            QualifyingMonths: num(row.QualifyingMonths),
+            MonthStartKey: normalizeDate(row.MonthStart),
+            FirstQualifyingMonthKey: normalizeDate(row.FirstQualifyingMonth),
+            LastQualifyingMonthKey: normalizeDate(row.LastQualifyingMonth)
+          }))
+          .sort((a, b) => {
+            if ((a.HotspotRank ?? 9999) !== (b.HotspotRank ?? 9999)) return (a.HotspotRank ?? 9999) - (b.HotspotRank ?? 9999);
+            return a.MonthStartKey.localeCompare(b.MonthStartKey);
+          });
+
+        return { summary, trends };
+      }
+
+      function colorForDelay(value, min, max) {
+        if (value == null) return '#eef4f7';
+        const span = Math.max((max ?? 0) - (min ?? 0), 1);
+        const t = Math.max(0, Math.min(1, (value - (min ?? 0)) / span));
+        const stops = [
+          { t: 0.00, c: [223, 244, 239] },
+          { t: 0.45, c: [121, 188, 167] },
+          { t: 0.72, c: [230, 195, 122] },
+          { t: 1.00, c: [197, 79, 54] }
+        ];
+        let left = stops[0];
+        let right = stops[stops.length - 1];
+        for (let i = 1; i < stops.length; i++) {
+          if (t <= stops[i].t) {
+            right = stops[i];
+            left = stops[i - 1];
+            break;
+          }
+        }
+        const localT = (t - left.t) / Math.max(right.t - left.t, 0.0001);
+        const rgb = left.c.map((v, i) => Math.round(v + (right.c[i] - v) * localT));
+        return `rgb(${rgb.join(',')})`;
+      }
+
+      function textColorForBg(value, min, max) {
+        const span = Math.max((max ?? 0) - (min ?? 0), 1);
+        const t = Math.max(0, Math.min(1, ((value ?? min ?? 0) - (min ?? 0)) / span));
+        return t >= 0.72 ? '#fffaf6' : '#0f2430';
+      }
+
+      function renderKPIs(summary) {
+        const worst = summary[0];
+        if (!worst) {
+          el.kpiHotspot.textContent = '—';
+          el.kpiHotspotSub.textContent = 'No hotspot_summary rows were returned.';
+          el.kpiAvgDelay.textContent = '—';
+          el.kpiP90Delay.textContent = '—';
+          el.kpiMonths.textContent = '—';
+          el.kpiMonthsSub.textContent = 'No qualifying hotspot cells available.';
+          return;
+        }
+
+        el.kpiHotspot.textContent = `${worst.Dest} • ${worst.DepTimeBlk}`;
+        el.kpiHotspotSub.textContent = `Rank #1 hotspot cell with ${intFmt(worst.CompletedFlights)} completed flights.`;
+        el.kpiAvgDelay.textContent = `${decFmt(worst.AvgDepDelayMinutes)} min`;
+        el.kpiP90Delay.textContent = `${decFmt(worst.P90DepDelayMinutes)} min`;
+        el.kpiMonths.textContent = intFmt(worst.QualifyingMonths);
+        el.kpiMonthsSub.textContent = spanText(worst.FirstQualifyingMonth, worst.LastQualifyingMonth, worst.QualifyingMonths);
+      }
+
+      function renderHeatmap(summary) {
+        if (!summary.length) {
+          el.heatmapWrap.innerHTML = '<div class="empty-card">No hotspot_summary rows were returned, so there is no destination-by-time-block matrix to display.</div>';
+          return;
+        }
+
+        const destinations = [...new Set(summary.map((row) => String(row.Dest ?? '—')))].sort();
+        const blocks = [...new Set(summary.map((row) => String(row.DepTimeBlk ?? '—')))].sort();
+        const delays = summary.map((row) => row.AvgDepDelayMinutes).filter((v) => v != null);
+        const minDelay = Math.min(...delays);
+        const maxDelay = Math.max(...delays);
+        const worstRank = summary[0]?.HotspotRank;
+
+        const byKey = new Map(summary.map((row) => [`${row.Dest}__${row.DepTimeBlk}`, row]));
+        let html = '<table class="heatmap-table"><thead><tr><th>Dest</th>';
+        html += blocks.map((block) => `<th>${escapeHtml(block)}</th>`).join('');
+        html += '</tr></thead><tbody>';
+
+        for (const dest of destinations) {
+          html += `<tr><td>${escapeHtml(dest)}</td>`;
+          for (const block of blocks) {
+            const row = byKey.get(`${dest}__${block}`);
+            if (!row) {
+              html += '<td><div class="heatmap-cell empty"><span class="delay">—</span><span class="meta">No hotspot</span></div></td>';
+              continue;
+            }
+            const bg = colorForDelay(row.AvgDepDelayMinutes, minDelay, maxDelay);
+            const fg = textColorForBg(row.AvgDepDelayMinutes, minDelay, maxDelay);
+            const isWorst = row.HotspotRank === worstRank;
+            html += `<td><div class="heatmap-cell${isWorst ? ' worst' : ''}" style="background:${bg};color:${fg}">`;
+            html += `<span class="delay">${decFmt(row.AvgDepDelayMinutes)}</span>`;
+            html += `<span class="meta">#${intFmt(row.HotspotRank)} • ${pctFmt(row.DepDel15Pct)}</span>`;
+            html += '</div></td>';
+          }
+          html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+        el.heatmapWrap.innerHTML = html;
+      }
+
+      function renderWorstCallout(summary) {
+        const worst = summary[0];
+        if (!worst) {
+          el.worstCallout.innerHTML = '<strong>Reading the matrix</strong><p>No worst hotspot can be highlighted because no qualifying hotspot rows were returned.</p>';
+          return;
+        }
+        const persistenceText = summarizePersistence(worst);
+        el.worstCallout.innerHTML = `<strong>Worst hotspot: ${escapeHtml(worst.Dest)} in ${escapeHtml(worst.DepTimeBlk)}</strong><p>Average delay is ${decFmt(worst.AvgDepDelayMinutes)} minutes, p90 delay is ${decFmt(worst.P90DepDelayMinutes)} minutes, and ${pctFmt(worst.DepDel15Pct)} of flights depart 15+ minutes late. ${escapeHtml(persistenceText)}</p>`;
+      }
+
+      function renderInsights(summary) {
+        if (!summary.length) {
+          el.insightList.innerHTML = [
+            '<li>No hotspot_summary rows were returned, so the dashboard cannot identify a worst destination-time-block cell.</li>',
+            '<li>Without qualifying rows, persistence versus concentration cannot be assessed for ATL Delta departure banks.</li>',
+            '<li>The top 5 hotspot interpretation is unavailable until ranked hotspot cells are present.</li>'
+          ].join('');
+          return;
+        }
+
+        const worst = summary[0];
+        const top5 = summary.slice(0, 5);
+        const blockCounts = new Map();
+        const destCounts = new Map();
+
+        top5.forEach((row) => {
+          blockCounts.set(row.DepTimeBlk, (blockCounts.get(row.DepTimeBlk) ?? 0) + 1);
+          destCounts.set(row.Dest, (destCounts.get(row.Dest) ?? 0) + 1);
+        });
+
+        const dominantBlock = [...blockCounts.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))[0];
+        const dominantDest = [...destCounts.entries()].sort((a, b) => b[1] - a[1] || String(a[0]).localeCompare(String(b[0])))[0];
+        const persistenceText = isPersistent(worst)
+          ? `The #1 hotspot spans ${intFmt(worst.QualifyingMonths)} qualifying months, which points to recurring rather than isolated ATL pressure.`
+          : `The #1 hotspot covers ${intFmt(worst.QualifyingMonths)} qualifying months, suggesting the worst pressure may be concentrated in a narrower era.`;
+
+        el.insightList.innerHTML = [
+          `<li><strong>Worst hotspot:</strong> ${escapeHtml(worst.Dest)} in ${escapeHtml(worst.DepTimeBlk)} ranks first, combining ${decFmt(worst.AvgDepDelayMinutes)} average delay minutes with a p90 of ${decFmt(worst.P90DepDelayMinutes)} minutes.</li>`,
+          `<li><strong>Persistence:</strong> ${escapeHtml(persistenceText)} Its observed span runs from ${escapeHtml(monthLabel(worst.FirstQualifyingMonth))} to ${escapeHtml(monthLabel(worst.LastQualifyingMonth))}.</li>`,
+          `<li><strong>Top 5 pattern:</strong> The leading five cells ${(dominantBlock && dominantBlock[1] >= 2) ? `cluster most heavily in the ${escapeHtml(String(dominantBlock[0]))} bank` : 'do not collapse into a single departure bank'}, while ${(dominantDest && dominantDest[1] >= 2) ? `${escapeHtml(String(dominantDest[0]))} appears more than once` : 'multiple destinations appear across the top ranks'}, which helps distinguish bank-level ATL congestion from route-specific stress.</li>`
+        ].join('');
+      }
+
+      function buildTrendCard(series, isWorst) {
+        const title = `${series[0]?.Dest ?? '—'} • ${series[0]?.DepTimeBlk ?? '—'}`;
+        const avgVals = series.map((row) => row.AvgDepDelayMinutes).filter((v) => v != null);
+        const minY = Math.min(...avgVals);
+        const maxY = Math.max(...avgVals);
+        const width = 320;
+        const height = 178;
+        const pad = { top: 16, right: 10, bottom: 28, left: 34 };
+        const innerW = width - pad.left - pad.right;
+        const innerH = height - pad.top - pad.bottom;
+
+        const points = series.map((row, idx) => {
+          const x = pad.left + (series.length === 1 ? innerW / 2 : (idx / (series.length - 1)) * innerW);
+          const y = pad.top + innerH - (((row.AvgDepDelayMinutes ?? minY) - minY) / Math.max(maxY - minY, 1)) * innerH;
+          return { x, y, row };
+        });
+
+        const path = points.map((pt, idx) => `${idx === 0 ? 'M' : 'L'}${pt.x.toFixed(1)},${pt.y.toFixed(1)}`).join(' ');
+        const ticks = [0, 0.5, 1].map((v) => {
+          const y = pad.top + innerH - v * innerH;
+          const label = decFmt(minY + (maxY - minY) * v);
+          return `<g><line x1="${pad.left}" x2="${width - pad.right}" y1="${y}" y2="${y}" stroke="rgba(22,50,68,0.12)" stroke-dasharray="3 4"></line><text x="${pad.left - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="#5d7485">${label}</text></g>`;
+        }).join('');
+
+        const monthTicks = points.filter((_, idx) => idx === 0 || idx === points.length - 1 || idx === Math.floor(points.length / 2)).map((pt) => {
+          return `<text x="${pt.x}" y="${height - 8}" text-anchor="middle" font-size="11" fill="#5d7485">${escapeHtml(monthLabel(pt.row.MonthStart))}</text>`;
+        }).join('');
+
+        const circles = points.map((pt) => {
+          return `<circle cx="${pt.x}" cy="${pt.y}" r="4" fill="${isWorst ? '#c54f36' : '#3c88b5'}" stroke="#ffffff" stroke-width="2"></circle>`;
+        }).join('');
+
+        const latest = series[series.length - 1];
+        return `
+          <article class="trend-card${isWorst ? ' worst' : ''}">
+            <div class="trend-title">${escapeHtml(title)}</div>
+            <div class="trend-subtitle">Rank #${intFmt(series[0]?.HotspotRank)} • ${spanText(series[0]?.FirstQualifyingMonth, series[0]?.LastQualifyingMonth, series[0]?.QualifyingMonths)}</div>
+            <svg class="trend-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="Monthly average departure delay trend for ${escapeHtml(title)}">
+              ${ticks}
+              <path d="${path}" fill="none" stroke="${isWorst ? '#c54f36' : '#3c88b5'}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"></path>
+              ${circles}
+              ${monthTicks}
+            </svg>
+            <div class="trend-stats">
+              <span>Latest avg: ${decFmt(latest?.AvgDepDelayMinutes)} min</span>
+              <span>Latest p90: ${decFmt(latest?.P90DepDelayMinutes)} min</span>
+              <span>Latest DepDel15: ${pctFmt(latest?.DepDel15Pct)}</span>
+            </div>
+          </article>
+        `;
+      }
+
+      function renderTrends(summary, trends) {
+        if (!summary.length) {
+          el.trendGrid.innerHTML = '<div class="empty-card">No ranked hotspot cells are available, so the top-3 monthly trend view cannot be rendered.</div>';
+          return;
+        }
+
+        const top3Ranks = summary.slice(0, 3).map((row) => row.HotspotRank);
+        const grouped = new Map();
+        trends
+          .filter((row) => top3Ranks.includes(row.HotspotRank))
+          .forEach((row) => {
+            const key = String(row.HotspotRank);
+            if (!grouped.has(key)) grouped.set(key, []);
+            grouped.get(key).push(row);
+          });
+
+        if (!grouped.size) {
+          el.trendGrid.innerHTML = '<div class="empty-card">Top-ranked hotspot cells were present, but no monthly_trend rows were returned for the supporting trend view.</div>';
+          return;
+        }
+
+        el.trendGrid.innerHTML = top3Ranks
+          .filter((rank) => grouped.has(String(rank)))
+          .map((rank, idx) => buildTrendCard(grouped.get(String(rank)), idx === 0))
+          .join('');
+      }
+
+      function renderRanking(summary) {
+        if (!summary.length) {
+          el.rankTableBody.innerHTML = '<tr><td colspan="10" class="muted">No hotspot_summary rows returned.</td></tr>';
+          return;
+        }
+
+        el.rankTableBody.innerHTML = summary.slice(0, 20).map((row) => `
+          <tr class="rank-${intFmt(row.HotspotRank)}">
+            <td><span class="rank-chip rank-${intFmt(row.HotspotRank)}">#${intFmt(row.HotspotRank)}</span></td>
+            <td>${escapeHtml(String(row.Dest ?? '—'))}</td>
+            <td>${escapeHtml(String(row.DepTimeBlk ?? '—'))}</td>
+            <td>${decFmt(row.AvgDepDelayMinutes)}</td>
+            <td>${decFmt(row.P90DepDelayMinutes)}</td>
+            <td>${pctFmt(row.DepDel15Pct)}</td>
+            <td>${intFmt(row.CompletedFlights)}</td>
+            <td>${intFmt(row.QualifyingMonths)}</td>
+            <td>${escapeHtml(monthLabel(row.FirstQualifyingMonth))}</td>
+            <td>${escapeHtml(monthLabel(row.LastQualifyingMonth))}</td>
+          </tr>
+        `).join('');
+      }
+
+      function renderLedger(payload, summary) {
+        const rowCount = payload?.row_count ?? getRows(payload).length;
+        const generatedAt = payload?.generated_at ? normalizeDate(payload.generated_at) : '—';
+        const hasHotspots = summary.length > 0;
+        el.ledgerBody.innerHTML = `
+          <tr>
+            <td>Saved SQL result</td>
+            <td>primary</td>
+            <td class="${hasHotspots ? 'status-ok' : 'status-warn'}">${hasHotspots ? 'loaded' : 'empty result'}</td>
+            <td>${intFmt(rowCount)}</td>
+            <td>Canonical <code>result.json</code> produced by qforge from the configured MCP server</td>
+          </tr>
+          <tr>
+            <td>Additional browser queries</td>
+            <td>enrichment</td>
+            <td class="status-warn">not used</td>
+            <td>0</td>
+            <td>All visuals are derived directly from the saved SQL output; no follow-up dataset access is performed in-browser</td>
+          </tr>
+          <tr>
+            <td>Artifact metadata</td>
+            <td>context</td>
+            <td class="status-ok">available</td>
+            <td>—</td>
+            <td>Generated at ${escapeHtml(generatedAt)} with columns from the canonical qforge payload</td>
+          </tr>
+        `;
+      }
+
+      function renderEmpty(payload) {
+        renderKPIs([]);
+        renderHeatmap([]);
+        renderWorstCallout([]);
+        renderInsights([]);
+        renderTrends([], []);
+        renderRanking([]);
+        renderLedger(payload ?? {}, []);
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      async function loadResultJSON() {
+        hideWarning();
+        setStatus('Loading result.json ...');
+        try {
+          const response = await fetch('./result.json', { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const payload = await response.json();
+          const rows = getRows(payload);
+          const data = splitData(rows);
+          state.result = payload;
+
+          const generatedAt = payload?.generated_at
+            ? new Date(payload.generated_at).toLocaleString()
+            : 'Unknown generation time';
+          const rowCount = payload?.row_count ?? rows.length;
+
+          el.heroGenerated.textContent = `Generated: ${generatedAt}`;
+          el.heroRows.textContent = `Rows: ${intFmt(rowCount)}`;
+
+          renderKPIs(data.summary);
+          renderHeatmap(data.summary);
+          renderWorstCallout(data.summary);
+          renderInsights(data.summary);
+          renderTrends(data.summary, data.trends);
+          renderRanking(data.summary);
+          renderLedger(payload, data.summary);
+
+          el.dashboard.classList.add('visible');
+
+          if (!rows.length || !data.summary.length) {
+            showWarning('The artifact loaded successfully, but no qualifying hotspot summary rows were present. Structural context and saved SQL remain available below.');
+            setStatus('Loaded result.json with an empty or non-qualifying hotspot result.', 'warn');
+            renderEmpty(payload);
+          } else {
+            setStatus(`Loaded result.json successfully with ${intFmt(rowCount)} rows.`, 'ok');
+          }
+        } catch (error) {
+          el.dashboard.classList.add('visible');
+          showWarning(`Unable to load result.json. ${error instanceof Error ? error.message : 'Unknown error'}. The saved SQL and workflow controls remain available.`);
+          el.heroGenerated.textContent = 'Generated artifact unavailable';
+          el.heroRows.textContent = 'Rows: —';
+          renderEmpty({});
+          setStatus('Failed to load result.json.', 'error');
+        }
+      }
+
+      function initControls() {
+        const storedToken = localStorage.getItem(AUTH_KEY) ?? '';
+        const storedQuery = localStorage.getItem(QUERY_KEY);
+        if (storedToken) el.token.value = storedToken;
+        if (storedQuery) el.sql.value = storedQuery;
+
+        el.token.addEventListener('change', () => {
+          const token = el.token.value.trim();
+          if (token) {
+            localStorage.setItem(AUTH_KEY, token);
+            setStatus('Stored shared JWE token locally for dashboard compatibility.', 'ok');
+          }
+        });
+
+        el.sql.addEventListener('change', () => {
+          localStorage.setItem(QUERY_KEY, el.sql.value);
+        });
+
+        el.forget.addEventListener('click', () => {
+          localStorage.removeItem(AUTH_KEY);
+          el.token.value = '';
+          setStatus('Forgot stored JWE token.', 'warn');
+        });
+
+        el.reload.addEventListener('click', () => {
+          localStorage.setItem(QUERY_KEY, el.sql.value);
+          const token = el.token.value.trim();
+          if (token) {
+            localStorage.setItem(AUTH_KEY, token);
+          }
+          loadResultJSON();
+        });
+      }
+
+      initControls();
+      loadResultJSON();
+    })();
+  </script>
+</body>
+</html>

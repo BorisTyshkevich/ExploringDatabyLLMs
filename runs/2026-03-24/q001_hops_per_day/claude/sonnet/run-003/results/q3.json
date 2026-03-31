@@ -1,0 +1,48 @@
+{
+  "columns": [
+    "FlightNum",
+    "Carrier",
+    "Route",
+    "occurrences",
+    "first_seen",
+    "last_seen"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "FlightNum": "3149",
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "first_seen": "2024-01-14T00:00:00Z",
+      "last_seen": "2024-02-18T00:00:00Z",
+      "occurrences": 4
+    },
+    {
+      "Carrier": "WN",
+      "FlightNum": "2787",
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "first_seen": "2022-09-25T00:00:00Z",
+      "last_seen": "2022-10-23T00:00:00Z",
+      "occurrences": 3
+    },
+    {
+      "Carrier": "WN",
+      "FlightNum": "154",
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "first_seen": "2023-04-16T00:00:00Z",
+      "last_seen": "2023-04-30T00:00:00Z",
+      "occurrences": 2
+    },
+    {
+      "Carrier": "WN",
+      "FlightNum": "366",
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "first_seen": "2024-12-01T00:00:00Z",
+      "last_seen": "2024-12-01T00:00:00Z",
+      "occurrences": 1
+    }
+  ],
+  "row_count": 4,
+  "generated_at": "2026-03-24T09:58:54.315899Z",
+  "source_query_sha256": "5cde066c7eb5a99e429166ef126b4da3a6c154d635bb4e649a02941f606f2a20",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q3"
+}

@@ -1,0 +1,140 @@
+{
+  "columns": [
+    "FlightNum",
+    "Carrier",
+    "Route",
+    "DateCount",
+    "StartName",
+    "StartLat",
+    "StartLon",
+    "EndName",
+    "EndLat",
+    "EndLon"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "DateCount": 61,
+      "EndLat": 39.49916667,
+      "EndLon": -119.76805556,
+      "EndName": "Reno/Tahoe International",
+      "FlightNum": "2215",
+      "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO",
+      "StartLat": 39.99694444,
+      "StartLon": -82.89222222,
+      "StartName": "John Glenn Columbus International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 60,
+      "EndLat": 37.36305556,
+      "EndLon": -121.92861111,
+      "EndName": "Norman Y. Mineta San Jose International",
+      "FlightNum": "1923",
+      "Route": "FLL-JAX-IND-MDW-MCI-DAL-ABQ-LAX-SJC",
+      "StartLat": 26.07138889,
+      "StartLon": -80.14944444,
+      "StartName": "Fort Lauderdale-Hollywood International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 55,
+      "EndLat": 45.58861111,
+      "EndLon": -122.59805556,
+      "EndName": "Portland International",
+      "FlightNum": "2558",
+      "Route": "PIT-TPA-MSY-DEN-SFO-SNA-LAS-SMF-PDX",
+      "StartLat": 40.49138889,
+      "StartLon": -80.23277778,
+      "StartName": "Pittsburgh International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 54,
+      "EndLat": 37.72138889,
+      "EndLon": -122.22111111,
+      "EndName": "Oakland International",
+      "FlightNum": "138",
+      "Route": "BDL-BWI-PBI-TPA-STL-DEN-GEG-SEA-OAK",
+      "StartLat": 41.93916667,
+      "StartLon": -72.68444444,
+      "StartName": "Bradley International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 54,
+      "EndLat": 34.05611111,
+      "EndLon": -117.60111111,
+      "EndName": "Ontario International",
+      "FlightNum": "675",
+      "Route": "HOU-STL-CMH-BWI-LIT-DAL-AUS-SJC-ONT",
+      "StartLat": 29.64611111,
+      "StartLon": -95.27722222,
+      "StartName": "William P Hobby"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 52,
+      "EndLat": 30.19444444,
+      "EndLon": -97.67,
+      "EndName": "Austin - Bergstrom International",
+      "FlightNum": "1013",
+      "Route": "FLL-MCO-ECP-BNA-MDW-PDX-OAK-LAS-AUS",
+      "StartLat": 26.07138889,
+      "StartLon": -80.14944444,
+      "StartName": "Fort Lauderdale-Hollywood International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 50,
+      "EndLat": 34.05611111,
+      "EndLon": -117.60111111,
+      "EndName": "Ontario International",
+      "FlightNum": "473",
+      "Route": "RIC-ATL-OKC-DEN-PHX-LAS-BOI-OAK-ONT",
+      "StartLat": 37.51722222,
+      "StartLon": -77.32416667,
+      "StartName": "Richmond International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 49,
+      "EndLat": 37.72138889,
+      "EndLon": -122.22111111,
+      "EndName": "Oakland International",
+      "FlightNum": "34",
+      "Route": "PHL-MDW-JAN-HOU-DAL-TUL-PHX-BUR-OAK",
+      "StartLat": 39.87416667,
+      "StartLon": -75.23666667,
+      "StartName": "Philadelphia International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 47,
+      "EndLat": 45.58861111,
+      "EndLon": -122.59805556,
+      "EndName": "Portland International",
+      "FlightNum": "102",
+      "Route": "LAS-PHX-OKC-DAL-BHM-BNA-MCI-SMF-PDX",
+      "StartLat": 36.08,
+      "StartLon": -115.15222222,
+      "StartName": "Harry Reid International"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 47,
+      "EndLat": 39.29722222,
+      "EndLon": -94.71333333,
+      "EndName": "Kansas City International",
+      "FlightNum": "787",
+      "Route": "JAX-BNA-MDW-SLC-GEG-SEA-SMF-SAN-MCI",
+      "StartLat": 30.49472222,
+      "StartLon": -81.70444444,
+      "StartName": "Jacksonville International"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-24T08:52:34.384848Z",
+  "source_query_sha256": "a829cfecb52fd3fff8272aec761df9ac695877996a58b715d6810c029349eaef",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=q4"
+}

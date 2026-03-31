@@ -1,0 +1,26 @@
+{
+  "columns": [
+    "Year",
+    "new_leader",
+    "leader_flights",
+    "prev_leader",
+    "prev_leader_flights",
+    "swing_vs_prior",
+    "gap_vs_runner_up"
+  ],
+  "rows": [
+    {
+      "Year": 1990,
+      "gap_vs_runner_up": 174169,
+      "leader_flights": 991989,
+      "new_leader": "US",
+      "prev_leader": "DL",
+      "prev_leader_flights": 778612,
+      "swing_vs_prior": 213377
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-24T11:08:50.296941Z",
+  "source_query_sha256": "978ecd8587ee2bbe65a3fd93c58413694d970fb64a4983a484df684332560935",
+  "log_comment": "qforge|question=q002|run=run-004|runner=claude|model=sonnet|phase=full|subquestion=q3"
+}

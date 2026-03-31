@@ -1,0 +1,120 @@
+{
+  "columns": [
+    "OriginCode",
+    "DestCode",
+    "flights",
+    "avg_dep_delay_min",
+    "pct_dep_del15"
+  ],
+  "rows": [
+    {
+      "DestCode": "JAX",
+      "OriginCode": "PHX",
+      "avg_dep_delay_min": 134.42,
+      "flights": 31,
+      "pct_dep_del15": 45.16
+    },
+    {
+      "DestCode": "SAV",
+      "OriginCode": "MIA",
+      "avg_dep_delay_min": 105.67,
+      "flights": 30,
+      "pct_dep_del15": 53.33
+    },
+    {
+      "DestCode": "SDF",
+      "OriginCode": "CLT",
+      "avg_dep_delay_min": 102.73,
+      "flights": 83,
+      "pct_dep_del15": 69.88
+    },
+    {
+      "DestCode": "CHS",
+      "OriginCode": "MIA",
+      "avg_dep_delay_min": 95.48,
+      "flights": 31,
+      "pct_dep_del15": 67.74
+    },
+    {
+      "DestCode": "CID",
+      "OriginCode": "DFW",
+      "avg_dep_delay_min": 95.08,
+      "flights": 60,
+      "pct_dep_del15": 66.67
+    },
+    {
+      "DestCode": "PHL",
+      "OriginCode": "CVG",
+      "avg_dep_delay_min": 94.1,
+      "flights": 30,
+      "pct_dep_del15": 20
+    },
+    {
+      "DestCode": "DFW",
+      "OriginCode": "JAC",
+      "avg_dep_delay_min": 93.94,
+      "flights": 63,
+      "pct_dep_del15": 42.86
+    },
+    {
+      "DestCode": "ICT",
+      "OriginCode": "DFW",
+      "avg_dep_delay_min": 93.42,
+      "flights": 59,
+      "pct_dep_del15": 62.71
+    },
+    {
+      "DestCode": "ROC",
+      "OriginCode": "CLT",
+      "avg_dep_delay_min": 91.89,
+      "flights": 55,
+      "pct_dep_del15": 69.09
+    },
+    {
+      "DestCode": "DFW",
+      "OriginCode": "RDM",
+      "avg_dep_delay_min": 90.97,
+      "flights": 32,
+      "pct_dep_del15": 65.62
+    },
+    {
+      "DestCode": "MIA",
+      "OriginCode": "CHS",
+      "avg_dep_delay_min": 90.83,
+      "flights": 30,
+      "pct_dep_del15": 23.33
+    },
+    {
+      "DestCode": "PHX",
+      "OriginCode": "JAX",
+      "avg_dep_delay_min": 90.19,
+      "flights": 31,
+      "pct_dep_del15": 32.26
+    },
+    {
+      "DestCode": "TYS",
+      "OriginCode": "CLT",
+      "avg_dep_delay_min": 90.03,
+      "flights": 58,
+      "pct_dep_del15": 68.97
+    },
+    {
+      "DestCode": "CLT",
+      "OriginCode": "GEG",
+      "avg_dep_delay_min": 89.84,
+      "flights": 31,
+      "pct_dep_del15": 51.61
+    },
+    {
+      "DestCode": "ORD",
+      "OriginCode": "DTW",
+      "avg_dep_delay_min": 89.83,
+      "flights": 30,
+      "pct_dep_del15": 60
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T08:16:43.256352Z",
+  "source_query_sha256": "7d8e6c970fca9f4b327758f582f3e4cef975d7b4b35312929ed1b0532564a522",
+  "log_comment": "qforge|question=q006|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=route_contributors"
+}

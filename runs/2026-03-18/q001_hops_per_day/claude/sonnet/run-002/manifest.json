@@ -1,0 +1,41 @@
+{
+  "schema_version": "2",
+  "status": "partial",
+  "question_id": "q001",
+  "question_slug": "q001_hops_per_day",
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "dataset": "ontime",
+  "runner": "claude",
+  "model": "sonnet",
+  "cli_bin": "claude",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime/mcp.yaml",
+  "started_at": "2026-03-18T22:02:37.358811Z",
+  "finished_at": "2026-03-18T22:04:38.932869Z",
+  "duration_sec": 121,
+  "log_comment": "",
+  "query_sha256": "",
+  "result_row_count": 0,
+  "phases": {
+    "sql_generation": "failed",
+    "sql_execution": "not_run",
+    "presentation_generation": "not_run",
+    "presentation_render": "not_run"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/answer.sql.raw.md",
+    "analysis_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/analysis.json",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-002/visual.html"
+  }
+}

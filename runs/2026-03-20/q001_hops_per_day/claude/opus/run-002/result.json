@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "Carrier",
+    "FlightDate",
+    "Hops",
+    "Route",
+    "DepTimes"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "DepTimes": "0543, 0810, 1020, 1142, 1401, 1643, 1828, 2041",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "366",
+      "Hops": 8,
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0621, 0801, 1007, 1234, 1514, 1747, 1902, 2117",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N7835A"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0618, 0800, 1012, 1239, 1515, 1756, 1859, 2059",
+      "FlightDate": "2024-01-28T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N429WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0620, 0810, 1017, 1237, 1510, 1800, 1903, 2102",
+      "FlightDate": "2024-01-21T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N228WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0625, 0805, 1011, 1241, 1607, 1909, 2006, 2156",
+      "FlightDate": "2024-01-14T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N569WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0627, 0939, 1124, 1434, 1656, 1831, 2040, 2246",
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "Tail_Number": "N7742B"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0622, 0941, 1122, 1433, 1659, 1832, 2041, 2226",
+      "FlightDate": "2023-04-16T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "Tail_Number": "N929WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0608, 0944, 1156, 1354, 1553, 1729, 2045, 2149",
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8631A"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0610, 0917, 1142, 1355, 1536, 1716, 2040, 2147",
+      "FlightDate": "2022-10-02T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8809L"
+    },
+    {
+      "Carrier": "WN",
+      "DepTimes": "0601, 0918, 1141, 1347, 1539, 1724, 2112, 2242",
+      "FlightDate": "2022-09-25T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8811L"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-20T16:51:15.539816Z",
+  "source_query_sha256": "37aa0127a008f027ffd6a79af6b315e8c3413da51ea11a6568f76513736f831b",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=opus|phase=full"
+}

@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highest Daily Hops for One Aircraft on One Flight Number — OnTime Analytics</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+    --bg-top: #eaf3f8;
+    --bg-bottom: #f6fafc;
+    --panel: #ffffff;
+    --panel-alt: #f3f7fa;
+    --ink: #163244;
+    --muted: #5d7485;
+    --navy: #0e3a52;
+    --slate: #5c7080;
+    --sky: #3c88b5;
+    --teal: #1f8a70;
+    --amber: #d48a1f;
+    --red: #c54f36;
+    --grid: rgba(22, 50, 68, 0.12);
+    --border: rgba(22, 50, 68, 0.10);
+    --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+    --radius-xl: 22px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1a5276 100%);
+    color: #fff;
+    padding: 2rem 2rem 1.6rem;
+    border-bottom: 4px solid var(--sky);
+}
+.header-inner { max-width: 1280px; margin: 0 auto; }
+header h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+header .subtitle {
+    color: rgba(255,255,255,0.68);
+    font-size: 0.88rem;
+    margin-top: 0.4rem;
+}
+
+/* ── Wrapper ── */
+.wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 2.5rem;
+}
+
+/* ── KPI strip ── */
+.kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+@media (max-width: 900px) {
+    .kpi-strip { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+}
+.kpi-card {
+    background: var(--panel);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+.kpi-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+}
+.kpi-value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kpi-sub {
+    font-size: 0.73rem;
+    color: var(--muted);
+    margin-top: 0.22rem;
+}
+.kpi-card.accent-red .kpi-value { color: var(--red); }
+.kpi-card.accent-teal .kpi-value { color: var(--teal); }
+
+/* ── Panels ── */
+.panel {
+    background: var(--panel);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+.panel-header {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel-alt);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.panel-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--navy);
+}
+.panel-sub {
+    font-size: 0.77rem;
+    color: var(--muted);
+    margin-left: auto;
+}
+.panel-body {
+    padding: 1.25rem;
+}
+
+/* ── Map ── */
+#map-placeholder {
+    height: 430px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: var(--panel-alt);
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+#map-placeholder .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--sky);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#map-container {
+    height: 430px;
+    width: 100%;
+    display: none;
+}
+#map-degraded-msg {
+    padding: 0.75rem 1.25rem;
+    background: rgba(212,138,31,0.08);
+    border-top: 3px solid var(--amber);
+    color: var(--amber);
+    font-size: 0.83rem;
+    display: none;
+}
+.map-legend {
+    padding: 0.7rem 1.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--panel-alt);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.77rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+}
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.legend-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.22);
+    flex-shrink: 0;
+}
+.legend-line {
+    width: 26px; height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+#map-enrich-status { margin-left: auto; font-style: italic; }
+
+/* ── Route sequence ── */
+.route-sequence {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+}
+.stop-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.28rem 0.6rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--navy);
+}
+.stop-badge.endpoint {
+    border-color: var(--red);
+    background: rgba(197,79,54,0.06);
+    color: var(--red);
+}
+.stop-num {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.stop-badge.endpoint .stop-num { background: var(--red); }
+.route-arrow { color: var(--muted); font-size: 0.85rem; }
+
+/* ── Leg table ── */
+.leg-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.leg-table th {
+    background: var(--panel-alt);
+    padding: 0.45rem 0.75rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+}
+.leg-table td {
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink);
+}
+.leg-table tr:last-child td { border-bottom: none; }
+.leg-table tr:hover td { background: var(--panel-alt); }
+
+/* ── Itinerary table ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+.data-table th {
+    background: var(--panel-alt);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.data-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.data-table tbody tr:hover td { background: var(--panel-alt); }
+.data-table tbody tr.active td {
+    background: rgba(60,136,181,0.10);
+}
+.data-table tbody tr.active td:first-child {
+    border-left: 3px solid var(--sky);
+    padding-left: calc(0.75rem - 3px);
+}
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+.rank-badge.top { background: var(--red); }
+.route-chip {
+    font-family: "Courier New", monospace;
+    font-size: 0.76rem;
+    color: var(--muted);
+    max-width: 380px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+.export-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--border);
+}
+.btn-export {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-export:hover { background: var(--sky); }
+
+/* ── Query ledger ── */
+.ledger-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.ledger-row { cursor: pointer; border-bottom: 1px solid var(--border); }
+.ledger-row:hover td { background: var(--panel-alt); }
+.ledger-row td { padding: 0.55rem 0.75rem; vertical-align: middle; }
+.ledger-toggle { width: 1.6em; color: var(--muted); font-family: monospace; user-select: none; }
+.ledger-label { font-weight: 600; color: var(--ink); }
+.ledger-role { width: 7em; color: var(--muted); font-size: 0.75rem; }
+.ledger-status-cell { width: 6em; }
+.ledger-rows-cell { width: 4.5em; text-align: right; color: var(--muted); }
+.ledger-status {
+    display: inline-block;
+    padding: 0.18em 0.55em;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.ledger-status.ok { background: rgba(31,138,112,0.12); color: var(--teal); }
+.ledger-status.pending { background: rgba(212,138,31,0.12); color: var(--amber); }
+.ledger-status.failed { background: rgba(197,79,54,0.12); color: var(--red); }
+.ledger-status.degraded { background: rgba(212,138,31,0.12); color: var(--amber); }
+.ledger-sql-row td { padding: 0; }
+.ledger-sql-block {
+    display: none;
+    margin: 0.3rem 0.75rem 0.6rem;
+    background: var(--panel-alt);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+}
+.ledger-sql-block pre {
+    font-family: "Courier New", monospace;
+    font-size: 0.77rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: var(--ink);
+}
+
+/* ── Empty state ── */
+#empty-state {
+    max-width: 460px;
+    margin: 4rem auto;
+    text-align: center;
+    padding: 2rem;
+    background: var(--panel);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+#empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+#empty-state h2 { font-size: 1.15rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+#empty-state p { font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
+
+/* ── Footer ── */
+footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.85);
+    margin-top: 2rem;
+}
+.footer-inner { max-width: 1280px; margin: 0 auto; padding: 1.75rem 1.5rem; }
+footer h3 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 1rem;
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+@media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; } }
+.field-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 0.35rem;
+}
+.field-row { display: flex; gap: 0.5rem; align-items: stretch; }
+input[type="password"] {
+    flex: 1;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-size: 0.83rem;
+    padding: 0.5rem 0.75rem;
+}
+input[type="password"]::placeholder { color: rgba(255,255,255,0.28); }
+textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: var(--radius-sm);
+    color: rgba(255,255,255,0.9);
+    font-family: "Courier New", monospace;
+    font-size: 0.76rem;
+    padding: 0.55rem 0.75rem;
+    resize: vertical;
+    min-height: 130px;
+}
+textarea::placeholder { color: rgba(255,255,255,0.28); }
+.btn-primary {
+    background: var(--sky);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 1.3rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+}
+.btn-primary:hover:not(:disabled) { background: #2d6e96; }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-forget {
+    background: rgba(197,79,54,0.18);
+    color: var(--red);
+    border: 1px solid rgba(197,79,54,0.3);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.8rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+.btn-forget:hover { background: rgba(197,79,54,0.32); }
+.footer-bottom {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+#status-text {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.55);
+    min-height: 1.2em;
+}
+#status-text.ok { color: #5dd6b3; }
+#status-text.error { color: #f08a76; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>Highest Daily Hops for One Aircraft on One Flight Number</h1>
+    <div class="subtitle">Maximum segments flown by a single tail number on one flight number in a single day &mdash; OnTime Analytics</div>
+  </div>
+</header>
+
+<div class="wrapper">
+
+  <!-- Empty state -->
+  <div id="empty-state">
+    <div class="icon">&#9992;</div>
+    <h2>Awaiting data</h2>
+    <p>Enter your JWE token in the panel below and click <strong>Fetch Data</strong> to load the dashboard.</p>
+  </div>
+
+  <!-- Main content (hidden until data loads) -->
+  <div id="main-content" style="display:none;">
+
+    <!-- KPI Strip — anchored to top-ranked result -->
+    <div class="kpi-strip" id="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-label">Tail Number</div>
+        <div class="kpi-value" id="kpi-tail">—</div>
+        <div class="kpi-sub">Top-ranked aircraft</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Flight Number</div>
+        <div class="kpi-value" id="kpi-flight">—</div>
+        <div class="kpi-sub">Carrier &amp; route number</div>
+      </div>
+      <div class="kpi-card accent-red">
+        <div class="kpi-label">Date</div>
+        <div class="kpi-value" id="kpi-date">—</div>
+        <div class="kpi-sub">Service date (top result)</div>
+      </div>
+      <div class="kpi-card accent-red">
+        <div class="kpi-label">Daily Hops</div>
+        <div class="kpi-value" id="kpi-hops">—</div>
+        <div class="kpi-sub">Segments in one day</div>
+      </div>
+      <div class="kpi-card accent-teal">
+        <div class="kpi-label">Route Repetition</div>
+        <div class="kpi-value" id="kpi-repeat">—</div>
+        <div class="kpi-sub" id="kpi-repeat-sub">Same flight # in top results</div>
+      </div>
+    </div>
+
+    <!-- Map Panel -->
+    <div class="panel" id="map-panel">
+      <div class="panel-header">
+        <span class="panel-title">Lead Itinerary Map</span>
+        <span class="panel-sub" id="map-title-sub">Select a row below to view its route</span>
+      </div>
+      <div id="map-placeholder">
+        <div class="spinner"></div>
+        <span>Awaiting airport coordinate enrichment&hellip;</span>
+      </div>
+      <div id="map-container"></div>
+      <div id="map-degraded-msg"></div>
+      <div class="map-legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--red);"></div>
+          <span>Origin &amp; Destination</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:var(--navy);"></div>
+          <span>Intermediate stop</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-line" style="background:var(--sky);"></div>
+          <span>Flight segment</span>
+        </div>
+        <span id="map-enrich-status">Awaiting coordinate enrichment&hellip;</span>
+      </div>
+    </div>
+
+    <!-- Route Sequence / Detail Panel -->
+    <div class="panel" id="route-detail-panel">
+      <div class="panel-header">
+        <span class="panel-title">Route Sequence &amp; Detail</span>
+        <span class="panel-sub" id="route-detail-sub"></span>
+      </div>
+      <div class="panel-body">
+        <div class="route-sequence" id="route-sequence"></div>
+        <table class="leg-table">
+          <thead>
+            <tr>
+              <th style="width:3em;">#</th>
+              <th>Origin</th>
+              <th>Destination</th>
+            </tr>
+          </thead>
+          <tbody id="leg-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Itinerary Table -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Top-10 Itinerary Results</span>
+        <span class="panel-sub">Click a row to select itinerary &mdash; map and detail panel update</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:2.5em;">#</th>
+              <th>Aircraft ID</th>
+              <th>Flight</th>
+              <th>Date</th>
+              <th>Route</th>
+              <th style="width:4.5em;text-align:right;">Hops</th>
+            </tr>
+          </thead>
+          <tbody id="itinerary-tbody"></tbody>
+        </table>
+      </div>
+      <div class="export-bar">
+        <button class="btn-export" id="export-btn">&#x2b07; Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Query Ledger -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Query Ledger</span>
+        <span class="panel-sub">Click a row to expand SQL</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ledger-table">
+          <thead>
+            <tr style="background:var(--panel-alt);">
+              <th style="width:1.8em;padding:0.5rem 0.75rem;"></th>
+              <th style="padding:0.5rem 0.75rem;text-align:left;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-weight:700;">Query</th>
+              <th style="width:7em;padding:0.5rem 0.75rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-weight:700;">Role</th>
+              <th style="width:6.5em;padding:0.5rem 0.75rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-weight:700;">Status</th>
+              <th style="width:4.5em;padding:0.5rem 0.75rem;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);font-weight:700;text-align:right;">Rows</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /wrapper -->
+
+<footer>
+  <div class="footer-inner">
+    <h3>Data Connection</h3>
+    <div class="footer-grid">
+      <div>
+        <div class="field-label">JWE Token</div>
+        <div class="field-row">
+          <input type="password" id="jwe-input" placeholder="Paste JWE token&hellip;" autocomplete="off"/>
+          <button class="btn-forget" id="forget-btn">Forget</button>
+        </div>
+      </div>
+      <div>
+        <div class="field-label">SQL Query</div>
+        <textarea id="sql-textarea" placeholder="SQL query&hellip;"></textarea>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <button class="btn-primary" id="fetch-btn">Fetch Data</button>
+      <span id="status-text">Ready &mdash; enter token and click Fetch.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Constants ──────────────────────────────────────────────────────────────
+const JWE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+
+const PRIMARY_SQL = `WITH sorted AS (
+    SELECT
+        Tail_Number,
+        Flight_Number_Reporting_Airline,
+        IATA_CODE_Reporting_Airline,
+        FlightDate,
+        count() AS hop_count,
+        arraySort(t -> t.3, groupArray(tuple(OriginCode, DestCode, assumeNotNull(CRSDepTime)))) AS legs
+    FROM ontime.fact_ontime
+    WHERE Tail_Number != ''
+      AND Cancelled = 0
+    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate
+)
+SELECT
+    Tail_Number                    AS \`Aircraft ID\`,
+    Flight_Number_Reporting_Airline AS \`Flight Number\`,
+    IATA_CODE_Reporting_Airline     AS Carrier,
+    FlightDate                      AS Date,
+    arrayStringConcat(
+        arrayConcat(
+            [legs[1].1],
+            arrayMap(t -> t.2, legs)
+        ),
+        ' \u2192 '
+    )                               AS Route,
+    hop_count
+FROM sorted
+ORDER BY hop_count DESC, FlightDate DESC
+LIMIT 10`;
+
+// ── State ──────────────────────────────────────────────────────────────────
+let rows = [];
+let coordCache = new Map(); // AirportCode -> { lat, lng, name }
+let selectedIdx = 0;
+let leafletMap = null;
+let routeLayers = [];
+let isRunning = false;
+let runId = 0;
+
+// Ledger
+const ledgerEntries = []; // { id, label, role, sql, status, rowCount }
+
+// ── DOM refs ───────────────────────────────────────────────────────────────
+const jweInput       = document.getElementById('jwe-input');
+const sqlTextarea    = document.getElementById('sql-textarea');
+const fetchBtn       = document.getElementById('fetch-btn');
+const forgetBtn      = document.getElementById('forget-btn');
+const statusEl       = document.getElementById('status-text');
+const emptyState     = document.getElementById('empty-state');
+const mainContent    = document.getElementById('main-content');
+const mapPlaceholder = document.getElementById('map-placeholder');
+const mapContainer   = document.getElementById('map-container');
+const mapDegraded    = document.getElementById('map-degraded-msg');
+const mapEnrichStat  = document.getElementById('map-enrich-status');
+const mapTitleSub    = document.getElementById('map-title-sub');
+const ledgerTbody    = document.getElementById('ledger-tbody');
+const itinTbody      = document.getElementById('itinerary-tbody');
+const legTbody       = document.getElementById('leg-tbody');
+const routeSeqEl     = document.getElementById('route-sequence');
+const routeDetailSub = document.getElementById('route-detail-sub');
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function normalizeDate(val) {
+    return String(val ?? '').slice(0, 10);
+}
+
+function parseRoute(routeStr) {
+    return String(routeStr ?? '').split(' \u2192 ').map(s => s.trim()).filter(Boolean);
+}
+
+function rowsToObjects(columns, rawRows) {
+    return (rawRows ?? []).map(r => {
+        const obj = {};
+        (columns ?? []).forEach((col, i) => { obj[col] = r[i]; });
+        return obj;
+    });
+}
+
+function buildUrl(jwe, sql) {
+    return `https://mcp.demo.altinity.cloud/${encodeURIComponent(jwe)}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+}
+
+function setStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = type || '';
+}
+
+function setRunning(flag) {
+    isRunning = flag;
+    fetchBtn.disabled = flag;
+    fetchBtn.textContent = flag ? 'Fetching\u2026' : 'Fetch Data';
+}
+
+// ── Ledger ─────────────────────────────────────────────────────────────────
+function ledgerAdd(id, label, role, sql) {
+    // Remove existing entry with same id before adding
+    const existing = ledgerEntries.findIndex(e => e.id === id);
+    if (existing !== -1) ledgerEntries.splice(existing, 1);
+    const entry = { id, label, role, sql: sql || '', status: 'pending', rowCount: '\u2014' };
+    ledgerEntries.push(entry);
+    renderLedger();
+    return entry;
+}
+
+function ledgerUpdate(id, status, rowCount, sql) {
+    const entry = ledgerEntries.find(e => e.id === id);
+    if (!entry) return;
+    entry.status = status;
+    if (rowCount !== undefined) entry.rowCount = rowCount;
+    if (sql != null) entry.sql = sql;
+    renderLedger();
+}
+
+function renderLedger() {
+    ledgerTbody.innerHTML = '';
+    const statusLabels = { ok: 'OK', pending: 'Pending', failed: 'Failed', degraded: 'Degraded' };
+
+    ledgerEntries.forEach(entry => {
+        // Main row
+        const tr = document.createElement('tr');
+        tr.className = 'ledger-row';
+
+        const toggleTd = document.createElement('td');
+        toggleTd.className = 'ledger-toggle';
+        toggleTd.textContent = '\u25b6';
+
+        const labelTd = document.createElement('td');
+        labelTd.className = 'ledger-label';
+        labelTd.textContent = entry.label;
+
+        const roleTd = document.createElement('td');
+        roleTd.className = 'ledger-role';
+        roleTd.textContent = entry.role;
+
+        const statusTd = document.createElement('td');
+        statusTd.className = 'ledger-status-cell';
+        const statusSpan = document.createElement('span');
+        statusSpan.className = `ledger-status ${entry.status}`;
+        statusSpan.textContent = statusLabels[entry.status] || entry.status;
+        statusTd.appendChild(statusSpan);
+
+        const rowsTd = document.createElement('td');
+        rowsTd.className = 'ledger-rows-cell';
+        rowsTd.textContent = entry.rowCount;
+
+        tr.appendChild(toggleTd);
+        tr.appendChild(labelTd);
+        tr.appendChild(roleTd);
+        tr.appendChild(statusTd);
+        tr.appendChild(rowsTd);
+
+        // SQL expansion row
+        const sqlTr = document.createElement('tr');
+        sqlTr.className = 'ledger-sql-row';
+        const sqlTd = document.createElement('td');
+        sqlTd.colSpan = 5;
+        const sqlBlock = document.createElement('div');
+        sqlBlock.className = 'ledger-sql-block';
+        const pre = document.createElement('pre');
+        pre.textContent = entry.sql || '(no SQL)';
+        sqlBlock.appendChild(pre);
+        sqlTd.appendChild(sqlBlock);
+        sqlTr.appendChild(sqlTd);
+
+        let expanded = false;
+        tr.addEventListener('click', () => {
+            expanded = !expanded;
+            toggleTd.textContent = expanded ? '\u25bc' : '\u25b6';
+            sqlBlock.style.display = expanded ? 'block' : 'none';
+        });
+
+        ledgerTbody.appendChild(tr);
+        ledgerTbody.appendChild(sqlTr);
+    });
+}
+
+// ── KPI rendering ──────────────────────────────────────────────────────────
+// Always anchored to rows[0] (top-ranked result)
+function renderKPIs() {
+    if (!rows.length) return;
+    const top = rows[0];
+    document.getElementById('kpi-tail').textContent   = top['Aircraft ID'] ?? '\u2014';
+    document.getElementById('kpi-flight').textContent = `${top['Carrier'] ?? ''}${top['Flight Number'] ?? ''}`;
+    document.getElementById('kpi-date').textContent   = normalizeDate(top['Date']);
+    document.getElementById('kpi-hops').textContent   = top['hop_count'] ?? '\u2014';
+
+    // Route repetition: count rows sharing the same Flight Number as top result
+    const fn = top['Flight Number'];
+    const sameCount = rows.filter(r => r['Flight Number'] === fn).length;
+    document.getElementById('kpi-repeat').textContent = sameCount === 1 ? 'Unique' : `${sameCount} dates`;
+    document.getElementById('kpi-repeat-sub').textContent = sameCount === 1
+        ? 'Only occurrence in results'
+        : `Dates with same flight # in top results`;
+}
+
+// ── Itinerary table ────────────────────────────────────────────────────────
+function renderTable() {
+    itinTbody.innerHTML = '';
+    rows.forEach((row, i) => {
+        const tr = document.createElement('tr');
+        tr.className = i === selectedIdx ? 'active' : '';
+
+        const rankTd = document.createElement('td');
+        const badge = document.createElement('span');
+        badge.className = `rank-badge${i === 0 ? ' top' : ''}`;
+        badge.textContent = i + 1;
+        rankTd.appendChild(badge);
+
+        const tailTd = document.createElement('td');
+        tailTd.textContent = row['Aircraft ID'] ?? '';
+
+        const flightTd = document.createElement('td');
+        flightTd.textContent = `${row['Carrier'] ?? ''}${row['Flight Number'] ?? ''}`;
+
+        const dateTd = document.createElement('td');
+        dateTd.textContent = normalizeDate(row['Date']);
+
+        const routeTd = document.createElement('td');
+        const chip = document.createElement('span');
+        chip.className = 'route-chip';
+        chip.title = row['Route'] ?? '';
+        chip.textContent = row['Route'] ?? '';
+        routeTd.appendChild(chip);
+
+        const hopsTd = document.createElement('td');
+        hopsTd.style.textAlign = 'right';
+        const hopsB = document.createElement('strong');
+        hopsB.textContent = row['hop_count'] ?? '';
+        hopsTd.appendChild(hopsB);
+
+        tr.appendChild(rankTd);
+        tr.appendChild(tailTd);
+        tr.appendChild(flightTd);
+        tr.appendChild(dateTd);
+        tr.appendChild(routeTd);
+        tr.appendChild(hopsTd);
+
+        tr.addEventListener('click', () => selectRow(i));
+        itinTbody.appendChild(tr);
+    });
+}
+
+// ── Route detail panel ─────────────────────────────────────────────────────
+function renderRouteDetail(row) {
+    const airports = parseRoute(row['Route'] ?? '');
+    const dateStr  = normalizeDate(row['Date']);
+    const hopCount = airports.length - 1;
+
+    routeDetailSub.textContent =
+        `${row['Carrier'] ?? ''}${row['Flight Number'] ?? ''} \u00b7 ${row['Aircraft ID'] ?? ''} \u00b7 ${dateStr} \u00b7 ${hopCount} hop${hopCount !== 1 ? 's' : ''}`;
+
+    // Stop badges
+    routeSeqEl.innerHTML = '';
+    airports.forEach((code, i) => {
+        if (i > 0) {
+            const arrow = document.createElement('span');
+            arrow.className = 'route-arrow';
+            arrow.textContent = '\u2192';
+            routeSeqEl.appendChild(arrow);
+        }
+        const isEndpoint = i === 0 || i === airports.length - 1;
+        const badge = document.createElement('span');
+        badge.className = `stop-badge${isEndpoint ? ' endpoint' : ''}`;
+        const numSpan = document.createElement('span');
+        numSpan.className = 'stop-num';
+        numSpan.textContent = i + 1;
+        badge.appendChild(numSpan);
+        badge.appendChild(document.createTextNode(code));
+        routeSeqEl.appendChild(badge);
+    });
+
+    // Leg table
+    legTbody.innerHTML = '';
+    for (let i = 0; i < airports.length - 1; i++) {
+        const tr = document.createElement('tr');
+        const numTd = document.createElement('td');
+        numTd.textContent = i + 1;
+        const origTd = document.createElement('td');
+        const origB = document.createElement('strong');
+        origB.textContent = airports[i];
+        origTd.appendChild(origB);
+        const destTd = document.createElement('td');
+        const destB = document.createElement('strong');
+        destB.textContent = airports[i + 1];
+        destTd.appendChild(destB);
+        tr.appendChild(numTd);
+        tr.appendChild(origTd);
+        tr.appendChild(destTd);
+        legTbody.appendChild(tr);
+    }
+
+    mapTitleSub.textContent =
+        `${row['Carrier'] ?? ''}${row['Flight Number'] ?? ''} \u00b7 ${row['Aircraft ID'] ?? ''} \u00b7 ${dateStr}`;
+}
+
+// ── Map ────────────────────────────────────────────────────────────────────
+function initMap() {
+    if (leafletMap) return;
+    mapPlaceholder.style.display = 'none';
+    mapContainer.style.display = 'block';
+    leafletMap = L.map('map-container', { preferCanvas: true }).setView([38, -96], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    }).addTo(leafletMap);
+    setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 120);
+}
+
+function clearRouteLayers() {
+    routeLayers.forEach(l => { try { leafletMap.removeLayer(l); } catch (e) {} });
+    routeLayers = [];
+}
+
+function makeStopIcon(num, isEndpoint) {
+    const bg = isEndpoint ? '#c54f36' : '#0e3a52';
+    return L.divIcon({
+        className: '',
+        html: `<div style="width:24px;height:24px;background:${bg};border:2px solid #fff;` +
+              `border-radius:50%;display:flex;align-items:center;justify-content:center;` +
+              `color:#fff;font-size:10px;font-weight:700;` +
+              `box-shadow:0 2px 6px rgba(0,0,0,0.35);line-height:1;">${num}</div>`,
+        iconSize: [24, 24],
+        iconAnchor: [12, 12],
+        popupAnchor: [0, -14]
+    });
+}
+
+function showMapDegraded(msg) {
+    mapDegraded.textContent = '\u26a0 ' + msg;
+    mapDegraded.style.display = 'block';
+    // Update or add map-render ledger entry
+    const existEntry = ledgerEntries.find(e => e.id === 'map-render');
+    if (existEntry) {
+        ledgerUpdate('map-render', 'degraded', undefined, undefined);
+    } else {
+        ledgerAdd('map-render', 'Map Rendering', 'Visual', '(uses enriched airport coordinates)');
+        ledgerUpdate('map-render', 'degraded', 0);
+    }
+}
+
+function renderMap(row) {
+    if (!leafletMap) return;
+    clearRouteLayers();
+    mapDegraded.style.display = 'none';
+
+    const airports = parseRoute(row['Route'] ?? '');
+    if (airports.length < 2) {
+        showMapDegraded('Route has fewer than 2 airports.');
+        return;
+    }
+
+    // Resolve coordinates for each airport
+    const points = airports.map((code, idx) => {
+        const c = coordCache.get(code);
+        return c ? { code, lat: c.lat, lng: c.lng, name: c.name, idx } : null;
+    });
+
+    const validPoints = points.filter(Boolean);
+    const missingCodes = airports.filter((_, i) => !points[i]);
+
+    if (validPoints.length < 2) {
+        showMapDegraded(`Insufficient coordinates — missing: ${missingCodes.join(', ')}`);
+        return;
+    }
+
+    // Draw polylines between consecutive resolved points
+    for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i];
+        const b = points[i + 1];
+        if (!a || !b) continue;
+        const line = L.polyline([[a.lat, a.lng], [b.lat, b.lng]], {
+            color: '#3c88b5',
+            weight: 2.6,
+            opacity: 0.78
+        }).addTo(leafletMap);
+        routeLayers.push(line);
+    }
+
+    // Draw stop markers
+    points.forEach((pt, i) => {
+        if (!pt) return;
+        const isEndpoint = i === 0 || i === airports.length - 1;
+        const marker = L.marker([pt.lat, pt.lng], { icon: makeStopIcon(i + 1, isEndpoint) })
+            .addTo(leafletMap);
+        marker.bindPopup(
+            `<strong>${pt.code}</strong>` +
+            (pt.name ? `<br><span style="color:#5d7485;font-size:0.84em;">${pt.name}</span>` : '') +
+            `<br><span style="font-size:0.82em;color:#5d7485;">Stop ${i + 1} of ${airports.length}</span>`
+        );
+        routeLayers.push(marker);
+    });
+
+    // Fit bounds
+    const latLngs = validPoints.map(p => [p.lat, p.lng]);
+    leafletMap.fitBounds(latLngs, { padding: [40, 40] });
+    leafletMap.invalidateSize();
+
+    // Partial degradation: some stops missing but map still drawn
+    if (missingCodes.length > 0) {
+        mapDegraded.textContent =
+            `\u26a0 Coordinates not found for: ${missingCodes.join(', ')}. Those stops are omitted from the map.`;
+        mapDegraded.style.display = 'block';
+        const existEntry = ledgerEntries.find(e => e.id === 'map-render');
+        if (existEntry) {
+            ledgerUpdate('map-render', 'degraded');
+        } else {
+            ledgerAdd('map-render', 'Map Rendering', 'Visual', '(uses enriched airport coordinates)');
+            ledgerUpdate('map-render', 'degraded', validPoints.length);
+        }
+    } else {
+        // Success — update or add map-render entry
+        const existEntry = ledgerEntries.find(e => e.id === 'map-render');
+        if (existEntry) {
+            ledgerUpdate('map-render', 'ok', validPoints.length);
+        } else {
+            ledgerAdd('map-render', 'Map Rendering', 'Visual', '(uses enriched airport coordinates)');
+            ledgerUpdate('map-render', 'ok', validPoints.length);
+        }
+    }
+}
+
+// ── Row selection ──────────────────────────────────────────────────────────
+function selectRow(idx) {
+    selectedIdx = idx;
+    renderTable();
+    renderRouteDetail(rows[idx]);
+    renderMap(rows[idx]);
+    // Scroll map into view smoothly
+    document.getElementById('map-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Export CSV ─────────────────────────────────────────────────────────────
+document.getElementById('export-btn').addEventListener('click', () => {
+    if (!rows.length) return;
+    const cols = ['Aircraft ID', 'Flight Number', 'Carrier', 'Date', 'Route', 'hop_count'];
+    const lines = [cols.map(c => `"${c}"`).join(',')];
+    rows.forEach(r => {
+        lines.push(cols.map(c => {
+            const v = c === 'Date' ? normalizeDate(r[c]) : (r[c] ?? '');
+            return `"${String(v).replace(/"/g, '""')}"`;
+        }).join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'highest_daily_hops.csv';
+    a.click();
+});
+
+// ── Enrichment query ───────────────────────────────────────────────────────
+async function runEnrichment(jwe, thisRunId) {
+    // Collect all unique airport codes from every row
+    const allCodes = new Set();
+    rows.forEach(r => parseRoute(r['Route'] ?? '').forEach(c => allCodes.add(c)));
+    if (!allCodes.size) return;
+
+    const inList = Array.from(allCodes).map(c => `'${c}'`).join(', ');
+    const sql = `SELECT AirportCode, DisplayAirportName, Latitude, Longitude\nFROM ontime.dim_airports\nWHERE AirportCode IN (${inList})`;
+
+    ledgerAdd('enrichment', 'Airport Coordinate Enrichment', 'Enrichment', sql);
+    mapEnrichStat.textContent = 'Fetching coordinates\u2026';
+
+    try {
+        const resp = await fetch(buildUrl(jwe, sql));
+        if (thisRunId !== runId) return;
+
+        if (!resp.ok) {
+            const txt = await resp.text();
+            ledgerUpdate('enrichment', 'failed', 0);
+            mapEnrichStat.textContent = '\u26a0 Enrichment failed';
+            mapDegraded.textContent = `\u26a0 Airport coordinate enrichment failed (HTTP ${resp.status}). Map cannot be rendered.`;
+            mapDegraded.style.display = 'block';
+            // Ensure map placeholder replaced with degraded state
+            mapPlaceholder.style.display = 'none';
+            mapContainer.style.display = 'block';
+            return;
+        }
+
+        const data = await resp.json();
+        if (thisRunId !== runId) return;
+
+        const enrichRows = rowsToObjects(data.columns, data.rows);
+        coordCache.clear();
+        enrichRows.forEach(r => {
+            const code = String(r['AirportCode'] ?? '').trim();
+            if (code) {
+                coordCache.set(code, {
+                    lat: parseFloat(r['Latitude']),
+                    lng: parseFloat(r['Longitude']),
+                    name: r['DisplayAirportName'] ?? ''
+                });
+            }
+        });
+
+        ledgerUpdate('enrichment', 'ok', enrichRows.length);
+        mapEnrichStat.textContent = `\u2713 ${enrichRows.length} airports enriched`;
+
+        // Render map for the currently selected row
+        if (thisRunId === runId) {
+            renderMap(rows[selectedIdx]);
+        }
+
+    } catch (err) {
+        if (thisRunId !== runId) return;
+        ledgerUpdate('enrichment', 'failed', 0);
+        mapEnrichStat.textContent = '\u26a0 Enrichment error';
+        mapDegraded.textContent = `\u26a0 Coordinate enrichment error: ${err.message}`;
+        mapDegraded.style.display = 'block';
+    }
+}
+
+// ── Primary fetch ──────────────────────────────────────────────────────────
+async function runFetch() {
+    if (isRunning) return;
+
+    const jwe = jweInput.value.trim();
+    const sql = sqlTextarea.value.trim();
+
+    if (!jwe) { setStatus('\u26a0 Enter a JWE token first.', 'error'); return; }
+    if (!sql) { setStatus('\u26a0 SQL query is empty.', 'error'); return; }
+
+    localStorage.setItem(JWE_KEY, jwe);
+    setRunning(true);
+    setStatus('Running primary query\u2026');
+
+    const thisRunId = ++runId;
+
+    // Fresh run: clear ledger and state
+    ledgerEntries.length = 0;
+    coordCache.clear();
+    rows = [];
+
+    ledgerAdd('primary', 'Highest Daily Hops per Aircraft-Flight-Date', 'Primary', sql);
+
+    try {
+        const resp = await fetch(buildUrl(jwe, sql));
+        if (thisRunId !== runId) return;
+
+        if (!resp.ok) {
+            const txt = await resp.text();
+            ledgerUpdate('primary', 'failed', 0);
+            setStatus(`\u26a0 Query failed (HTTP ${resp.status}): ${txt.slice(0, 300)}`, 'error');
+            setRunning(false);
+            return;
+        }
+
+        const data = await resp.json();
+        if (thisRunId !== runId) return;
+
+        rows = rowsToObjects(data.columns, data.rows);
+        ledgerUpdate('primary', 'ok', rows.length, sql);
+
+        if (!rows.length) {
+            setStatus('\u26a0 Query returned 0 rows.', 'error');
+            setRunning(false);
+            return;
+        }
+
+        setStatus(`\u2713 ${rows.length} rows loaded.`, 'ok');
+
+        // Render non-map content
+        selectedIdx = 0;
+        renderKPIs();
+        renderTable();
+        renderRouteDetail(rows[0]);
+
+        // Reveal dashboard
+        emptyState.style.display = 'none';
+        mainContent.style.display = 'block';
+
+        // Initialize map (needs container visible)
+        initMap();
+
+        // Async enrichment — non-blocking
+        runEnrichment(jwe, thisRunId);
+
+    } catch (err) {
+        if (thisRunId !== runId) return;
+        ledgerUpdate('primary', 'failed', 0);
+        setStatus(`\u26a0 Error: ${err.message}`, 'error');
+    } finally {
+        if (thisRunId === runId) setRunning(false);
+    }
+}
+
+// ── Controls ───────────────────────────────────────────────────────────────
+fetchBtn.addEventListener('click', runFetch);
+
+forgetBtn.addEventListener('click', () => {
+    localStorage.removeItem(JWE_KEY);
+    jweInput.value = '';
+    setStatus('Token forgotten.');
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+sqlTextarea.value = PRIMARY_SQL;
+
+const storedJwe = localStorage.getItem(JWE_KEY);
+if (storedJwe) {
+    jweInput.value = storedJwe;
+    runFetch();
+}
+</script>
+</body>
+</html>

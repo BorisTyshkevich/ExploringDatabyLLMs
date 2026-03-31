@@ -1,0 +1,155 @@
+{
+  "columns": [
+    "OriginCode",
+    "flights",
+    "pct_of_total_flights",
+    "avg_dep_delay_min",
+    "pct_dep_del15"
+  ],
+  "rows": [
+    {
+      "OriginCode": "DFW",
+      "avg_dep_delay_min": 38.52,
+      "flights": 14962,
+      "pct_dep_del15": 46.59,
+      "pct_of_total_flights": 17.38
+    },
+    {
+      "OriginCode": "CLT",
+      "avg_dep_delay_min": 51.99,
+      "flights": 10568,
+      "pct_dep_del15": 52.24,
+      "pct_of_total_flights": 12.28
+    },
+    {
+      "OriginCode": "MIA",
+      "avg_dep_delay_min": 34.35,
+      "flights": 4881,
+      "pct_dep_del15": 39.89,
+      "pct_of_total_flights": 5.67
+    },
+    {
+      "OriginCode": "ORD",
+      "avg_dep_delay_min": 35.76,
+      "flights": 4844,
+      "pct_dep_del15": 39.22,
+      "pct_of_total_flights": 5.63
+    },
+    {
+      "OriginCode": "PHL",
+      "avg_dep_delay_min": 34.61,
+      "flights": 4555,
+      "pct_dep_del15": 40.66,
+      "pct_of_total_flights": 5.29
+    },
+    {
+      "OriginCode": "PHX",
+      "avg_dep_delay_min": 30.21,
+      "flights": 4366,
+      "pct_dep_del15": 30.85,
+      "pct_of_total_flights": 5.07
+    },
+    {
+      "OriginCode": "LAX",
+      "avg_dep_delay_min": 25.08,
+      "flights": 2564,
+      "pct_dep_del15": 25.47,
+      "pct_of_total_flights": 2.98
+    },
+    {
+      "OriginCode": "DCA",
+      "avg_dep_delay_min": 26.13,
+      "flights": 2454,
+      "pct_dep_del15": 28.77,
+      "pct_of_total_flights": 2.85
+    },
+    {
+      "OriginCode": "BOS",
+      "avg_dep_delay_min": 21.97,
+      "flights": 1596,
+      "pct_dep_del15": 25.5,
+      "pct_of_total_flights": 1.85
+    },
+    {
+      "OriginCode": "MCO",
+      "avg_dep_delay_min": 36.99,
+      "flights": 1496,
+      "pct_dep_del15": 35.43,
+      "pct_of_total_flights": 1.74
+    },
+    {
+      "OriginCode": "LGA",
+      "avg_dep_delay_min": 26.11,
+      "flights": 1270,
+      "pct_dep_del15": 26.93,
+      "pct_of_total_flights": 1.48
+    },
+    {
+      "OriginCode": "AUS",
+      "avg_dep_delay_min": 41.6,
+      "flights": 1180,
+      "pct_dep_del15": 31.53,
+      "pct_of_total_flights": 1.37
+    },
+    {
+      "OriginCode": "JFK",
+      "avg_dep_delay_min": 29.7,
+      "flights": 1143,
+      "pct_dep_del15": 24.23,
+      "pct_of_total_flights": 1.33
+    },
+    {
+      "OriginCode": "LAS",
+      "avg_dep_delay_min": 40.25,
+      "flights": 1143,
+      "pct_dep_del15": 37.71,
+      "pct_of_total_flights": 1.33
+    },
+    {
+      "OriginCode": "RDU",
+      "avg_dep_delay_min": 35.03,
+      "flights": 1064,
+      "pct_dep_del15": 34.96,
+      "pct_of_total_flights": 1.24
+    },
+    {
+      "OriginCode": "TPA",
+      "avg_dep_delay_min": 37.69,
+      "flights": 985,
+      "pct_dep_del15": 33.81,
+      "pct_of_total_flights": 1.14
+    },
+    {
+      "OriginCode": "SFO",
+      "avg_dep_delay_min": 31.25,
+      "flights": 953,
+      "pct_dep_del15": 27.18,
+      "pct_of_total_flights": 1.11
+    },
+    {
+      "OriginCode": "SAN",
+      "avg_dep_delay_min": 32.3,
+      "flights": 803,
+      "pct_dep_del15": 30.76,
+      "pct_of_total_flights": 0.93
+    },
+    {
+      "OriginCode": "ATL",
+      "avg_dep_delay_min": 42.61,
+      "flights": 748,
+      "pct_dep_del15": 35.03,
+      "pct_of_total_flights": 0.87
+    },
+    {
+      "OriginCode": "DEN",
+      "avg_dep_delay_min": 30,
+      "flights": 706,
+      "pct_dep_del15": 30.03,
+      "pct_of_total_flights": 0.82
+    }
+  ],
+  "row_count": 20,
+  "generated_at": "2026-03-24T08:16:43.409603Z",
+  "source_query_sha256": "c1d8acb1e1e8d2de274cad0288771cc1939791a28a1eb120b60c5f10552a9c4f",
+  "log_comment": "qforge|question=q006|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=concentration_pattern"
+}

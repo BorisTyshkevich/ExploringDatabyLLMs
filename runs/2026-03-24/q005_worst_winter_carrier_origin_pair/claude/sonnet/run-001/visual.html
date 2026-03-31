@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worst Winter Carrier-Origin Pairs — OnTime Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-top: #eaf3f8;
+      --bg-bottom: #f6fafc;
+      --panel: #ffffff;
+      --panel-alt: #f3f7fa;
+      --ink: #163244;
+      --muted: #5d7485;
+      --navy: #0e3a52;
+      --slate: #5c7080;
+      --sky: #3c88b5;
+      --teal: #1f8a70;
+      --amber: #d48a1f;
+      --red: #c54f36;
+      --border: rgba(22,50,68,0.10);
+      --shadow: 0 18px 45px rgba(14,58,82,0.10);
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      min-height: 100vh;
+      color: var(--ink);
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a5276 100%);
+      color: #fff;
+      padding: 2.5rem 2rem 2rem;
+    }
+    .header-inner { max-width: 1280px; margin: 0 auto; }
+    header h1 {
+      font-family: Georgia, ui-serif, serif;
+      font-size: 1.95rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.45rem;
+      line-height: 1.2;
+    }
+    .season-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 0.18rem 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-left: 0.6rem;
+      vertical-align: middle;
+    }
+    header .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.72;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    /* ── Main ───────────────────────────────────────────────────────── */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    /* ── Empty state ────────────────────────────────────────────────── */
+    #empty-state {
+      background: var(--panel);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 4.5rem 2rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    #empty-state .es-icon { font-size: 2.8rem; margin-bottom: 1rem; opacity: 0.6; }
+    #empty-state h2 {
+      font-family: Georgia, serif;
+      color: var(--navy);
+      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+    }
+    #empty-state p { color: var(--muted); max-width: 480px; margin: 0 auto; font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── Dashboard content ──────────────────────────────────────────── */
+    #dashboard-content { display: none; }
+
+    /* ── KPI strip ──────────────────────────────────────────────────── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+    .kpi-card {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.3rem 1.5rem;
+      border-left: 4px solid var(--sky);
+    }
+    .kpi-card.worst  { border-left-color: var(--red); }
+    .kpi-card.warn   { border-left-color: var(--amber); }
+    .kpi-card.info   { border-left-color: var(--sky); }
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+    }
+    .kpi-value {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .kpi-sub { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── Chart cards ────────────────────────────────────────────────── */
+    .chart-card {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .chart-card h2 {
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+    .chart-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.1rem; }
+    .chart-wrap { position: relative; }
+
+    /* ── Narrative ──────────────────────────────────────────────────── */
+    .narrative-card {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a4d6b 100%);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .narrative-card h3 {
+      font-family: Georgia, serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+      margin-bottom: 0.65rem;
+    }
+    .narrative-card p { line-height: 1.75; font-size: 0.9rem; opacity: 0.93; }
+    .narrative-card strong { color: #ffd98a; }
+
+    /* ── Table card ─────────────────────────────────────────────────── */
+    .table-card {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+    .table-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .table-card h2 { font-family: Georgia, serif; font-size: 1.05rem; color: var(--navy); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    thead th {
+      background: var(--navy);
+      color: #fff;
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+    }
+    thead th.num { text-align: right; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    tbody tr:hover { background: var(--panel-alt); }
+    tbody tr.rank-1 td { background: #fef5f3; }
+    tbody td { padding: 0.52rem 0.85rem; vertical-align: middle; }
+    tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .rank-cell { font-weight: 700; color: var(--navy); text-align: center !important; }
+    .badge {
+      display: inline-block;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.12rem 0.48rem;
+    }
+    .badge-red   { background: #fde8e4; color: var(--red); }
+    .badge-amber { background: #fdf3e0; color: var(--amber); }
+    .badge-teal  { background: #e0f5ef; color: var(--teal); }
+
+    /* ── Ledger ─────────────────────────────────────────────────────── */
+    .ledger-card {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .ledger-card h2 { font-family: Georgia, serif; font-size: 1.05rem; color: var(--navy); margin-bottom: 1rem; }
+    .ledger-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+    .ledger-table thead th {
+      background: var(--panel-alt);
+      color: var(--muted);
+      padding: 0.5rem 0.65rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      position: static;
+    }
+    .ledger-row { cursor: pointer; }
+    .ledger-row:hover td { background: var(--panel-alt); }
+    .ledger-row td { padding: 0.5rem 0.65rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .ledger-sql-row td { padding: 0; border-bottom: 1px solid var(--border); }
+    .ledger-sql-block {
+      display: none;
+      background: var(--panel-alt);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-family: "Consolas", "Menlo", monospace;
+      font-size: 0.77rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--ink);
+      margin: 0.25rem;
+    }
+    .toggle-icon { font-size: 0.65rem; width: 1.4em; display: inline-block; color: var(--muted); }
+    .status-ok      { color: var(--teal); font-weight: 700; }
+    .status-pending { color: var(--amber); font-weight: 700; }
+    .status-failed  { color: var(--red); font-weight: 700; }
+
+    /* ── Export button ──────────────────────────────────────────────── */
+    .export-btn {
+      background: var(--sky);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 1.1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .export-btn:hover { background: var(--navy); }
+
+    /* ── Footer / Control block ─────────────────────────────────────── */
+    footer {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem 2.5rem;
+    }
+    .footer-inner { max-width: 1280px; margin: 0 auto; }
+    .footer-inner h3 {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1rem;
+      align-items: start;
+    }
+    @media (max-width: 700px) { .control-grid { grid-template-columns: 1fr; } }
+    .control-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+    .control-group input,
+    .control-group textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.83rem;
+      color: var(--ink);
+      background: var(--panel-alt);
+      font-family: "Consolas", "Menlo", monospace;
+      resize: vertical;
+    }
+    .control-group textarea { height: 160px; }
+    .btn-row { display: flex; gap: 0.75rem; margin-top: 1rem; align-items: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 1.5rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--sky); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-forget {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 1.1rem;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-forget:hover { background: var(--red); color: #fff; }
+    #status-text { font-size: 0.84rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <h1>Worst Winter Carrier-Origin Pairs <span class="season-badge">Dec · Jan · Feb</span></h1>
+    <p class="subtitle">Departure on-time performance ranking for all carrier-airport pairs with &ge;&thinsp;1,000 winter flights &middot; Sorted by OTP ascending (worst first)</p>
+  </div>
+</header>
+
+<main>
+  <!-- Empty state -->
+  <div id="empty-state">
+    <div class="es-icon">&#9992;</div>
+    <h2>Connect to load winter departure data</h2>
+    <p>Enter your JWE access token in the control panel below and click <strong>Run Query</strong> to analyze the worst winter carrier-airport pairs.</p>
+  </div>
+
+  <!-- Dashboard (revealed after data loads) -->
+  <div id="dashboard-content">
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi-card worst">
+        <div class="kpi-label">Worst Winter Pair</div>
+        <div class="kpi-value" id="kpi-worst-pair">—</div>
+        <div class="kpi-sub" id="kpi-worst-flights">—</div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-label">Worst Winter OTP</div>
+        <div class="kpi-value" id="kpi-worst-otp">—</div>
+        <div class="kpi-sub">on-time departure rate</div>
+      </div>
+      <div class="kpi-card warn">
+        <div class="kpi-label">Avg Delay — Worst Pair</div>
+        <div class="kpi-value" id="kpi-worst-delay">—</div>
+        <div class="kpi-sub">minutes per departure</div>
+      </div>
+      <div class="kpi-card info">
+        <div class="kpi-label">Qualifying Pairs</div>
+        <div class="kpi-value" id="kpi-total-pairs">—</div>
+        <div class="kpi-sub">ranked in this result set</div>
+      </div>
+    </div>
+
+    <!-- Ranked bar chart -->
+    <div class="chart-card">
+      <h2>Winter On-Time Rate — Worst-First Ranking</h2>
+      <p class="chart-sub" id="rank-chart-sub">Carrier/airport pairs ranked by OTP ascending &middot; Dec–Feb only &middot; Red = worst, amber = poor, blue = moderate</p>
+      <div class="chart-wrap" style="position:relative;">
+        <canvas id="chart-ranking"></canvas>
+      </div>
+    </div>
+
+    <!-- Stacked bar: delay causes for top 10 -->
+    <div class="chart-card">
+      <h2>Delay-Cause Composition — Top 10 Worst Winter Pairs</h2>
+      <p class="chart-sub" id="cause-chart-sub">Share of total reported delay minutes by cause &middot; Pairs ordered worst-first &middot; Operational vs. weather split</p>
+      <div class="chart-wrap" style="position:relative; height:300px;">
+        <canvas id="chart-causes"></canvas>
+      </div>
+    </div>
+
+    <!-- Narrative takeaway -->
+    <div class="narrative-card">
+      <h3>Winter Performance Takeaway</h3>
+      <p id="narrative-text">Loading analysis&hellip;</p>
+    </div>
+
+    <!-- Full ranked table -->
+    <div class="table-card">
+      <div class="table-header-row">
+        <h2>Full Ranked Results &mdash; Winter Pairs</h2>
+        <button class="export-btn" onclick="exportCSV()">Export CSV</button>
+      </div>
+      <table id="results-table">
+        <thead>
+          <tr>
+            <th style="text-align:center">Rank</th>
+            <th>Carrier</th>
+            <th>Origin</th>
+            <th class="num">Winter Flights</th>
+            <th class="num">OTP %</th>
+            <th class="num">Avg Delay (min)</th>
+            <th class="num">Weather %</th>
+            <th class="num">Operational %</th>
+          </tr>
+        </thead>
+        <tbody id="results-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Query ledger -->
+    <div class="ledger-card">
+      <h2>Query Ledger</h2>
+      <table class="ledger-table">
+        <thead>
+          <tr>
+            <th style="width:1.6em"></th>
+            <th>Query</th>
+            <th style="width:8em">Role</th>
+            <th style="width:6em">Status</th>
+            <th style="width:5em;text-align:right">Rows</th>
+          </tr>
+        </thead>
+        <tbody id="ledger-tbody"></tbody>
+      </table>
+    </div>
+
+  </div><!-- /dashboard-content -->
+</main>
+
+<!-- ── Footer / Control block ──────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <h3>Data Connection</h3>
+    <div class="control-grid">
+      <div class="control-group">
+        <label>JWE Access Token</label>
+        <input type="password" id="jwe-input" placeholder="Paste JWE token&hellip;" autocomplete="off">
+      </div>
+      <div class="control-group">
+        <label>Primary SQL (worst_pair)</label>
+        <textarea id="sql-input" spellcheck="false"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="fetch-btn" onclick="runDashboard()">Run Query</button>
+      <button class="btn-forget" onclick="forgetToken()">Forget Token</button>
+      <span id="status-text">Enter token and click Run Query.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+// Constants
+// ══════════════════════════════════════════════════════════════════════════
+const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+
+const SQL_WORST_PAIR = `WITH winter_pairs AS (
+    SELECT
+        IATA_CODE_Reporting_Airline AS carrier,
+        OriginCode AS origin,
+        count() AS winter_flights,
+        round(100.0 * countIf(DepDel15 = 0) / count(), 2) AS pct_ontime,
+        round(avg(DepDelayMinutes), 2) AS avg_dep_delay_min,
+        round(sum(assumeNotNull(WeatherDelay)) / nullIf(sum(assumeNotNull(WeatherDelay) + assumeNotNull(CarrierDelay) + assumeNotNull(NASDelay) + assumeNotNull(SecurityDelay) + assumeNotNull(LateAircraftDelay)), 0) * 100, 2) AS weather_pct,
+        round(sum(assumeNotNull(CarrierDelay) + assumeNotNull(NASDelay) + assumeNotNull(SecurityDelay) + assumeNotNull(LateAircraftDelay)) / nullIf(sum(assumeNotNull(WeatherDelay) + assumeNotNull(CarrierDelay) + assumeNotNull(NASDelay) + assumeNotNull(SecurityDelay) + assumeNotNull(LateAircraftDelay)), 0) * 100, 2) AS operational_pct
+    FROM ontime.fact_ontime
+    WHERE toMonth(FlightDate) IN (12, 1, 2)
+      AND Cancelled = 0
+    GROUP BY carrier, origin
+    HAVING winter_flights >= 1000
+)
+SELECT
+    carrier,
+    origin,
+    winter_flights,
+    pct_ontime,
+    avg_dep_delay_min,
+    weather_pct,
+    operational_pct,
+    row_number() OVER (ORDER BY pct_ontime ASC) AS rank
+FROM winter_pairs
+ORDER BY pct_ontime ASC
+LIMIT 25`;
+
+const SQL_CAUSE_MIX = `WITH worst_pairs AS (
+    SELECT
+        IATA_CODE_Reporting_Airline AS carrier,
+        OriginCode AS origin,
+        count() AS winter_flights,
+        round(100.0 * countIf(DepDel15 = 0) / count(), 2) AS pct_ontime,
+        round(avg(DepDelayMinutes), 2) AS avg_dep_delay_min,
+        round(sum(assumeNotNull(CarrierDelay)), 0) AS total_carrier_delay,
+        round(sum(assumeNotNull(WeatherDelay)), 0) AS total_weather_delay,
+        round(sum(assumeNotNull(NASDelay)), 0) AS total_nas_delay,
+        round(sum(assumeNotNull(SecurityDelay)), 0) AS total_security_delay,
+        round(sum(assumeNotNull(LateAircraftDelay)), 0) AS total_late_aircraft_delay
+    FROM ontime.fact_ontime
+    WHERE toMonth(FlightDate) IN (12, 1, 2)
+      AND Cancelled = 0
+    GROUP BY carrier, origin
+    HAVING winter_flights >= 1000
+    ORDER BY pct_ontime ASC
+    LIMIT 25
+)
+SELECT
+    carrier,
+    origin,
+    pct_ontime,
+    total_carrier_delay + total_weather_delay + total_nas_delay + total_security_delay + total_late_aircraft_delay AS total_delay_min,
+    round(100.0 * total_weather_delay / nullIf(total_carrier_delay + total_weather_delay + total_nas_delay + total_security_delay + total_late_aircraft_delay, 0), 2) AS weather_share_pct,
+    round(100.0 * total_carrier_delay / nullIf(total_carrier_delay + total_weather_delay + total_nas_delay + total_security_delay + total_late_aircraft_delay, 0), 2) AS carrier_share_pct,
+    round(100.0 * total_nas_delay / nullIf(total_carrier_delay + total_weather_delay + total_nas_delay + total_security_delay + total_late_aircraft_delay, 0), 2) AS nas_share_pct,
+    round(100.0 * total_late_aircraft_delay / nullIf(total_carrier_delay + total_weather_delay + total_nas_delay + total_security_delay + total_late_aircraft_delay, 0), 2) AS late_aircraft_share_pct,
+    round(100.0 * total_security_delay / nullIf(total_carrier_delay + total_weather_delay + total_nas_delay + total_security_delay + total_late_aircraft_delay, 0), 2) AS security_share_pct
+FROM worst_pairs
+ORDER BY pct_ontime ASC`;
+
+// ══════════════════════════════════════════════════════════════════════════
+// State
+// ══════════════════════════════════════════════════════════════════════════
+let isRunning = false;
+let rankingData = [];
+let causeData = [];
+let chartRanking = null;
+let chartCauses = null;
+let ledgerEntries = {};
+
+// ══════════════════════════════════════════════════════════════════════════
+// Init
+// ══════════════════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) document.getElementById('jwe-input').value = stored;
+  document.getElementById('sql-input').value = SQL_WORST_PAIR;
+  if (stored) runDashboard();
+});
+
+// ══════════════════════════════════════════════════════════════════════════
+// Token management
+// ══════════════════════════════════════════════════════════════════════════
+function forgetToken() {
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('jwe-input').value = '';
+  setStatus('Token removed from local storage.');
+}
+
+function setStatus(msg) {
+  document.getElementById('status-text').textContent = msg;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Query execution
+// ══════════════════════════════════════════════════════════════════════════
+function buildEndpoint(jwe, sql) {
+  return `https://mcp.demo.altinity.cloud/${jwe}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+}
+
+async function executeQuery(jwe, sql) {
+  const resp = await fetch(buildEndpoint(jwe, sql));
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`HTTP ${resp.status}: ${txt}`);
+  }
+  const json = await resp.json();
+  const cols = json.columns ?? [];
+  const rawRows = json.rows ?? [];
+  const rows = rawRows.map(r => {
+    const obj = {};
+    cols.forEach((c, i) => { obj[c] = r[i]; });
+    return obj;
+  });
+  return { cols, rows, count: rows.length };
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Query ledger
+// ══════════════════════════════════════════════════════════════════════════
+function ledgerRegister(id, label, role, sql) {
+  ledgerEntries[id] = { label, role, sql, status: 'Pending', rows: '…' };
+  renderLedger();
+}
+
+function ledgerUpdate(id, status, rows) {
+  if (ledgerEntries[id]) {
+    ledgerEntries[id].status = status;
+    ledgerEntries[id].rows = rows;
+    renderLedger();
+  }
+}
+
+function renderLedger() {
+  const tbody = document.getElementById('ledger-tbody');
+  tbody.innerHTML = '';
+  Object.entries(ledgerEntries).forEach(([id, entry]) => {
+    const sc = entry.status === 'OK' ? 'status-ok'
+             : entry.status === 'Failed' ? 'status-failed'
+             : 'status-pending';
+    const dataRow = document.createElement('tr');
+    dataRow.className = 'ledger-row';
+    dataRow.innerHTML = `
+      <td><span class="toggle-icon" id="ti-${id}">&#9654;</span></td>
+      <td>${escHtml(entry.label)}</td>
+      <td>${escHtml(entry.role)}</td>
+      <td class="${sc}">${entry.status}</td>
+      <td style="text-align:right">${entry.rows}</td>`;
+    dataRow.addEventListener('click', () => toggleLedger(id));
+    tbody.appendChild(dataRow);
+
+    const sqlRow = document.createElement('tr');
+    sqlRow.className = 'ledger-sql-row';
+    sqlRow.innerHTML = `<td colspan="5"><div class="ledger-sql-block" id="lsb-${id}">${escHtml(entry.sql ?? '')}</div></td>`;
+    tbody.appendChild(sqlRow);
+  });
+}
+
+function toggleLedger(id) {
+  const block = document.getElementById(`lsb-${id}`);
+  const icon  = document.getElementById(`ti-${id}`);
+  if (!block) return;
+  const open = block.style.display === 'block';
+  block.style.display = open ? 'none' : 'block';
+  if (icon) icon.innerHTML = open ? '&#9654;' : '&#9660;';
+}
+
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Main run
+// ══════════════════════════════════════════════════════════════════════════
+async function runDashboard() {
+  if (isRunning) return;
+
+  const jwe = document.getElementById('jwe-input').value.trim();
+  const sql = document.getElementById('sql-input').value.trim();
+  if (!jwe) { setStatus('Please enter a JWE token.'); return; }
+  if (!sql) { setStatus('SQL query is empty.'); return; }
+
+  isRunning = true;
+  ledgerEntries = {};
+  document.getElementById('fetch-btn').disabled = true;
+  setStatus('Running primary query…');
+  localStorage.setItem(STORAGE_KEY, jwe);
+
+  try {
+    // ── Primary query ───────────────────────────────────────────────
+    ledgerRegister('worst_pair', 'Winter Pair Rankings', 'Primary', SQL_WORST_PAIR);
+
+    let primaryResult;
+    try {
+      primaryResult = await executeQuery(jwe, SQL_WORST_PAIR);
+      rankingData = primaryResult.rows;
+      ledgerUpdate('worst_pair', 'OK', primaryResult.count);
+    } catch (e) {
+      ledgerUpdate('worst_pair', 'Failed', 0);
+      setStatus(`Primary query failed: ${e.message}`);
+      isRunning = false;
+      document.getElementById('fetch-btn').disabled = false;
+      return;
+    }
+
+    if (!rankingData.length) {
+      setStatus('Primary query returned no rows.');
+      document.getElementById('empty-state').querySelector('p').textContent =
+        'Query returned no results. Check the SQL or token.';
+      isRunning = false;
+      document.getElementById('fetch-btn').disabled = false;
+      return;
+    }
+
+    // Reveal dashboard
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('dashboard-content').style.display = 'block';
+
+    renderKPIs(rankingData);
+    renderRankingChart(rankingData);
+    renderTable(rankingData);
+    setStatus(`Primary query complete — ${rankingData.length} pairs loaded. Running cause-mix query…`);
+
+    // ── Enrichment: cause mix ───────────────────────────────────────
+    ledgerRegister('cause_mix', 'Delay-Cause Breakdown (top 25)', 'Enrichment', SQL_CAUSE_MIX);
+    try {
+      const causeResult = await executeQuery(jwe, SQL_CAUSE_MIX);
+      causeData = causeResult.rows;
+      ledgerUpdate('cause_mix', 'OK', causeResult.count);
+      renderCauseChart(rankingData, causeData);
+    } catch (e) {
+      ledgerUpdate('cause_mix', 'Failed', 0);
+      document.getElementById('cause-chart-sub').textContent =
+        `Cause-breakdown query failed: ${e.message}`;
+    }
+
+    renderNarrative(rankingData, causeData);
+    setStatus(`Dashboard loaded — ${rankingData.length} ranked winter pairs.`);
+
+  } finally {
+    isRunning = false;
+    document.getElementById('fetch-btn').disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// KPIs
+// ══════════════════════════════════════════════════════════════════════════
+function renderKPIs(rows) {
+  if (!rows.length) return;
+  const worst = rows[0];
+  document.getElementById('kpi-worst-pair').textContent    = `${worst.carrier ?? '—'}\u202F/\u202F${worst.origin ?? '—'}`;
+  document.getElementById('kpi-worst-flights').textContent = `${Number(worst.winter_flights ?? 0).toLocaleString()} winter flights`;
+  document.getElementById('kpi-worst-otp').textContent     = `${worst.pct_ontime ?? '—'}%`;
+  document.getElementById('kpi-worst-delay').textContent   = `${worst.avg_dep_delay_min ?? '—'}`;
+  document.getElementById('kpi-total-pairs').textContent   = rows.length;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Ranking chart (horizontal bar, worst-first)
+// ══════════════════════════════════════════════════════════════════════════
+function renderRankingChart(rows) {
+  if (chartRanking) { chartRanking.destroy(); chartRanking = null; }
+
+  const labels = rows.map(r => `${r.carrier}/${r.origin}`);
+  const values = rows.map(r => Number(r.pct_ontime ?? 0));
+  const colors = rows.map((_, i) =>
+    i === 0   ? '#c54f36' :
+    i < 5     ? '#d48a1f' :
+    i < 12    ? '#3c88b5' :
+                '#1f8a70'
+  );
+
+  // Dynamic canvas height
+  const canvas = document.getElementById('chart-ranking');
+  const rowH   = 22;
+  canvas.style.height = `${Math.max(300, rows.length * rowH + 60)}px`;
+
+  const ctx = canvas.getContext('2d');
+  chartRanking = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'On-Time %',
+        data: values,
+        backgroundColor: colors,
+        borderRadius: 3,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0].label,
+            label: ctx => {
+              const r = rows[ctx.dataIndex];
+              return [
+                `OTP: ${ctx.raw}%  (Rank #${r.rank ?? ctx.dataIndex + 1})`,
+                `Avg delay: ${r.avg_dep_delay_min} min`,
+                `Winter flights: ${Number(r.winter_flights).toLocaleString()}`,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 50,
+          max: 82,
+          title: { display: true, text: 'On-Time Departure %', color: '#5d7485', font: { size: 11 } },
+          grid: { color: 'rgba(22,50,68,0.07)' },
+          ticks: { callback: v => v + '%', font: { size: 11 }, color: '#5d7485' }
+        },
+        y: {
+          ticks: { font: { size: 11 }, color: '#163244' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Cause-mix stacked bar (top 10 pairs by rank, labels from rankingData)
+// ══════════════════════════════════════════════════════════════════════════
+function renderCauseChart(rankingRows, causeRows) {
+  if (chartCauses) { chartCauses.destroy(); chartCauses = null; }
+
+  // Top-10 pair keys in rank order
+  const top10 = rankingRows.slice(0, 10).map(r => ({ key: `${r.carrier}/${r.origin}`, carrier: r.carrier, origin: r.origin }));
+  const labels = top10.map(p => p.key);
+
+  // Match cause rows
+  const matched = top10.map(p => causeRows.find(r => r.carrier === p.carrier && r.origin === p.origin) ?? null);
+
+  const categories = [
+    { key: 'late_aircraft_share_pct', label: 'Late Aircraft', color: '#1f8a70' },
+    { key: 'carrier_share_pct',       label: 'Carrier',       color: '#3c88b5' },
+    { key: 'nas_share_pct',           label: 'NAS',           color: '#5c7080' },
+    { key: 'weather_share_pct',       label: 'Weather',       color: '#c54f36' },
+    { key: 'security_share_pct',      label: 'Security',      color: '#d48a1f' },
+  ];
+
+  const datasets = categories.map(cat => ({
+    label: cat.label,
+    data: matched.map(r => r ? Number(r[cat.key] ?? 0) : null),
+    backgroundColor: cat.color,
+    borderRadius: 2,
+    borderSkipped: false,
+  }));
+
+  const ctx = document.getElementById('chart-causes').getContext('2d');
+  chartCauses = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 13, padding: 14 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw !== null ? ctx.raw + '%' : 'No data'}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: { font: { size: 11 }, color: '#163244' },
+          grid: { display: false }
+        },
+        y: {
+          stacked: true,
+          min: 0,
+          max: 100,
+          title: { display: true, text: 'Share of Delay Minutes (%)', color: '#5d7485', font: { size: 11 } },
+          ticks: { callback: v => v + '%', font: { size: 11 }, color: '#5d7485' },
+          grid: { color: 'rgba(22,50,68,0.07)' }
+        }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Narrative
+// ══════════════════════════════════════════════════════════════════════════
+function renderNarrative(rows, causeRows) {
+  if (!rows.length) return;
+
+  const worst = rows[0];
+  const carriers = rows.map(r => r.carrier);
+  const origins  = rows.map(r => r.origin);
+  const distinctCarriers = [...new Set(carriers)];
+  const distinctOrigins  = [...new Set(origins)];
+
+  // Frequency counts
+  const carrierFreq = {};
+  carriers.forEach(c => { carrierFreq[c] = (carrierFreq[c] ?? 0) + 1; });
+  const multiCarriers = Object.entries(carrierFreq).filter(([,n]) => n > 1).sort((a,b) => b[1]-a[1]);
+
+  const originFreq = {};
+  origins.forEach(o => { originFreq[o] = (originFreq[o] ?? 0) + 1; });
+  const multiOrigins = Object.entries(originFreq).filter(([,n]) => n > 1).sort((a,b) => b[1]-a[1]);
+
+  const carrierConc = multiCarriers.length
+    ? multiCarriers.slice(0,4).map(([c,n]) => `<strong>${c}</strong>&thinsp;(${n}&times;)`).join(', ')
+    : 'no carrier repeats';
+  const originConc = multiOrigins.length
+    ? multiOrigins.slice(0,3).map(([o,n]) => `<strong>${o}</strong>&thinsp;(${n}&times;)`).join(', ')
+    : 'no airport repeats';
+
+  // Cause sentence
+  let causeSentence = '';
+  if (causeRows.length) {
+    const withData = causeRows.filter(r => Number(r.total_delay_min ?? 0) > 0);
+    if (withData.length) {
+      const avgOp = (
+        withData.reduce((s,r) =>
+          s + Number(r.carrier_share_pct ?? 0)
+            + Number(r.nas_share_pct ?? 0)
+            + Number(r.late_aircraft_share_pct ?? 0)
+            + Number(r.security_share_pct ?? 0), 0
+        ) / withData.length
+      ).toFixed(0);
+      causeSentence = ` Delay-cause data shows operational factors (late aircraft, carrier, NAS, security) account for an average of <strong>${avgOp}%</strong> of delay minutes across these pairs &mdash; weather is a secondary contributor in most cases, though a handful of pairs (notably OH/EWR) show elevated weather exposure.`;
+    }
+  }
+
+  document.getElementById('narrative-text').innerHTML =
+    `The ${rows.length} worst-performing winter pairs span <strong>${distinctCarriers.length} distinct carriers</strong> and <strong>${distinctOrigins.length} distinct airports</strong>. ` +
+    `The weakest single pair is <strong>${worst.carrier}/${worst.origin}</strong> at just <strong>${worst.pct_ontime}%</strong> on-time. ` +
+    `Carrier concentration is moderate: ${carrierConc} appear multiple times in the bottom 25, suggesting systemic scheduling or operational deficiencies at a handful of carriers. ` +
+    `Airport concentration is lower but not absent: ${originConc} host repeat problem carriers. ` +
+    `Overall the pattern points to chronic winter underperformance concentrated in a small set of regional and low-cost carriers rather than being broadly distributed across the industry.` +
+    causeSentence;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Table
+// ══════════════════════════════════════════════════════════════════════════
+function renderTable(rows) {
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  rows.forEach((r, i) => {
+    const otp = Number(r.pct_ontime ?? 0);
+    const badgeCls = otp < 65 ? 'badge-red' : otp < 72 ? 'badge-amber' : 'badge-teal';
+    const tr = document.createElement('tr');
+    if (i === 0) tr.classList.add('rank-1');
+    tr.innerHTML = `
+      <td class="rank-cell">${r.rank ?? i + 1}</td>
+      <td><strong>${escHtml(r.carrier)}</strong></td>
+      <td>${escHtml(r.origin)}</td>
+      <td class="num">${Number(r.winter_flights ?? 0).toLocaleString()}</td>
+      <td class="num"><span class="badge ${badgeCls}">${otp}%</span></td>
+      <td class="num">${r.avg_dep_delay_min ?? '—'}</td>
+      <td class="num">${r.weather_pct != null ? r.weather_pct + '%' : '—'}</td>
+      <td class="num">${r.operational_pct != null ? r.operational_pct + '%' : '—'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// Export
+// ══════════════════════════════════════════════════════════════════════════
+function exportCSV() {
+  if (!rankingData.length) return;
+  const cols = ['rank','carrier','origin','winter_flights','pct_ontime','avg_dep_delay_min','weather_pct','operational_pct'];
+  const header = cols.join(',');
+  const lines  = rankingData.map(r => cols.map(c => r[c] ?? '').join(','));
+  const blob = new Blob([header + '\n' + lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'worst_winter_carrier_origin_pairs.csv';
+  a.click();
+}
+</script>
+</body>
+</html>

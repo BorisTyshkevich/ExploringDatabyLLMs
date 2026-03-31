@@ -1,0 +1,284 @@
+{
+  "columns": [
+    "airport_code",
+    "DisplayAirportName",
+    "Latitude",
+    "Longitude"
+  ],
+  "rows": [
+    {
+      "DisplayAirportName": "Seattle/Tacoma International",
+      "Latitude": 47.45,
+      "Longitude": -122.31166667,
+      "airport_code": "SEA"
+    },
+    {
+      "DisplayAirportName": "Oakland International",
+      "Latitude": 37.72138889,
+      "Longitude": -122.22111111,
+      "airport_code": "OAK"
+    },
+    {
+      "DisplayAirportName": "Norman Y. Mineta San Jose International",
+      "Latitude": 37.36305556,
+      "Longitude": -121.92861111,
+      "airport_code": "SJC"
+    },
+    {
+      "DisplayAirportName": "Sacramento International",
+      "Latitude": 38.69555556,
+      "Longitude": -121.59083333,
+      "airport_code": "SMF"
+    },
+    {
+      "DisplayAirportName": "Reno/Tahoe International",
+      "Latitude": 39.49916667,
+      "Longitude": -119.76805556,
+      "airport_code": "RNO"
+    },
+    {
+      "DisplayAirportName": "Los Angeles International",
+      "Latitude": 33.94305556,
+      "Longitude": -118.40888889,
+      "airport_code": "LAX"
+    },
+    {
+      "DisplayAirportName": "Bob Hope",
+      "Latitude": 34.20055556,
+      "Longitude": -118.35861111,
+      "airport_code": "BUR"
+    },
+    {
+      "DisplayAirportName": "San Diego International",
+      "Latitude": 32.73361111,
+      "Longitude": -117.18972222,
+      "airport_code": "SAN"
+    },
+    {
+      "DisplayAirportName": "Palm Springs International",
+      "Latitude": 33.82972222,
+      "Longitude": -116.50666667,
+      "airport_code": "PSP"
+    },
+    {
+      "DisplayAirportName": "Harry Reid International",
+      "Latitude": 36.08,
+      "Longitude": -115.15222222,
+      "airport_code": "LAS"
+    },
+    {
+      "DisplayAirportName": "Phoenix Sky Harbor International",
+      "Latitude": 33.43361111,
+      "Longitude": -112.01194444,
+      "airport_code": "PHX"
+    },
+    {
+      "DisplayAirportName": "Salt Lake City International",
+      "Latitude": 40.78833333,
+      "Longitude": -111.97777778,
+      "airport_code": "SLC"
+    },
+    {
+      "DisplayAirportName": "Albuquerque International Sunport",
+      "Latitude": 35.03805556,
+      "Longitude": -106.61,
+      "airport_code": "ABQ"
+    },
+    {
+      "DisplayAirportName": "El Paso International",
+      "Latitude": 31.80666667,
+      "Longitude": -106.37333333,
+      "airport_code": "ELP"
+    },
+    {
+      "DisplayAirportName": "City of Colorado Springs Municipal",
+      "Latitude": 38.80583333,
+      "Longitude": -104.70083333,
+      "airport_code": "COS"
+    },
+    {
+      "DisplayAirportName": "Denver International",
+      "Latitude": 39.86111111,
+      "Longitude": -104.67194444,
+      "airport_code": "DEN"
+    },
+    {
+      "DisplayAirportName": "Midland International Air and Space Port",
+      "Latitude": 31.9425,
+      "Longitude": -102.20194444,
+      "airport_code": "MAF"
+    },
+    {
+      "DisplayAirportName": "Wichita Dwight D Eisenhower National",
+      "Latitude": 37.65027778,
+      "Longitude": -97.43222222,
+      "airport_code": "ICT"
+    },
+    {
+      "DisplayAirportName": "Dallas Love Field",
+      "Latitude": 32.84611111,
+      "Longitude": -96.85083333,
+      "airport_code": "DAL"
+    },
+    {
+      "DisplayAirportName": "William P Hobby",
+      "Latitude": 29.64611111,
+      "Longitude": -95.27722222,
+      "airport_code": "HOU"
+    },
+    {
+      "DisplayAirportName": "Kansas City International",
+      "Latitude": 39.29722222,
+      "Longitude": -94.71333333,
+      "airport_code": "MCI"
+    },
+    {
+      "DisplayAirportName": "Bill and Hillary Clinton Nat Adams Field",
+      "Latitude": 34.72944444,
+      "Longitude": -92.22472222,
+      "airport_code": "LIT"
+    },
+    {
+      "DisplayAirportName": "St Louis Lambert International",
+      "Latitude": 38.74861111,
+      "Longitude": -90.37,
+      "airport_code": "STL"
+    },
+    {
+      "DisplayAirportName": "Louis Armstrong New Orleans International",
+      "Latitude": 29.98888889,
+      "Longitude": -90.25,
+      "airport_code": "MSY"
+    },
+    {
+      "DisplayAirportName": "Jackson Medgar Wiley Evers International",
+      "Latitude": 32.31111111,
+      "Longitude": -90.07583333,
+      "airport_code": "JAN"
+    },
+    {
+      "DisplayAirportName": "Memphis International",
+      "Latitude": 35.04277778,
+      "Longitude": -89.97666667,
+      "airport_code": "MEM"
+    },
+    {
+      "DisplayAirportName": "Chicago O'Hare International",
+      "Latitude": 41.97694444,
+      "Longitude": -87.90805556,
+      "airport_code": "ORD"
+    },
+    {
+      "DisplayAirportName": "Chicago Midway International",
+      "Latitude": 41.78583333,
+      "Longitude": -87.7525,
+      "airport_code": "MDW"
+    },
+    {
+      "DisplayAirportName": "Pensacola International",
+      "Latitude": 30.47277778,
+      "Longitude": -87.18805556,
+      "airport_code": "PNS"
+    },
+    {
+      "DisplayAirportName": "Nashville International",
+      "Latitude": 36.12388889,
+      "Longitude": -86.67777778,
+      "airport_code": "BNA"
+    },
+    {
+      "DisplayAirportName": "Eglin AFB Destin Fort Walton Beach",
+      "Latitude": 30.48333333,
+      "Longitude": -86.52611111,
+      "airport_code": "VPS"
+    },
+    {
+      "DisplayAirportName": "Hartsfield-Jackson Atlanta International",
+      "Latitude": 33.63666667,
+      "Longitude": -84.42805556,
+      "airport_code": "ATL"
+    },
+    {
+      "DisplayAirportName": "Detroit Metro Wayne County",
+      "Latitude": 42.2125,
+      "Longitude": -83.35333333,
+      "airport_code": "DTW"
+    },
+    {
+      "DisplayAirportName": "John Glenn Columbus International",
+      "Latitude": 39.99694444,
+      "Longitude": -82.89222222,
+      "airport_code": "CMH"
+    },
+    {
+      "DisplayAirportName": "Tampa International",
+      "Latitude": 27.97555556,
+      "Longitude": -82.53333333,
+      "airport_code": "TPA"
+    },
+    {
+      "DisplayAirportName": "Cleveland-Hopkins International",
+      "Latitude": 41.41027778,
+      "Longitude": -81.85333333,
+      "airport_code": "CLE"
+    },
+    {
+      "DisplayAirportName": "Orlando International",
+      "Latitude": 28.42916667,
+      "Longitude": -81.30666667,
+      "airport_code": "MCO"
+    },
+    {
+      "DisplayAirportName": "Fort Lauderdale-Hollywood International",
+      "Latitude": 26.07138889,
+      "Longitude": -80.14944444,
+      "airport_code": "FLL"
+    },
+    {
+      "DisplayAirportName": "Myrtle Beach International",
+      "Latitude": 33.67972222,
+      "Longitude": -78.92833333,
+      "airport_code": "MYR"
+    },
+    {
+      "DisplayAirportName": "Raleigh-Durham International",
+      "Latitude": 35.87583333,
+      "Longitude": -78.78555556,
+      "airport_code": "RDU"
+    },
+    {
+      "DisplayAirportName": "Washington Dulles International",
+      "Latitude": 38.95611111,
+      "Longitude": -77.46166667,
+      "airport_code": "IAD"
+    },
+    {
+      "DisplayAirportName": "Richmond International",
+      "Latitude": 37.51722222,
+      "Longitude": -77.32416667,
+      "airport_code": "RIC"
+    },
+    {
+      "DisplayAirportName": "Baltimore/Washington International Thurgood Marshall",
+      "Latitude": 39.17583333,
+      "Longitude": -76.66888889,
+      "airport_code": "BWI"
+    },
+    {
+      "DisplayAirportName": "LaGuardia",
+      "Latitude": 40.77722222,
+      "Longitude": -73.8725,
+      "airport_code": "LGA"
+    },
+    {
+      "DisplayAirportName": "Long Island MacArthur",
+      "Latitude": 40.79611111,
+      "Longitude": -73.10055556,
+      "airport_code": "ISP"
+    }
+  ],
+  "row_count": 45,
+  "generated_at": "2026-03-26T10:49:08.750957Z",
+  "source_query_sha256": "05b49f620889fda8c1987566934bf4c072adfa9ddbf7b19a3eb1671a88e6260b",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=opus|phase=full|section=q2"
+}

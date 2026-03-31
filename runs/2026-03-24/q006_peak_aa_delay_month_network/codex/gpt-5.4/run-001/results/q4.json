@@ -1,0 +1,22 @@
+{
+  "columns": [
+    "total_origins_in_month",
+    "total_routes_in_month",
+    "top_2_origins_share_pct",
+    "top_5_origins_share_pct",
+    "top_10_routes_share_pct"
+  ],
+  "rows": [
+    {
+      "top_10_routes_share_pct": 15.82,
+      "top_2_origins_share_pct": 50.8,
+      "top_5_origins_share_pct": 73.71,
+      "total_origins_in_month": 125,
+      "total_routes_in_month": 909
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-24T16:18:17.652102Z",
+  "source_query_sha256": "d5bfb37e717e5e4ba8f41b24540d3a542eedb4c5a0de8b162375cc47d9fdbf5a",
+  "log_comment": "qforge|question=q006|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q4"
+}

@@ -1,0 +1,155 @@
+{
+  "columns": [
+    "route",
+    "flight_volume",
+    "total_departure_delay_minutes",
+    "avg_departure_delay_minutes",
+    "pct_departing_15_plus_late"
+  ],
+  "rows": [
+    {
+      "avg_departure_delay_minutes": 40.89,
+      "flight_volume": 443,
+      "pct_departing_15_plus_late": 46.5,
+      "route": "DFW-LAX",
+      "total_departure_delay_minutes": 18462
+    },
+    {
+      "avg_departure_delay_minutes": 56.12,
+      "flight_volume": 322,
+      "pct_departing_15_plus_late": 54.97,
+      "route": "CLT-MCO",
+      "total_departure_delay_minutes": 18376
+    },
+    {
+      "avg_departure_delay_minutes": 49.86,
+      "flight_volume": 355,
+      "pct_departing_15_plus_late": 52.96,
+      "route": "DFW-SAT",
+      "total_departure_delay_minutes": 18032
+    },
+    {
+      "avg_departure_delay_minutes": 52.7,
+      "flight_volume": 311,
+      "pct_departing_15_plus_late": 52.09,
+      "route": "CLT-RDU",
+      "total_departure_delay_minutes": 16795
+    },
+    {
+      "avg_departure_delay_minutes": 50.23,
+      "flight_volume": 311,
+      "pct_departing_15_plus_late": 43.73,
+      "route": "RDU-CLT",
+      "total_departure_delay_minutes": 16276
+    },
+    {
+      "avg_departure_delay_minutes": 39.56,
+      "flight_volume": 374,
+      "pct_departing_15_plus_late": 46.26,
+      "route": "DFW-PHX",
+      "total_departure_delay_minutes": 15208
+    },
+    {
+      "avg_departure_delay_minutes": 44.08,
+      "flight_volume": 317,
+      "pct_departing_15_plus_late": 45.43,
+      "route": "LAS-DFW",
+      "total_departure_delay_minutes": 14587
+    },
+    {
+      "avg_departure_delay_minutes": 44.73,
+      "flight_volume": 319,
+      "pct_departing_15_plus_late": 53.92,
+      "route": "DFW-LAS",
+      "total_departure_delay_minutes": 14530
+    },
+    {
+      "avg_departure_delay_minutes": 54.59,
+      "flight_volume": 258,
+      "pct_departing_15_plus_late": 47.29,
+      "route": "CLT-LGA",
+      "total_departure_delay_minutes": 14393
+    },
+    {
+      "avg_departure_delay_minutes": 42.12,
+      "flight_volume": 330,
+      "pct_departing_15_plus_late": 30.61,
+      "route": "ORD-DFW",
+      "total_departure_delay_minutes": 14379
+    },
+    {
+      "avg_departure_delay_minutes": 52.56,
+      "flight_volume": 254,
+      "pct_departing_15_plus_late": 42.13,
+      "route": "TPA-CLT",
+      "total_departure_delay_minutes": 13879
+    },
+    {
+      "avg_departure_delay_minutes": 53.53,
+      "flight_volume": 254,
+      "pct_departing_15_plus_late": 52.76,
+      "route": "CLT-TPA",
+      "total_departure_delay_minutes": 13810
+    },
+    {
+      "avg_departure_delay_minutes": 45.52,
+      "flight_volume": 297,
+      "pct_departing_15_plus_late": 45.12,
+      "route": "CLT-DFW",
+      "total_departure_delay_minutes": 13774
+    },
+    {
+      "avg_departure_delay_minutes": 49.07,
+      "flight_volume": 273,
+      "pct_departing_15_plus_late": 46.89,
+      "route": "CLT-ORD",
+      "total_departure_delay_minutes": 13701
+    },
+    {
+      "avg_departure_delay_minutes": 35.27,
+      "flight_volume": 354,
+      "pct_departing_15_plus_late": 33.33,
+      "route": "SAT-DFW",
+      "total_departure_delay_minutes": 13571
+    },
+    {
+      "avg_departure_delay_minutes": 37.6,
+      "flight_volume": 322,
+      "pct_departing_15_plus_late": 38.51,
+      "route": "MCO-CLT",
+      "total_departure_delay_minutes": 12861
+    },
+    {
+      "avg_departure_delay_minutes": 39.55,
+      "flight_volume": 309,
+      "pct_departing_15_plus_late": 46.6,
+      "route": "DFW-AUS",
+      "total_departure_delay_minutes": 12591
+    },
+    {
+      "avg_departure_delay_minutes": 26.57,
+      "flight_volume": 443,
+      "pct_departing_15_plus_late": 32.51,
+      "route": "LAX-DFW",
+      "total_departure_delay_minutes": 12492
+    },
+    {
+      "avg_departure_delay_minutes": 33.26,
+      "flight_volume": 365,
+      "pct_departing_15_plus_late": 36.44,
+      "route": "DFW-MIA",
+      "total_departure_delay_minutes": 12432
+    },
+    {
+      "avg_departure_delay_minutes": 51.47,
+      "flight_volume": 228,
+      "pct_departing_15_plus_late": 39.91,
+      "route": "ATL-DFW",
+      "total_departure_delay_minutes": 12286
+    }
+  ],
+  "row_count": 20,
+  "generated_at": "2026-03-24T16:18:17.464773Z",
+  "source_query_sha256": "0a75ae59291c158343a0086ae739944c2879895604bd47e754284e7575ac5b27",
+  "log_comment": "qforge|question=q006|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q3"
+}

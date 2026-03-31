@@ -1,0 +1,760 @@
+{
+  "columns": [
+    "OriginCode",
+    "FlightVolume",
+    "AvgDepDelay",
+    "PctDel15",
+    "TotalDelayMinutes",
+    "DelayedFlights"
+  ],
+  "rows": [
+    {
+      "AvgDepDelay": 38.52,
+      "DelayedFlights": 6971,
+      "FlightVolume": 14962,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4659,
+      "TotalDelayMinutes": 576310
+    },
+    {
+      "AvgDepDelay": 51.99,
+      "DelayedFlights": 5521,
+      "FlightVolume": 10568,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5224,
+      "TotalDelayMinutes": 549425
+    },
+    {
+      "AvgDepDelay": 35.76,
+      "DelayedFlights": 1900,
+      "FlightVolume": 4844,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3922,
+      "TotalDelayMinutes": 173199
+    },
+    {
+      "AvgDepDelay": 34.35,
+      "DelayedFlights": 1947,
+      "FlightVolume": 4881,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3989,
+      "TotalDelayMinutes": 167664
+    },
+    {
+      "AvgDepDelay": 34.61,
+      "DelayedFlights": 1852,
+      "FlightVolume": 4555,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4066,
+      "TotalDelayMinutes": 157659
+    },
+    {
+      "AvgDepDelay": 30.21,
+      "DelayedFlights": 1347,
+      "FlightVolume": 4366,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3085,
+      "TotalDelayMinutes": 131886
+    },
+    {
+      "AvgDepDelay": 25.08,
+      "DelayedFlights": 653,
+      "FlightVolume": 2564,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2547,
+      "TotalDelayMinutes": 64308
+    },
+    {
+      "AvgDepDelay": 26.13,
+      "DelayedFlights": 706,
+      "FlightVolume": 2454,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2877,
+      "TotalDelayMinutes": 64128
+    },
+    {
+      "AvgDepDelay": 36.99,
+      "DelayedFlights": 530,
+      "FlightVolume": 1496,
+      "OriginCode": "MCO",
+      "PctDel15": 0.3543,
+      "TotalDelayMinutes": 55341
+    },
+    {
+      "AvgDepDelay": 41.6,
+      "DelayedFlights": 372,
+      "FlightVolume": 1180,
+      "OriginCode": "AUS",
+      "PctDel15": 0.3153,
+      "TotalDelayMinutes": 49085
+    },
+    {
+      "AvgDepDelay": 40.25,
+      "DelayedFlights": 431,
+      "FlightVolume": 1143,
+      "OriginCode": "LAS",
+      "PctDel15": 0.3771,
+      "TotalDelayMinutes": 46008
+    },
+    {
+      "AvgDepDelay": 35.03,
+      "DelayedFlights": 372,
+      "FlightVolume": 1064,
+      "OriginCode": "RDU",
+      "PctDel15": 0.3496,
+      "TotalDelayMinutes": 37275
+    },
+    {
+      "AvgDepDelay": 37.69,
+      "DelayedFlights": 333,
+      "FlightVolume": 985,
+      "OriginCode": "TPA",
+      "PctDel15": 0.3381,
+      "TotalDelayMinutes": 37127
+    },
+    {
+      "AvgDepDelay": 21.97,
+      "DelayedFlights": 407,
+      "FlightVolume": 1596,
+      "OriginCode": "BOS",
+      "PctDel15": 0.255,
+      "TotalDelayMinutes": 35070
+    },
+    {
+      "AvgDepDelay": 29.7,
+      "DelayedFlights": 277,
+      "FlightVolume": 1143,
+      "OriginCode": "JFK",
+      "PctDel15": 0.2423,
+      "TotalDelayMinutes": 33946
+    },
+    {
+      "AvgDepDelay": 26.11,
+      "DelayedFlights": 342,
+      "FlightVolume": 1270,
+      "OriginCode": "LGA",
+      "PctDel15": 0.2693,
+      "TotalDelayMinutes": 33165
+    },
+    {
+      "AvgDepDelay": 42.61,
+      "DelayedFlights": 262,
+      "FlightVolume": 748,
+      "OriginCode": "ATL",
+      "PctDel15": 0.3503,
+      "TotalDelayMinutes": 31874
+    },
+    {
+      "AvgDepDelay": 31.25,
+      "DelayedFlights": 259,
+      "FlightVolume": 953,
+      "OriginCode": "SFO",
+      "PctDel15": 0.2718,
+      "TotalDelayMinutes": 29778
+    },
+    {
+      "AvgDepDelay": 47.08,
+      "DelayedFlights": 254,
+      "FlightVolume": 632,
+      "OriginCode": "IAH",
+      "PctDel15": 0.4019,
+      "TotalDelayMinutes": 29756
+    },
+    {
+      "AvgDepDelay": 44.88,
+      "DelayedFlights": 251,
+      "FlightVolume": 615,
+      "OriginCode": "EWR",
+      "PctDel15": 0.4081,
+      "TotalDelayMinutes": 27601
+    },
+    {
+      "AvgDepDelay": 32.3,
+      "DelayedFlights": 247,
+      "FlightVolume": 803,
+      "OriginCode": "SAN",
+      "PctDel15": 0.3076,
+      "TotalDelayMinutes": 25937
+    },
+    {
+      "AvgDepDelay": 41.08,
+      "DelayedFlights": 219,
+      "FlightVolume": 600,
+      "OriginCode": "JAX",
+      "PctDel15": 0.365,
+      "TotalDelayMinutes": 24646
+    },
+    {
+      "AvgDepDelay": 34.94,
+      "DelayedFlights": 237,
+      "FlightVolume": 683,
+      "OriginCode": "BNA",
+      "PctDel15": 0.347,
+      "TotalDelayMinutes": 23866
+    },
+    {
+      "AvgDepDelay": 37.64,
+      "DelayedFlights": 218,
+      "FlightVolume": 592,
+      "OriginCode": "MSY",
+      "PctDel15": 0.3682,
+      "TotalDelayMinutes": 22281
+    },
+    {
+      "AvgDepDelay": 30,
+      "DelayedFlights": 212,
+      "FlightVolume": 706,
+      "OriginCode": "DEN",
+      "PctDel15": 0.3003,
+      "TotalDelayMinutes": 21181
+    },
+    {
+      "AvgDepDelay": 31.41,
+      "DelayedFlights": 212,
+      "FlightVolume": 669,
+      "OriginCode": "SAT",
+      "PctDel15": 0.3169,
+      "TotalDelayMinutes": 21012
+    },
+    {
+      "AvgDepDelay": 32.67,
+      "DelayedFlights": 229,
+      "FlightVolume": 634,
+      "OriginCode": "IND",
+      "PctDel15": 0.3612,
+      "TotalDelayMinutes": 20713
+    },
+    {
+      "AvgDepDelay": 30.25,
+      "DelayedFlights": 185,
+      "FlightVolume": 602,
+      "OriginCode": "SEA",
+      "PctDel15": 0.3073,
+      "TotalDelayMinutes": 18212
+    },
+    {
+      "AvgDepDelay": 27.46,
+      "DelayedFlights": 192,
+      "FlightVolume": 656,
+      "OriginCode": "PIT",
+      "PctDel15": 0.2927,
+      "TotalDelayMinutes": 18014
+    },
+    {
+      "AvgDepDelay": 28.82,
+      "DelayedFlights": 184,
+      "FlightVolume": 613,
+      "OriginCode": "STL",
+      "PctDel15": 0.3002,
+      "TotalDelayMinutes": 17666
+    },
+    {
+      "AvgDepDelay": 38.31,
+      "DelayedFlights": 162,
+      "FlightVolume": 440,
+      "OriginCode": "FLL",
+      "PctDel15": 0.3682,
+      "TotalDelayMinutes": 16857
+    },
+    {
+      "AvgDepDelay": 30.52,
+      "DelayedFlights": 162,
+      "FlightVolume": 538,
+      "OriginCode": "MCI",
+      "PctDel15": 0.3011,
+      "TotalDelayMinutes": 16419
+    },
+    {
+      "AvgDepDelay": 45.3,
+      "DelayedFlights": 150,
+      "FlightVolume": 354,
+      "OriginCode": "RSW",
+      "PctDel15": 0.4237,
+      "TotalDelayMinutes": 16036
+    },
+    {
+      "AvgDepDelay": 42.38,
+      "DelayedFlights": 117,
+      "FlightVolume": 358,
+      "OriginCode": "SMF",
+      "PctDel15": 0.3268,
+      "TotalDelayMinutes": 15172
+    },
+    {
+      "AvgDepDelay": 26.85,
+      "DelayedFlights": 145,
+      "FlightVolume": 561,
+      "OriginCode": "DTW",
+      "PctDel15": 0.2585,
+      "TotalDelayMinutes": 15063
+    },
+    {
+      "AvgDepDelay": 47.42,
+      "DelayedFlights": 123,
+      "FlightVolume": 312,
+      "OriginCode": "CVG",
+      "PctDel15": 0.3942,
+      "TotalDelayMinutes": 14796
+    },
+    {
+      "AvgDepDelay": 27.58,
+      "DelayedFlights": 139,
+      "FlightVolume": 529,
+      "OriginCode": "CHS",
+      "PctDel15": 0.2628,
+      "TotalDelayMinutes": 14590
+    },
+    {
+      "AvgDepDelay": 25.96,
+      "DelayedFlights": 113,
+      "FlightVolume": 537,
+      "OriginCode": "SNA",
+      "PctDel15": 0.2104,
+      "TotalDelayMinutes": 13939
+    },
+    {
+      "AvgDepDelay": 29.6,
+      "DelayedFlights": 125,
+      "FlightVolume": 443,
+      "OriginCode": "MSP",
+      "PctDel15": 0.2822,
+      "TotalDelayMinutes": 13115
+    },
+    {
+      "AvgDepDelay": 43.51,
+      "DelayedFlights": 112,
+      "FlightVolume": 288,
+      "OriginCode": "RIC",
+      "PctDel15": 0.3889,
+      "TotalDelayMinutes": 12530
+    },
+    {
+      "AvgDepDelay": 28.82,
+      "DelayedFlights": 137,
+      "FlightVolume": 416,
+      "OriginCode": "PBI",
+      "PctDel15": 0.3293,
+      "TotalDelayMinutes": 11988
+    },
+    {
+      "AvgDepDelay": 26.65,
+      "DelayedFlights": 140,
+      "FlightVolume": 443,
+      "OriginCode": "CLE",
+      "PctDel15": 0.316,
+      "TotalDelayMinutes": 11806
+    },
+    {
+      "AvgDepDelay": 54.73,
+      "DelayedFlights": 110,
+      "FlightVolume": 210,
+      "OriginCode": "PNS",
+      "PctDel15": 0.5238,
+      "TotalDelayMinutes": 11493
+    },
+    {
+      "AvgDepDelay": 49.54,
+      "DelayedFlights": 94,
+      "FlightVolume": 231,
+      "OriginCode": "DSM",
+      "PctDel15": 0.4069,
+      "TotalDelayMinutes": 11443
+    },
+    {
+      "AvgDepDelay": 33.05,
+      "DelayedFlights": 111,
+      "FlightVolume": 321,
+      "OriginCode": "BWI",
+      "PctDel15": 0.3458,
+      "TotalDelayMinutes": 10610
+    },
+    {
+      "AvgDepDelay": 26.03,
+      "DelayedFlights": 122,
+      "FlightVolume": 407,
+      "OriginCode": "PDX",
+      "PctDel15": 0.2998,
+      "TotalDelayMinutes": 10596
+    },
+    {
+      "AvgDepDelay": 35.49,
+      "DelayedFlights": 74,
+      "FlightVolume": 288,
+      "OriginCode": "CMH",
+      "PctDel15": 0.2569,
+      "TotalDelayMinutes": 10220
+    },
+    {
+      "AvgDepDelay": 26.35,
+      "DelayedFlights": 109,
+      "FlightVolume": 377,
+      "OriginCode": "MEM",
+      "PctDel15": 0.2891,
+      "TotalDelayMinutes": 9933
+    },
+    {
+      "AvgDepDelay": 33.44,
+      "DelayedFlights": 87,
+      "FlightVolume": 287,
+      "OriginCode": "BUF",
+      "PctDel15": 0.3031,
+      "TotalDelayMinutes": 9598
+    },
+    {
+      "AvgDepDelay": 28.5,
+      "DelayedFlights": 78,
+      "FlightVolume": 336,
+      "OriginCode": "SJU",
+      "PctDel15": 0.2321,
+      "TotalDelayMinutes": 9576
+    },
+    {
+      "AvgDepDelay": 40.94,
+      "DelayedFlights": 71,
+      "FlightVolume": 232,
+      "OriginCode": "ABQ",
+      "PctDel15": 0.306,
+      "TotalDelayMinutes": 9499
+    },
+    {
+      "AvgDepDelay": 41.51,
+      "DelayedFlights": 67,
+      "FlightVolume": 216,
+      "OriginCode": "VPS",
+      "PctDel15": 0.3102,
+      "TotalDelayMinutes": 8966
+    },
+    {
+      "AvgDepDelay": 37.5,
+      "DelayedFlights": 73,
+      "FlightVolume": 238,
+      "OriginCode": "RNO",
+      "PctDel15": 0.3067,
+      "TotalDelayMinutes": 8925
+    },
+    {
+      "AvgDepDelay": 49.71,
+      "DelayedFlights": 81,
+      "FlightVolume": 170,
+      "OriginCode": "LEX",
+      "PctDel15": 0.4765,
+      "TotalDelayMinutes": 8450
+    },
+    {
+      "AvgDepDelay": 36.37,
+      "DelayedFlights": 82,
+      "FlightVolume": 230,
+      "OriginCode": "PVD",
+      "PctDel15": 0.3565,
+      "TotalDelayMinutes": 8365
+    },
+    {
+      "AvgDepDelay": 70,
+      "DelayedFlights": 54,
+      "FlightVolume": 119,
+      "OriginCode": "EYW",
+      "PctDel15": 0.4538,
+      "TotalDelayMinutes": 8330
+    },
+    {
+      "AvgDepDelay": 21.33,
+      "DelayedFlights": 120,
+      "FlightVolume": 386,
+      "OriginCode": "BDL",
+      "PctDel15": 0.3109,
+      "TotalDelayMinutes": 8232
+    },
+    {
+      "AvgDepDelay": 47.97,
+      "DelayedFlights": 62,
+      "FlightVolume": 157,
+      "OriginCode": "MFE",
+      "PctDel15": 0.3949,
+      "TotalDelayMinutes": 7531
+    },
+    {
+      "AvgDepDelay": 37.39,
+      "DelayedFlights": 73,
+      "FlightVolume": 200,
+      "OriginCode": "SAV",
+      "PctDel15": 0.365,
+      "TotalDelayMinutes": 7478
+    },
+    {
+      "AvgDepDelay": 31.47,
+      "DelayedFlights": 78,
+      "FlightVolume": 234,
+      "OriginCode": "GRR",
+      "PctDel15": 0.3333,
+      "TotalDelayMinutes": 7363
+    },
+    {
+      "AvgDepDelay": 34.77,
+      "DelayedFlights": 77,
+      "FlightVolume": 211,
+      "OriginCode": "MKE",
+      "PctDel15": 0.3649,
+      "TotalDelayMinutes": 7336
+    },
+    {
+      "AvgDepDelay": 58.69,
+      "DelayedFlights": 45,
+      "FlightVolume": 124,
+      "OriginCode": "JAC",
+      "PctDel15": 0.3629,
+      "TotalDelayMinutes": 7278
+    },
+    {
+      "AvgDepDelay": 24.02,
+      "DelayedFlights": 101,
+      "FlightVolume": 303,
+      "OriginCode": "SLC",
+      "PctDel15": 0.3333,
+      "TotalDelayMinutes": 7278
+    },
+    {
+      "AvgDepDelay": 25.05,
+      "DelayedFlights": 92,
+      "FlightVolume": 284,
+      "OriginCode": "OMA",
+      "PctDel15": 0.3239,
+      "TotalDelayMinutes": 7115
+    },
+    {
+      "AvgDepDelay": 29.85,
+      "DelayedFlights": 77,
+      "FlightVolume": 235,
+      "OriginCode": "TUL",
+      "PctDel15": 0.3277,
+      "TotalDelayMinutes": 7014
+    },
+    {
+      "AvgDepDelay": 53.93,
+      "DelayedFlights": 54,
+      "FlightVolume": 130,
+      "OriginCode": "ECP",
+      "PctDel15": 0.4154,
+      "TotalDelayMinutes": 7011
+    },
+    {
+      "AvgDepDelay": 30.35,
+      "DelayedFlights": 79,
+      "FlightVolume": 231,
+      "OriginCode": "ORF",
+      "PctDel15": 0.342,
+      "TotalDelayMinutes": 7011
+    },
+    {
+      "AvgDepDelay": 49.34,
+      "DelayedFlights": 49,
+      "FlightVolume": 142,
+      "OriginCode": "CID",
+      "PctDel15": 0.3451,
+      "TotalDelayMinutes": 7006
+    },
+    {
+      "AvgDepDelay": 46.27,
+      "DelayedFlights": 56,
+      "FlightVolume": 150,
+      "OriginCode": "ILM",
+      "PctDel15": 0.3733,
+      "TotalDelayMinutes": 6940
+    },
+    {
+      "AvgDepDelay": 57.32,
+      "DelayedFlights": 58,
+      "FlightVolume": 118,
+      "OriginCode": "ALB",
+      "PctDel15": 0.4915,
+      "TotalDelayMinutes": 6764
+    },
+    {
+      "AvgDepDelay": 28.84,
+      "DelayedFlights": 68,
+      "FlightVolume": 231,
+      "OriginCode": "OKC",
+      "PctDel15": 0.2944,
+      "TotalDelayMinutes": 6662
+    },
+    {
+      "AvgDepDelay": 44.77,
+      "DelayedFlights": 70,
+      "FlightVolume": 142,
+      "OriginCode": "GSO",
+      "PctDel15": 0.493,
+      "TotalDelayMinutes": 6357
+    },
+    {
+      "AvgDepDelay": 37.4,
+      "DelayedFlights": 43,
+      "FlightVolume": 169,
+      "OriginCode": "STT",
+      "PctDel15": 0.2544,
+      "TotalDelayMinutes": 6320
+    },
+    {
+      "AvgDepDelay": 34.31,
+      "DelayedFlights": 66,
+      "FlightVolume": 176,
+      "OriginCode": "SDF",
+      "PctDel15": 0.375,
+      "TotalDelayMinutes": 6039
+    },
+    {
+      "AvgDepDelay": 22.13,
+      "DelayedFlights": 71,
+      "FlightVolume": 271,
+      "OriginCode": "ONT",
+      "PctDel15": 0.262,
+      "TotalDelayMinutes": 5997
+    },
+    {
+      "AvgDepDelay": 38.29,
+      "DelayedFlights": 56,
+      "FlightVolume": 153,
+      "OriginCode": "SRQ",
+      "PctDel15": 0.366,
+      "TotalDelayMinutes": 5859
+    },
+    {
+      "AvgDepDelay": 23.93,
+      "DelayedFlights": 70,
+      "FlightVolume": 236,
+      "OriginCode": "PWM",
+      "PctDel15": 0.2966,
+      "TotalDelayMinutes": 5648
+    },
+    {
+      "AvgDepDelay": 42.71,
+      "DelayedFlights": 53,
+      "FlightVolume": 132,
+      "OriginCode": "GSP",
+      "PctDel15": 0.4015,
+      "TotalDelayMinutes": 5638
+    },
+    {
+      "AvgDepDelay": 36.72,
+      "DelayedFlights": 48,
+      "FlightVolume": 153,
+      "OriginCode": "GEG",
+      "PctDel15": 0.3137,
+      "TotalDelayMinutes": 5618
+    },
+    {
+      "AvgDepDelay": 35.59,
+      "DelayedFlights": 53,
+      "FlightVolume": 145,
+      "OriginCode": "TYS",
+      "PctDel15": 0.3655,
+      "TotalDelayMinutes": 5161
+    },
+    {
+      "AvgDepDelay": 41.77,
+      "DelayedFlights": 57,
+      "FlightVolume": 114,
+      "OriginCode": "XNA",
+      "PctDel15": 0.5,
+      "TotalDelayMinutes": 4762
+    },
+    {
+      "AvgDepDelay": 28.78,
+      "DelayedFlights": 56,
+      "FlightVolume": 162,
+      "OriginCode": "BGR",
+      "PctDel15": 0.3457,
+      "TotalDelayMinutes": 4663
+    },
+    {
+      "AvgDepDelay": 19.65,
+      "DelayedFlights": 60,
+      "FlightVolume": 237,
+      "OriginCode": "TUS",
+      "PctDel15": 0.2532,
+      "TotalDelayMinutes": 4658
+    },
+    {
+      "AvgDepDelay": 25.81,
+      "DelayedFlights": 48,
+      "FlightVolume": 176,
+      "OriginCode": "FAT",
+      "PctDel15": 0.2727,
+      "TotalDelayMinutes": 4542
+    },
+    {
+      "AvgDepDelay": 26.37,
+      "DelayedFlights": 50,
+      "FlightVolume": 155,
+      "OriginCode": "MYR",
+      "PctDel15": 0.3226,
+      "TotalDelayMinutes": 4087
+    },
+    {
+      "AvgDepDelay": 32.37,
+      "DelayedFlights": 32,
+      "FlightVolume": 116,
+      "OriginCode": "SBP",
+      "PctDel15": 0.2759,
+      "TotalDelayMinutes": 3755
+    },
+    {
+      "AvgDepDelay": 26.36,
+      "DelayedFlights": 41,
+      "FlightVolume": 127,
+      "OriginCode": "BZN",
+      "PctDel15": 0.3228,
+      "TotalDelayMinutes": 3348
+    },
+    {
+      "AvgDepDelay": 22.76,
+      "DelayedFlights": 44,
+      "FlightVolume": 144,
+      "OriginCode": "MSN",
+      "PctDel15": 0.3056,
+      "TotalDelayMinutes": 3278
+    },
+    {
+      "AvgDepDelay": 27.17,
+      "DelayedFlights": 37,
+      "FlightVolume": 118,
+      "OriginCode": "SYR",
+      "PctDel15": 0.3136,
+      "TotalDelayMinutes": 3206
+    },
+    {
+      "AvgDepDelay": 20.65,
+      "DelayedFlights": 47,
+      "FlightVolume": 153,
+      "OriginCode": "ELP",
+      "PctDel15": 0.3072,
+      "TotalDelayMinutes": 3160
+    },
+    {
+      "AvgDepDelay": 24.86,
+      "DelayedFlights": 28,
+      "FlightVolume": 118,
+      "OriginCode": "BUR",
+      "PctDel15": 0.2373,
+      "TotalDelayMinutes": 2934
+    },
+    {
+      "AvgDepDelay": 12.38,
+      "DelayedFlights": 28,
+      "FlightVolume": 186,
+      "OriginCode": "HNL",
+      "PctDel15": 0.1505,
+      "TotalDelayMinutes": 2302
+    },
+    {
+      "AvgDepDelay": 9.66,
+      "DelayedFlights": 23,
+      "FlightVolume": 119,
+      "OriginCode": "BOI",
+      "PctDel15": 0.1933,
+      "TotalDelayMinutes": 1149
+    }
+  ],
+  "row_count": 93,
+  "generated_at": "2026-03-24T16:36:01.342086Z",
+  "source_query_sha256": "092856640381f247004e4aff2273db176c5140109544d6f59f9cf466cbe68c38",
+  "log_comment": "qforge|question=q006|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full|subquestion=q2"
+}

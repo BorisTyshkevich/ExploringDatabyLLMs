@@ -1,0 +1,26 @@
+{
+  "columns": [
+    "Tail_Number",
+    "FlightNum",
+    "Carrier",
+    "FlightDate",
+    "hop_count",
+    "Route",
+    "itinerary_sequence"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "FlightNum": "366",
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "Tail_Number": "N957WN",
+      "hop_count": 8,
+      "itinerary_sequence": "ISP,BWI,MYR,BNA,VPS,DAL,LAS,OAK,SEA"
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-24T09:58:42.672946Z",
+  "source_query_sha256": "2ca9bea317cd85616a1aeb61b4c99ac757ae35104d1926556a2d417caca6d20a",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q2"
+}

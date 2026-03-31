@@ -1,0 +1,117 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "The worst winter carrier-airport pair is **DH (Independence Air) departing from ORD (Chicago O'Hare)**, with only 56.58% of winter flights departing on time and an average departure delay of 28.35 minutes across 19,986 qualifying winter flights. The second-worst pair is PI (Piedmont Airlines) at DFW (61.5% on-time), followed by PI at LAX (62.95%) and PI at DAY (63.15%). The ranked query below returns the full set of worst-performing winter pairs (minimum 1,000 winter flights) sorted by on-time percentage ascending.",
+      "columns_csv": "carrier, origin, winter_flights, pct_ontime, avg_dep_delay_min, weather_pct, operational_pct, rank",
+      "first_row": {
+        "avg_dep_delay_min": 28.35,
+        "carrier": "DH",
+        "operational_pct": 84.39,
+        "origin": "ORD",
+        "pct_ontime": 56.58,
+        "rank": 1,
+        "weather_pct": 15.61,
+        "winter_flights": 19986
+      },
+      "row_count": 25,
+      "subquestion": "Which winter carrier-airport pair ranks worst overall?",
+      "subquestion_id": "worst_pair"
+    },
+    {
+      "answer_preview": "The worst winter pairs are overwhelmingly driven by **operational causes**, not weather. Across the 22 worst pairs with delay-cause data, operational delays (carrier delays + late aircraft + NAS + security) account for 70–99% of reported delay minutes in nearly every case. Late aircraft propagation alone is the single largest component for most pairs — for example, DH/ORD (37.7% late aircraft), YV/ORD (45.2% late aircraft), AA/EYW (61.1% late aircraft), and AS/DUT (66.0% late aircraft). Carrier-attributed delays are the second-largest factor. Weather is a minor contributor for most pairs (typically 1–15%), with only two notable exceptions: OH/EWR (41.4% weather) and OH/ATL (28.7% weather). Three PI pairs show no delay-cause data, consistent with older data predating structured cause reporting.",
+      "columns_csv": "carrier, origin, pct_ontime, total_delay_min, weather_share_pct, carrier_share_pct, nas_share_pct, late_aircraft_share_pct, security_share_pct",
+      "first_row": {
+        "carrier": "DH",
+        "carrier_share_pct": 34.92,
+        "late_aircraft_share_pct": 37.7,
+        "nas_share_pct": 11.74,
+        "origin": "ORD",
+        "pct_ontime": 56.58,
+        "security_share_pct": 0.03,
+        "total_delay_min": 353430,
+        "weather_share_pct": 15.61
+      },
+      "row_count": 25,
+      "subquestion": "Are the worst pairs driven more by weather or by operational causes?",
+      "subquestion_id": "cause_mix"
+    },
+    {
+      "answer_preview": "The 25 worst winter pairs span **14 distinct carriers and 22 distinct airports**, so the weak set is fairly dispersed across airports but shows moderate carrier concentration. Four carriers account for the majority of repeating entries: **B6 (JetBlue)** appears 4 times (MIA, RNO, SRQ, FLL), **OH (Comair)** 3 times (RSW, EWR, ATL), **OO (SkyWest)** 3 times (OTH, ASE, CEC), and **PI (Piedmont)** 3 times (DFW, LAX, DAY). On the airport side, **EWR** appears in 3 pairs (OH, FL, XE) and **ORD** in 2 pairs (DH, YV). The pattern suggests that chronic winter departure underperformance clusters around a handful of regional and low-cost carriers operating systemically poor schedules, rather than being uniformly distributed across the industry.",
+      "columns_csv": "distinct_carriers, distinct_airports, total_pairs, carriers, airports",
+      "first_row": {
+        "airports": [
+          "ORD",
+          "DFW",
+          "LAX",
+          "DAY",
+          "DUT",
+          "ORD",
+          "OTH",
+          "EYW",
+          "PBI",
+          "RSW",
+          "MIA",
+          "ASE",
+          "SLC",
+          "SJU",
+          "DEN",
+          "RNO",
+          "EWR",
+          "SCK",
+          "SRQ",
+          "SFO",
+          "ATL",
+          "EWR",
+          "EWR",
+          "CEC",
+          "FLL"
+        ],
+        "carriers": [
+          "DH",
+          "PI",
+          "PI",
+          "PI",
+          "AS",
+          "YV",
+          "OO",
+          "AA",
+          "F9",
+          "OH",
+          "B6",
+          "OO",
+          "EV",
+          "NW",
+          "EV",
+          "B6",
+          "OH",
+          "G4",
+          "B6",
+          "FL",
+          "OH",
+          "FL",
+          "XE",
+          "OO",
+          "B6"
+        ],
+        "distinct_airports": 22,
+        "distinct_carriers": 14,
+        "total_pairs": 25
+      },
+      "row_count": 1,
+      "subquestion": "Are the weakest pairs concentrated in a small number of carriers or airports?",
+      "subquestion_id": "concentration_pattern"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T08:07:11.516417Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

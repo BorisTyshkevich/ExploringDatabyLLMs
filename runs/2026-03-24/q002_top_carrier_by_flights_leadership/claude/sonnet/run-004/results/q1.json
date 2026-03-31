@@ -1,0 +1,24 @@
+{
+  "columns": [
+    "carrier",
+    "years_led"
+  ],
+  "rows": [
+    {
+      "carrier": "WN",
+      "years_led": 26
+    },
+    {
+      "carrier": "DL",
+      "years_led": 11
+    },
+    {
+      "carrier": "US",
+      "years_led": 2
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T11:08:49.584252Z",
+  "source_query_sha256": "a9f985f3e8bba407d58481782fafec8db1e39999083694198047a4af811ff5ae",
+  "log_comment": "qforge|question=q002|run=run-004|runner=claude|model=sonnet|phase=full|subquestion=q1"
+}

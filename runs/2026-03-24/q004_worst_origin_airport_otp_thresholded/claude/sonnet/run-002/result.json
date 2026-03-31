@@ -1,0 +1,66 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "Chicago Midway International (MDW) ranks worst among all qualifying origin airports, with an on-time departure rate of 76.52% — meaning nearly 1 in 4 departures was delayed 15 or more minutes. MDW logged 2.51 million completed departures across the full dataset (1987–2025) and, when delayed, averaged 26.8 minutes late with a 90th-percentile delay of 37 minutes. The minimum-volume threshold applied was 100,000 completed departures, leaving 160 qualifying airports in the ranked set.",
+      "columns_csv": "rank, OriginCode, airport_name, city, total_departures, otp_rate, pct_delayed, avg_dep_delay_when_late, p90_delay_min, first_date, last_date",
+      "first_row": {
+        "OriginCode": "MDW",
+        "airport_name": "Chicago Midway International",
+        "avg_dep_delay_when_late": 26.82,
+        "city": "Chicago, IL",
+        "first_date": "1987-10-01T00:00:00Z",
+        "last_date": "2025-11-30T00:00:00Z",
+        "otp_rate": 76.52,
+        "p90_delay_min": 37,
+        "pct_delayed": 23.48,
+        "rank": 1,
+        "total_departures": 2512354
+      },
+      "row_count": 161,
+      "subquestion": "Which airport ranks worst on departure on-time performance?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "The spread between the worst airport and the median of the 160 qualifying airports is 8.53 percentage points. MDW sits at 76.52% OTP while the median airport in the ranked set sits at 85.05% OTP. This gap is substantial: MDW's delay rate (23.48%) is roughly 1.6x the median delay rate (14.95%), indicating that the very bottom of the distribution is a clear outlier rather than a gradual tail.",
+      "columns_csv": "worst_otp, median_otp, spread_pp, qualifying_airports",
+      "first_row": {
+        "median_otp": 85.05,
+        "qualifying_airports": 160,
+        "spread_pp": 8.53,
+        "worst_otp": 76.52
+      },
+      "row_count": 1,
+      "subquestion": "How large is the spread between the worst airport and the middle of the ranked set?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The bottom 10 airports are overwhelmingly major hubs and high-traffic gateways. MDW (Chicago Midway), ORD (Chicago O'Hare), EWR (Newark Liberty), JFK (John F. Kennedy), DEN (Denver), and LAS (Las Vegas) are among the nation's busiest airports by operations. HOU (Houston Hobby) and DAL (Dallas Love Field) are primary Southwest Airlines intra-Texas hubs. BWI (Baltimore/Washington) and FLL (Fort Lauderdale) are large leisure and low-cost-carrier gateways. Every airport in the bottom 10 carries well over 1 million historical departures, and none are regional or small-market airports. The pattern strongly suggests that operational complexity, congestion, and constrained airspace — not obscurity — drive the worst OTP outcomes.",
+      "columns_csv": "OriginCode, airport_name, city, total_departures, otp_rate, pct_delayed, avg_dep_delay_when_late, p90_delay_min",
+      "first_row": {
+        "OriginCode": "MDW",
+        "airport_name": "Chicago Midway International",
+        "avg_dep_delay_when_late": 26.82,
+        "city": "Chicago, IL",
+        "otp_rate": 76.52,
+        "p90_delay_min": 37,
+        "pct_delayed": 23.48,
+        "total_departures": 2512354
+      },
+      "row_count": 10,
+      "subquestion": "Are the weakest airports mostly major hubs, or is the bottom group more mixed?",
+      "subquestion_id": "q3"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T12:11:36.785556Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

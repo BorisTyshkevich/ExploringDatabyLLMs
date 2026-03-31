@@ -1,0 +1,29 @@
+{
+  "sql": "WITH legs AS (\n    SELECT\n        o.Tail_Number,\n        o.Flight_Number_Reporting_Airline,\n        o.IATA_CODE_Reporting_Airline,\n        o.FlightDate,\n        assumeNotNull(o.DepTime) AS DepTime,\n        o.Origin,\n        o.Dest,\n        coalesce(ao.name, o.Origin) AS OriginName,\n        coalesce(ad.name, o.Dest) AS DestName\n    FROM ontime.ontime AS o\n    LEFT JOIN ontime.airports_latest AS ao ON o.Origin = ao.code\n    LEFT JOIN ontime.airports_latest AS ad ON o.Dest = ad.code\n    WHERE o.Tail_Number != ''\n      AND o.DepTime IS NOT NULL\n      AND o.Cancelled = 0\n),\nitineraries AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        count() AS Hops,\n        arraySort(x -\u003e x.1, groupArray(tuple(DepTime, Origin, Dest, OriginName, DestName))) AS legs_sorted\n    FROM legs\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate\n    HAVING Hops \u003e= 6\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    IATA_CODE_Reporting_Airline,\n    FlightDate,\n    Hops,\n    arrayStringConcat(\n        arrayConcat(\n            arrayMap(\n                x -\u003e concat(\n                    x.2, ' (', x.4, ') ',\n                    lpad(toString(x.1 DIV 100), 2, '0'), ':',\n                    lpad(toString(x.1 MOD 100), 2, '0')\n                ),\n                legs_sorted\n            ),\n            [concat(legs_sorted[length(legs_sorted)].3, ' (', legs_sorted[length(legs_sorted)].5, ')')]\n        ),\n        ' -\u003e '\n    ) AS Route\nFROM itineraries\nORDER BY Hops DESC, FlightDate DESC\nLIMIT 10",
+  "report_markdown": "# {{question_title}}\n\n_Generated {{generated_at}} · {{row_count}} rows_\n\n## Maximum Hop Count\n\nThe highest recorded hop count is **{{metric.max_hops}}** legs flown by a single aircraft under a single flight number in one calendar day. All top-10 entries are operated by **{{metric.dominant_carrier}}**. This is not a one-off anomaly: the same multi-hop routing patterns recur across multiple weeks on the same flight numbers, confirming these as deliberately scheduled point-to-point network itineraries.\n\n## Most Recent Maximum-Hop Itinerary\n\n| Field | Value |\n|---|---|\n| Date | {{metric.most_recent_date}} |\n| Carrier | {{metric.most_recent_carrier}} |\n| Flight Number | {{metric.most_recent_flight_num}} |\n| Aircraft (Tail) | {{metric.most_recent_aircraft}} |\n| Hops | {{metric.max_hops}} |\n\n**Route (chronological, with airport names and departure times):**\n\n\u003e {{metric.most_recent_route}}\n\n## Route Repetition and Clustering\n\nAmong the top 10 longest itineraries, strong route repetition is evident by flight number. The same {{metric.max_hops}}-hop city sequences recur on consecutive weeks, confirming them as recurring scheduled patterns rather than irregular one-off operations. Route clusters are anchored by specific hub sequences through the Midwest, South, and West Coast.\n\n## Top 10 Longest and Most Recent Itineraries\n\n{{result_table_md}}\n\n_Route column format: `CODE (Airport Name) HH:MM -\u003e ... -\u003e CODE (Airport Name)` — each entry shows the origin code, full airport name from the semantic layer, and scheduled departure time. The final entry shows the terminal destination only._",
+  "metrics": {
+    "summary_facts": [
+      "The maximum hop count is 8 legs in a single day for one aircraft on one flight number.",
+      "All top-10 itineraries are operated by Southwest Airlines (WN), reflecting its point-to-point multi-stop scheduling model.",
+      "WN 3149 operated the same 8-hop CLE-to-DEN route on 4 separate occasions in Jan-Feb 2024, the most repeated pattern.",
+      "The most recent 8-hop itinerary is WN 366 on 2024-12-01: ISP (Long Island MacArthur) to SEA (Seattle-Tacoma) spanning 9 cities."
+    ],
+    "named_values": {
+      "dominant_carrier": "Southwest Airlines (WN)",
+      "max_hops": "8",
+      "most_recent_aircraft": "N957WN",
+      "most_recent_carrier": "WN",
+      "most_recent_date": "2024-12-01",
+      "most_recent_flight_num": "366",
+      "most_recent_route": "ISP (Long Island MacArthur) 05:43 -\u003e BWI (Baltimore/Washington International) 08:10 -\u003e MYR (Myrtle Beach International) 10:20 -\u003e BNA (Nashville International) 11:42 -\u003e VPS (Destin-Fort Walton Beach) 14:01 -\u003e DAL (Dallas Love Field) 16:43 -\u003e LAS (Harry Reid International) 18:28 -\u003e OAK (Oakland International) 20:41 -\u003e SEA (Seattle-Tacoma International)"
+    },
+    "named_lists": {
+      "repeated_routes": [
+        "WN 3149: CLE (Cleveland Hopkins) -\u003e BNA (Nashville) -\u003e PNS (Pensacola) -\u003e HOU (Houston Hobby) -\u003e MCI (Kansas City) -\u003e PHX (Phoenix Sky Harbor) -\u003e BUR (Hollywood Burbank) -\u003e OAK (Oakland) -\u003e DEN (Denver) — 4 occurrences, Jan-Feb 2024",
+        "WN 2787: MSY (New Orleans) -\u003e ATL (Atlanta Hartsfield) -\u003e CMH (Columbus) -\u003e BWI (Baltimore/Washington) -\u003e RDU (Raleigh-Durham) -\u003e BNA (Nashville) -\u003e DTW (Detroit Metro) -\u003e MDW (Chicago Midway) -\u003e LAX (Los Angeles International) — 3 occurrences, Sep-Oct 2022",
+        "WN 154: ELP (El Paso) -\u003e DAL (Dallas Love Field) -\u003e LIT (Little Rock) -\u003e ATL (Atlanta Hartsfield) -\u003e RIC (Richmond) -\u003e MDW (Chicago Midway) -\u003e MCI (Kansas City) -\u003e PHX (Phoenix Sky Harbor) -\u003e SAN (San Diego International) — 2 occurrences, Apr 2023",
+        "WN 366: ISP (Long Island MacArthur) -\u003e BWI (Baltimore/Washington) -\u003e MYR (Myrtle Beach) -\u003e BNA (Nashville) -\u003e VPS (Destin-Fort Walton Beach) -\u003e DAL (Dallas Love Field) -\u003e LAS (Harry Reid International) -\u003e OAK (Oakland) -\u003e SEA (Seattle-Tacoma) — 1 occurrence, Dec 2024"
+      ]
+    }
+  }
+}

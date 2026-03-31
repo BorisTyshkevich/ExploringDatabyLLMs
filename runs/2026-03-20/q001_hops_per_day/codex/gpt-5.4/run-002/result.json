@@ -1,0 +1,118 @@
+{
+  "columns": [
+    "Aircraft ID",
+    "Flight Number",
+    "Carrier",
+    "Date",
+    "Hops",
+    "Route",
+    "Maximum Hops Observed",
+    "Maximum-Hop Itinerary Count"
+  ],
+  "rows": [
+    {
+      "Aircraft ID": "N957WN",
+      "Carrier": "WN",
+      "Date": "2024-12-01T00:00:00Z",
+      "Flight Number": "366",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "05:43 ISP-\u003eBWI | 08:10 BWI-\u003eMYR | 10:20 MYR-\u003eBNA | 11:42 BNA-\u003eVPS | 14:01 VPS-\u003eDAL | 16:43 DAL-\u003eLAS | 18:28 LAS-\u003eOAK | 20:41 OAK-\u003eSEA"
+    },
+    {
+      "Aircraft ID": "N7835A",
+      "Carrier": "WN",
+      "Date": "2024-02-18T00:00:00Z",
+      "Flight Number": "3149",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:21 CLE-\u003eBNA | 08:01 BNA-\u003ePNS | 10:07 PNS-\u003eHOU | 12:34 HOU-\u003eMCI | 15:14 MCI-\u003ePHX | 17:47 PHX-\u003eBUR | 19:02 BUR-\u003eOAK | 21:17 OAK-\u003eDEN"
+    },
+    {
+      "Aircraft ID": "N429WN",
+      "Carrier": "WN",
+      "Date": "2024-01-28T00:00:00Z",
+      "Flight Number": "3149",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:18 CLE-\u003eBNA | 08:00 BNA-\u003ePNS | 10:12 PNS-\u003eHOU | 12:39 HOU-\u003eMCI | 15:15 MCI-\u003ePHX | 17:56 PHX-\u003eBUR | 18:59 BUR-\u003eOAK | 20:59 OAK-\u003eDEN"
+    },
+    {
+      "Aircraft ID": "N228WN",
+      "Carrier": "WN",
+      "Date": "2024-01-21T00:00:00Z",
+      "Flight Number": "3149",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:20 CLE-\u003eBNA | 08:10 BNA-\u003ePNS | 10:17 PNS-\u003eHOU | 12:37 HOU-\u003eMCI | 15:10 MCI-\u003ePHX | 18:00 PHX-\u003eBUR | 19:03 BUR-\u003eOAK | 21:02 OAK-\u003eDEN"
+    },
+    {
+      "Aircraft ID": "N569WN",
+      "Carrier": "WN",
+      "Date": "2024-01-14T00:00:00Z",
+      "Flight Number": "3149",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:25 CLE-\u003eBNA | 08:05 BNA-\u003ePNS | 10:11 PNS-\u003eHOU | 12:41 HOU-\u003eMCI | 16:07 MCI-\u003ePHX | 19:09 PHX-\u003eBUR | 20:06 BUR-\u003eOAK | 21:56 OAK-\u003eDEN"
+    },
+    {
+      "Aircraft ID": "N7742B",
+      "Carrier": "WN",
+      "Date": "2023-04-30T00:00:00Z",
+      "Flight Number": "154",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:27 ELP-\u003eDAL | 09:39 DAL-\u003eLIT | 11:24 LIT-\u003eATL | 14:34 ATL-\u003eRIC | 16:56 RIC-\u003eMDW | 18:31 MDW-\u003eMCI | 20:40 MCI-\u003ePHX | 22:46 PHX-\u003eSAN"
+    },
+    {
+      "Aircraft ID": "N929WN",
+      "Carrier": "WN",
+      "Date": "2023-04-16T00:00:00Z",
+      "Flight Number": "154",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:22 ELP-\u003eDAL | 09:41 DAL-\u003eLIT | 11:22 LIT-\u003eATL | 14:33 ATL-\u003eRIC | 16:59 RIC-\u003eMDW | 18:32 MDW-\u003eMCI | 20:41 MCI-\u003ePHX | 22:26 PHX-\u003eSAN"
+    },
+    {
+      "Aircraft ID": "N8631A",
+      "Carrier": "WN",
+      "Date": "2022-10-23T00:00:00Z",
+      "Flight Number": "2787",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:08 MSY-\u003eATL | 09:44 ATL-\u003eCMH | 11:56 CMH-\u003eBWI | 13:54 BWI-\u003eRDU | 15:53 RDU-\u003eBNA | 17:29 BNA-\u003eDTW | 20:45 DTW-\u003eMDW | 21:49 MDW-\u003eLAX"
+    },
+    {
+      "Aircraft ID": "N8809L",
+      "Carrier": "WN",
+      "Date": "2022-10-02T00:00:00Z",
+      "Flight Number": "2787",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:10 MSY-\u003eATL | 09:17 ATL-\u003eCMH | 11:42 CMH-\u003eBWI | 13:55 BWI-\u003eRDU | 15:36 RDU-\u003eBNA | 17:16 BNA-\u003eDTW | 20:40 DTW-\u003eMDW | 21:47 MDW-\u003eLAX"
+    },
+    {
+      "Aircraft ID": "N8811L",
+      "Carrier": "WN",
+      "Date": "2022-09-25T00:00:00Z",
+      "Flight Number": "2787",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:01 MSY-\u003eATL | 09:18 ATL-\u003eCMH | 11:41 CMH-\u003eBWI | 13:47 BWI-\u003eRDU | 15:39 RDU-\u003eBNA | 17:24 BNA-\u003eDTW | 21:12 DTW-\u003eMDW | 22:42 MDW-\u003eLAX"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-20T14:04:31.676577Z",
+  "source_query_sha256": "8e147c6fb1ba86d385ae5e2131289c3a68de85a15dac150790e088adeb88ab6b",
+  "log_comment": "qforge|question=q001|run=run-002|runner=codex|model=gpt-5.4|phase=full"
+}

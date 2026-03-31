@@ -1,0 +1,28 @@
+{
+  "subquestions": [
+    {
+      "id": "peak_month",
+      "subquestion": "Which month is the single worst American Airlines month for departure delays?",
+      "answer_markdown": "**July 2024** is the single worst month for American Airlines departure delays across the full dataset history. It averaged **36.33 minutes** of departure delay per flight and had **38.04%** of its 86,083 completed flights depart 15 or more minutes late — both figures higher than any other calendar month on record. The next closest months are May 2024 (32.74 min avg) and July 2025 (31.35 min avg), making July 2024 a clear standout.",
+      "sql": "SELECT\n    toStartOfMonth(FlightDate) AS flight_month,\n    count() AS total_flights,\n    round(avg(DepDelay), 2) AS avg_dep_delay_min,\n    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15\nFROM ontime.fact_ontime\nWHERE Reporting_Airline = 'AA'\n  AND Cancelled = 0\n  AND DepDelay IS NOT NULL\nGROUP BY flight_month\nORDER BY flight_month"
+    },
+    {
+      "id": "origin_contributors",
+      "subquestion": "Which origins contribute most to that peak month?",
+      "answer_markdown": "**Charlotte (CLT)** is by far the dominant origin contributor in July 2024, with 10,568 departures — roughly 12% of all AA July 2024 flights — averaging **52.0 minutes** of departure delay and 52.2% of flights delayed 15+ minutes. No other origin comes close in combined volume and severity. Among smaller but notably delayed origins: IAH (632 flights, 47.1 min avg), EWR (615 flights, 44.9 min avg), RSW (354 flights, 45.3 min avg), and CVG (312 flights, 47.4 min avg) also stand out. CLT's massive scale makes it the single largest driver of AA's July 2024 network-wide delay figure.",
+      "sql": "SELECT\n    OriginCode,\n    count() AS flights,\n    round(avg(DepDelay), 2) AS avg_dep_delay_min,\n    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15\nFROM ontime.fact_ontime\nWHERE Reporting_Airline = 'AA'\n  AND Cancelled = 0\n  AND DepDelay IS NOT NULL\n  AND toStartOfMonth(FlightDate) = '2024-07-01'\nGROUP BY OriginCode\nHAVING flights >= 100\nORDER BY avg_dep_delay_min DESC\nLIMIT 15"
+    },
+    {
+      "id": "route_contributors",
+      "subquestion": "Which routes contribute most to that peak month?",
+      "answer_markdown": "The worst routes out of CLT led the July 2024 ranking: **CLT→SDF** averaged 102.7 minutes of departure delay (69.9% del15, 83 flights), **CLT→ROC** averaged 91.9 minutes (69.1% del15, 55 flights), and **CLT→TYS** averaged 90.0 minutes (69.0% del15, 58 flights). Other severe routes include **DFW→CID** (95.1 min, 60 flights), **JAC→DFW** (93.9 min, 63 flights), and **DFW→ICT** (93.4 min, 59 flights). CLT-origin routes dominate the worst performers, reinforcing its role as the network's delay epicenter that month. The PHX→JAX route had the single highest average at 134.4 minutes but on only 31 flights.",
+      "sql": "SELECT\n    OriginCode,\n    DestCode,\n    count() AS flights,\n    round(avg(DepDelay), 2) AS avg_dep_delay_min,\n    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15\nFROM ontime.fact_ontime\nWHERE Reporting_Airline = 'AA'\n  AND Cancelled = 0\n  AND DepDelay IS NOT NULL\n  AND toStartOfMonth(FlightDate) = '2024-07-01'\nGROUP BY OriginCode, DestCode\nHAVING flights >= 30\nORDER BY avg_dep_delay_min DESC\nLIMIT 15"
+    },
+    {
+      "id": "concentration_pattern",
+      "subquestion": "Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?",
+      "answer_markdown": "The July 2024 peak is **concentrated, not broad**. CLT alone accounted for ~10,568 of 86,083 AA departures (~12.3%) and averaged over 52 minutes of delay — well above the 36.3-minute network average — meaning CLT's underperformance pulled the entire network number up significantly. The top 5 origins by average delay (EYW, JAC, ALB, PNS, ECP) were all small stations with under 250 flights each. At the route level, the worst-performing routes are CLT-hub spokes and a handful of DFW feeder routes, not a broad spread across the full network. The concentration around CLT as AA's largest East Coast hub — where cascading delays compound across hundreds of daily departures — explains why July 2024 stands so far above other months in the historical record.",
+      "sql": "SELECT\n    OriginCode,\n    count() AS flights,\n    round(100.0 * count() / sum(count()) OVER (), 2) AS pct_of_total_flights,\n    round(avg(DepDelay), 2) AS avg_dep_delay_min,\n    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15\nFROM ontime.fact_ontime\nWHERE Reporting_Airline = 'AA'\n  AND Cancelled = 0\n  AND DepDelay IS NOT NULL\n  AND toStartOfMonth(FlightDate) = '2024-07-01'\nGROUP BY OriginCode\nORDER BY flights DESC\nLIMIT 20"
+    }
+  ]
+}

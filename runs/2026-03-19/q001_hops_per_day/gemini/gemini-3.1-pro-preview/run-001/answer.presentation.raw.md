@@ -1,0 +1,353 @@
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Highest daily hops for one aircraft on one flight number</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .leaflet-container { z-index: 10; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans p-4 sm:p-8 min-h-screen">
+  <div id="app" class="max-w-7xl mx-auto space-y-6">
+    <header>
+      <h1 class="text-3xl font-bold text-slate-800">Highest daily hops for one aircraft on one flight number</h1>
+    </header>
+
+    <!-- Error Alert -->
+    <div v-if="error" class="bg-red-100 text-red-700 p-4 rounded shadow border-l-4 border-red-500">
+      {{ error }}
+    </div>
+
+    <!-- Loading State -->
+    <div v-if="loading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <!-- KPI Strip -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4" v-if="!loading && primaryData.length > 0">
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Date</div>
+        <div class="text-2xl font-bold text-slate-800">{{ topRanked.Date }}</div>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Tail Number</div>
+        <div class="text-2xl font-bold text-slate-800">{{ topRanked.AircraftID }}</div>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Flight Number</div>
+        <div class="text-2xl font-bold text-slate-800">{{ topRanked.Carrier }} {{ topRanked.FlightNumber }}</div>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Hop Count</div>
+        <div class="text-2xl font-bold text-slate-800">{{ topRanked.Hops }}</div>
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+        <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Route Frequency</div>
+        <div class="text-2xl font-bold text-slate-800">{{ topRouteRepetition }} occurrences</div>
+        <div class="text-xs text-slate-400 mt-1">in top 10 results</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" v-if="!loading && primaryData.length > 0">
+      <!-- Map & Sequence Column -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 relative">
+           <h2 class="text-lg font-bold mb-4 text-slate-800">Selected Itinerary Route Map</h2>
+           
+           <div v-if="mapError" class="absolute top-16 left-1/2 transform -translate-x-1/2 bg-amber-100 text-amber-800 px-4 py-2 rounded shadow-lg z-[1000] flex items-center gap-2 border border-amber-300">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              <span class="text-sm font-medium">{{ mapError }}</span>
+           </div>
+
+           <div id="map" class="w-full h-[400px] rounded border border-slate-200 bg-slate-100 z-10"></div>
+           
+           <div class="mt-4 flex items-center justify-between">
+             <div class="flex items-center gap-6 text-sm text-slate-600 font-medium">
+               <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span> Airport</div>
+               <div class="flex items-center gap-2"><span class="w-4 h-1 bg-red-500 inline-block"></span> Flight Path</div>
+             </div>
+           </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4">
+           <h2 class="text-lg font-bold mb-4 text-slate-800">Route Sequence Details</h2>
+           <div class="flex flex-wrap gap-2">
+              <div v-for="(step, idx) in selectedRouteSequence" :key="idx" class="flex items-center gap-2">
+                 <div class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-center shadow-sm min-w-[80px]">
+                    <div class="font-bold text-blue-600 text-lg">{{ step.code }}</div>
+                    <div class="text-xs text-slate-500 font-medium mt-0.5" v-if="step.time">Dep: {{ step.time }}</div>
+                    <div class="text-xs text-slate-500 font-medium mt-0.5" v-else>Arrival</div>
+                 </div>
+                 <svg v-if="idx < selectedRouteSequence.length - 1" class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+              </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- Table Column -->
+      <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4 lg:col-span-1 flex flex-col max-h-[800px]">
+         <h2 class="text-lg font-bold mb-4 text-slate-800">Top Itineraries</h2>
+         <div class="space-y-3 overflow-y-auto flex-1 pr-1">
+            <div v-for="(row, idx) in primaryData" :key="idx" 
+                 @click="selectedRowIndex = idx"
+                 class="p-4 border rounded-lg cursor-pointer transition-all duration-200"
+                 :class="selectedRowIndex === idx ? 'bg-blue-50/50 border-blue-400 border-l-4 shadow-sm' : 'hover:bg-slate-50 border-slate-200 border-l-4 border-transparent'">
+               <div class="flex justify-between items-start mb-2">
+                 <span class="font-bold text-slate-800">{{ row.Date }}</span>
+                 <span class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-bold shadow-sm">{{ row.Hops }} hops</span>
+               </div>
+               <div class="text-sm font-medium text-slate-600 mb-2">
+                  Flight {{ row.Carrier }}{{ row.FlightNumber }} ({{ row.AircraftID }})
+               </div>
+               <div class="text-xs text-slate-500 line-clamp-2 leading-relaxed" :title="row.Route">
+                  {{ row.Route }}
+               </div>
+            </div>
+         </div>
+      </div>
+    </div>
+
+    <!-- Query Ledger -->
+    <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-4" v-if="ledger.length > 0">
+      <h2 class="text-lg font-bold mb-4 text-slate-800">Query Ledger</h2>
+      <div class="space-y-4">
+        <div v-for="(entry, idx) in ledger" :key="idx" class="border border-slate-200 rounded-lg p-4 bg-slate-50 font-mono text-sm">
+          <div class="flex justify-between items-center mb-3">
+             <span class="font-bold text-slate-700">{{ entry.label }}</span>
+             <span :class="{
+               'text-amber-600 bg-amber-50 border-amber-200': entry.status === 'running', 
+               'text-emerald-600 bg-emerald-50 border-emerald-200': entry.status === 'success', 
+               'text-red-600 bg-red-50 border-red-200': entry.status === 'error', 
+               'text-orange-600 bg-orange-50 border-orange-200': entry.status === 'degraded'
+             }" class="font-semibold px-2.5 py-1 rounded border text-xs uppercase tracking-wider">
+               {{ entry.status }} <span v-if="entry.duration !== undefined && entry.status !== 'running'">({{ entry.duration }}ms)</span>
+             </span>
+          </div>
+          <pre class="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">{{ entry.query }}</pre>
+          <div v-if="entry.error" class="mt-3 text-red-600 bg-red-50 p-2 rounded text-xs font-semibold">Error: {{ entry.error }}</div>
+          <div v-if="entry.message" class="mt-3 text-orange-600 bg-orange-50 p-2 rounded text-xs font-semibold">Notice: {{ entry.message }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted, computed, watch, nextTick } = Vue;
+
+    const app = createApp({
+      setup() {
+        const primarySql = `SELECT FlightDate                                                AS Date, Tail_Number AS AircraftID,
+       Flight_Number_Reporting_Airline                           AS FlightNumber, Reporting_Airline AS Carrier,
+       count()                                                   AS Hops,
+       arrayStringConcat(arrayMap(x -> x.2 || ' (' || leftPad(toString(x.1), 4, '0') || ')',
+                                  arraySort(groupArray(tuple(DepTime, Origin, Dest)))), ' - ') || ' - ' ||
+       arraySort(groupArray(tuple(DepTime, Origin, Dest)))[-1].3 AS Route
+FROM ontime.ontime
+WHERE Cancelled = 0 AND Tail_Number != '' AND Tail_Number != 'UNKNOW' AND DepTime IS NOT NULL
+GROUP BY Date, AircraftID, FlightNumber, Carrier
+ORDER BY Hops DESC, Date DESC
+LIMIT 10`;
+
+        const CH_URL = "http://localhost:8123/";
+        const ledger = ref([]);
+        const primaryData = ref([]);
+        const error = ref(null);
+        const mapError = ref(null);
+        const loading = ref(true);
+        const selectedRowIndex = ref(0);
+        const airportsMap = ref({});
+        
+        let mapInstance = null;
+        let mapLayerGroup = null;
+
+        const runQuery = async (query, label) => {
+          const startTime = performance.now();
+          ledger.value.push({ query, label, status: 'running' });
+          const ledgerIndex = ledger.value.length - 1;
+          
+          try {
+            const response = await fetch(`${CH_URL}?query=${encodeURIComponent(query + " FORMAT JSON")}`);
+            if (!response.ok) {
+              const errText = await response.text();
+              throw new Error(errText);
+            }
+            const data = await response.json();
+            const duration = Math.round(performance.now() - startTime);
+            ledger.value[ledgerIndex].status = 'success';
+            ledger.value[ledgerIndex].duration = duration;
+            return data.data;
+          } catch (err) {
+            ledger.value[ledgerIndex].status = 'error';
+            ledger.value[ledgerIndex].error = err.message;
+            throw err;
+          }
+        };
+
+        const loadData = async () => {
+          loading.value = true;
+          try {
+            const data = await runQuery(primarySql, "Primary Data Query");
+            primaryData.value = data;
+            if (data.length > 0) {
+              await loadAirports();
+              await nextTick();
+              drawMap();
+            }
+          } catch (err) {
+            error.value = "Failed to load primary data: " + err.message;
+          } finally {
+            loading.value = false;
+          }
+        };
+
+        const loadAirports = async () => {
+           const codes = new Set();
+           primaryData.value.forEach(row => {
+              const routeStr = row.Route;
+              const parts = routeStr.split(' - ');
+              parts.forEach(part => {
+                 const m = part.match(/^([A-Z]{3})/);
+                 if (m) codes.add(m[1]);
+              });
+           });
+           if (codes.size === 0) return;
+           
+           const codesList = Array.from(codes).map(c => `'${c}'`).join(',');
+           const geoQuery = `SELECT code, latitude, longitude FROM ontime.airports_latest WHERE code IN (${codesList})`;
+           
+           try {
+             const geoData = await runQuery(geoQuery, "airport-coordinate enrichment");
+             const aMap = {};
+             geoData.forEach(row => {
+               aMap[row.code] = { lat: row.latitude, lon: row.longitude };
+             });
+             airportsMap.value = aMap;
+           } catch (err) {
+             console.error("Enrichment failed", err);
+           }
+        };
+
+        const drawMap = () => {
+           if (!document.getElementById('map')) return;
+
+           if (!mapInstance) {
+              mapInstance = L.map('map').setView([39.8283, -98.5795], 4);
+              L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+              }).addTo(mapInstance);
+              mapLayerGroup = L.layerGroup().addTo(mapInstance);
+           }
+           
+           mapLayerGroup.clearLayers();
+           const selectedRow = primaryData.value[selectedRowIndex.value];
+           if (!selectedRow) return;
+
+           const parts = selectedRow.Route.split(' - ');
+           const sequence = parts.map(part => {
+              const m = part.match(/^([A-Z]{3})/);
+              return m ? m[1] : null;
+           }).filter(Boolean);
+           
+           const latlngs = [];
+           const missingCoords = [];
+           
+           sequence.forEach((code, index) => {
+              const coords = airportsMap.value[code];
+              if (coords && coords.lat != null && coords.lon != null) {
+                 const isFirst = index === 0;
+                 const isLast = index === sequence.length - 1;
+                 latlngs.push([coords.lat, coords.lon]);
+                 L.circleMarker([coords.lat, coords.lon], { 
+                   radius: (isFirst || isLast) ? 7 : 5, 
+                   color: '#1e40af', 
+                   fillColor: '#3b82f6', 
+                   fillOpacity: 1, 
+                   weight: 2 
+                 })
+                   .bindTooltip(code + ((isFirst) ? ' (Start)' : (isLast ? ' (End)' : '')), { permanent: false, direction: 'top' })
+                   .addTo(mapLayerGroup);
+              } else {
+                 missingCoords.push(code);
+              }
+           });
+
+           if (latlngs.length > 1) {
+              L.polyline(latlngs, { color: '#ef4444', weight: 3, opacity: 0.8 }).addTo(mapLayerGroup);
+              try {
+                 mapInstance.fitBounds(L.polyline(latlngs).getBounds(), { padding: [50, 50] });
+              } catch(e) {}
+           } else if (latlngs.length === 1) {
+              mapInstance.setView(latlngs[0], 6);
+           }
+
+           if (missingCoords.length > 0) {
+              mapError.value = "Missing coordinates for: " + Array.from(new Set(missingCoords)).join(', ');
+              ledger.value.push({
+                 query: "-- Map drawing step",
+                 label: "Map Rendering Degraded",
+                 status: "degraded",
+                 message: mapError.value
+              });
+           } else if (latlngs.length < 2) {
+              mapError.value = "Not enough valid coordinates to draw path.";
+              ledger.value.push({
+                 query: "-- Map drawing step",
+                 label: "Map Rendering Degraded",
+                 status: "degraded",
+                 message: mapError.value
+              });
+           } else {
+              mapError.value = null;
+           }
+        };
+
+        onMounted(() => {
+           loadData();
+        });
+
+        watch(selectedRowIndex, () => {
+          nextTick(() => {
+            drawMap();
+          });
+        });
+
+        const topRanked = computed(() => primaryData.value[0] || {});
+        const selectedRow = computed(() => primaryData.value[selectedRowIndex.value] || {});
+
+        const topRouteRepetition = computed(() => {
+           if (primaryData.value.length === 0) return 0;
+           const topRoute = primaryData.value[0].Route;
+           return primaryData.value.filter(r => r.Route === topRoute).length;
+        });
+
+        const selectedRouteSequence = computed(() => {
+          const routeStr = selectedRow.value.Route;
+          if (!routeStr) return [];
+          const parts = routeStr.split(' - ');
+          return parts.map((part, index) => {
+             const codeMatch = part.match(/^([A-Z]{3})/);
+             const timeMatch = part.match(/\((\d{4})\)/);
+             return {
+                step: index + 1,
+                code: codeMatch ? codeMatch[1] : part,
+                time: timeMatch ? timeMatch[1] : null,
+             };
+          });
+        });
+
+        return {
+          primaryData, topRanked, selectedRow, selectedRowIndex, ledger, error, mapError,
+          primarySql, selectedRouteSequence, loading, topRouteRepetition
+        }
+      }
+    });
+    app.mount('#app');
+  </script>
+</body>
+</html>
+```

@@ -1,0 +1,40 @@
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": [
+    "Aircraft ID",
+    "Flight Number",
+    "Carrier",
+    "Date",
+    "Hops",
+    "Route",
+    "Maximum Hops Observed",
+    "Maximum-Hop Itinerary Count"
+  ],
+  "row_count": 10,
+  "sample_rows": [
+    {
+      "Aircraft ID": "N957WN",
+      "Carrier": "WN",
+      "Date": "2024-12-01T00:00:00Z",
+      "Flight Number": "366",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "05:43 ISP-\u003eBWI | 08:10 BWI-\u003eMYR | 10:20 MYR-\u003eBNA | 11:42 BNA-\u003eVPS | 14:01 VPS-\u003eDAL | 16:43 DAL-\u003eLAS | 18:28 LAS-\u003eOAK | 20:41 OAK-\u003eSEA"
+    },
+    {
+      "Aircraft ID": "N7835A",
+      "Carrier": "WN",
+      "Date": "2024-02-18T00:00:00Z",
+      "Flight Number": "3149",
+      "Hops": 8,
+      "Maximum Hops Observed": 8,
+      "Maximum-Hop Itinerary Count": 9859,
+      "Route": "06:21 CLE-\u003eBNA | 08:01 BNA-\u003ePNS | 10:07 PNS-\u003eHOU | 12:34 HOU-\u003eMCI | 15:14 MCI-\u003ePHX | 17:47 PHX-\u003eBUR | 19:02 BUR-\u003eOAK | 21:17 OAK-\u003eDEN"
+    }
+  ],
+  "field_shape_notes": {
+    "Date": "ISO-like timestamp string"
+  },
+  "mode_hint": "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint."
+}

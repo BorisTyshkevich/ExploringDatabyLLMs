@@ -1,0 +1,252 @@
+- Connect to clickhouse server though MCP connection
+- Do not use direct HTTP by any tools like curl.
+- Use the `ontime` database to answer analytical questions
+- Use `ontime-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
+- write correct and efficient ClickHouse SQL 
+- Before finalizing your answer, self-verify the query with a quick debug execution, usually with a small `LIMIT` or `WHERE` filter in a data reading subquery or CTE. Fix any errors in a loop until done.
+
+Create the presentation artifact using the proper `*-analyst-dashboard` skill.
+
+### Rules
+
+- Question title: `American Airlines peak network delay month and contributors`
+- Visual mode: `dynamic`
+- Presentation target: `html`
+- Visual type: `html_contribution_dashboard`
+- Derive KPIs, chart values, table rows, filters, and highlights from the actual analytical data. Do not invent or hardcode them.
+- Respect the declared visual mode and visual type shown below.
+- Follow question-specific visual guidance after the shared contract. Put reusable runtime behavior in shared page code, not in prose comments.
+
+Build a dashboard that:
+
+- uses `peak_month` as the primary saved SQL already provided in the prompt
+- uses `origin_contributors`, `route_contributors`, and `concentration_pattern` as supporting queries when they materially improve the dashboard
+- shows KPI cards for peak month, peak average departure delay, peak `% DepDel15`, and completed flights in the peak month
+- renders a monthly time-series chart of average `DepDelayMinutes` across all AA months
+- visually highlights the peak month on that chart
+- renders a bar chart of top origin contributors within the peak month
+- renders a route contribution table for the peak month
+- includes a narrative takeaway about whether the peak month was broad across the network or concentrated in a smaller set of origins and routes
+- derives the peak month from fetched monthly data instead of hardcoding it
+- clearly separates the network-wide trend from the peak-month drilldown
+- annotates the peak month on the time series
+- makes the contribution logic easy to read without external narrative
+- shows supporting queries in the query ledger when used
+
+### Data Source
+
+SQL query for primary data source:
+
+```sql
+WITH monthly AS ( SELECT toStartOfMonth(FlightDate) AS month, count() AS flight_volume, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL GROUP BY month ) SELECT month, flight_volume, avg_departure_delay_minutes, pct_departing_15_plus_late, dense_rank() OVER (ORDER BY avg_departure_delay_minutes DESC, pct_departing_15_plus_late DESC, flight_volume DESC) AS worst_month_rank FROM monthly ORDER BY month
+```
+
+Data example/snippet:
+
+{
+  "question_title": "American Airlines peak network delay month and contributors",
+  "result_columns": null,
+  "row_count": 4,
+  "mode_hint": "This visual pass receives only verified subquestion answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "q1",
+      "subquestion": "Which month is the single worst American Airlines month for departure delays?",
+      "answer_markdown": "July 2024 is the single worst American Airlines month for departure delays in the full history. It had 86,083 completed AA flights, an average departure delay of 36.33 minutes, and 38.04% of flights departed at least 15 minutes late.",
+      "sql": "WITH monthly AS ( SELECT toStartOfMonth(FlightDate) AS month, count() AS flight_volume, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL GROUP BY month ) SELECT month, flight_volume, avg_departure_delay_minutes, pct_departing_15_plus_late, dense_rank() OVER (ORDER BY avg_departure_delay_minutes DESC, pct_departing_15_plus_late DESC, flight_volume DESC) AS worst_month_rank FROM monthly ORDER BY month",
+      "row_count": 458,
+      "result_columns": [
+        "month",
+        "flight_volume",
+        "avg_departure_delay_minutes",
+        "pct_departing_15_plus_late",
+        "worst_month_rank"
+      ],
+      "first_row": {
+        "avg_departure_delay_minutes": 4.27,
+        "flight_volume": 55871,
+        "month": "1987-10-01T00:00:00Z",
+        "pct_departing_15_plus_late": 8.8,
+        "worst_month_rank": 402
+      }
+    },
+    {
+      "id": "q2",
+      "subquestion": "Which origins contribute most to that peak month?",
+      "answer_markdown": "In July 2024, DFW and CLT were the dominant origin contributors. DFW generated the most total departure delay minutes, while CLT was close behind and had the worse average delay rate; ORD, MIA, and PHL formed the next tier of meaningful contributors.",
+      "sql": "WITH toDate('2024-07-01') AS peak_month SELECT OriginCode, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY OriginCode HAVING flight_volume \u003e= 1000 ORDER BY total_departure_delay_minutes DESC, avg_departure_delay_minutes DESC LIMIT 20",
+      "row_count": 15,
+      "result_columns": [
+        "OriginCode",
+        "flight_volume",
+        "total_departure_delay_minutes",
+        "avg_departure_delay_minutes",
+        "pct_departing_15_plus_late"
+      ],
+      "first_row": {
+        "OriginCode": "DFW",
+        "avg_departure_delay_minutes": 38.52,
+        "flight_volume": 14962,
+        "pct_departing_15_plus_late": 46.59,
+        "total_departure_delay_minutes": 593021
+      }
+    },
+    {
+      "id": "q3",
+      "subquestion": "Which routes contribute most to that peak month?",
+      "answer_markdown": "The largest July 2024 route contributor was DFW-LAX, followed very closely by CLT-MCO and DFW-SAT. CLT-RDU, RDU-CLT, and DFW-PHX also ranked among the strongest route-level contributors to the bad month.",
+      "sql": "WITH toDate('2024-07-01') AS peak_month SELECT concat(OriginCode, '-', DestCode) AS route, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY route HAVING flight_volume \u003e= 200 ORDER BY total_departure_delay_minutes DESC, avg_departure_delay_minutes DESC LIMIT 20",
+      "row_count": 20,
+      "result_columns": [
+        "route",
+        "flight_volume",
+        "total_departure_delay_minutes",
+        "avg_departure_delay_minutes",
+        "pct_departing_15_plus_late"
+      ],
+      "first_row": {
+        "avg_departure_delay_minutes": 40.89,
+        "flight_volume": 443,
+        "pct_departing_15_plus_late": 46.5,
+        "route": "DFW-LAX",
+        "total_departure_delay_minutes": 18462
+      }
+    },
+    {
+      "id": "q4",
+      "subquestion": "Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?",
+      "answer_markdown": "July 2024 looks broad across the network, but with clear hub concentration. AA had delays spread across 125 origins and 909 routes that month; the top two origins, DFW and CLT, accounted for 50.8% of meaningful origin delay minutes and the top five origins reached 73.71%, while the top ten routes made up only 15.82% of meaningful route delay minutes.",
+      "sql": "WITH toDate('2024-07-01') AS peak_month SELECT ( SELECT uniqExact(OriginCode) FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month ) AS total_origins_in_month, ( SELECT uniqExact(concat(OriginCode, '-', DestCode)) FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month ) AS total_routes_in_month, ( SELECT round(sumIf(total_departure_delay_minutes, rn \u003c= 2) * 100.0 / max(total_delay_minutes), 2) FROM ( SELECT total_departure_delay_minutes, row_number() OVER (ORDER BY total_departure_delay_minutes DESC) AS rn, sum(total_departure_delay_minutes) OVER () AS total_delay_minutes FROM ( SELECT OriginCode, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY OriginCode HAVING flight_volume \u003e= 1000 ) ) ) AS top_2_origins_share_pct, ( SELECT round(sumIf(total_departure_delay_minutes, rn \u003c= 5) * 100.0 / max(total_delay_minutes), 2) FROM ( SELECT total_departure_delay_minutes, row_number() OVER (ORDER BY total_departure_delay_minutes DESC) AS rn, sum(total_departure_delay_minutes) OVER () AS total_delay_minutes FROM ( SELECT OriginCode, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY OriginCode HAVING flight_volume \u003e= 1000 ) ) ) AS top_5_origins_share_pct, ( SELECT round(sumIf(total_departure_delay_minutes, rn \u003c= 10) * 100.0 / max(total_delay_minutes), 2) FROM ( SELECT total_departure_delay_minutes, row_number() OVER (ORDER BY total_departure_delay_minutes DESC) AS rn, sum(total_departure_delay_minutes) OVER () AS total_delay_minutes FROM ( SELECT concat(OriginCode, '-', DestCode) AS route, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY route HAVING flight_volume \u003e= 200 ) ) ) AS top_10_routes_share_pct",
+      "row_count": 1,
+      "result_columns": [
+        "total_origins_in_month",
+        "total_routes_in_month",
+        "top_2_origins_share_pct",
+        "top_5_origins_share_pct",
+        "top_10_routes_share_pct"
+      ],
+      "first_row": {
+        "top_10_routes_share_pct": 15.82,
+        "top_2_origins_share_pct": 50.8,
+        "top_5_origins_share_pct": 73.71,
+        "total_origins_in_month": 125,
+        "total_routes_in_month": 909
+      }
+    }
+  ]
+}
+
+### Multi-query additions
+
+- The saved SQL shown below is the primary dashboard query for this page.
+- The verified analysis package includes named supporting queries that may be used for enrichment, drill-down, or secondary visuals when the question-specific prompt calls for them.
+- Use subquestion answers as narrative framing, but derive displayed KPIs, charts, tables, and interactions from live browser execution of the primary saved SQL and any supporting queries you actually run.
+- If you run supporting queries, record them in the same visible query ledger as the primary query.
+- The dashboard does not need to mirror `report.md`; it should combine narrative and interactive analysis.
+
+### Verified Analysis Package
+
+Use this JSON package as the supporting context for the visual:
+
+{
+  "question_title": "American Airlines peak network delay month and contributors",
+  "result_columns": null,
+  "row_count": 4,
+  "mode_hint": "This visual pass receives only verified subquestion answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "q1",
+      "subquestion": "Which month is the single worst American Airlines month for departure delays?",
+      "answer_markdown": "July 2024 is the single worst American Airlines month for departure delays in the full history. It had 86,083 completed AA flights, an average departure delay of 36.33 minutes, and 38.04% of flights departed at least 15 minutes late.",
+      "sql": "WITH monthly AS ( SELECT toStartOfMonth(FlightDate) AS month, count() AS flight_volume, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL GROUP BY month ) SELECT month, flight_volume, avg_departure_delay_minutes, pct_departing_15_plus_late, dense_rank() OVER (ORDER BY avg_departure_delay_minutes DESC, pct_departing_15_plus_late DESC, flight_volume DESC) AS worst_month_rank FROM monthly ORDER BY month",
+      "row_count": 458,
+      "result_columns": [
+        "month",
+        "flight_volume",
+        "avg_departure_delay_minutes",
+        "pct_departing_15_plus_late",
+        "worst_month_rank"
+      ],
+      "first_row": {
+        "avg_departure_delay_minutes": 4.27,
+        "flight_volume": 55871,
+        "month": "1987-10-01T00:00:00Z",
+        "pct_departing_15_plus_late": 8.8,
+        "worst_month_rank": 402
+      }
+    },
+    {
+      "id": "q2",
+      "subquestion": "Which origins contribute most to that peak month?",
+      "answer_markdown": "In July 2024, DFW and CLT were the dominant origin contributors. DFW generated the most total departure delay minutes, while CLT was close behind and had the worse average delay rate; ORD, MIA, and PHL formed the next tier of meaningful contributors.",
+      "sql": "WITH toDate('2024-07-01') AS peak_month SELECT OriginCode, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY OriginCode HAVING flight_volume \u003e= 1000 ORDER BY total_departure_delay_minutes DESC, avg_departure_delay_minutes DESC LIMIT 20",
+      "row_count": 15,
+      "result_columns": [
+        "OriginCode",
+        "flight_volume",
+        "total_departure_delay_minutes",
+        "avg_departure_delay_minutes",
+        "pct_departing_15_plus_late"
+      ],
+      "first_row": {
+        "OriginCode": "DFW",
+        "avg_departure_delay_minutes": 38.52,
+        "flight_volume": 14962,
+        "pct_departing_15_plus_late": 46.59,
+        "total_departure_delay_minutes": 593021
+      }
+    },
+    {
+      "id": "q3",
+      "subquestion": "Which routes contribute most to that peak month?",
+      "answer_markdown": "The largest July 2024 route contributor was DFW-LAX, followed very closely by CLT-MCO and DFW-SAT. CLT-RDU, RDU-CLT, and DFW-PHX also ranked among the strongest route-level contributors to the bad month.",
+      "sql": "WITH toDate('2024-07-01') AS peak_month SELECT concat(OriginCode, '-', DestCode) AS route, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes, round(avg(DepDelay), 2) AS avg_departure_delay_minutes, round(avg(DepDel15) * 100, 2) AS pct_departing_15_plus_late FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY route HAVING flight_volume \u003e= 200 ORDER BY total_departure_delay_minutes DESC, avg_departure_delay_minutes DESC LIMIT 20",
+      "row_count": 20,
+      "result_columns": [
+        "route",
+        "flight_volume",
+        "total_departure_delay_minutes",
+        "avg_departure_delay_minutes",
+        "pct_departing_15_plus_late"
+      ],
+      "first_row": {
+        "avg_departure_delay_minutes": 40.89,
+        "flight_volume": 443,
+        "pct_departing_15_plus_late": 46.5,
+        "route": "DFW-LAX",
+        "total_departure_delay_minutes": 18462
+      }
+    },
+    {
+      "id": "q4",
+      "subquestion": "Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?",
+      "answer_markdown": "July 2024 looks broad across the network, but with clear hub concentration. AA had delays spread across 125 origins and 909 routes that month; the top two origins, DFW and CLT, accounted for 50.8% of meaningful origin delay minutes and the top five origins reached 73.71%, while the top ten routes made up only 15.82% of meaningful route delay minutes.",
+      "sql": "WITH toDate('2024-07-01') AS peak_month SELECT ( SELECT uniqExact(OriginCode) FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month ) AS total_origins_in_month, ( SELECT uniqExact(concat(OriginCode, '-', DestCode)) FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month ) AS total_routes_in_month, ( SELECT round(sumIf(total_departure_delay_minutes, rn \u003c= 2) * 100.0 / max(total_delay_minutes), 2) FROM ( SELECT total_departure_delay_minutes, row_number() OVER (ORDER BY total_departure_delay_minutes DESC) AS rn, sum(total_departure_delay_minutes) OVER () AS total_delay_minutes FROM ( SELECT OriginCode, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY OriginCode HAVING flight_volume \u003e= 1000 ) ) ) AS top_2_origins_share_pct, ( SELECT round(sumIf(total_departure_delay_minutes, rn \u003c= 5) * 100.0 / max(total_delay_minutes), 2) FROM ( SELECT total_departure_delay_minutes, row_number() OVER (ORDER BY total_departure_delay_minutes DESC) AS rn, sum(total_departure_delay_minutes) OVER () AS total_delay_minutes FROM ( SELECT OriginCode, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY OriginCode HAVING flight_volume \u003e= 1000 ) ) ) AS top_5_origins_share_pct, ( SELECT round(sumIf(total_departure_delay_minutes, rn \u003c= 10) * 100.0 / max(total_delay_minutes), 2) FROM ( SELECT total_departure_delay_minutes, row_number() OVER (ORDER BY total_departure_delay_minutes DESC) AS rn, sum(total_departure_delay_minutes) OVER () AS total_delay_minutes FROM ( SELECT concat(OriginCode, '-', DestCode) AS route, count() AS flight_volume, sum(DepDelayMinutes) AS total_departure_delay_minutes FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND DepDelay IS NOT NULL AND toStartOfMonth(FlightDate) = peak_month GROUP BY route HAVING flight_volume \u003e= 200 ) ) ) AS top_10_routes_share_pct",
+      "row_count": 1,
+      "result_columns": [
+        "total_origins_in_month",
+        "total_routes_in_month",
+        "top_2_origins_share_pct",
+        "top_5_origins_share_pct",
+        "top_10_routes_share_pct"
+      ],
+      "first_row": {
+        "top_10_routes_share_pct": 15.82,
+        "top_2_origins_share_pct": 50.8,
+        "top_5_origins_share_pct": 73.71,
+        "total_origins_in_month": 125,
+        "total_routes_in_month": 909
+      }
+    }
+  ]
+}
+
+### Dynamic-mode additions
+
+- Use this endpoint template for every browser query: `https://mcp.demo.altinity.cloud/{JWE}/openapi/execute_query?query=...`
+- Keep JWE in `localStorage['OnTimeAnalystDashboard::auth::jwe']`.
+- Do not embed the primary analytical dataset as `result.json` payloads or CSV snapshots.
+
+Create browser-ready HTML `visual.html`.
+
+Write the file or provide a download link. Do not include the HTML source in the response. Do not open the artifact view frame.

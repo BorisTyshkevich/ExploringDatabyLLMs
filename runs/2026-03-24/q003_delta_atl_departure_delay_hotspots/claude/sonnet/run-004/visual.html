@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delta ATL Departure Delay Hotspots</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-top:    #eaf3f8;
+      --bg-bottom: #f6fafc;
+      --panel:     #ffffff;
+      --panel-alt: #f3f7fa;
+      --ink:       #163244;
+      --muted:     #5d7485;
+      --navy:      #0e3a52;
+      --slate:     #5c7080;
+      --sky:       #3c88b5;
+      --teal:      #1f8a70;
+      --amber:     #d48a1f;
+      --red:       #c54f36;
+      --grid:      rgba(22,50,68,.12);
+      --border:    rgba(22,50,68,.10);
+      --shadow:    0 18px 45px rgba(14,58,82,.10);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      min-height: 100vh;
+      color: var(--ink);
+    }
+
+    /* ── HEADER ─────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, #1b5270 100%);
+      color: #fff;
+      padding: 2rem 1.5rem 1.8rem;
+      text-align: center;
+    }
+    header h1 {
+      font-family: Georgia, ui-serif, serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: .45rem;
+    }
+    header p { font-size: .9rem; opacity: .76; max-width: 640px; margin: 0 auto; }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 1.5rem; }
+
+    /* ── STATES ──────────────────────────────────────── */
+    #loading-state { text-align: center; padding: 5rem 2rem; color: var(--muted); }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--grid); border-top-color: var(--sky);
+      border-radius: 50%; animation: spin .8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #empty-state { text-align: center; padding: 4rem 2rem; color: var(--amber); display: none; }
+    #error-state {
+      display: none;
+      background: var(--panel); border-left: 4px solid var(--red);
+      border-radius: var(--radius-md); padding: 1rem 1.4rem;
+      color: var(--red); font-size: .88rem; margin-bottom: 1.2rem;
+      word-break: break-word;
+    }
+
+    /* ── DASHBOARD ───────────────────────────────────── */
+    #dashboard { display: none; }
+    #dashboard.visible { display: block; }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero-card {
+      background: linear-gradient(135deg, #152f3e 0%, var(--navy) 100%);
+      color: #fff; border-radius: var(--radius-lg);
+      padding: 1.6rem 2rem; margin-bottom: 1.5rem;
+      display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;
+    }
+    .hero-badge {
+      background: var(--red); color: #fff; border-radius: var(--radius-md);
+      padding: .7rem 1.1rem; font-size: 2.3rem; font-weight: 900;
+      font-family: Georgia, serif; white-space: nowrap; text-align: center;
+      line-height: 1.1; min-width: 96px;
+    }
+    .hero-badge small {
+      display: block; font-size: .52rem; font-family: "Segoe UI", sans-serif;
+      font-weight: 400; opacity: .82; margin-top: .25rem;
+      letter-spacing: .09em; text-transform: uppercase;
+    }
+    .hero-text { flex: 1; min-width: 220px; }
+    .hero-text h2 { font-family: Georgia, serif; font-size: 1.25rem; margin-bottom: .5rem; line-height: 1.3; }
+    .hero-text p  { font-size: .87rem; opacity: .8; line-height: 1.6; max-width: 680px; }
+    .hero-metrics { display: flex; gap: .7rem; margin-top: .8rem; flex-wrap: wrap; }
+    .hero-metric {
+      background: rgba(255,255,255,.1); border-radius: var(--radius-sm);
+      padding: .4rem .8rem; font-size: .8rem; text-align: center;
+    }
+    .hero-metric strong { display: block; font-size: 1rem; font-weight: 700; }
+
+    /* ── KPI STRIP ───────────────────────────────────── */
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(196px, 1fr));
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--panel); border-radius: var(--radius-md);
+      padding: 1.1rem 1.3rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+    .kpi-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .35rem; }
+    .kpi-value { font-size: 1.85rem; font-weight: 700; font-family: Georgia, serif; color: var(--navy); line-height: 1; }
+    .kpi-sub   { font-size: .7rem; color: var(--muted); margin-top: .3rem; }
+
+    /* ── SECTION CARD ────────────────────────────────── */
+    .section-card {
+      background: var(--panel); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+      padding: 1.5rem; margin-bottom: 1.5rem; overflow: hidden;
+    }
+    .section-title {
+      font-family: Georgia, serif; font-size: 1.05rem; color: var(--navy);
+      margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 2px solid var(--grid);
+    }
+    .sec-note { font-size: .78rem; color: var(--muted); margin-bottom: .75rem; }
+
+    /* ── HEATMAP ─────────────────────────────────────── */
+    .heatmap-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .heatmap-table { border-collapse: separate; border-spacing: 3px; min-width: 460px; }
+    .heatmap-table th {
+      font-size: .68rem; color: var(--muted); text-align: center;
+      padding: .3rem .4rem; white-space: nowrap; font-weight: 600;
+    }
+    .heatmap-table td {
+      border-radius: var(--radius-sm); padding: .52rem .55rem;
+      text-align: center; font-size: .78rem; font-weight: 600;
+      color: #fff; min-width: 62px; cursor: default; transition: opacity .15s; white-space: nowrap;
+    }
+    .heatmap-table td:hover { opacity: .82; }
+    .heatmap-table td.empty { background: var(--panel-alt); color: var(--muted); font-weight: 400; font-size: .7rem; }
+    .dest-label { font-size: .82rem; font-weight: 700; color: var(--navy); text-align: left !important; padding-left: .4rem !important; min-width: 46px; }
+    .worst-cell { outline: 2px solid #fff; outline-offset: -2px; box-shadow: 0 0 0 3px rgba(197,79,54,.4); }
+    .legend {
+      display: flex; gap: .9rem; flex-wrap: wrap; align-items: center;
+      font-size: .75rem; color: var(--muted); margin-top: .85rem;
+    }
+    .legend-item { display: flex; align-items: center; gap: .35rem; }
+    .legend-dot  { width: 13px; height: 13px; border-radius: 3px; flex-shrink: 0; }
+
+    /* ── PERSISTENCE CHART ───────────────────────────── */
+    .chart-container { position: relative; height: 270px; }
+
+    /* ── PATTERN TABLE ───────────────────────────────── */
+    .table-header-row {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem;
+    }
+    .data-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+    .data-table th {
+      background: var(--panel-alt); color: var(--navy);
+      font-size: .69rem; text-transform: uppercase; letter-spacing: .07em;
+      padding: .55rem .8rem; text-align: right; white-space: nowrap;
+      border-bottom: 2px solid var(--grid);
+    }
+    .data-table th:first-child,
+    .data-table th:nth-child(2),
+    .data-table th:nth-child(3) { text-align: left; }
+    .data-table td {
+      padding: .5rem .8rem; text-align: right;
+      border-bottom: 1px solid var(--border); color: var(--ink);
+    }
+    .data-table td:first-child,
+    .data-table td:nth-child(2),
+    .data-table td:nth-child(3) { text-align: left; }
+    .data-table tr:hover td { background: var(--panel-alt); }
+    .data-table tr.worst-row td { font-weight: 700; }
+    .badge-dest {
+      display: inline-block; background: var(--navy); color: #fff;
+      border-radius: 4px; padding: .07rem .42rem;
+      font-size: .74rem; font-weight: 700; letter-spacing: .05em;
+    }
+    .badge-dest.ewr { background: var(--red); }
+    .badge-dest.jfk { background: var(--amber); }
+
+    /* ── QUERY LEDGER ────────────────────────────────── */
+    .ledger { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem; }
+    .ledger-header {
+      display: grid; grid-template-columns: 1.4em 1fr 7em 5.5em 4.5em; gap: .5rem;
+      background: var(--panel-alt); padding: .45rem .75rem;
+      font-size: .67rem; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--muted); border-bottom: 1px solid var(--border);
+    }
+    .ledger-entry { border-bottom: 1px solid var(--border); }
+    .ledger-entry:last-child { border-bottom: none; }
+    .ledger-row {
+      display: grid; grid-template-columns: 1.4em 1fr 7em 5.5em 4.5em; gap: .5rem;
+      padding: .5rem .75rem; cursor: pointer; align-items: center; font-size: .82rem;
+    }
+    .ledger-row:hover { background: var(--panel-alt); }
+    .ledger-toggle { font-size: .66em; color: var(--slate); }
+    .status-ok      { color: var(--teal);  font-weight: 600; font-size: .8rem; }
+    .status-pending { color: var(--amber); font-size: .8rem; }
+    .status-failed  { color: var(--red);   font-weight: 600; font-size: .8rem; }
+    .ledger-sql {
+      display: none; margin: 0 .75rem .6rem;
+      background: var(--panel-alt); border-radius: var(--radius-sm);
+      padding: .7rem .9rem; font-family: monospace; font-size: .71rem;
+      white-space: pre-wrap; word-break: break-word; color: var(--ink); line-height: 1.5;
+    }
+    .ledger-sql.open { display: block; }
+
+    /* ── TAKEAWAY ────────────────────────────────────── */
+    .takeaway-card {
+      background: linear-gradient(135deg, var(--panel-alt), #fff);
+      border-left: 4px solid var(--sky); border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+      font-size: .88rem; line-height: 1.65; color: var(--ink);
+    }
+    .takeaway-card h3 { font-family: Georgia, serif; font-size: 1rem; color: var(--navy); margin-bottom: .55rem; }
+
+    /* ── EXPORT ──────────────────────────────────────── */
+    .export-btn {
+      display: inline-flex; align-items: center; gap: .35rem; font-size: .77rem;
+      cursor: pointer; background: var(--panel-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: .35rem .7rem; color: var(--navy); font-family: inherit;
+    }
+    .export-btn:hover { background: var(--grid); }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer { background: var(--panel); border-top: 1px solid var(--border); padding: 1.5rem 1.5rem 2rem; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; }
+    .footer-title { font-size: .74rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin-bottom: 1rem; }
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+    .footer-field label { display: block; font-size: .71rem; color: var(--muted); margin-bottom: .3rem; text-transform: uppercase; letter-spacing: .07em; }
+    .footer-field input,
+    .footer-field textarea {
+      width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: .5rem .7rem; font-size: .82rem; font-family: inherit;
+      background: var(--panel-alt); color: var(--ink);
+    }
+    .footer-field textarea { font-family: monospace; font-size: .69rem; min-height: 160px; resize: vertical; }
+    .footer-actions { display: flex; gap: .5rem; margin-top: .9rem; flex-wrap: wrap; align-items: center; }
+    .btn {
+      padding: .5rem 1.2rem; border-radius: var(--radius-sm); border: none;
+      cursor: pointer; font-size: .84rem; font-family: inherit; font-weight: 600; transition: opacity .15s;
+    }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--sky);  color: #fff; }
+    .btn-danger  { background: var(--red);  color: #fff; }
+    .status-msg  { font-size: .8rem; color: var(--muted); }
+    .status-msg.ok  { color: var(--teal); }
+    .status-msg.err { color: var(--red);  }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-card  { flex-direction: column; }
+      .kpi-strip  { grid-template-columns: repeat(2,1fr); }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Delta ATL Departure Delay Hotspots</h1>
+  <p>Destination &amp; time-block heatmap — Delta Air Lines departures from Atlanta Hartsfield–Jackson (ATL)</p>
+</header>
+
+<div class="container">
+  <div id="loading-state" style="display:none"><div class="spinner"></div><p>Loading hotspot data…</p></div>
+  <div id="empty-state">No rows returned. Verify your JWE token and try again.</div>
+  <div id="error-state"></div>
+
+  <div id="dashboard">
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <div class="hero-badge" id="hero-badge">—<small>Worst Hotspot</small></div>
+      <div class="hero-text">
+        <h2 id="hero-title">Worst Recurring Departure Delay Hotspot</h2>
+        <p id="hero-desc">Loading…</p>
+        <div class="hero-metrics" id="hero-metrics"></div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-label">Worst Avg Delay</div>
+        <div class="kpi-value" id="kpi-avg">—</div>
+        <div class="kpi-sub"  id="kpi-avg-sub">min — worst hotspot</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">P90 Delay (worst slot)</div>
+        <div class="kpi-value" id="kpi-p90">—</div>
+        <div class="kpi-sub">min — 1-in-10 flights exceed this</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Del-15 Rate</div>
+        <div class="kpi-value" id="kpi-del15">—</div>
+        <div class="kpi-sub">% flights ≥15 min late (worst slot)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Credible Months</div>
+        <div class="kpi-value" id="kpi-months">—</div>
+        <div class="kpi-sub">qualifying months of data (worst slot)</div>
+      </div>
+    </div>
+
+    <!-- Heatmap -->
+    <div class="section-card">
+      <div class="section-title">Avg Departure Delay Heatmap — Destination × Time Block (top 15)</div>
+      <div class="heatmap-wrapper"><table class="heatmap-table" id="heatmap-table"></table></div>
+      <div class="legend">
+        <span>Avg delay:</span>
+        <div class="legend-item"><div class="legend-dot" style="background:#1f8a70"></div>Low (&lt;15 min)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c8952a"></div>Elevated (15–22 min)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c54f36"></div>Severe (&gt;22 min)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f3f7fa;border:1px solid #ccc"></div>No data</div>
+        <div class="legend-item" style="margin-left:.3rem;font-size:.72rem;">&#9633;&nbsp;= worst cell highlighted</div>
+      </div>
+    </div>
+
+    <!-- Persistence chart -->
+    <div class="section-card">
+      <div class="section-title">EWR 1600–1659 Monthly Delay Persistence (all qualifying months)</div>
+      <p class="sec-note">Avg departure delay &amp; del-15 rate per month for the single worst hotspot — structural persistence across decades.</p>
+      <div id="persist-loading" style="display:none;color:var(--amber);font-size:.82rem;margin-bottom:.5rem;">Loading persistence data…</div>
+      <div id="persist-error"  style="display:none;color:var(--red);  font-size:.82rem;margin-bottom:.5rem;"></div>
+      <div class="chart-container"><canvas id="persist-chart"></canvas></div>
+    </div>
+
+    <!-- Pattern table -->
+    <div class="section-card">
+      <div class="table-header-row">
+        <div class="section-title" style="margin:0;border:none;padding:0">Top Hotspots — ≥24 Credible Months</div>
+        <button class="export-btn" onclick="exportCSV()">&#11015; Export CSV</button>
+      </div>
+      <div id="pattern-loading" style="display:none;color:var(--amber);font-size:.82rem;margin-bottom:.5rem;">Loading pattern data…</div>
+      <div id="pattern-error"  style="display:none;color:var(--red);  font-size:.82rem;margin-bottom:.5rem;"></div>
+      <div style="overflow-x:auto">
+        <table class="data-table" id="pattern-table">
+          <thead><tr>
+            <th>#</th><th>Dest</th><th>Time Block</th>
+            <th>Avg Delay</th><th>P90 Delay</th><th>Del-15 %</th>
+            <th>Flights</th><th>Credible Mo.</th>
+          </tr></thead>
+          <tbody id="pattern-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Query ledger -->
+    <div class="section-card">
+      <div class="section-title">Data Provenance — Query Ledger</div>
+      <div class="ledger" id="query-ledger">
+        <div class="ledger-header">
+          <span></span><span>Query</span><span>Role</span><span>Status</span><span>Rows</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Takeaway -->
+    <div class="takeaway-card">
+      <h3>Operational Pattern Summary</h3>
+      <p id="takeaway-text">Summary loads after data fetch.</p>
+    </div>
+
+  </div><!-- /dashboard -->
+</div><!-- /container -->
+
+<!-- Footer controls -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-title">Data Source Controls</div>
+    <div class="footer-grid">
+      <div class="footer-field">
+        <label>JWE Token</label>
+        <input type="password" id="jwe-input" placeholder="Paste your JWE token…" autocomplete="off">
+      </div>
+      <div class="footer-field">
+        <label>Primary SQL — worst_hotspot</label>
+        <textarea id="sql-input" spellcheck="false"></textarea>
+      </div>
+    </div>
+    <div class="footer-actions">
+      <button class="btn btn-primary" id="fetch-btn" onclick="runAll()">Fetch Data</button>
+      <button class="btn btn-danger"  onclick="forgetToken()">Forget Token</button>
+      <span class="status-msg" id="status-msg">Enter your JWE token and click Fetch Data.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CONSTANTS ─────────────────────────────────────────────── */
+const JWE_KEY  = 'OnTimeAnalystDashboard::auth::jwe';
+const ENDPOINT = 'https://mcp.demo.altinity.cloud/{JWE}/openapi/execute_query';
+
+const PRIMARY_SQL = `SELECT
+    h.DestCode,
+    h.DepTimeBlk,
+    h.total_flights,
+    h.avg_dep_delay,
+    h.p90_dep_delay,
+    h.pct_del15,
+    m.credible_months
+FROM (
+    SELECT
+        DestCode,
+        DepTimeBlk,
+        count() AS total_flights,
+        round(avg(DepDelay), 1) AS avg_dep_delay,
+        round(quantile(0.90)(DepDelay), 1) AS p90_dep_delay,
+        round(100.0 * countIf(DepDel15 = 1) / count(), 1) AS pct_del15
+    FROM ontime.fact_ontime
+    WHERE
+        OriginCode = 'ATL'
+        AND IATA_CODE_Reporting_Airline = 'DL'
+        AND Cancelled = 0
+        AND DepDelay IS NOT NULL
+    GROUP BY DestCode, DepTimeBlk
+    HAVING total_flights >= 500
+) h
+JOIN (
+    SELECT
+        DestCode,
+        DepTimeBlk,
+        countIf(monthly_cnt >= 20) AS credible_months
+    FROM (
+        SELECT
+            DestCode,
+            DepTimeBlk,
+            toStartOfMonth(FlightDate) AS ym,
+            count() AS monthly_cnt
+        FROM ontime.fact_ontime
+        WHERE
+            OriginCode = 'ATL'
+            AND IATA_CODE_Reporting_Airline = 'DL'
+            AND Cancelled = 0
+            AND DepDelay IS NOT NULL
+        GROUP BY DestCode, DepTimeBlk, ym
+    )
+    GROUP BY DestCode, DepTimeBlk
+) m ON h.DestCode = m.DestCode AND h.DepTimeBlk = m.DepTimeBlk
+ORDER BY h.avg_dep_delay DESC
+LIMIT 15`;
+
+const PERSISTENCE_SQL = `SELECT
+    DestCode,
+    DepTimeBlk,
+    toStartOfMonth(FlightDate) AS flight_month,
+    count() AS flights,
+    round(avg(DepDelay), 1) AS avg_dep_delay,
+    round(quantile(0.90)(DepDelay), 1) AS p90_dep_delay,
+    round(100.0 * countIf(DepDel15 = 1) / count(), 1) AS pct_del15
+FROM ontime.fact_ontime
+WHERE
+    OriginCode = 'ATL'
+    AND IATA_CODE_Reporting_Airline = 'DL'
+    AND Cancelled = 0
+    AND DepDelay IS NOT NULL
+    AND DestCode = 'EWR'
+    AND DepTimeBlk = '1600-1659'
+GROUP BY DestCode, DepTimeBlk, flight_month
+HAVING flights >= 20
+ORDER BY flight_month`;
+
+const PATTERN_SQL = `SELECT
+    h.DestCode,
+    h.DepTimeBlk,
+    h.total_flights,
+    h.avg_dep_delay,
+    h.p90_dep_delay,
+    h.pct_del15,
+    m.credible_months
+FROM (
+    SELECT
+        DestCode,
+        DepTimeBlk,
+        count() AS total_flights,
+        round(avg(DepDelay), 1) AS avg_dep_delay,
+        round(quantile(0.90)(DepDelay), 1) AS p90_dep_delay,
+        round(100.0 * countIf(DepDel15 = 1) / count(), 1) AS pct_del15
+    FROM ontime.fact_ontime
+    WHERE
+        OriginCode = 'ATL'
+        AND IATA_CODE_Reporting_Airline = 'DL'
+        AND Cancelled = 0
+        AND DepDelay IS NOT NULL
+    GROUP BY DestCode, DepTimeBlk
+    HAVING total_flights >= 500
+) h
+JOIN (
+    SELECT
+        DestCode,
+        DepTimeBlk,
+        countIf(monthly_cnt >= 20) AS credible_months
+    FROM (
+        SELECT
+            DestCode,
+            DepTimeBlk,
+            toStartOfMonth(FlightDate) AS ym,
+            count() AS monthly_cnt
+        FROM ontime.fact_ontime
+        WHERE
+            OriginCode = 'ATL'
+            AND IATA_CODE_Reporting_Airline = 'DL'
+            AND Cancelled = 0
+            AND DepDelay IS NOT NULL
+        GROUP BY DestCode, DepTimeBlk, ym
+    )
+    GROUP BY DestCode, DepTimeBlk
+) m ON h.DestCode = m.DestCode AND h.DepTimeBlk = m.DepTimeBlk
+WHERE m.credible_months >= 24
+ORDER BY h.avg_dep_delay DESC
+LIMIT 15`;
+
+/* ── STATE ─────────────────────────────────────────────────── */
+let isRunning        = false;
+let persistChart     = null;
+let patternRows      = [];
+let ledger           = {};
+
+/* ── INIT ──────────────────────────────────────────────────── */
+document.getElementById('sql-input').value = PRIMARY_SQL;
+(function init() {
+  const tok = localStorage.getItem(JWE_KEY);
+  if (tok) { document.getElementById('jwe-input').value = tok; runAll(); }
+})();
+
+/* ── HELPERS ───────────────────────────────────────────────── */
+function jwe()        { return document.getElementById('jwe-input').value.trim(); }
+function sqlText()    { return document.getElementById('sql-input').value.trim(); }
+function normDate(v)  { return String(v ?? '').slice(0, 7); }
+
+function setMsg(txt, cls) {
+  const el = document.getElementById('status-msg');
+  el.textContent = txt;
+  el.className   = 'status-msg' + (cls ? ' ' + cls : '');
+}
+
+function buildUrl(token, sql) {
+  return ENDPOINT.replace('{JWE}', encodeURIComponent(token))
+       + '?query=' + encodeURIComponent(sql);
+}
+
+async function execQuery(token, sql) {
+  const resp = await fetch(buildUrl(token, sql));
+  if (!resp.ok) {
+    const body = await resp.text();
+    throw new Error('HTTP ' + resp.status + ': ' + body.slice(0, 400));
+  }
+  const json = await resp.json();
+  const cols = json.columns ?? (json.meta ?? []).map(m => m.name) ?? [];
+  const rows = (json.rows ?? []).map(r => {
+    const obj = {};
+    cols.forEach((c, i) => { obj[c] = r[i]; });
+    return obj;
+  });
+  return { cols, rows, count: rows.length };
+}
+
+/* ── LEDGER ────────────────────────────────────────────────── */
+function addLedger(id, label, role, sql) {
+  ledger[id] = { label, role, sql, status: 'Pending', rows: '…' };
+  renderLedger();
+}
+function updateLedger(id, status, rows) {
+  if (ledger[id]) { ledger[id].status = status; ledger[id].rows = rows; renderLedger(); }
+}
+function renderLedger() {
+  const el     = document.getElementById('query-ledger');
+  const header = el.querySelector('.ledger-header');
+  el.innerHTML = '';
+  el.appendChild(header);
+  Object.entries(ledger).forEach(([id, e]) => {
+    const wrap   = document.createElement('div');
+    wrap.className = 'ledger-entry';
+    const scls   = e.status === 'OK' ? 'status-ok' : e.status === 'Failed' ? 'status-failed' : 'status-pending';
+    const row    = document.createElement('div');
+    row.className = 'ledger-row';
+    row.innerHTML = `<span class="ledger-toggle">&#9658;</span>
+      <span>${e.label}</span>
+      <span style="color:var(--muted);font-size:.75rem">${e.role}</span>
+      <span class="${scls}">${e.status}</span>
+      <span style="color:var(--muted);font-size:.79rem">${e.rows}</span>`;
+    const pre = document.createElement('pre');
+    pre.className = 'ledger-sql';
+    pre.textContent = e.sql;
+    row.addEventListener('click', () => {
+      const open = pre.classList.toggle('open');
+      row.querySelector('.ledger-toggle').innerHTML = open ? '&#9660;' : '&#9658;';
+    });
+    wrap.appendChild(row);
+    wrap.appendChild(pre);
+    el.appendChild(wrap);
+  });
+}
+
+/* ── MAIN FLOW ─────────────────────────────────────────────── */
+async function runAll() {
+  if (isRunning) return;
+  const tok = jwe();
+  if (!tok) { setMsg('Please enter a JWE token.', 'err'); return; }
+
+  isRunning = true;
+  localStorage.setItem(JWE_KEY, tok);
+  document.getElementById('fetch-btn').disabled = true;
+  document.getElementById('loading-state').style.display  = 'block';
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('error-state').style.display    = 'none';
+  document.getElementById('empty-state').style.display    = 'none';
+  setMsg('Fetching primary query…');
+
+  ledger = {};
+  addLedger('worst_hotspot',  'Worst Hotspot — Top 15 by Avg Delay',  'Primary',    PRIMARY_SQL);
+  addLedger('persistence',    'EWR 1600–1659 Monthly Persistence',    'Supporting', PERSISTENCE_SQL);
+  addLedger('pattern_summary','Pattern Summary — ≥24 Credible Mo.',   'Supporting', PATTERN_SQL);
+
+  try {
+    const res = await execQuery(tok, sqlText());
+    updateLedger('worst_hotspot', 'OK', res.count);
+    document.getElementById('loading-state').style.display = 'none';
+
+    if (res.count === 0) {
+      document.getElementById('empty-state').style.display = 'block';
+      setMsg('Query returned no rows.', 'err');
+      isRunning = false;
+      document.getElementById('fetch-btn').disabled = false;
+      return;
+    }
+
+    renderPrimary(res.rows);
+    document.getElementById('dashboard').classList.add('visible');
+    setMsg('Primary data loaded. Running supporting queries…', 'ok');
+
+    fetchPersistence(tok);
+    fetchPattern(tok);
+
+  } catch (err) {
+    document.getElementById('loading-state').style.display = 'none';
+    const el = document.getElementById('error-state');
+    el.style.display = 'block';
+    el.textContent   = 'Primary query failed: ' + err.message;
+    updateLedger('worst_hotspot', 'Failed', '—');
+    setMsg('Fetch failed.', 'err');
+  }
+
+  isRunning = false;
+  document.getElementById('fetch-btn').disabled = false;
+}
+
+async function fetchPersistence(tok) {
+  const ldEl  = document.getElementById('persist-loading');
+  const errEl = document.getElementById('persist-error');
+  ldEl.style.display = 'block'; errEl.style.display = 'none';
+  try {
+    const res = await execQuery(tok, PERSISTENCE_SQL);
+    updateLedger('persistence', 'OK', res.count);
+    ldEl.style.display = 'none';
+    if (res.count > 0) renderPersistChart(res.rows);
+    else { errEl.style.display = 'block'; errEl.textContent = 'Persistence query returned no rows.'; }
+  } catch (err) {
+    ldEl.style.display  = 'none';
+    errEl.style.display = 'block';
+    errEl.textContent   = 'Persistence query failed: ' + err.message;
+    updateLedger('persistence', 'Failed', '—');
+  }
+}
+
+async function fetchPattern(tok) {
+  const ldEl  = document.getElementById('pattern-loading');
+  const errEl = document.getElementById('pattern-error');
+  ldEl.style.display = 'block'; errEl.style.display = 'none';
+  try {
+    const res = await execQuery(tok, PATTERN_SQL);
+    updateLedger('pattern_summary', 'OK', res.count);
+    ldEl.style.display = 'none';
+    patternRows = res.rows;
+    if (res.count > 0) renderPatternTable(res.rows);
+    else { errEl.style.display = 'block'; errEl.textContent = 'Pattern summary returned no rows.'; }
+    setMsg('All queries complete.', 'ok');
+  } catch (err) {
+    ldEl.style.display  = 'none';
+    errEl.style.display = 'block';
+    errEl.textContent   = 'Pattern query failed: ' + err.message;
+    updateLedger('pattern_summary', 'Failed', '—');
+    setMsg('Supporting queries done (with errors).', 'err');
+  }
+}
+
+/* ── COLOR SCALE ───────────────────────────────────────────── */
+function lerpRgb(a, b, t) {
+  t = Math.min(1, Math.max(0, t));
+  return a.map((v, i) => Math.round(v + (b[i] - v) * t));
+}
+function delayColor(v) {
+  const teal  = [31, 138, 112];
+  const amber = [200, 149,  42];
+  const red   = [197,  79,  54];
+  if (v <= 15) return `rgb(${teal.join(',')})`;
+  if (v <= 22) return `rgb(${lerpRgb(teal, amber, (v-15)/7).join(',')})`;
+  return `rgb(${lerpRgb(amber, red, (v-22)/8).join(',')})`;
+}
+
+/* ── RENDER PRIMARY ────────────────────────────────────────── */
+function renderPrimary(rows) {
+  const w = rows[0];
+
+  // Hero
+  document.getElementById('hero-badge').innerHTML = `${w.DestCode}<small>Worst Hotspot</small>`;
+  document.getElementById('hero-title').textContent =
+    `${w.DestCode} (Newark) — ${w.DepTimeBlk} Departure Block`;
+  document.getElementById('hero-desc').textContent =
+    `EWR departing ATL in the ${w.DepTimeBlk} block is Delta's most persistent delay pressure point — `
+    + `averaging ${w.avg_dep_delay} min across ${(+(w.total_flights)||0).toLocaleString()} completed flights `
+    + `over ${w.credible_months} credible months (19+ years). `
+    + `1-in-10 flights are delayed beyond ${w.p90_dep_delay} min; ${w.pct_del15}% depart 15+ min late.`;
+
+  document.getElementById('hero-metrics').innerHTML = [
+    { l: 'Avg Delay', v: w.avg_dep_delay + ' min' },
+    { l: 'P90 Delay', v: w.p90_dep_delay + ' min' },
+    { l: 'Del-15',    v: w.pct_del15 + '%'         },
+    { l: 'Flights',   v: (+(w.total_flights)||0).toLocaleString() },
+  ].map(m => `<div class="hero-metric"><strong>${m.v}</strong>${m.l}</div>`).join('');
+
+  // KPIs
+  document.getElementById('kpi-avg').textContent     = w.avg_dep_delay + ' min';
+  document.getElementById('kpi-avg-sub').textContent = `${w.DestCode} ${w.DepTimeBlk}`;
+  document.getElementById('kpi-p90').textContent     = w.p90_dep_delay + ' min';
+  document.getElementById('kpi-del15').textContent   = w.pct_del15 + '%';
+  document.getElementById('kpi-months').textContent  = w.credible_months;
+
+  renderHeatmap(rows);
+  renderTakeaway(rows);
+}
+
+/* ── HEATMAP ───────────────────────────────────────────────── */
+function renderHeatmap(rows) {
+  const blks  = [...new Set(rows.map(r => r.DepTimeBlk))].sort();
+  const dests = [...new Set(rows.map(r => r.DestCode))].sort((a, b) => {
+    const best = d => Math.max(...rows.filter(r => r.DestCode===d).map(r => parseFloat(r.avg_dep_delay)||0));
+    return best(b) - best(a);
+  });
+  const lk = {};
+  rows.forEach(r => { lk[r.DestCode + '|' + r.DepTimeBlk] = r; });
+
+  const tbl = document.getElementById('heatmap-table');
+  tbl.innerHTML = '';
+
+  // Header
+  const thead = tbl.createTHead();
+  const hr    = thead.insertRow();
+  const th0   = document.createElement('th');
+  th0.textContent = 'Dest'; th0.style.textAlign = 'left';
+  hr.appendChild(th0);
+  blks.forEach(b => {
+    const th = document.createElement('th'); th.textContent = b; hr.appendChild(th);
+  });
+
+  // Rows
+  const tbody = tbl.createTBody();
+  dests.forEach(dest => {
+    const tr = tbody.insertRow();
+    const tdD = tr.insertCell(); tdD.className = 'dest-label'; tdD.textContent = dest;
+    blks.forEach(blk => {
+      const td = tr.insertCell();
+      const r  = lk[dest + '|' + blk];
+      if (r) {
+        const v = parseFloat(r.avg_dep_delay) || 0;
+        td.style.background = delayColor(v);
+        td.textContent = r.avg_dep_delay;
+        td.title = `${dest} ${blk}: avg ${r.avg_dep_delay} min | p90 ${r.p90_dep_delay} min | del15 ${r.pct_del15}% | ${(+(r.total_flights)||0).toLocaleString()} flights`;
+        if (dest === 'EWR' && blk === '1600-1659') td.classList.add('worst-cell');
+      } else {
+        td.className = 'empty'; td.textContent = '—';
+      }
+    });
+  });
+}
+
+/* ── PERSISTENCE CHART ─────────────────────────────────────── */
+function renderPersistChart(rows) {
+  const labels = rows.map(r => normDate(r.flight_month));
+  const avgs   = rows.map(r => r.avg_dep_delay ?? null);
+  const d15s   = rows.map(r => r.pct_del15    ?? null);
+
+  const ctx = document.getElementById('persist-chart').getContext('2d');
+  if (persistChart) persistChart.destroy();
+
+  persistChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Avg Dep Delay (min)',
+          data: avgs, borderColor: '#c54f36', backgroundColor: 'rgba(197,79,54,.09)',
+          borderWidth: 1.5, pointRadius: 0, fill: true, tension: .35, yAxisID: 'y'
+        },
+        {
+          label: 'Del-15 Rate (%)',
+          data: d15s, borderColor: '#d48a1f',
+          borderWidth: 1.5, pointRadius: 0, borderDash: [4,3], fill: false, tension: .35, yAxisID: 'y2'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 }, color: '#163244', boxWidth: 20 } },
+        tooltip: { callbacks: { label: item => `${item.dataset.label}: ${item.parsed.y != null ? item.parsed.y.toFixed(1) : '—'}` } }
+      },
+      scales: {
+        x:  { ticks: { maxTicksLimit: 14, color: '#5d7485', font: { size: 10 }, maxRotation: 40 }, grid: { color: 'rgba(22,50,68,.07)' } },
+        y:  { position: 'left',  title: { display: true, text: 'Avg Delay (min)', color: '#5d7485', font: { size: 10 } }, ticks: { color: '#5d7485', font: { size: 10 } }, grid: { color: 'rgba(22,50,68,.07)' } },
+        y2: { position: 'right', title: { display: true, text: 'Del-15 (%)',      color: '#5d7485', font: { size: 10 } }, ticks: { color: '#5d7485', font: { size: 10 } }, grid: { drawOnChartArea: false } }
+      }
+    }
+  });
+}
+
+/* ── PATTERN TABLE ─────────────────────────────────────────── */
+function renderPatternTable(rows) {
+  document.getElementById('pattern-tbody').innerHTML = rows.map((r, i) => {
+    const worst = r.DestCode === 'EWR' && r.DepTimeBlk === '1600-1659';
+    const bcls  = r.DestCode === 'EWR' ? 'ewr' : r.DestCode === 'JFK' ? 'jfk' : '';
+    return `<tr${worst ? ' class="worst-row"' : ''}>
+      <td>${i+1}</td>
+      <td><span class="badge-dest ${bcls}">${r.DestCode}</span></td>
+      <td>${r.DepTimeBlk}</td>
+      <td>${r.avg_dep_delay}</td>
+      <td>${r.p90_dep_delay}</td>
+      <td>${r.pct_del15}%</td>
+      <td>${(+(r.total_flights)||0).toLocaleString()}</td>
+      <td>${r.credible_months}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── TAKEAWAY ──────────────────────────────────────────────── */
+function renderTakeaway(rows) {
+  const ewrN = rows.filter(r => r.DestCode === 'EWR').length;
+  const jfkN = rows.filter(r => r.DestCode === 'JFK').length;
+  document.getElementById('takeaway-text').textContent =
+    `Across the top ${rows.length} qualifying hotspots, departure delay pressure is concentrated almost `
+    + `entirely in the New York metro corridor. EWR accounts for ${ewrN} slot${ewrN!==1?'s':''} and JFK for `
+    + `${jfkN} slot${jfkN!==1?'s':''}, all clustering in the 1500–2059 departure window. `
+    + `The EWR 1600–1659 block leads at ${rows[0]?.avg_dep_delay} min average delay — a structural pressure `
+    + `point confirmed by ${rows[0]?.credible_months} credible months (19+ years). This pattern reflects `
+    + `cumulative schedule slippage compounding through the afternoon wave, deepened by congestion at New York `
+    + `metro airports. Operational improvement in the EWR 1600–1859 window would deliver the highest measurable `
+    + `impact on Delta's ATL departure performance across all destinations and time blocks.`;
+}
+
+/* ── CONTROLS ──────────────────────────────────────────────── */
+function forgetToken() {
+  localStorage.removeItem(JWE_KEY);
+  document.getElementById('jwe-input').value = '';
+  setMsg('Token forgotten.');
+}
+
+function exportCSV() {
+  if (!patternRows.length) { alert('No pattern data to export yet.'); return; }
+  const cols  = ['DestCode','DepTimeBlk','total_flights','avg_dep_delay','p90_dep_delay','pct_del15','credible_months'];
+  const lines = [cols.join(','), ...patternRows.map(r => cols.map(c => r[c] ?? '').join(','))];
+  const blob  = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a     = document.createElement('a');
+  a.href      = URL.createObjectURL(blob);
+  a.download  = 'delta_atl_hotspots.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+</script>
+</body>
+</html>

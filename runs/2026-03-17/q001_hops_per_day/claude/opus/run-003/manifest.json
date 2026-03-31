@@ -1,0 +1,50 @@
+{
+  "schema_version": "2",
+  "status": "ok",
+  "question_id": "q001",
+  "question_slug": "q001_hops_per_day",
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "dataset": "ontime_v2",
+  "runner": "claude",
+  "model": "opus",
+  "cli_bin": "claude",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime_v2/mcp.yaml",
+  "started_at": "2026-03-17T15:20:44.514693Z",
+  "finished_at": "2026-03-17T15:24:11.761397Z",
+  "duration_sec": 207,
+  "log_comment": "qforge|question=q001|run=run-003|runner=claude|model=opus|phase=full",
+  "query_sha256": "2492ca7cdad0c01187e9465a86381be4d1fd58a471b3aa541cddd1cc80ca4f7a",
+  "result_row_count": 10,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "ok"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/answer.sql.raw.md",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/visual.html"
+  },
+  "metadata": {
+    "browser_validation": "ok",
+    "browser_validation_live_fetch": "ok",
+    "browser_validation_request_url": "https://mcp.demo.altinity.cloud/eyJhbGciOiJBMjU2S1ciLCJjdHkiOiJKU09OIiwiZW5jIjoiQTI1NkdDTSIsInR5cCI6IkpXRSJ9.dRhJ0FFe_7MpwMisrxo3z1pTd1xCHp5KUUK7kgNt2GTPtTVxGvU1mw.ZQzRGK7Wre9_REqj.pybQI8aY4pvKel7wR1THrOmkdpIWHGbjJ-cAflJKRodC1AUJsiFY1L13Gxh8L_dnG4j0oSuRdX4n6_W7S6mOTGKW5cAbQ2DS-T4Z7YULrBfebew2Px5QXgrLKRv7EOcO_2fBqpZSbpD5wRfRtYHZvLxuAVOjRAt4E2_WVKhL6yURWbKacK6iqBwndLWhdDKNvhtmwxEowtfiOhFTMP2870iiGeNJ25k1P70nJKYQ9qnROx9P.DIjBhAvis-jqhS02WrOXHg/openapi/execute_query?query=WITH%20flight_legs%20AS%20(%0A%20%20%20%20SELECT%0A%20%20%20%20%20%20%20%20Tail_Number%2C%0A%20%20%20%20%20%20%20%20Flight_Number_Reporting_Airline%2C%0A%20%20%20%20%20%20%20%20IATA_CODE_Reporting_Airline%2C%0A%20%20%20%20%20%20%20%20FlightDate%2C%0A%20%20%20%20%20%20%20%20Origin%2C%0A%20%20%20%20%20%20%20%20Dest%2C%0A%20%20%20%20%20%20%20%20DepTime%0A%20%20%20%20FROM%20default.ontime_v2%0A%20%20%20%20WHERE%20Tail_Number%20!%3D%20%27%27%0A%20%20%20%20%20%20AND%20Cancelled%20%3D%200%0A%20%20%20%20%20%20AND%20DepTime%20IS%20NOT%20NULL%0A)%2C%0Agrouped%20AS%20(%0A%20%20%20%20SELECT%0A%20%20%20%20%20%20%20%20Tail_Number%2C%0A%20%20%20%20%20%20%20%20Flight_Number_Reporting_Airline%2C%0A%20%20%20%20%20%20%20%20IATA_CODE_Reporting_Airline%2C%0A%20%20%20%20%20%20%20%20FlightDate%2C%0A%20%20%20%20%20%20%20%20count()%20AS%20Hops%2C%0A%20%20%20%20%20%20%20%20arraySort(x%20-%3E%20x.1%2C%20groupArray(tuple(DepTime%2C%20Origin%2C%20Dest)))%20AS%20legs_sorted%0A%20%20%20%20FROM%20flight_legs%0A%20%20%20%20GROUP%20BY%20Tail_Number%2C%20Flight_Number_Reporting_Airline%2C%20IATA_CODE_Reporting_Airline%2C%20FlightDate%0A%20%20%20%20HAVING%20Hops%20%3E%3D%202%0A)%0ASELECT%0A%20%20%20%20Tail_Number%20AS%20%60Aircraft%20ID%60%2C%0A%20%20%20%20Flight_Number_Reporting_Airline%20AS%20%60Flight%20Number%60%2C%0A%20%20%20%20IATA_CODE_Reporting_Airline%20AS%20Carrier%2C%0A%20%20%20%20FlightDate%20AS%20%60Date%60%2C%0A%20%20%20%20Hops%2C%0A%20%20%20%20arrayStringConcat(%0A%20%20%20%20%20%20%20%20arrayMap(x%20-%3E%20concat(%0A%20%20%20%20%20%20%20%20%20%20%20%20lpad(toString(x.1%20DIV%20100)%2C%202%2C%20%270%27)%2C%20%27%3A%27%2C%20lpad(toString(x.1%20MOD%20100)%2C%202%2C%20%270%27)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%27%20%27%2C%20x.2%0A%20%20%20%20%20%20%20%20)%2C%20legs_sorted)%2C%0A%20%20%20%20%20%20%20%20%27%20%E2%86%92%20%27%0A%20%20%20%20)%20%7C%7C%20%27%20%E2%86%92%20%27%20%7C%7C%20legs_sorted%5Blength(legs_sorted)%5D.3%20AS%20Route%0AFROM%20grouped%0AORDER%20BY%20Hops%20DESC%2C%20FlightDate%20DESC%0ALIMIT%2010",
+    "browser_validation_response_code": "200",
+    "browser_validation_status": "Fetching airport coordinates...",
+    "execution_response_bytes": "1863",
+    "visual_validation": "ok",
+    "visual_validation_errors": "missing footer control block"
+  }
+}

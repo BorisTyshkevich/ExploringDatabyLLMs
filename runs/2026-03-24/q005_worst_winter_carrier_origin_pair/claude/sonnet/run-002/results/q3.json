@@ -1,0 +1,149 @@
+{
+  "columns": [
+    "carrier",
+    "pairs_in_worst30",
+    "avg_otp_pct",
+    "origins"
+  ],
+  "rows": [
+    {
+      "avg_otp_pct": 68.43,
+      "carrier": "B6",
+      "origins": [
+        "MIA",
+        "RNO",
+        "SRQ",
+        "FLL",
+        "PHX",
+        "PBI"
+      ],
+      "pairs_in_worst30": 6
+    },
+    {
+      "avg_otp_pct": 62.53,
+      "carrier": "PI",
+      "origins": [
+        "DFW",
+        "LAX",
+        "DAY"
+      ],
+      "pairs_in_worst30": 3
+    },
+    {
+      "avg_otp_pct": 66.58,
+      "carrier": "OO",
+      "origins": [
+        "OTH",
+        "ASE",
+        "CEC"
+      ],
+      "pairs_in_worst30": 3
+    },
+    {
+      "avg_otp_pct": 67.71,
+      "carrier": "OH",
+      "origins": [
+        "RSW",
+        "EWR",
+        "ATL"
+      ],
+      "pairs_in_worst30": 3
+    },
+    {
+      "avg_otp_pct": 66.4,
+      "carrier": "YV",
+      "origins": [
+        "ORD",
+        "CID"
+      ],
+      "pairs_in_worst30": 2
+    },
+    {
+      "avg_otp_pct": 67.57,
+      "carrier": "F9",
+      "origins": [
+        "PBI",
+        "FLL"
+      ],
+      "pairs_in_worst30": 2
+    },
+    {
+      "avg_otp_pct": 67.59,
+      "carrier": "EV",
+      "origins": [
+        "SLC",
+        "DEN"
+      ],
+      "pairs_in_worst30": 2
+    },
+    {
+      "avg_otp_pct": 68.58,
+      "carrier": "FL",
+      "origins": [
+        "SFO",
+        "EWR"
+      ],
+      "pairs_in_worst30": 2
+    },
+    {
+      "avg_otp_pct": 56.58,
+      "carrier": "DH",
+      "origins": [
+        "ORD"
+      ],
+      "pairs_in_worst30": 1
+    },
+    {
+      "avg_otp_pct": 63.29,
+      "carrier": "AS",
+      "origins": [
+        "DUT"
+      ],
+      "pairs_in_worst30": 1
+    },
+    {
+      "avg_otp_pct": 64.12,
+      "carrier": "AA",
+      "origins": [
+        "EYW"
+      ],
+      "pairs_in_worst30": 1
+    },
+    {
+      "avg_otp_pct": 67.57,
+      "carrier": "NW",
+      "origins": [
+        "SJU"
+      ],
+      "pairs_in_worst30": 1
+    },
+    {
+      "avg_otp_pct": 68.15,
+      "carrier": "G4",
+      "origins": [
+        "SCK"
+      ],
+      "pairs_in_worst30": 1
+    },
+    {
+      "avg_otp_pct": 68.91,
+      "carrier": "XE",
+      "origins": [
+        "EWR"
+      ],
+      "pairs_in_worst30": 1
+    },
+    {
+      "avg_otp_pct": 69.07,
+      "carrier": "EA",
+      "origins": [
+        "SEA"
+      ],
+      "pairs_in_worst30": 1
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T13:10:15.787926Z",
+  "source_query_sha256": "35139fda3536fc708fc469fc8aa03fd50dd392c34bb4827b08db8e9c5155f397",
+  "log_comment": "qforge|question=q005|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q3"
+}

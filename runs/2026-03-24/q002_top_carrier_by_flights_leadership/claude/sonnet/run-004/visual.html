@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yearly Carrier Leadership by Completed Flights</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg-top: #eaf3f8;
+  --bg-bottom: #f6fafc;
+  --panel: #ffffff;
+  --panel-alt: #f3f7fa;
+  --ink: #163244;
+  --muted: #5d7485;
+  --navy: #0e3a52;
+  --slate: #5c7080;
+  --sky: #3c88b5;
+  --teal: #1f8a70;
+  --amber: #d48a1f;
+  --red: #c54f36;
+  --grid: rgba(22,50,68,0.12);
+  --border: rgba(22,50,68,0.10);
+  --shadow: 0 18px 45px rgba(14,58,82,0.10);
+  --radius-xl: 22px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI","Helvetica Neue",sans-serif;
+  background:linear-gradient(160deg,var(--bg-top) 0%,var(--bg-bottom) 100%);
+  min-height:100vh;
+  color:var(--ink);
+}
+
+/* ── Header ── */
+header{
+  background:linear-gradient(135deg,var(--navy) 0%,#1b5580 55%,var(--sky) 100%);
+  color:#fff;
+  padding:2.5rem 2rem 2rem;
+  position:relative;
+  overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+}
+header .inner{max-width:1280px;margin:0 auto;position:relative}
+header h1{
+  font-family:Georgia,ui-serif,serif;
+  font-size:clamp(1.4rem,3vw,2rem);
+  font-weight:700;letter-spacing:-0.02em;margin-bottom:.4rem
+}
+header .sub{font-size:.93rem;opacity:.8;max-width:560px;line-height:1.5}
+header .badge-row{margin-top:.85rem;display:flex;gap:.5rem;flex-wrap:wrap}
+header .hbadge{
+  background:rgba(255,255,255,.15);border-radius:20px;
+  padding:.2rem .75rem;font-size:.75rem;font-weight:600;letter-spacing:.05em
+}
+
+/* ── Page wrap ── */
+.page-wrap{max-width:1280px;margin:0 auto;padding:2rem 1.5rem}
+
+/* ── Empty state ── */
+#empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:320px;gap:1rem;color:var(--muted);text-align:center;
+}
+#empty-state .icon{font-size:3rem;line-height:1}
+#empty-state h2{font-size:1.15rem;color:var(--slate)}
+#empty-state p{font-size:.88rem;max-width:340px;line-height:1.55}
+
+/* ── Dashboard ── */
+#dashboard{display:none}
+
+/* ── KPI strip ── */
+.kpi-strip{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(195px,1fr));
+  gap:1rem;margin-bottom:2rem
+}
+.kpi-card{
+  background:var(--panel);border-radius:var(--radius-lg);
+  padding:1.2rem 1.4rem;box-shadow:var(--shadow);
+  border:1px solid var(--border);position:relative;overflow:hidden
+}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent,var(--sky))
+}
+.kpi-label{
+  font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.09em;color:var(--muted);margin-bottom:.45rem
+}
+.kpi-value{
+  font-family:Georgia,ui-serif,serif;
+  font-size:2.1rem;font-weight:700;color:var(--navy);line-height:1;margin-bottom:.3rem
+}
+.kpi-sub{font-size:.78rem;color:var(--muted)}
+
+/* ── Charts row ── */
+.charts-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1.5rem;margin-bottom:2rem
+}
+@media(max-width:780px){.charts-row{grid-template-columns:1fr}}
+.chart-card{
+  background:var(--panel);border-radius:var(--radius-lg);
+  padding:1.4rem;box-shadow:var(--shadow);border:1px solid var(--border)
+}
+.chart-card h3{
+  font-family:Georgia,ui-serif,serif;font-size:.97rem;
+  color:var(--navy);margin-bottom:.2rem
+}
+.chart-card .chart-sub{font-size:.77rem;color:var(--muted);margin-bottom:.9rem}
+
+/* ── Data cards (table + narrative) ── */
+.data-card{
+  background:var(--panel);border-radius:var(--radius-lg);
+  padding:1.4rem;box-shadow:var(--shadow);
+  border:1px solid var(--border);margin-bottom:1.75rem;overflow-x:auto
+}
+.data-card h3{font-family:Georgia,ui-serif,serif;font-size:.97rem;color:var(--navy);margin-bottom:.2rem}
+.data-card .card-sub{font-size:.77rem;color:var(--muted);margin-bottom:1rem}
+
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+thead th{
+  background:var(--panel-alt);color:var(--slate);
+  font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;padding:.6rem .9rem;text-align:left;
+  border-bottom:2px solid var(--grid);white-space:nowrap
+}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+tbody tr:hover{background:var(--panel-alt)}
+tbody td{padding:.6rem .9rem;color:var(--ink)}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.badge{
+  display:inline-block;padding:.15rem .55rem;border-radius:4px;
+  font-size:.77rem;font-weight:700;color:#fff;letter-spacing:.04em
+}
+.sharp-row{background:#fff9f0!important}
+.sharp-row td{font-weight:600}
+
+/* ── Narrative ── */
+.narrative-card{
+  background:var(--navy);color:#fff;border-radius:var(--radius-lg);
+  padding:1.75rem 2rem;margin-bottom:1.75rem;position:relative;overflow:hidden
+}
+.narrative-card::before{
+  content:'"';position:absolute;top:-.6rem;left:1.2rem;
+  font-size:7rem;font-family:Georgia,serif;opacity:.1;line-height:1;pointer-events:none
+}
+.narrative-card .nc-label{
+  font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.09em;opacity:.6;margin-bottom:.6rem
+}
+.narrative-card p{font-size:.97rem;line-height:1.65;opacity:.94}
+.era-chips{margin-top:1.1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.era-chip{
+  background:rgba(255,255,255,.12);border-radius:var(--radius-sm);
+  padding:.3rem .8rem;font-size:.8rem;line-height:1.4;
+  border-left:3px solid transparent
+}
+.era-chip strong{display:block;font-size:.85rem}
+.era-chip span{opacity:.7;font-size:.75rem}
+
+/* ── Ledger ── */
+.ledger-card{
+  background:var(--panel);border-radius:var(--radius-lg);
+  padding:1.4rem;box-shadow:var(--shadow);
+  border:1px solid var(--border);margin-bottom:1.75rem
+}
+.ledger-card h3{font-family:Georgia,ui-serif,serif;font-size:.97rem;color:var(--navy);margin-bottom:.9rem}
+.ledger-grid{width:100%;border-collapse:collapse;font-size:.83rem}
+.ledger-grid thead th{
+  background:var(--panel-alt);color:var(--slate);
+  font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.07em;padding:.5rem .7rem;border-bottom:2px solid var(--grid);text-align:left
+}
+.l-row{border-bottom:1px solid var(--border);cursor:pointer}
+.l-row:hover td{background:var(--panel-alt)}
+.l-row td{padding:.5rem .7rem;vertical-align:middle}
+.l-toggle{width:1.5em;text-align:center;font-family:monospace;color:var(--slate);font-size:.72rem}
+.l-role{color:var(--muted);font-size:.75rem}
+.l-status{font-weight:700;font-size:.75rem}
+.l-rows{text-align:right;color:var(--slate);font-size:.75rem;font-variant-numeric:tabular-nums}
+.s-ok{color:var(--teal)}.s-pend{color:var(--amber)}.s-fail{color:var(--red)}
+.l-sql-row{display:none}
+.l-sql-row.open{display:table-row}
+.l-sql-row td{padding:0 .7rem .7rem;background:var(--panel-alt)}
+.l-sql-row pre{
+  background:var(--panel-alt);border-radius:var(--radius-sm);
+  padding:.7rem;font-size:.75rem;white-space:pre-wrap;word-break:break-all;
+  color:var(--navy);max-height:260px;overflow-y:auto;line-height:1.5
+}
+
+/* ── Footer ── */
+footer{
+  background:var(--panel);border-top:1px solid var(--border);
+  padding:1.5rem 1.5rem 2rem
+}
+footer .inner{max-width:1280px;margin:0 auto}
+footer h4{
+  font-size:.78rem;font-weight:700;color:var(--navy);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:.9rem
+}
+.footer-row{display:flex;gap:.6rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap}
+.footer-row input[type="password"]{
+  flex:1;min-width:200px;padding:.5rem .7rem;
+  border:1px solid var(--grid);border-radius:var(--radius-sm);
+  font-size:.83rem;color:var(--ink);background:var(--panel-alt)
+}
+.footer-row input[type="password"]:focus{outline:none;border-color:var(--sky)}
+.btn{
+  padding:.5rem 1.1rem;border:none;border-radius:var(--radius-sm);
+  font-size:.83rem;font-weight:600;cursor:pointer;
+  transition:opacity .15s,transform .1s;white-space:nowrap
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--sky);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-primary:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--red);border:1px solid var(--red)}
+.btn-ghost:hover{background:#fff0ee}
+.sql-area{
+  width:100%;min-height:110px;padding:.65rem .8rem;
+  border:1px solid var(--grid);border-radius:var(--radius-sm);
+  font-family:'Courier New',monospace;font-size:.75rem;
+  color:var(--navy);background:var(--panel-alt);resize:vertical;
+  display:block;margin-bottom:.6rem
+}
+.sql-area:focus{outline:none;border-color:var(--sky)}
+.status-bar{font-size:.8rem;color:var(--muted);min-height:1.2rem}
+.status-bar.ok{color:var(--teal)}.status-bar.err{color:var(--red)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1>Yearly Carrier Leadership by Completed Flights</h1>
+    <p class="sub">Which airline flew the most flights each year — and how stable has that leadership been across the full history of U.S. aviation?</p>
+    <div class="badge-row">
+      <span class="hbadge">ontime.fact_ontime</span>
+      <span class="hbadge">Dynamic</span>
+      <span class="hbadge">Bump Chart + Time Series</span>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <!-- Empty state -->
+  <div id="empty-state">
+    <div class="icon">✈</div>
+    <h2>Enter your access token to load the dashboard</h2>
+    <p>Paste your JWE token in the panel below and click Fetch Data to run the carrier leadership analysis.</p>
+  </div>
+
+  <!-- Dashboard (revealed after data loads) -->
+  <div id="dashboard">
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi-card" style="--accent:var(--navy)">
+        <div class="kpi-label">Years Analyzed</div>
+        <div class="kpi-value" id="kpi-years">—</div>
+        <div class="kpi-sub" id="kpi-years-sub">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:var(--sky)">
+        <div class="kpi-label">Distinct Annual Leaders</div>
+        <div class="kpi-value" id="kpi-leaders">—</div>
+        <div class="kpi-sub" id="kpi-leaders-sub">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:var(--amber)">
+        <div class="kpi-label">Largest Leader Gap</div>
+        <div class="kpi-value" id="kpi-gap-year">—</div>
+        <div class="kpi-sub" id="kpi-gap-sub">—</div>
+      </div>
+      <div class="kpi-card" style="--accent:var(--red)">
+        <div class="kpi-label">Sharpest Transition</div>
+        <div class="kpi-value" id="kpi-sharp-year">—</div>
+        <div class="kpi-sub" id="kpi-sharp-sub">—</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Rank by Year — Top Carriers</h3>
+        <div class="chart-sub">Bump chart: rank 1 = most completed flights that year. Dashed red line marks sharpest transition.</div>
+        <canvas id="bump-chart" height="290"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Annual Flight Share — Leading Carriers</h3>
+        <div class="chart-sub">Percentage of all industry completed flights per year. Dashed red line marks sharpest transition.</div>
+        <canvas id="share-chart" height="290"></canvas>
+      </div>
+    </div>
+
+    <!-- Leadership transitions table -->
+    <div class="data-card">
+      <h3>Leadership Transition Years</h3>
+      <div class="card-sub">Only years where the flight leader changed from the prior year. The sharpest transition row is highlighted.</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Prior Leader</th>
+            <th>New Leader</th>
+            <th class="num">New Leader Flights</th>
+            <th class="num">Prior Leader Flights</th>
+            <th class="num">Swing vs Prior</th>
+            <th class="num">Gap vs #2 (same year)</th>
+          </tr>
+        </thead>
+        <tbody id="trans-tbody">
+          <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1.2rem">Loading transition data…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Narrative takeaway -->
+    <div class="narrative-card">
+      <div class="nc-label">Market Stability Takeaway</div>
+      <p id="narrative-text">Loading…</p>
+      <div class="era-chips" id="era-chips"></div>
+    </div>
+
+    <!-- Query ledger -->
+    <div class="ledger-card">
+      <h3>Query Ledger</h3>
+      <table class="ledger-grid">
+        <thead>
+          <tr>
+            <th style="width:1.6em"></th>
+            <th>Query</th>
+            <th style="width:9em">Role</th>
+            <th style="width:6em">Status</th>
+            <th style="width:5em;text-align:right">Rows</th>
+          </tr>
+        </thead>
+        <tbody id="ledger-body"></tbody>
+      </table>
+    </div>
+
+  </div><!-- /dashboard -->
+</div><!-- /page-wrap -->
+
+<footer>
+  <div class="inner">
+    <h4>Data Connection</h4>
+    <div class="footer-row">
+      <input type="password" id="jwe-input" placeholder="JWE access token (stored locally)" autocomplete="off">
+      <button class="btn btn-primary" id="fetch-btn" onclick="runAll()">Fetch Data</button>
+      <button class="btn btn-ghost" onclick="forgetToken()">Forget Token</button>
+    </div>
+    <textarea id="sql-primary" class="sql-area" spellcheck="false">WITH carrier_year AS (
+    SELECT
+        Year,
+        Reporting_Airline AS carrier,
+        countIf(Cancelled = 0) AS completed_flights
+    FROM ontime.fact_ontime
+    GROUP BY Year, carrier
+),
+ranked AS (
+    SELECT
+        Year,
+        carrier,
+        completed_flights,
+        rank() OVER (PARTITION BY Year ORDER BY completed_flights DESC) AS rnk
+    FROM carrier_year
+),
+leaders AS (
+    SELECT Year, carrier
+    FROM ranked
+    WHERE rnk = 1
+)
+SELECT
+    carrier,
+    count() AS years_led
+FROM leaders
+GROUP BY carrier
+ORDER BY years_led DESC</textarea>
+    <div class="status-bar" id="status-bar">Ready — enter token and click Fetch Data</div>
+  </div>
+</footer>
+
+<script>
+// ── Constants ────────────────────────────────────────────────────────────────
+const JWE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+
+const PALETTE = [
+  '#0e3a52', // navy  (slot 0)
+  '#3c88b5', // sky   (slot 1)
+  '#d48a1f', // amber (slot 2)
+  '#1f8a70', // teal  (slot 3)
+  '#c54f36', // red   (slot 4)
+  '#7559a0', // purple
+  '#2e8b57', // sea-green
+];
+
+// Supporting SQL strings
+const SQL_YEARLY_RANKS = `WITH carrier_year AS (
+    SELECT Year, Reporting_Airline AS carrier,
+           countIf(Cancelled = 0) AS completed_flights
+    FROM ontime.fact_ontime
+    GROUP BY Year, carrier
+),
+year_total AS (
+    SELECT Year, sum(completed_flights) AS total_flights
+    FROM carrier_year GROUP BY Year
+),
+ranked AS (
+    SELECT cy.Year, cy.carrier, cy.completed_flights,
+           cy.completed_flights / yt.total_flights AS share,
+           rank() OVER (PARTITION BY cy.Year ORDER BY cy.completed_flights DESC) AS rnk
+    FROM carrier_year cy
+    JOIN year_total yt ON cy.Year = yt.Year
+)
+SELECT Year, carrier, completed_flights, share, rnk
+FROM ranked WHERE rnk <= 5
+ORDER BY Year, rnk`;
+
+const SQL_SWINGS = `WITH carrier_year AS (
+    SELECT Year, Reporting_Airline AS carrier,
+           countIf(Cancelled = 0) AS completed_flights
+    FROM ontime.fact_ontime GROUP BY Year, carrier
+),
+ranked AS (
+    SELECT Year, carrier, completed_flights,
+           rank() OVER (PARTITION BY Year ORDER BY completed_flights DESC) AS rnk
+    FROM carrier_year
+),
+leader_runner AS (
+    SELECT Year,
+           maxIf(carrier, rnk = 1)          AS leader,
+           maxIf(completed_flights, rnk = 1) AS leader_flights,
+           maxIf(carrier, rnk = 2)          AS runner_up,
+           maxIf(completed_flights, rnk = 2) AS runner_up_flights
+    FROM ranked GROUP BY Year
+),
+with_lag AS (
+    SELECT Year, leader, leader_flights, runner_up, runner_up_flights,
+           leader_flights - runner_up_flights AS gap_vs_runner_up,
+           lagInFrame(leader)         OVER (ORDER BY Year) AS prev_leader,
+           lagInFrame(leader_flights) OVER (ORDER BY Year) AS prev_leader_flights,
+           leader_flights - lagInFrame(leader_flights) OVER (ORDER BY Year) AS swing_vs_prior
+    FROM leader_runner ORDER BY Year
+)
+SELECT Year, leader AS new_leader, leader_flights AS new_leader_flights,
+       prev_leader, prev_leader_flights, swing_vs_prior, gap_vs_runner_up
+FROM with_lag
+WHERE leader != prev_leader AND prev_leader != ''
+ORDER BY Year`;
+
+const SQL_SHARPEST = `WITH carrier_year AS (
+    SELECT Year, Reporting_Airline AS carrier,
+           countIf(Cancelled = 0) AS completed_flights
+    FROM ontime.fact_ontime GROUP BY Year, carrier
+),
+ranked AS (
+    SELECT Year, carrier, completed_flights,
+           rank() OVER (PARTITION BY Year ORDER BY completed_flights DESC) AS rnk
+    FROM carrier_year
+),
+leader_runner AS (
+    SELECT Year,
+           maxIf(carrier, rnk = 1)          AS leader,
+           maxIf(completed_flights, rnk = 1) AS leader_flights,
+           maxIf(carrier, rnk = 2)          AS runner_up,
+           maxIf(completed_flights, rnk = 2) AS runner_up_flights
+    FROM ranked GROUP BY Year
+),
+with_lag AS (
+    SELECT Year, leader, leader_flights, runner_up, runner_up_flights,
+           leader_flights - runner_up_flights AS gap_vs_runner_up,
+           lagInFrame(leader)         OVER (ORDER BY Year) AS prev_leader,
+           lagInFrame(leader_flights) OVER (ORDER BY Year) AS prev_leader_flights,
+           leader_flights - lagInFrame(leader_flights) OVER (ORDER BY Year) AS swing_vs_prior
+    FROM leader_runner ORDER BY Year
+)
+SELECT Year, leader AS new_leader, leader_flights, prev_leader,
+       prev_leader_flights, swing_vs_prior, gap_vs_runner_up
+FROM with_lag
+WHERE leader != prev_leader AND prev_leader != ''
+ORDER BY swing_vs_prior DESC
+LIMIT 1`;
+
+const SQL_ERAS = `WITH carrier_year AS (
+    SELECT Year, Reporting_Airline AS carrier,
+           countIf(Cancelled = 0) AS completed_flights
+    FROM ontime.fact_ontime GROUP BY Year, carrier
+),
+ranked AS (
+    SELECT Year, carrier, completed_flights,
+           rank() OVER (PARTITION BY Year ORDER BY completed_flights DESC) AS rnk
+    FROM carrier_year
+),
+leader_per_year AS (
+    SELECT Year, maxIf(carrier, rnk = 1) AS leader
+    FROM ranked GROUP BY Year
+),
+with_era_change AS (
+    SELECT Year, leader,
+           leader != lagInFrame(leader) OVER (ORDER BY Year) AS era_start
+    FROM leader_per_year ORDER BY Year
+),
+with_era_id AS (
+    SELECT Year, leader,
+           sum(era_start) OVER (ORDER BY Year ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS era_id
+    FROM with_era_change
+)
+SELECT leader, min(Year) AS era_start_year, max(Year) AS era_end_year,
+       count() AS years_in_era
+FROM with_era_id
+GROUP BY era_id, leader
+ORDER BY era_start_year`;
+
+// ── Runtime state ─────────────────────────────────────────────────────────────
+let isRunning = false;
+let bumpChart = null;
+let shareChart = null;
+let sharpestYear = null; // used by chart annotation plugin
+
+const ledger = new Map(); // id → {label, role, status, rows, sql}
+const carrierColorMap = new Map();
+let paletteIdx = 0;
+
+// ── Token helpers ─────────────────────────────────────────────────────────────
+function colorFor(carrier) {
+  if (!carrierColorMap.has(carrier)) {
+    carrierColorMap.set(carrier, PALETTE[paletteIdx++ % PALETTE.length]);
+  }
+  return carrierColorMap.get(carrier);
+}
+
+function forgetToken() {
+  localStorage.removeItem(JWE_KEY);
+  document.getElementById('jwe-input').value = '';
+  setStatus('Token forgotten.');
+}
+
+function setStatus(msg, cls = '') {
+  const el = document.getElementById('status-bar');
+  el.textContent = msg;
+  el.className = 'status-bar ' + cls;
+}
+
+function fmt(n) { return Number(n).toLocaleString('en-US'); }
+function escHtml(s) {
+  return String(s ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Query execution ───────────────────────────────────────────────────────────
+async function execQuery(jwe, sql) {
+  const url = `https://mcp.demo.altinity.cloud/${encodeURIComponent(jwe)}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+  const resp = await fetch(url);
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`HTTP ${resp.status}: ${txt.slice(0, 300)}`);
+  }
+  const json = await resp.json();
+  const columns = json.columns ?? [];
+  const rawRows = json.rows ?? [];
+  const rows = rawRows.map(r => {
+    const obj = {};
+    columns.forEach((c, i) => { obj[c] = r[i]; });
+    return obj;
+  });
+  return { columns, rows, count: rows.length };
+}
+
+// ── Query ledger ──────────────────────────────────────────────────────────────
+function ledgerRegister(id, label, role, sql) {
+  ledger.set(id, { label, role, status: 'Pending', rows: '—', sql });
+  renderLedger();
+}
+
+function ledgerUpdate(id, status, rows) {
+  const e = ledger.get(id);
+  if (e) { e.status = status; e.rows = rows; renderLedger(); }
+}
+
+function renderLedger() {
+  const tbody = document.getElementById('ledger-body');
+  tbody.innerHTML = '';
+  for (const [id, e] of ledger) {
+    const statusCls = e.status === 'OK' ? 's-ok' : e.status === 'Pending' ? 's-pend' : 's-fail';
+    const sqlId = `lsql-${id}`;
+    const toggleId = `ltog-${id}`;
+
+    const tr = document.createElement('tr');
+    tr.className = 'l-row';
+    tr.innerHTML = `
+      <td class="l-toggle" id="${toggleId}">&#9658;</td>
+      <td>${escHtml(e.label)}</td>
+      <td class="l-role">${escHtml(e.role)}</td>
+      <td class="l-status ${statusCls}">${e.status}</td>
+      <td class="l-rows">${e.rows}</td>`;
+    tr.onclick = () => {
+      const sqlRow = document.getElementById(sqlId);
+      const open = sqlRow.classList.toggle('open');
+      document.getElementById(toggleId).innerHTML = open ? '&#9660;' : '&#9658;';
+    };
+    tbody.appendChild(tr);
+
+    const sqlTr = document.createElement('tr');
+    sqlTr.className = 'l-sql-row';
+    sqlTr.id = sqlId;
+    sqlTr.innerHTML = `<td colspan="5"><pre>${escHtml(e.sql)}</pre></td>`;
+    tbody.appendChild(sqlTr);
+  }
+}
+
+// ── Vertical annotation plugin for Chart.js ───────────────────────────────────
+const verticalLinePlugin = {
+  id: 'verticalLine',
+  afterDraw(chart) {
+    if (sharpestYear === null) return;
+    const labels = chart.data.labels ?? [];
+    const idx = labels.indexOf(sharpestYear);
+    if (idx < 0) return;
+    const meta = chart.getDatasetMeta(0);
+    const point = meta?.data?.[idx];
+    if (!point) return;
+    const x = point.x;
+    const { top, bottom } = chart.chartArea;
+    const ctx = chart.ctx;
+    ctx.save();
+    ctx.strokeStyle = '#c54f36';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, bottom);
+    ctx.stroke();
+    ctx.fillStyle = '#c54f36';
+    ctx.font = 'bold 10px "Segoe UI",sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('★ ' + sharpestYear, x + 4, top + 13);
+    ctx.restore();
+  }
+};
+
+// ── Main fetch & render ───────────────────────────────────────────────────────
+async function runAll() {
+  if (isRunning) return;
+  const jwe = document.getElementById('jwe-input').value.trim();
+  if (!jwe) { setStatus('Please enter your JWE token.', 'err'); return; }
+
+  isRunning = true;
+  document.getElementById('fetch-btn').disabled = true;
+  setStatus('Connecting…');
+
+  // Reset
+  sharpestYear = null;
+  carrierColorMap.clear();
+  paletteIdx = 0;
+  ledger.clear();
+
+  const sqlPrimary = document.getElementById('sql-primary').value.trim();
+  ledgerRegister('primary',  'Most Frequent Leader',  'Primary',    sqlPrimary);
+  ledgerRegister('yearly',   'Yearly Carrier Ranks',  'Enrichment', SQL_YEARLY_RANKS);
+  ledgerRegister('swings',   'Leadership Swing',      'Enrichment', SQL_SWINGS);
+  ledgerRegister('sharpest', 'Sharpest Transition',   'Enrichment', SQL_SHARPEST);
+  ledgerRegister('eras',     'Stability Pattern',     'Enrichment', SQL_ERAS);
+
+  try {
+    localStorage.setItem(JWE_KEY, jwe);
+
+    // 1 — Primary (most_frequent_leader)
+    setStatus('Running primary query…');
+    let primaryRows;
+    try {
+      const res = await execQuery(jwe, sqlPrimary);
+      primaryRows = res.rows;
+      ledgerUpdate('primary', 'OK', res.count);
+    } catch (e) {
+      ledgerUpdate('primary', 'Failed', '—');
+      setStatus('Primary query failed: ' + e.message, 'err');
+      isRunning = false;
+      document.getElementById('fetch-btn').disabled = false;
+      return;
+    }
+
+    // Assign colors in order of dominance (most years led → first color)
+    primaryRows.forEach(r => colorFor(r.carrier));
+
+    // 2 — Yearly ranks (bump chart + share chart)
+    setStatus('Loading yearly carrier ranks…');
+    let yearlyRows = [];
+    try {
+      const res = await execQuery(jwe, SQL_YEARLY_RANKS);
+      yearlyRows = res.rows;
+      ledgerUpdate('yearly', 'OK', res.count);
+    } catch (e) {
+      ledgerUpdate('yearly', 'Failed', '—');
+      console.warn('Yearly ranks failed:', e.message);
+    }
+
+    // 3 — Leadership swings (transitions table)
+    setStatus('Loading leadership transitions…');
+    let swingRows = [];
+    try {
+      const res = await execQuery(jwe, SQL_SWINGS);
+      swingRows = res.rows;
+      ledgerUpdate('swings', 'OK', res.count);
+    } catch (e) {
+      ledgerUpdate('swings', 'Failed', '—');
+      console.warn('Swings query failed:', e.message);
+    }
+
+    // 4 — Sharpest transition (KPI + annotation)
+    setStatus('Loading sharpest transition…');
+    let sharpestRow = null;
+    try {
+      const res = await execQuery(jwe, SQL_SHARPEST);
+      sharpestRow = res.rows[0] ?? null;
+      ledgerUpdate('sharpest', 'OK', res.count);
+    } catch (e) {
+      ledgerUpdate('sharpest', 'Failed', '—');
+      console.warn('Sharpest query failed:', e.message);
+    }
+
+    // 5 — Stability pattern (eras + narrative)
+    setStatus('Loading stability pattern…');
+    let eraRows = [];
+    try {
+      const res = await execQuery(jwe, SQL_ERAS);
+      eraRows = res.rows;
+      ledgerUpdate('eras', 'OK', res.count);
+    } catch (e) {
+      ledgerUpdate('eras', 'Failed', '—');
+      console.warn('Eras query failed:', e.message);
+    }
+
+    // Render
+    if (sharpestRow) sharpestYear = Number(sharpestRow.Year);
+    renderDashboard(primaryRows, yearlyRows, swingRows, sharpestRow, eraRows);
+
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    setStatus(
+      `Loaded — ${primaryRows.length} distinct leader${primaryRows.length !== 1 ? 's' : ''}, ` +
+      `${yearlyRows.length} annual records, ${swingRows.length} transition${swingRows.length !== 1 ? 's' : ''}.`,
+      'ok'
+    );
+
+  } catch (e) {
+    setStatus('Unexpected error: ' + e.message, 'err');
+  } finally {
+    isRunning = false;
+    document.getElementById('fetch-btn').disabled = false;
+  }
+}
+
+// ── Render dashboard ──────────────────────────────────────────────────────────
+function renderDashboard(primaryRows, yearlyRows, swingRows, sharpestRow, eraRows) {
+  // ── Year range & KPI: years analyzed ──────────────────────────────────────
+  const years = [...new Set(yearlyRows.map(r => Number(r.Year)))].sort((a, b) => a - b);
+  const minY = years[0] ?? '—';
+  const maxY = years[years.length - 1] ?? '—';
+  document.getElementById('kpi-years').textContent = years.length || '—';
+  document.getElementById('kpi-years-sub').textContent = years.length ? `${minY} – ${maxY}` : '—';
+
+  // ── KPI: distinct leaders ─────────────────────────────────────────────────
+  document.getElementById('kpi-leaders').textContent = primaryRows.length;
+  const top = primaryRows[0];
+  document.getElementById('kpi-leaders-sub').textContent = top
+    ? `${top.carrier} led ${top.years_led} yr${Number(top.years_led) !== 1 ? 's' : ''}`
+    : '—';
+
+  // ── KPI: largest leader gap (rank 1 vs rank 2 by flights) ────────────────
+  const yearMap = new Map(); // year → rows[]
+  yearlyRows.forEach(r => {
+    const yr = Number(r.Year);
+    if (!yearMap.has(yr)) yearMap.set(yr, []);
+    yearMap.get(yr).push(r);
+  });
+  let maxGapYear = null, maxGapVal = 0;
+  yearMap.forEach((rows, yr) => {
+    const r1 = rows.find(r => Number(r.rnk) === 1);
+    const r2 = rows.find(r => Number(r.rnk) === 2);
+    if (r1 && r2) {
+      const g = Number(r1.completed_flights) - Number(r2.completed_flights);
+      if (g > maxGapVal) { maxGapVal = g; maxGapYear = yr; }
+    }
+  });
+  document.getElementById('kpi-gap-year').textContent = maxGapYear ?? '—';
+  document.getElementById('kpi-gap-sub').textContent = maxGapVal > 0
+    ? `+${fmt(maxGapVal)} flights vs #2`
+    : '—';
+
+  // ── KPI: sharpest transition ───────────────────────────────────────────────
+  if (sharpestRow) {
+    document.getElementById('kpi-sharp-year').textContent = sharpestRow.Year ?? '—';
+    document.getElementById('kpi-sharp-sub').textContent =
+      `${sharpestRow.prev_leader} → ${sharpestRow.new_leader}, +${fmt(sharpestRow.swing_vs_prior)}`;
+  } else {
+    document.getElementById('kpi-sharp-year').textContent = '—';
+    document.getElementById('kpi-sharp-sub').textContent = '—';
+  }
+
+  // ── Charts ────────────────────────────────────────────────────────────────
+  const topCarriers = primaryRows.slice(0, 5).map(r => r.carrier);
+
+  // Bump chart datasets
+  const bumpDatasets = topCarriers.map(carrier => ({
+    label: carrier,
+    data: years.map(yr => {
+      const row = yearlyRows.find(r => Number(r.Year) === yr && r.carrier === carrier);
+      return row ? Number(row.rnk) : null;
+    }),
+    borderColor: colorFor(carrier),
+    backgroundColor: colorFor(carrier),
+    borderWidth: 2.5,
+    pointRadius: 5,
+    pointHoverRadius: 7,
+    tension: 0.25,
+    spanGaps: false,
+  }));
+
+  // Share chart datasets
+  const shareDatasets = topCarriers.map(carrier => ({
+    label: carrier,
+    data: years.map(yr => {
+      const row = yearlyRows.find(r => Number(r.Year) === yr && r.carrier === carrier);
+      return row ? +(Number(row.share) * 100).toFixed(2) : null;
+    }),
+    borderColor: colorFor(carrier),
+    backgroundColor: colorFor(carrier) + '18',
+    borderWidth: 2.5,
+    pointRadius: 2.5,
+    pointHoverRadius: 6,
+    tension: 0.3,
+    fill: false,
+    spanGaps: false,
+  }));
+
+  const commonXAxis = {
+    ticks: { maxTicksLimit: 10, color: '#5c7080', maxRotation: 0 },
+    grid: { color: 'rgba(22,50,68,0.07)' },
+  };
+  const commonLegend = {
+    position: 'bottom',
+    labels: { usePointStyle: true, pointStyle: 'circle', padding: 14, font: { size: 11 } },
+  };
+
+  // Bump chart
+  if (bumpChart) bumpChart.destroy();
+  bumpChart = new Chart(document.getElementById('bump-chart').getContext('2d'), {
+    type: 'line',
+    data: { labels: years, datasets: bumpDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          reverse: true,
+          min: 1, max: 5,
+          ticks: { stepSize: 1, callback: v => `#${v}`, color: '#5c7080' },
+          title: { display: true, text: 'Rank (1 = leader)', color: '#5c7080', font: { size: 11 } },
+          grid: { color: 'rgba(22,50,68,0.07)' },
+        },
+        x: commonXAxis,
+      },
+      plugins: {
+        legend: commonLegend,
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: Rank #${ctx.parsed.y}`,
+          },
+        },
+      },
+      animation: { duration: 500 },
+    },
+    plugins: [verticalLinePlugin],
+  });
+
+  // Share chart
+  if (shareChart) shareChart.destroy();
+  shareChart = new Chart(document.getElementById('share-chart').getContext('2d'), {
+    type: 'line',
+    data: { labels: years, datasets: shareDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          min: 0,
+          ticks: { callback: v => v + '%', color: '#5c7080' },
+          title: { display: true, text: 'Flight Share (%)', color: '#5c7080', font: { size: 11 } },
+          grid: { color: 'rgba(22,50,68,0.07)' },
+        },
+        x: commonXAxis,
+      },
+      plugins: {
+        legend: commonLegend,
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`,
+          },
+        },
+      },
+      animation: { duration: 500 },
+    },
+    plugins: [verticalLinePlugin],
+  });
+
+  // ── Transitions table ─────────────────────────────────────────────────────
+  const tbody = document.getElementById('trans-tbody');
+  if (!swingRows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:1rem">No transition data available</td></tr>';
+  } else {
+    tbody.innerHTML = '';
+    swingRows.forEach(r => {
+      const isSharp = sharpestRow && Number(r.Year) === Number(sharpestRow.Year);
+      const tr = document.createElement('tr');
+      if (isSharp) tr.classList.add('sharp-row');
+      const swing = Number(r.swing_vs_prior ?? 0);
+      const swingTxt = (swing >= 0 ? '+' : '') + fmt(swing);
+      const gap = Number(r.gap_vs_runner_up ?? 0);
+      tr.innerHTML = `
+        <td><strong>${r.Year}</strong>${isSharp ? ' <span style="color:var(--red);font-size:.72rem;margin-left:.3rem">★ sharpest</span>' : ''}</td>
+        <td><span class="badge" style="background:${colorFor(r.prev_leader)}">${escHtml(r.prev_leader)}</span></td>
+        <td><span class="badge" style="background:${colorFor(r.new_leader)}">${escHtml(r.new_leader)}</span></td>
+        <td class="num">${fmt(r.new_leader_flights)}</td>
+        <td class="num">${fmt(r.prev_leader_flights)}</td>
+        <td class="num" style="color:${swing >= 0 ? 'var(--teal)' : 'var(--red)'};font-weight:600">${swingTxt}</td>
+        <td class="num">${gap > 0 ? '+' + fmt(gap) : '—'}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ── Narrative ─────────────────────────────────────────────────────────────
+  const longestEra = eraRows.length
+    ? eraRows.reduce((a, b) => Number(a.years_in_era) >= Number(b.years_in_era) ? a : b)
+    : null;
+  const totalYrs = years.length;
+  const transitions = swingRows.length;
+  let narrative;
+  if (longestEra) {
+    narrative = `The market is defined by long stable eras rather than frequent turnover. ` +
+      `Across ${totalYrs} years of data (${minY}–${maxY}), the leader changed only ${transitions} time${transitions !== 1 ? 's' : ''}. ` +
+      `The longest unbroken era belonged to ${longestEra.leader} (${longestEra.era_start_year}–${longestEra.era_end_year}, ${longestEra.years_in_era} consecutive years). ` +
+      `Two carriers account for the top position in all but ${
+        eraRows.filter(e => !topCarriers.slice(0, 2).includes(e.leader))
+               .reduce((s, e) => s + Number(e.years_in_era), 0)
+      } years of the entire dataset.`;
+  } else {
+    narrative = `Across ${totalYrs} years (${minY}–${maxY}), the flight leader changed only ${transitions} time${transitions !== 1 ? 's' : ''}, ` +
+      `pointing to a highly concentrated market with dominant multi-year eras at the top.`;
+  }
+  document.getElementById('narrative-text').textContent = narrative;
+
+  // Era chips
+  const chipContainer = document.getElementById('era-chips');
+  chipContainer.innerHTML = '';
+  eraRows.forEach(e => {
+    const chip = document.createElement('div');
+    chip.className = 'era-chip';
+    chip.style.borderLeftColor = colorFor(e.leader);
+    chip.innerHTML = `<strong>${escHtml(e.leader)}</strong><span>${e.era_start_year}–${e.era_end_year} &nbsp;(${e.years_in_era} yr)</span>`;
+    chipContainer.appendChild(chip);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+(function init() {
+  const stored = localStorage.getItem(JWE_KEY);
+  if (stored) {
+    document.getElementById('jwe-input').value = stored;
+    runAll();
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+{
+  "columns": [
+    "Aircraft ID",
+    "Flight Number",
+    "Carrier",
+    "Date",
+    "Route",
+    "hop_count"
+  ],
+  "rows": [
+    {
+      "Aircraft ID": "N957WN",
+      "Carrier": "WN",
+      "Date": "2024-12-01T00:00:00Z",
+      "Flight Number": "366",
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N7835A",
+      "Carrier": "WN",
+      "Date": "2024-02-18T00:00:00Z",
+      "Flight Number": "3149",
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N429WN",
+      "Carrier": "WN",
+      "Date": "2024-01-28T00:00:00Z",
+      "Flight Number": "3149",
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N228WN",
+      "Carrier": "WN",
+      "Date": "2024-01-21T00:00:00Z",
+      "Flight Number": "3149",
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N569WN",
+      "Carrier": "WN",
+      "Date": "2024-01-14T00:00:00Z",
+      "Flight Number": "3149",
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N7742B",
+      "Carrier": "WN",
+      "Date": "2023-04-30T00:00:00Z",
+      "Flight Number": "154",
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N929WN",
+      "Carrier": "WN",
+      "Date": "2023-04-16T00:00:00Z",
+      "Flight Number": "154",
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N8631A",
+      "Carrier": "WN",
+      "Date": "2022-10-23T00:00:00Z",
+      "Flight Number": "2787",
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N8809L",
+      "Carrier": "WN",
+      "Date": "2022-10-02T00:00:00Z",
+      "Flight Number": "2787",
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "hop_count": 8
+    },
+    {
+      "Aircraft ID": "N8811L",
+      "Carrier": "WN",
+      "Date": "2022-09-25T00:00:00Z",
+      "Flight Number": "2787",
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "hop_count": 8
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-23T14:48:41.13972Z",
+  "source_query_sha256": "5f921379df7bcc12032cb1635b42bb7b4f9254e8f0049805d050d061e58c8def",
+  "log_comment": "qforge|question=q001|run=run-003|runner=claude|model=opus|phase=full"
+}

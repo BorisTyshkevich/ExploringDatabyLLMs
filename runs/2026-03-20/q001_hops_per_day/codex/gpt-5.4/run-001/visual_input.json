@@ -1,0 +1,49 @@
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": [
+    "Aircraft ID",
+    "Flight Number",
+    "Carrier",
+    "Date",
+    "Hops",
+    "Route",
+    "Departure Times From Origin",
+    "Max Hops Overall",
+    "Max Hop Itinerary Count",
+    "Same-Hops Route Count",
+    "Route Frequency In Top 10"
+  ],
+  "row_count": 10,
+  "sample_rows": [
+    {
+      "Aircraft ID": "N957WN",
+      "Carrier": "WN",
+      "Date": "2024-12-01T00:00:00Z",
+      "Departure Times From Origin": "05:43 ISP | 08:10 BWI | 10:20 MYR | 11:42 BNA | 14:01 VPS | 16:43 DAL | 18:28 LAS | 20:41 OAK",
+      "Flight Number": "366",
+      "Hops": 8,
+      "Max Hop Itinerary Count": 9859,
+      "Max Hops Overall": 8,
+      "Route": "ISP -\u003e BWI -\u003e MYR -\u003e BNA -\u003e VPS -\u003e DAL -\u003e LAS -\u003e OAK -\u003e SEA",
+      "Route Frequency In Top 10": 1,
+      "Same-Hops Route Count": 1
+    },
+    {
+      "Aircraft ID": "N7835A",
+      "Carrier": "WN",
+      "Date": "2024-02-18T00:00:00Z",
+      "Departure Times From Origin": "06:21 CLE | 08:01 BNA | 10:07 PNS | 12:34 HOU | 15:14 MCI | 17:47 PHX | 19:02 BUR | 21:17 OAK",
+      "Flight Number": "3149",
+      "Hops": 8,
+      "Max Hop Itinerary Count": 9859,
+      "Max Hops Overall": 8,
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Route Frequency In Top 10": 4,
+      "Same-Hops Route Count": 4
+    }
+  ],
+  "field_shape_notes": {
+    "Date": "ISO-like timestamp string"
+  },
+  "mode_hint": "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint."
+}

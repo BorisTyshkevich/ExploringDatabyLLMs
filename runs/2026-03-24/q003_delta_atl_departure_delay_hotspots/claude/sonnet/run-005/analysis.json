@@ -1,0 +1,22 @@
+{
+  "sql": "",
+  "report_markdown": "",
+  "metrics": {},
+  "subquestions": [
+    {
+      "subquestion": "Which destination and time block is the worst recurring hotspot?",
+      "answer_markdown": "EWR in the 1600–1659 block is the worst recurring hotspot out of ATL for Delta. Across 6,472 completed departures spanning 263 credible months, it averages 27.1 minutes of departure delay, with a 90th-percentile delay of 82.9 minutes and 39.3% of flights leaving 15 or more minutes late. The next-worst credible combinations are also EWR — in the 1700–1759 and 1800–1859 windows — confirming that the EWR afternoon-to-evening corridor is structurally the most problematic slot in Delta's ATL network.",
+      "sql": "SELECT\n    DestCode,\n    DepTimeBlk,\n    count() AS flight_count,\n    round(avg(DepDelay), 1) AS avg_dep_delay_min,\n    round(quantile(0.90)(DepDelay), 1) AS p90_dep_delay_min,\n    round(avg(DepDel15) * 100, 1) AS pct_dep_del15,\n    countDistinct(toStartOfMonth(FlightDate)) AS active_months\nFROM ontime.fact_ontime\nWHERE\n    IATA_CODE_Reporting_Airline = 'DL'\n    AND OriginCode = 'ATL'\n    AND Cancelled = 0\n    AND DepDelay IS NOT NULL\nGROUP BY DestCode, DepTimeBlk\nHAVING flight_count \u003e= 500\nORDER BY avg_dep_delay_min DESC\nLIMIT 15"
+    },
+    {
+      "subquestion": "Is that hotspot consistently bad across time, or concentrated in a narrower period?",
+      "answer_markdown": "The EWR / 1600–1659 hotspot is persistently bad across a multi-decade span, not concentrated in a narrow window. Monthly data with at least 30 flights shows elevated delays recurring from 1991 through 2024, with severe spikes appearing in many different years: average monthly delays exceed 40 minutes in months spread across 1992, 2011, 2014, 2016, 2017, 2018, 2019, and 2024. There is no single concentrated period — the hotspot reappears whenever Delta operates meaningful volume on this slot, across more than three decades of data.",
+      "sql": "SELECT\n    DestCode,\n    DepTimeBlk,\n    toStartOfMonth(FlightDate) AS flight_month,\n    count() AS monthly_flights,\n    round(avg(DepDelay), 1) AS avg_dep_delay_min,\n    round(avg(DepDel15) * 100, 1) AS pct_dep_del15\nFROM ontime.fact_ontime\nWHERE\n    IATA_CODE_Reporting_Airline = 'DL'\n    AND OriginCode = 'ATL'\n    AND DestCode = 'EWR'\n    AND DepTimeBlk = '1600-1659'\n    AND Cancelled = 0\n    AND DepDelay IS NOT NULL\nGROUP BY DestCode, DepTimeBlk, flight_month\nHAVING monthly_flights \u003e= 30\nORDER BY flight_month"
+    },
+    {
+      "subquestion": "What do the top hotspots suggest about where Delta faces the most departure-pressure out of ATL?",
+      "answer_markdown": "The top hotspots reveal that Delta's departure pressure out of ATL is overwhelmingly concentrated on New York metro routes. Of the 15 worst destination/time-block combinations (each with at least 500 flights), five are EWR in the 1500–1900 window and three more are JFK in the late-afternoon through evening window. Together, EWR and JFK account for the majority of the highest-average-delay slots. The pattern points to downstream congestion at New York-area airports compounding throughout the afternoon: delays build progressively from the 1500 block onward, reflecting both EWR/JFK slot pressure and the cumulative cascade of late-arriving aircraft. Outside the New York metro, OKC in the 2000–2059 block and IAH in the 2000–2059 block also appear, suggesting late-evening departure slots to mid-continent destinations carry elevated risk, likely driven by late-arriving equipment.",
+      "sql": "SELECT\n    DestCode,\n    count() AS hotspot_slots,\n    sum(flight_count) AS total_flights,\n    round(avg(avg_dep_delay_min), 1) AS mean_avg_delay,\n    round(avg(pct_dep_del15), 1) AS mean_pct_del15\nFROM (\n    SELECT\n        DestCode,\n        DepTimeBlk,\n        count() AS flight_count,\n        round(avg(DepDelay), 1) AS avg_dep_delay_min,\n        round(avg(DepDel15) * 100, 1) AS pct_dep_del15\n    FROM ontime.fact_ontime\n    WHERE\n        IATA_CODE_Reporting_Airline = 'DL'\n        AND OriginCode = 'ATL'\n        AND Cancelled = 0\n        AND DepDelay IS NOT NULL\n    GROUP BY DestCode, DepTimeBlk\n    HAVING flight_count \u003e= 500\n    ORDER BY avg_dep_delay_min DESC\n    LIMIT 15\n)\nGROUP BY DestCode\nORDER BY mean_avg_delay DESC"
+    }
+  ]
+}

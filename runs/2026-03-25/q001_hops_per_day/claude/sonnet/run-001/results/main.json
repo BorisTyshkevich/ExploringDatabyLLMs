@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Tail_Number",
+    "FlightNum",
+    "Carrier",
+    "FlightDate",
+    "hop_count",
+    "Route",
+    "occurrences"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "FlightNum": "366",
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "Tail_Number": "N957WN",
+      "hop_count": 8,
+      "occurrences": 1
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "FlightNum": "3149",
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N7835A",
+      "hop_count": 8,
+      "occurrences": 4
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "FlightNum": "154",
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "Tail_Number": "N7742B",
+      "hop_count": 8,
+      "occurrences": 2
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "FlightNum": "2787",
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8631A",
+      "hop_count": 8,
+      "occurrences": 5
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2022-09-01T00:00:00Z",
+      "FlightNum": "1956",
+      "Route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "Tail_Number": "N416WN",
+      "hop_count": 8,
+      "occurrences": 40
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2022-08-31T00:00:00Z",
+      "FlightNum": "2884",
+      "Route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "Tail_Number": "N7713A",
+      "hop_count": 8,
+      "occurrences": 46
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2021-10-31T00:00:00Z",
+      "FlightNum": "3378",
+      "Route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "Tail_Number": "N219WN",
+      "hop_count": 8,
+      "occurrences": 7
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2021-08-27T00:00:00Z",
+      "FlightNum": "904",
+      "Route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "Tail_Number": "N262WN",
+      "hop_count": 8,
+      "occurrences": 20
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2021-08-25T00:00:00Z",
+      "FlightNum": "2294",
+      "Route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "Tail_Number": "N484WN",
+      "hop_count": 8,
+      "occurrences": 12
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2021-08-08T00:00:00Z",
+      "FlightNum": "3530",
+      "Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "Tail_Number": "N225WN",
+      "hop_count": 8,
+      "occurrences": 5
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-25T16:50:20.967278Z",
+  "source_query_sha256": "4af2f62d3d71901ef07a4a5b6b594dd33f29be813e76992fbf8aaa14b1e33862",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|main"
+}

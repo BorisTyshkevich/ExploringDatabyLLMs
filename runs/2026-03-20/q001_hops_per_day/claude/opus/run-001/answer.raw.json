@@ -1,0 +1,30 @@
+{
+  "sql": "WITH legs AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        Origin,\n        Dest,\n        DepTime\n    FROM ontime.ontime\n    WHERE Tail_Number != '' AND Cancelled = 0 AND DepTime IS NOT NULL\n),\ncounts AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        count() AS Hops\n    FROM legs\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate\n    ORDER BY Hops DESC, FlightDate DESC\n    LIMIT 10\n),\ntop_legs AS (\n    SELECT l.*\n    FROM legs l\n    INNER JOIN counts c\n        ON l.Tail_Number = c.Tail_Number\n        AND l.Flight_Number_Reporting_Airline = c.Flight_Number_Reporting_Airline\n        AND l.IATA_CODE_Reporting_Airline = c.IATA_CODE_Reporting_Airline\n        AND l.FlightDate = c.FlightDate\n    ORDER BY l.Tail_Number, l.Flight_Number_Reporting_Airline, l.FlightDate, l.DepTime\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    IATA_CODE_Reporting_Airline,\n    FlightDate,\n    count() AS Hops,\n    arrayStringConcat(\n        arrayConcat(\n            groupArray(Origin),\n            [arrayElement(groupArray(Dest), toUInt32(count()))]\n        ),\n        '-'\n    ) AS Route,\n    arrayStringConcat(\n        arrayMap(x -> concat(toString(intDiv(x, 100)), ':', leftPad(toString(x % 100), 2, '0')),\n            groupArray(DepTime)\n        ),\n        ', '\n    ) AS DepTimes\nFROM top_legs\nGROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate\nORDER BY Hops DESC, FlightDate DESC",
+  "report_markdown": "# {{question_title}}\n\n## Overview\n\n{{data_overview_md}}\n\n## Key Finding\n\nThe maximum number of hops observed for a single aircraft operating one flight number in a single day is **{{metric.max_hops}}**. This pattern is not a one-off anomaly — it appears repeatedly across multiple dates and flight numbers, all operated by **{{metric.dominant_carrier}}**, reflecting that carrier's point-to-point operating model where a single flight number can traverse the entire country in a chain of short-haul segments.\n\n## Most Recent Maximum-Hop Itinerary\n\nThe most recent 8-hop itinerary is **{{metric.most_recent_carrier}} {{metric.most_recent_flight}}** on **{{metric.most_recent_date}}**, aircraft **{{metric.most_recent_tail}}**, flying the route **{{metric.most_recent_route}}** with departures at **{{metric.most_recent_dep_times}}**.\n\nThis itinerary spans coast-to-coast from the New York area (ISP) to the Pacific Northwest (SEA) in eight legs over roughly 15 hours.\n\n## Route Repetition and Clustering\n\nAmong the top 10 longest itineraries, strong route repetition is evident:\n\n- **WN 3149** appears four times (Jan–Feb 2024) on the identical route {{metric.wn3149_route}}, indicating a fixed weekly schedule.\n- **WN 2787** appears three times (Sep–Oct 2022) repeating the route {{metric.wn2787_route}}.\n- **WN 154** appears twice (Apr 2023) on the route {{metric.wn154_route}}.\n\nAll 10 entries are Southwest Airlines (WN), consistent with its unique operational model of multi-stop through-flights under a single flight number.\n\n## Result Detail\n\n{{result_table_md}}",
+  "metrics": {
+    "summary_facts": [
+      "The highest daily hop count for one aircraft on one flight number is 8, observed exclusively on Southwest Airlines (WN), recurring weekly on fixed routes such as CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN."
+    ],
+    "named_values": {
+      "max_hops": "8",
+      "dominant_carrier": "Southwest Airlines (WN)",
+      "most_recent_carrier": "WN",
+      "most_recent_flight": "366",
+      "most_recent_date": "2024-12-01",
+      "most_recent_tail": "N957WN",
+      "most_recent_route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "most_recent_dep_times": "5:43, 8:10, 10:20, 11:42, 14:01, 16:43, 18:28, 20:41",
+      "wn3149_route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "wn2787_route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "wn154_route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN"
+    },
+    "named_lists": {
+      "top_flight_numbers": [
+        "WN 366 (1 occurrence, Dec 2024)",
+        "WN 3149 (4 occurrences, Jan-Feb 2024)",
+        "WN 154 (2 occurrences, Apr 2023)",
+        "WN 2787 (3 occurrences, Sep-Oct 2022)"
+      ]
+    }
+  }
+}

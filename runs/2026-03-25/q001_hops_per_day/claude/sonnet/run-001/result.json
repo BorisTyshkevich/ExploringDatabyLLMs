@@ -1,0 +1,63 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "All top-10 unique routes tie at **8 hops** (9 airports). The leading example by recency is Southwest flight **WN 366**, tail **N957WN**, on **2024-12-01**: `ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA` — a coast-to-coast turn starting in Islip, NY and ending in Seattle.",
+      "columns_csv": "Tail_Number, FlightNum, Carrier, FlightDate, hop_count, Route, occurrences",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN",
+        "hop_count": 8,
+        "occurrences": 1
+      },
+      "row_count": 1,
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "The most recent top-ranked itinerary is **WN 366** (tail N957WN) on **2024-12-01**, route `ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA` with 8 hops. It is the only 8-hop unique route recorded in late 2024.",
+      "columns_csv": "Tail_Number, FlightNum, Carrier, FlightDate, hop_count, Route, occurrences",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2025-11-30T00:00:00Z",
+        "FlightNum": "2179",
+        "Route": "SAT-TPA-FLL-RDU-BNA-STL-AUS",
+        "Tail_Number": "N925WN",
+        "hop_count": 6,
+        "occurrences": 1
+      },
+      "row_count": 1,
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The top 10 are a **mix of both**. Two routes are clearly recurring scheduled turn patterns: WN 2884 (`LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN`) appeared **46 times** and WN 1956 (`MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC`) appeared **40 times**, indicating they were regular daily assignments over many years. Others appear only 1–5 times, suggesting irregular or one-off operations. Southwest dominates all 10 entries, consistent with its high-utilization short-haul turn model.",
+      "columns_csv": "FlightNum, Carrier, FlightDate, hop_count, Route, occurrences",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "hop_count": 8,
+        "occurrences": 1
+      },
+      "row_count": 10,
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "subquestion_id": "q3"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-25T16:50:42.303582Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

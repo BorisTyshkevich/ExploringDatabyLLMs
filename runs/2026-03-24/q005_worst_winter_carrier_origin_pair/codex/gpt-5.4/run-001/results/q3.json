@@ -1,0 +1,116 @@
+{
+  "columns": [
+    "concentration_type",
+    "entity",
+    "weak_pair_count",
+    "weak_pair_share_pct"
+  ],
+  "rows": [
+    {
+      "concentration_type": "carrier",
+      "entity": "OH",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "PI",
+      "weak_pair_count": 3,
+      "weak_pair_share_pct": 30
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "F9",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "YV",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "AS",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "AA",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "OO",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "carrier",
+      "entity": "DH",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "ORD",
+      "weak_pair_count": 2,
+      "weak_pair_share_pct": 20
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "DAY",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "DFW",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "DUT",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "EYW",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "LAX",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "OTH",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "PBI",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    },
+    {
+      "concentration_type": "airport",
+      "entity": "RSW",
+      "weak_pair_count": 1,
+      "weak_pair_share_pct": 10
+    }
+  ],
+  "row_count": 17,
+  "generated_at": "2026-03-24T14:51:27.157627Z",
+  "source_query_sha256": "c50d22536289c5b2e64e28aedcb606703c795cd17b619f7c9a40efe227a821f3",
+  "log_comment": "qforge|question=q005|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q3"
+}

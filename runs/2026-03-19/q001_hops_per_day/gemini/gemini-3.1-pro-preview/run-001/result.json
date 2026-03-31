@@ -1,0 +1,96 @@
+{
+  "columns": [
+    "Date",
+    "AircraftID",
+    "FlightNumber",
+    "Carrier",
+    "Hops",
+    "Route"
+  ],
+  "rows": [
+    {
+      "AircraftID": "N957WN",
+      "Carrier": "WN",
+      "Date": "2024-12-01T00:00:00Z",
+      "FlightNumber": "366",
+      "Hops": 8,
+      "Route": "ISP (0543) - BWI (0810) - MYR (1020) - BNA (1142) - VPS (1401) - DAL (1643) - LAS (1828) - OAK (2041) - SEA"
+    },
+    {
+      "AircraftID": "N7835A",
+      "Carrier": "WN",
+      "Date": "2024-02-18T00:00:00Z",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE (0621) - BNA (0801) - PNS (1007) - HOU (1234) - MCI (1514) - PHX (1747) - BUR (1902) - OAK (2117) - DEN"
+    },
+    {
+      "AircraftID": "N429WN",
+      "Carrier": "WN",
+      "Date": "2024-01-28T00:00:00Z",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE (0618) - BNA (0800) - PNS (1012) - HOU (1239) - MCI (1515) - PHX (1756) - BUR (1859) - OAK (2059) - DEN"
+    },
+    {
+      "AircraftID": "N228WN",
+      "Carrier": "WN",
+      "Date": "2024-01-21T00:00:00Z",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE (0620) - BNA (0810) - PNS (1017) - HOU (1237) - MCI (1510) - PHX (1800) - BUR (1903) - OAK (2102) - DEN"
+    },
+    {
+      "AircraftID": "N569WN",
+      "Carrier": "WN",
+      "Date": "2024-01-14T00:00:00Z",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE (0625) - BNA (0805) - PNS (1011) - HOU (1241) - MCI (1607) - PHX (1909) - BUR (2006) - OAK (2156) - DEN"
+    },
+    {
+      "AircraftID": "N7742B",
+      "Carrier": "WN",
+      "Date": "2023-04-30T00:00:00Z",
+      "FlightNumber": "154",
+      "Hops": 8,
+      "Route": "ELP (0627) - DAL (0939) - LIT (1124) - ATL (1434) - RIC (1656) - MDW (1831) - MCI (2040) - PHX (2246) - SAN"
+    },
+    {
+      "AircraftID": "N929WN",
+      "Carrier": "WN",
+      "Date": "2023-04-16T00:00:00Z",
+      "FlightNumber": "154",
+      "Hops": 8,
+      "Route": "ELP (0622) - DAL (0941) - LIT (1122) - ATL (1433) - RIC (1659) - MDW (1832) - MCI (2041) - PHX (2226) - SAN"
+    },
+    {
+      "AircraftID": "N8631A",
+      "Carrier": "WN",
+      "Date": "2022-10-23T00:00:00Z",
+      "FlightNumber": "2787",
+      "Hops": 8,
+      "Route": "MSY (0608) - ATL (0944) - CMH (1156) - BWI (1354) - RDU (1553) - BNA (1729) - DTW (2045) - MDW (2149) - LAX"
+    },
+    {
+      "AircraftID": "N8809L",
+      "Carrier": "WN",
+      "Date": "2022-10-02T00:00:00Z",
+      "FlightNumber": "2787",
+      "Hops": 8,
+      "Route": "MSY (0610) - ATL (0917) - CMH (1142) - BWI (1355) - RDU (1536) - BNA (1716) - DTW (2040) - MDW (2147) - LAX"
+    },
+    {
+      "AircraftID": "N8811L",
+      "Carrier": "WN",
+      "Date": "2022-09-25T00:00:00Z",
+      "FlightNumber": "2787",
+      "Hops": 8,
+      "Route": "MSY (0601) - ATL (0918) - CMH (1141) - BWI (1347) - RDU (1539) - BNA (1724) - DTW (2112) - MDW (2242) - LAX"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-19T18:57:14.819224Z",
+  "source_query_sha256": "9b2f4821f69876fe779fa834580a23ad8470c66b4dc029d7cffd7d896f9133ac",
+  "log_comment": "qforge|question=q001|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full"
+}

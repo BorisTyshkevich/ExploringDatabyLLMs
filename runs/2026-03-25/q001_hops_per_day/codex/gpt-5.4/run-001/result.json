@@ -1,0 +1,60 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "The highest-hop example is an 8-hop Southwest itinerary flown by aircraft N957WN as flight 366 on 2024-12-01, with route ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
+      "columns_csv": "aircraft_id, flight_number, carrier, flight_date, hop_count, Route",
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8
+      },
+      "row_count": 1,
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "The most recent top-ranked itinerary is also the latest 8-hop unique route: N957WN operating Southwest flight 366 on 2024-12-01 over ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
+      "columns_csv": "aircraft_id, flight_number, carrier, flight_date, hop_count, Route",
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8
+      },
+      "row_count": 1,
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "They look mostly like recurring patterns rather than one-offs. Among the 10 most recent unique 8-hop routes, 9 recur on multiple dates, averaging 14.1 occurrences each, although the single most recent example appears only once.",
+      "columns_csv": "route_count, one_off_routes, recurring_routes, avg_occurrences, max_occurrences",
+      "first_row": {
+        "avg_occurrences": 14.1,
+        "max_occurrences": 46,
+        "one_off_routes": 1,
+        "recurring_routes": 9,
+        "route_count": 10
+      },
+      "row_count": 1,
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "subquestion_id": "q3"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-25T16:11:03.868576Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

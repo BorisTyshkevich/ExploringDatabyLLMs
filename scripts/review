@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${script_dir}/run-dir-wrapper.sh"
+
+usage() {
+  cat <<'EOF'
+Usage: scripts/review RUN_DIR [extra qforge review flags]
+   or: scripts/review --run-dir RUN_DIR [extra qforge review flags]
+
+Run qforge review against this repo's runs directory.
+
+Examples:
+  ./scripts/review 2026-03-20/q001_hops_per_day/claude/opus/run-001
+  ./scripts/review /Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-20/q001_hops_per_day/claude/opus/run-001
+  ./scripts/review --run-dir 2026-03-20/q001_hops_per_day/claude/opus/run-001 --review-runner codex
+EOF
+}
+
+qforge_run_dir_wrapper review "scripts/review" usage "$@"

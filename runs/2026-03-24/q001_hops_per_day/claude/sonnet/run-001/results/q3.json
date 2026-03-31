@@ -1,0 +1,96 @@
+{
+  "columns": [
+    "FlightNum",
+    "Carrier",
+    "Route",
+    "DateCount",
+    "FirstSeen",
+    "LastSeen"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "DateCount": 61,
+      "FirstSeen": "2009-08-17T00:00:00Z",
+      "FlightNum": "2215",
+      "LastSeen": "2009-10-30T00:00:00Z",
+      "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 60,
+      "FirstSeen": "2008-05-12T00:00:00Z",
+      "FlightNum": "1923",
+      "LastSeen": "2008-08-21T00:00:00Z",
+      "Route": "FLL-JAX-IND-MDW-MCI-DAL-ABQ-LAX-SJC"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 55,
+      "FirstSeen": "2015-08-10T00:00:00Z",
+      "FlightNum": "2558",
+      "LastSeen": "2015-10-30T00:00:00Z",
+      "Route": "PIT-TPA-MSY-DEN-SFO-SNA-LAS-SMF-PDX"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 54,
+      "FirstSeen": "2014-08-10T00:00:00Z",
+      "FlightNum": "675",
+      "LastSeen": "2014-10-30T00:00:00Z",
+      "Route": "HOU-STL-CMH-BWI-LIT-DAL-AUS-SJC-ONT"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 54,
+      "FirstSeen": "2010-05-10T00:00:00Z",
+      "FlightNum": "138",
+      "LastSeen": "2010-08-13T00:00:00Z",
+      "Route": "BDL-BWI-PBI-TPA-STL-DEN-GEG-SEA-OAK"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 52,
+      "FirstSeen": "2011-06-05T00:00:00Z",
+      "FlightNum": "1013",
+      "LastSeen": "2011-08-12T00:00:00Z",
+      "Route": "FLL-MCO-ECP-BNA-MDW-PDX-OAK-LAS-AUS"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 50,
+      "FirstSeen": "2014-08-10T00:00:00Z",
+      "FlightNum": "473",
+      "LastSeen": "2014-10-29T00:00:00Z",
+      "Route": "RIC-ATL-OKC-DEN-PHX-LAS-BOI-OAK-ONT"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 49,
+      "FirstSeen": "2011-06-06T00:00:00Z",
+      "FlightNum": "34",
+      "LastSeen": "2011-08-11T00:00:00Z",
+      "Route": "PHL-MDW-JAN-HOU-DAL-TUL-PHX-BUR-OAK"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 47,
+      "FirstSeen": "2007-11-04T00:00:00Z",
+      "FlightNum": "102",
+      "LastSeen": "2008-01-11T00:00:00Z",
+      "Route": "LAS-PHX-OKC-DAL-BHM-BNA-MCI-SMF-PDX"
+    },
+    {
+      "Carrier": "WN",
+      "DateCount": 47,
+      "FirstSeen": "2008-08-24T00:00:00Z",
+      "FlightNum": "787",
+      "LastSeen": "2008-10-31T00:00:00Z",
+      "Route": "JAX-BNA-MDW-SLC-GEG-SEA-SMF-SAN-MCI"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-24T08:52:20.30771Z",
+  "source_query_sha256": "d2c7caf8a53270bef5b89d05d659a147338a746388336e1e04e0190a7bd22562",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=q3"
+}

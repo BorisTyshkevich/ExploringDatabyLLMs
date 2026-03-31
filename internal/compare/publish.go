@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	runsRepoGitHubBlobBase = "https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main"
-	runsRepoGitHubTreeBase = "https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main"
-	runsRepoPagesBase      = "https://boristyshkevich.github.io/ExploringDatabyLLMs-runs"
+	runsRepoGitHubBlobBase = "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main"
+	runsRepoGitHubTreeBase = "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/tree/main"
+	runsRepoPagesBase      = "https://boristyshkevich.github.io/ExploringDatabyLLMs"
 )
 
 type ArtifactRef struct {
@@ -113,7 +113,11 @@ func publishedRelativePath(repoRoot, path string) string {
 	}
 	rel, err := filepath.Rel(repoRoot, path)
 	if err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
-		return filepath.ToSlash(rel)
+		rel = filepath.ToSlash(rel)
+		if rel == "runs" || strings.HasPrefix(rel, "runs/") {
+			return rel
+		}
+		return runsRepoJoin("runs", rel)
 	}
 	return repoRelativePath(repoRoot, path)
 }

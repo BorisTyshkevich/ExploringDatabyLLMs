@@ -1,0 +1,49 @@
+{
+  "schema_version": "2",
+  "status": "ok",
+  "question_id": "q001",
+  "question_slug": "q001_hops_per_day",
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "dataset": "ontime",
+  "runner": "claude",
+  "model": "sonnet",
+  "cli_bin": "claude",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime/mcp.yaml",
+  "started_at": "2026-03-18T21:31:42.203485Z",
+  "finished_at": "2026-03-18T21:41:43.981899Z",
+  "duration_sec": 601,
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full",
+  "query_sha256": "380aa2f51353810f7094b6bd8d8f859fd50898a96d649aedc0e4975fb02a530d",
+  "result_row_count": 10,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "ok"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/answer.sql.raw.md",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-18/q001_hops_per_day/claude/sonnet/run-001/visual.html"
+  },
+  "metadata": {
+    "browser_validation": "ok",
+    "browser_validation_live_fetch": "ok",
+    "browser_validation_request_url": "https://mcp.demo.altinity.cloud/eyJhbGciOiJBMjU2S1ciLCJjdHkiOiJKU09OIiwiZW5jIjoiQTI1NkdDTSIsInR5cCI6IkpXRSJ9.1Zhu2eydw0lNdOwL81KM0Z3_Q9hgpKCgqlyAtDkyMMzf39tuz0tnYQ.2ZWKRwXcebF2f-Zy.SQLoNUAExT0uf7GhTdOKfK9i4yHZRN77Bxa4yQT1lAKUHvEY9vZgaUCD3FXYEOz5y_Njt5S9ERVDW1qdFI8EdT1bQfO7tJaI_VeU51xFDETygTWMs9NTACNxVQFJHsvfo9ZY4vrT7HamA1UD-bH1erFfKug6YsLf2j-Pa6DvjI4-ODZpX1HBNKm2uU__8qkwC-a09IaU1QYSgXb2kKFMAqLkWgrMQ041CkFNUA.NGTvmP8D7i6CWg9V67nkNw/openapi/execute_query?query=SELECT%20code%2C%20latitude%2C%20longitude%2C%20name%20FROM%20ontime.airports_latest%20WHERE%20code%20IN%20(%27ISP%27%2C%20%27BWI%27%2C%20%27MYR%27%2C%20%27BNA%27%2C%20%27VPS%27%2C%20%27DAL%27%2C%20%27LAS%27%2C%20%27OAK%27%2C%20%27SEA%27%2C%20%27CLE%27%2C%20%27PNS%27%2C%20%27HOU%27%2C%20%27MCI%27%2C%20%27PHX%27%2C%20%27BUR%27%2C%20%27DEN%27%2C%20%27ELP%27%2C%20%27LIT%27%2C%20%27ATL%27%2C%20%27RIC%27%2C%20%27MDW%27%2C%20%27SAN%27%2C%20%27MSY%27%2C%20%27CMH%27%2C%20%27RDU%27%2C%20%27DTW%27%2C%20%27LAX%27)",
+    "browser_validation_response_code": "200",
+    "browser_validation_status": "Loaded 10 rows. Fetching airport coordinates…",
+    "execution_response_bytes": "2301",
+    "visual_validation": "ok"
+  }
+}

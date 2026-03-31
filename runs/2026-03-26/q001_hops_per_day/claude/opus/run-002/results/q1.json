@@ -1,0 +1,63 @@
+{
+  "columns": [
+    "Route",
+    "recurrence_count",
+    "most_recent_date"
+  ],
+  "rows": [
+    {
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "most_recent_date": "2024-12-01T00:00:00Z",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "most_recent_date": "2024-02-18T00:00:00Z",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "most_recent_date": "2023-04-30T00:00:00Z",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "most_recent_date": "2022-10-23T00:00:00Z",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "most_recent_date": "2022-09-01T00:00:00Z",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "most_recent_date": "2022-08-31T00:00:00Z",
+      "recurrence_count": 47
+    },
+    {
+      "Route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "most_recent_date": "2021-10-31T00:00:00Z",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "most_recent_date": "2021-08-27T00:00:00Z",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "most_recent_date": "2021-08-25T00:00:00Z",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "most_recent_date": "2021-08-08T00:00:00Z",
+      "recurrence_count": 5
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-26T10:49:08.605765Z",
+  "source_query_sha256": "31cc0de0276fb84da5969ef6f17eccf4850c60843aefc5ac912ab51cb3c018a6",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=opus|phase=full|section=q1"
+}

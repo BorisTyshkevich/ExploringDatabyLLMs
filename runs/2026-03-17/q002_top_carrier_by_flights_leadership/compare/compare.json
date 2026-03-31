@@ -1,0 +1,217 @@
+{
+  "generated_at": "2026-03-18T09:18:41Z",
+  "day": "2026-03-17",
+  "question": "q002",
+  "runs": [
+    {
+      "run_dir": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001",
+      "run_id": "run-001",
+      "run_number": 1,
+      "question_id": "q002",
+      "question_slug": "q002_top_carrier_by_flights_leadership",
+      "question_title": "Yearly carrier leadership by completed flights",
+      "dataset": "ontime_v2",
+      "runner": "claude",
+      "model": "opus",
+      "status": "ok",
+      "phases": {
+        "sql_generation": "ok",
+        "sql_execution": "ok",
+        "presentation_generation": "ok",
+        "presentation_render": "ok"
+      },
+      "started_at": "2026-03-17T14:07:01.945825Z",
+      "finished_at": "2026-03-17T14:09:52.376847Z",
+      "duration_sec": 170,
+      "query_sha256": "3b12baec8275f80a349ee624c38ec1cf83d8e53b98e716da8be8a5020d272c8a",
+      "row_count": 195,
+      "columns": [
+        "RowType",
+        "Year",
+        "Reporting_Airline",
+        "RankInYear",
+        "CompletedFlights",
+        "SharePct",
+        "LeaderReportingAirline",
+        "RunnerUpReportingAirline",
+        "LeaderShareGapPctPts",
+        "PriorYearLeaderReportingAirline",
+        "LeaderChanged",
+        "LeaderShareChangePctPts"
+      ],
+      "metrics": {
+        "query_duration_ms": 594,
+        "read_rows": 921230348,
+        "read_bytes": 2459800026,
+        "result_rows": 195,
+        "result_bytes": 53318,
+        "memory_usage": 363011795,
+        "peak_threads": 34,
+        "event_time": "2026-03-17 14:08:00",
+        "type": "QueryFinish"
+      },
+      "artifacts": {
+        "query_sql": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/query.sql",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/query.sql",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/query.sql"
+        },
+        "report_md": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/report.md",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/report.md",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq002_top_carrier_by_flights_leadership%2Fclaude%2Fopus%2Frun-001%2Freport.md"
+        },
+        "result_json": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/result.json",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/result.json",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/result.json"
+        },
+        "visual_html": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/visual.html",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/visual.html",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/claude/opus/run-001/visual.html"
+        }
+      }
+    },
+    {
+      "run_dir": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001",
+      "run_id": "run-001",
+      "run_number": 1,
+      "question_id": "q002",
+      "question_slug": "q002_top_carrier_by_flights_leadership",
+      "question_title": "Yearly carrier leadership by completed flights",
+      "dataset": "ontime_v2",
+      "runner": "codex",
+      "model": "gpt-5.4",
+      "status": "ok",
+      "phases": {
+        "sql_generation": "ok",
+        "sql_execution": "ok",
+        "presentation_generation": "ok",
+        "presentation_render": "ok"
+      },
+      "started_at": "2026-03-17T14:07:01.945785Z",
+      "finished_at": "2026-03-17T14:16:54.116888Z",
+      "duration_sec": 592,
+      "query_sha256": "da019c9db476aec87db60676cab647174b7c2832af72d71fc53ddb29cfca4470",
+      "row_count": 195,
+      "columns": [
+        "RowType",
+        "Year",
+        "Reporting_Airline",
+        "RankInYear",
+        "CompletedFlights",
+        "SharePct",
+        "LeaderReportingAirline",
+        "RunnerUpReportingAirline",
+        "LeaderShareGapPctPts",
+        "PriorYearLeaderReportingAirline",
+        "LeaderChanged",
+        "LeaderShareChangePctPts"
+      ],
+      "metrics": {
+        "query_duration_ms": 586,
+        "read_rows": 921230348,
+        "read_bytes": 2459800026,
+        "result_rows": 195,
+        "result_bytes": 49060,
+        "memory_usage": 366678790,
+        "peak_threads": 34,
+        "event_time": "2026-03-17 14:08:29",
+        "type": "QueryFinish"
+      },
+      "artifacts": {
+        "query_sql": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/query.sql",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/query.sql",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/query.sql"
+        },
+        "report_md": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/report.md",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/report.md",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq002_top_carrier_by_flights_leadership%2Fcodex%2Fgpt-5.4%2Frun-001%2Freport.md"
+        },
+        "result_json": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/result.json",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/result.json",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/result.json"
+        },
+        "visual_html": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/visual.html",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/visual.html",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/codex/gpt-5.4/run-001/visual.html"
+        }
+      }
+    },
+    {
+      "run_dir": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001",
+      "run_id": "run-001",
+      "run_number": 1,
+      "question_id": "q002",
+      "question_slug": "q002_top_carrier_by_flights_leadership",
+      "question_title": "Yearly carrier leadership by completed flights",
+      "dataset": "ontime_v2",
+      "runner": "gemini",
+      "model": "gemini-3.1-pro-preview",
+      "status": "ok",
+      "phases": {
+        "sql_generation": "ok",
+        "sql_execution": "ok",
+        "presentation_generation": "ok",
+        "presentation_render": "ok"
+      },
+      "started_at": "2026-03-17T14:07:01.94576Z",
+      "finished_at": "2026-03-17T14:14:53.457038Z",
+      "duration_sec": 471,
+      "query_sha256": "15e6aeaaad28e7f60cd8e5992911536dce47b1b7314b6a89542571f760161449",
+      "row_count": 234,
+      "columns": [
+        "RowType",
+        "Year",
+        "Reporting_Airline",
+        "RankInYear",
+        "CompletedFlights",
+        "SharePct",
+        "LeaderReportingAirline",
+        "RunnerUpReportingAirline",
+        "LeaderShareGapPctPts",
+        "PriorYearLeaderReportingAirline",
+        "LeaderChanged",
+        "LeaderShareChangePctPts"
+      ],
+      "metrics": {
+        "query_duration_ms": 1458,
+        "read_rows": 1612153109,
+        "read_bytes": 5110726600,
+        "result_rows": 234,
+        "result_bytes": 72652,
+        "memory_usage": 613272420,
+        "peak_threads": 34,
+        "event_time": "2026-03-17 14:12:28",
+        "type": "QueryFinish"
+      },
+      "artifacts": {
+        "query_sql": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/query.sql",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/query.sql",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/query.sql"
+        },
+        "report_md": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/report.md",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/report.md",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq002_top_carrier_by_flights_leadership%2Fgemini%2Fgemini-3.1-pro-preview%2Frun-001%2Freport.md"
+        },
+        "result_json": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/result.json",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/result.json",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/result.json"
+        },
+        "visual_html": {
+          "local_path": "runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/visual.html",
+          "published_path": "2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/visual.html",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-17/q002_top_carrier_by_flights_leadership/gemini/gemini-3.1-pro-preview/run-001/visual.html"
+        }
+      }
+    }
+  ]
+}

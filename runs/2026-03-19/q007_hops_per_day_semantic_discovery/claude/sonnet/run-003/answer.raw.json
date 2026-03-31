@@ -1,0 +1,37 @@
+{
+  "sql": "WITH legs AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        Origin,\n        Dest,\n        assumeNotNull(DepTime) AS DepTime\n    FROM ontime.ontime\n    WHERE DepTime IS NOT NULL\n      AND Tail_Number != ''\n      AND Flight_Number_Reporting_Airline != ''\n),\ndaily_itineraries AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        count() AS Hops,\n        arrayStringConcat(\n            arrayConcat(\n                arrayMap(\n                    x -> concat(x.2, '(', toString(x.1), ')'),\n                    arraySort(x -> x.1, groupArray((DepTime, Origin)))\n                ),\n                [argMax(Dest, DepTime)]\n            ),\n            ' -> '\n        ) AS Route\n    FROM legs\n    GROUP BY\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    IATA_CODE_Reporting_Airline,\n    FlightDate,\n    Hops,\n    Route\nFROM daily_itineraries\nORDER BY Hops DESC, FlightDate DESC\nLIMIT 10",
+  "report_markdown": "# Highest Daily Hops for One Aircraft on One Flight Number\n\n{{data_overview_md}}\n\n## Maximum Hop Count\n\nThe highest number of hops recorded for a single aircraft operating under a single flight number on one calendar day is **{{metric.max_hops}}**. This means the aircraft completed {{metric.max_hops}} individual flight legs under the same flight number within a single day.\n\n## Most Recent Maximum-Hop Itinerary\n\n| Field | Value |\n|---|---|\n| Carrier | {{metric.top_carrier}} |\n| Flight Number | {{metric.top_flight_number}} |\n| Aircraft (Tail) | {{metric.top_tail_number}} |\n| Date | {{metric.top_date}} |\n| Route | {{metric.top_route}} |\n\nThe route above shows each origin airport followed by its actual departure time (HHMM) in parentheses, ending at the final destination.\n\n## Operating Pattern Analysis\n\n{{metric.pattern_summary}}\n\n## Top 10 Longest Itineraries\n\n{{result_table_md}}\n\n### Notable Observations\n\n- All top-10 itineraries belong to **{{metric.dominant_carrier}}**, reflecting that carrier's hub-and-spoke multi-stop routing strategy.\n- The most repeated flight number in the top 10 is **{{metric.most_repeated_flight}}**, suggesting a recurrent scheduled itinerary rather than an ad-hoc assignment.\n- Route clustering across dates for the same flight number indicates a **{{metric.recurrence_pattern}}** operating schedule.\n\n_Generated: {{generated_at}}_",
+  "metrics": {
+    "summary_facts": [
+      "The maximum daily hop count for a single aircraft on one flight number is 8, achieved exclusively by Southwest Airlines (WN) across multiple flight numbers and dates.",
+      "Flight WN3149 accounts for 4 of the top 10 itineraries, all in January–February 2024, confirming a recurring weekly 8-hop schedule.",
+      "The most recent maximum-hop itinerary is N957WN operating WN366 on 2024-12-01: ISP(543) -> BWI(810) -> MYR(1020) -> BNA(1142) -> VPS(1401) -> DAL(1643) -> LAS(1828) -> OAK(2041) -> SEA."
+    ],
+    "named_values": {
+      "max_hops": "8",
+      "top_carrier": "WN (Southwest Airlines)",
+      "top_flight_number": "366",
+      "top_tail_number": "N957WN",
+      "top_date": "2024-12-01",
+      "top_route": "ISP(543) -> BWI(810) -> MYR(1020) -> BNA(1142) -> VPS(1401) -> DAL(1643) -> LAS(1828) -> OAK(2041) -> SEA",
+      "dominant_carrier": "WN (Southwest Airlines)",
+      "most_repeated_flight": "WN3149 (4 occurrences in top 10)",
+      "recurrence_pattern": "weekly (approximately every 7 days for WN3149 in Jan–Feb 2024)",
+      "pattern_summary": "The 8-hop maximum appears to be a repeated scheduled pattern, not a one-off. Flight WN3149 ran the same 8-leg CLE→BNA→PNS→HOU→MCI→PHX→BUR→OAK→DEN itinerary on four consecutive Sundays in January–February 2024, operated by different aircraft each week. Flight WN154 similarly repeated an 8-hop ELP-based itinerary across two Sundays in April 2023. This strongly indicates these are scheduled multi-stop routes, not exceptional occurrences."
+    },
+    "named_lists": {
+      "top_flight_numbers": [
+        "WN366 (2024-12-01, N957WN)",
+        "WN3149 (2024-02-18, N7835A)",
+        "WN3149 (2024-02-04, N263WN)",
+        "WN3149 (2024-01-28, N429WN)",
+        "WN3149 (2024-01-21, N228WN)",
+        "WN3149 (2024-01-14, N569WN)",
+        "WN154 (2023-04-30, N7742B)",
+        "WN154 (2023-04-16, N929WN)",
+        "WN2787 (2022-10-23, N8631A)",
+        "WN2787 (2022-10-02, N8809L)"
+      ]
+    }
+  }
+}

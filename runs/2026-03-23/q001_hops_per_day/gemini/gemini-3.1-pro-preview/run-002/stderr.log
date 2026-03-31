@@ -1,0 +1,18 @@
+YOLO mode is enabled. All tool calls will be automatically approved.
+Loaded cached credentials.
+YOLO mode is enabled. All tool calls will be automatically approved.
+Registering notification handlers for server 'altinity_ontime_demo'. Capabilities: {
+  logging: {},
+  prompts: { listChanged: true },
+  resources: { listChanged: true },
+  tools: { listChanged: true }
+}
+Server 'altinity_ontime_demo' supports tool updates. Listening for changes...
+Server 'altinity_ontime_demo' supports resource updates. Listening for changes...
+Server 'altinity_ontime_demo' supports prompt updates. Listening for changes...
+Scheduling MCP context refresh...
+Executing MCP context refresh...
+MCP context refresh complete.
+Error executing tool mcp_altinity_ontime_demo_execute_query: Error: MCP tool 'execute_query' reported an error.
+Error executing tool mcp_altinity_ontime_demo_execute_query: Error: MCP tool 'execute_query' reported an error.
+MCP ERROR (altinity_ontime_demo)[ERROR] MCP ERROR (altinity_ontime_demo)

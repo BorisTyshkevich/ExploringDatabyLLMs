@@ -1,0 +1,73 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "The maximum number of hops flown by a single aircraft on a single flight number in one day is **8 hops** (9-airport itineraries). All 10 unique routes are operated by Southwest Airlines (WN). The most recent top 10 unique routes by departure date are:\n\n| Aircraft | Flight | Carrier | Date | Hops | Recurrence | Route |\n|---|---|---|---|---|---|---|\n| N957WN | 366 | WN | 2024-12-01 | 8 | 1 | ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA |\n| N7835A | 3149 | WN | 2024-02-18 | 8 | 5 | CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN |\n| N7742B | 154 | WN | 2023-04-30 | 8 | 2 | ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN |\n| N8631A | 2787 | WN | 2022-10-23 | 8 | 5 | MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX |\n| N416WN | 1956 | WN | 2022-09-01 | 8 | 40 | MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC |\n| N7713A | 2884 | WN | 2022-08-31 | 8 | 47 | LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN |\n| N219WN | 3378 | WN | 2021-10-31 | 8 | 7 | SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS |\n| N262WN | 904 | WN | 2021-08-27 | 8 | 20 | HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK |\n| N484WN | 2294 | WN | 2021-08-25 | 8 | 12 | BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK |\n| N225WN | 3530 | WN | 2021-08-08 | 8 | 5 | BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX |",
+      "columns_csv": "Tail_Number, FlightNum, Carrier, FlightDate, hop_count, recurrence_count, Route",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN",
+        "hop_count": 8,
+        "recurrence_count": 1
+      },
+      "row_count": 10,
+      "subquestion": "Find the longest itineraries with the highest number of hops for a single aircraft using the same flight number.\nDefine uniqueness by the full textual `Route` string and output the most recent top 10 unique routes by departure time.\n\nReturn:\n\n- aircraft id\n- flight number\n- carrier\n- flight date\n- hop count\n- route recurrence count: total number of days across all history on which this exact Route string was flown by any aircraft\n- textual `Route` in chronological order, including every origin and the final destination, using `-` as the delimiter throughout, for example `SMF-SAN-PHX-COS-DEN`",
+      "subquestion_id": "main"
+    },
+    {
+      "answer_preview": "The 10 routes show a wide spread of recurrence, from a single occurrence to nearly 50 days:\n\n| Route | Recurrence |\n|---|---|\n| ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA | 1 |\n| ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN | 2 |\n| CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN | 5 |\n| MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX | 5 |\n| BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX | 5 |\n| SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS | 7 |\n| BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK | 12 |\n| HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK | 20 |\n| MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC | 40 |\n| LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN | 47 |\n\n**Tier breakdown (totals add to 10):**\n- **One-off (1 day):** 1 route — likely an irregular or seasonal assignment.\n- **Low recurrence (2–7 days):** 4 routes — occasional scheduled rotations, not daily.\n- **Moderate recurrence (12–20 days):** 2 routes — semi-regular scheduled patterns.\n- **High recurrence (40–47 days):** 2 routes — clearly stable, recurring scheduled rotations flown across many weeks.\n\nOverall, the majority of 8-hop itineraries are recurring scheduled patterns. Only one is a true one-off; 9 of 10 routes were flown on at least 2 distinct days, and 4 of 10 were flown on 12 or more days, indicating these represent genuine repeating flight schedules rather than one-time anomalies.",
+      "columns_csv": "Route, recurrence_count",
+      "first_row": {
+        "Route": "EWR-MDW-ABQ-DEN-SMF-LAS-TUS-OAK-SLC",
+        "recurrence_count": 1
+      },
+      "row_count": 719,
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?\n\nList the recurrence count for each of the 10 routes explicitly before summarizing any tiers or categories, and make sure any category totals add up to 10.",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "All airports across the 10 routes are in the **continental United States**, and every route is operated by **Southwest Airlines (WN)**. The itineraries are true transcontinental or cross-country sweeps, connecting three geographic bands:\n\n- **West (17 airports):** SEA, OAK, SJC, SMF, RNO, LAX, BUR, SAN, PSP, LAS, PHX, SLC, ABQ, ELP, COS, DEN, MAF — dominated by Pacific Coast, Mountain West, and Desert Southwest airports.\n- **Central (14 airports):** STL, MEM, ORD, MDW, MCI, ICT, LIT, BNA, DAL, HOU, MSY, JAN, PNS, VPS — the Mississippi/Gulf corridor and Midwest hubs.\n- **East (14 airports):** LGA, ISP, BWI, IAD, RIC, RDU, MYR, CMH, CLE, DTW, ATL, TPA, MCO, FLL — stretching from the Northeast down the Atlantic Seaboard to Florida.\n\nThe dominant pattern is **coast-to-coast routing**: each itinerary typically originates on one coast or the Gulf South, threads through 2–3 inland stops, and terminates on the opposite coast. Several routes end or begin at West Coast leisure-travel airports (OAK, LAX, SJC, LAS). Recurring stops like BWI, BNA, DAL, LAS, MDW, and OAK appear across multiple routes, reflecting Southwest's key connecting cities. No route is confined to a single region; all 10 span at least two of the three geographic bands.",
+      "columns_csv": "region, airport_count, airports",
+      "first_row": {
+        "airport_count": 17,
+        "airports": [
+          "LAS",
+          "OAK",
+          "SEA",
+          "PHX",
+          "BUR",
+          "DEN",
+          "ELP",
+          "SAN",
+          "LAX",
+          "SLC",
+          "SJC",
+          "COS",
+          "SMF",
+          "PSP",
+          "RNO",
+          "ABQ",
+          "MAF"
+        ],
+        "region": "West"
+      },
+      "row_count": 3,
+      "subquestion": "What geographic pattern do the top itineraries show?\n\nBase the geographic answer only on the airports appearing in the 10 routes returned by `main`, not on the broader population of all maximum-hop flights in history.",
+      "subquestion_id": "q2"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-25T21:17:52.522779Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

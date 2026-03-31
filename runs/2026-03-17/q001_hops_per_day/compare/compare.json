@@ -1,0 +1,198 @@
+{
+  "generated_at": "2026-03-17T20:20:04Z",
+  "day": "2026-03-17",
+  "question": "q001",
+  "runs": [
+    {
+      "run_dir": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q001_hops_per_day/claude/opus/run-003",
+      "run_id": "run-003",
+      "run_number": 3,
+      "question_id": "q001",
+      "question_slug": "q001_hops_per_day",
+      "question_title": "Highest daily hops for one aircraft on one flight number",
+      "dataset": "ontime_v2",
+      "runner": "claude",
+      "model": "opus",
+      "status": "ok",
+      "phases": {
+        "sql_generation": "ok",
+        "sql_execution": "ok",
+        "presentation_generation": "ok",
+        "presentation_render": "ok"
+      },
+      "started_at": "2026-03-17T15:20:44.514693Z",
+      "finished_at": "2026-03-17T15:24:11.761397Z",
+      "duration_sec": 207,
+      "query_sha256": "2492ca7cdad0c01187e9465a86381be4d1fd58a471b3aa541cddd1cc80ca4f7a",
+      "row_count": 10,
+      "columns": [
+        "Aircraft ID",
+        "Flight Number",
+        "Carrier",
+        "Date",
+        "Hops",
+        "Route"
+      ],
+      "metrics": {
+        "query_duration_ms": 18630,
+        "read_rows": 193061941,
+        "read_bytes": 2650424488,
+        "result_rows": 10,
+        "result_bytes": 30512,
+        "memory_usage": 37714822183,
+        "peak_threads": 34,
+        "event_time": "2026-03-17 15:21:52",
+        "type": "QueryFinish"
+      },
+      "artifacts": {
+        "query_sql": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/query.sql",
+          "published_path": "2026-03-17/q001_hops_per_day/claude/opus/run-003/query.sql",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/query.sql"
+        },
+        "report_md": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/report.md",
+          "published_path": "2026-03-17/q001_hops_per_day/claude/opus/run-003/report.md",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq001_hops_per_day%2Fclaude%2Fopus%2Frun-003%2Freport.md"
+        },
+        "result_json": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/result.json",
+          "published_path": "2026-03-17/q001_hops_per_day/claude/opus/run-003/result.json",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/result.json"
+        },
+        "visual_html": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/visual.html",
+          "published_path": "2026-03-17/q001_hops_per_day/claude/opus/run-003/visual.html",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-17/q001_hops_per_day/claude/opus/run-003/visual.html"
+        }
+      }
+    },
+    {
+      "run_dir": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003",
+      "run_id": "run-003",
+      "run_number": 3,
+      "question_id": "q001",
+      "question_slug": "q001_hops_per_day",
+      "question_title": "Highest daily hops for one aircraft on one flight number",
+      "dataset": "ontime_v2",
+      "runner": "codex",
+      "model": "gpt-5.4",
+      "status": "ok",
+      "phases": {
+        "sql_generation": "ok",
+        "sql_execution": "ok",
+        "presentation_generation": "ok",
+        "presentation_render": "ok"
+      },
+      "started_at": "2026-03-17T15:44:57.924615Z",
+      "finished_at": "2026-03-17T15:53:54.969747Z",
+      "duration_sec": 537,
+      "query_sha256": "77f74fe855638479e4a89d861b7fa52eff665dc72219b38051598b1927abed60",
+      "row_count": 10,
+      "columns": [
+        "Aircraft ID",
+        "Flight Number",
+        "Carrier",
+        "Date",
+        "Route"
+      ],
+      "metrics": {
+        "query_duration_ms": 7885,
+        "read_rows": 193061941,
+        "read_bytes": 2654458009,
+        "result_rows": 10,
+        "result_bytes": 26416,
+        "memory_usage": 48655491312,
+        "peak_threads": 34,
+        "event_time": "2026-03-17 15:46:13",
+        "type": "QueryFinish"
+      },
+      "artifacts": {
+        "query_sql": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/query.sql",
+          "published_path": "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/query.sql",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/query.sql"
+        },
+        "report_md": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md",
+          "published_path": "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq001_hops_per_day%2Fcodex%2Fgpt-5.4%2Frun-003%2Freport.md"
+        },
+        "result_json": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/result.json",
+          "published_path": "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/result.json",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/result.json"
+        },
+        "visual_html": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/visual.html",
+          "published_path": "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/visual.html",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/visual.html"
+        }
+      }
+    },
+    {
+      "run_dir": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003",
+      "run_id": "run-003",
+      "run_number": 3,
+      "question_id": "q001",
+      "question_slug": "q001_hops_per_day",
+      "question_title": "Highest daily hops for one aircraft on one flight number",
+      "dataset": "ontime_v2",
+      "runner": "gemini",
+      "model": "gemini-3.1-pro-preview",
+      "status": "partial",
+      "phases": {
+        "sql_generation": "ok",
+        "sql_execution": "ok",
+        "presentation_generation": "ok",
+        "presentation_render": "failed"
+      },
+      "started_at": "2026-03-17T16:25:28.505309Z",
+      "finished_at": "2026-03-17T16:38:41.493178Z",
+      "duration_sec": 792,
+      "query_sha256": "0ac7ff9c12e8e720cc260c62d08d33c58218880aa14e05a13e087e7e61449c88",
+      "row_count": 10,
+      "columns": [
+        "Aircraft ID",
+        "Flight Number",
+        "Carrier",
+        "Date",
+        "Route",
+        "Actual Departure Times"
+      ],
+      "metrics": {
+        "query_duration_ms": 15533,
+        "read_rows": 230307587,
+        "read_bytes": 2763997654,
+        "result_rows": 10,
+        "result_bytes": 29264,
+        "memory_usage": 52466696434,
+        "peak_threads": 34,
+        "event_time": "2026-03-17 16:35:49",
+        "type": "QueryFinish"
+      },
+      "artifacts": {
+        "query_sql": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/query.sql",
+          "published_path": "2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/query.sql",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/query.sql"
+        },
+        "report_md": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/report.md",
+          "published_path": "2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/report.md",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq001_hops_per_day%2Fgemini%2Fgemini-3.1-pro-preview%2Frun-003%2Freport.md"
+        },
+        "result_json": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/result.json",
+          "published_path": "2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/result.json",
+          "url": "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/result.json"
+        },
+        "visual_html": {
+          "local_path": "runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/visual.html",
+          "published_path": "2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/visual.html",
+          "url": "https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-17/q001_hops_per_day/gemini/gemini-3.1-pro-preview/run-003/visual.html"
+        }
+      }
+    }
+  ]
+}

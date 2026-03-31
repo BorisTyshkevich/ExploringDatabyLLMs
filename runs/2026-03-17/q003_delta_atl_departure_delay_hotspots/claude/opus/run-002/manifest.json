@@ -1,0 +1,43 @@
+{
+  "schema_version": "2",
+  "status": "ok",
+  "question_id": "q003",
+  "question_slug": "q003_delta_atl_departure_delay_hotspots",
+  "question_title": "Delta ATL departure delay hotspots by destination and time block",
+  "dataset": "ontime_v2",
+  "runner": "claude",
+  "model": "opus",
+  "cli_bin": "claude",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime_v2/mcp.yaml",
+  "started_at": "2026-03-17T12:22:01.900255Z",
+  "finished_at": "2026-03-17T12:25:51.250089Z",
+  "duration_sec": 229,
+  "log_comment": "qforge|question=q003|run=run-002|runner=claude|model=opus|phase=full",
+  "query_sha256": "b7fd40dedee7777bdfca07ba83aebb8a03d622d429ccf0cd10e241280635e8b2",
+  "result_row_count": 832,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "ok"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/answer.sql.raw.md",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/claude/opus/run-002/visual.html"
+  },
+  "metadata": {
+    "execution_response_bytes": "106690"
+  }
+}

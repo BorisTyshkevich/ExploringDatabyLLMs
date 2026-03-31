@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AA Peak Network Delay — Month &amp; Contributors</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+:root {
+  --bg-top: #eaf3f8;
+  --bg-bottom: #f6fafc;
+  --panel: #ffffff;
+  --panel-alt: #f3f7fa;
+  --ink: #163244;
+  --muted: #5d7485;
+  --navy: #0e3a52;
+  --slate: #5c7080;
+  --sky: #3c88b5;
+  --teal: #1f8a70;
+  --amber: #d48a1f;
+  --red: #c54f36;
+  --grid: rgba(22,50,68,0.12);
+  --border: rgba(22,50,68,0.10);
+  --shadow: 0 18px 45px rgba(14,58,82,0.10);
+  --radius-xl: 22px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI","Helvetica Neue",sans-serif;
+  background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  min-height: 100vh;
+  color: var(--ink);
+}
+
+/* ─── Header ─── */
+header {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a5276 100%);
+  color: #fff;
+  padding: 28px 40px 24px;
+}
+header h1 {
+  font-family: Georgia, ui-serif, serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+header .subtitle {
+  font-size: 0.92rem;
+  opacity: 0.75;
+  font-weight: 400;
+}
+header .badge {
+  display: inline-block;
+  margin-top: 10px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 0.78rem;
+  opacity: 0.85;
+  letter-spacing: 0.4px;
+}
+
+/* ─── Empty state ─── */
+#empty-state {
+  max-width: 520px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 40px 32px;
+  background: var(--panel);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+#empty-state .icon { font-size: 2.6rem; margin-bottom: 16px; }
+#empty-state h2 { font-family: Georgia,ui-serif,serif; font-size: 1.25rem; color: var(--navy); margin-bottom: 8px; }
+#empty-state p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+#empty-state .hint {
+  margin-top: 18px;
+  font-size: 0.82rem;
+  color: var(--slate);
+  background: var(--panel-alt);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  text-align: left;
+  line-height: 1.6;
+}
+
+/* ─── Dashboard ─── */
+#dashboard { display: none; max-width: 1280px; margin: 0 auto; padding: 28px 24px 40px; }
+
+/* ─── KPI strip ─── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.kpi-card {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+  border-top: 4px solid var(--sky);
+}
+.kpi-card.peak { border-top-color: var(--red); }
+.kpi-card.warn { border-top-color: var(--amber); }
+.kpi-card.ok   { border-top-color: var(--teal); }
+.kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+.kpi-value { font-size: 1.95rem; font-weight: 700; color: var(--navy); line-height: 1.1; }
+.kpi-sub   { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+/* ─── Section titles ─── */
+.section-title {
+  font-family: Georgia, ui-serif, serif;
+  font-size: 1.1rem;
+  color: var(--navy);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.section-note { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+/* ─── Cards ─── */
+.card {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+/* ─── Two-col layout ─── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+@media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ─── Chart containers ─── */
+.chart-wrap { position: relative; }
+#ts-chart-wrap { height: 300px; }
+#origin-chart-wrap { height: 320px; }
+
+/* ─── Narrative panel ─── */
+.narrative-panel {
+  background: var(--panel-alt);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.narrative-panel h4 {
+  font-family: Georgia,ui-serif,serif;
+  font-size: 1rem;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.narrative-panel .verdict {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: var(--red);
+  color: #fff;
+  margin-bottom: 8px;
+}
+.narrative-panel .verdict.broad {
+  background: var(--teal);
+}
+.narrative-stat {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.narrative-stat span {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  color: var(--navy);
+  font-weight: 600;
+}
+
+/* ─── Route table ─── */
+.route-table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+thead th {
+  background: var(--navy);
+  color: #fff;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+}
+thead th.num { text-align: right; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+tbody tr:hover { background: var(--panel-alt); }
+tbody tr.highlight-row td { background: rgba(197,79,54,0.07); }
+tbody td { padding: 9px 12px; color: var(--ink); }
+tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.delay-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+.pill-red    { background: var(--red); }
+.pill-amber  { background: var(--amber); }
+.pill-sky    { background: var(--sky); }
+
+/* ─── Query ledger ─── */
+.ledger-wrap { margin-bottom: 24px; }
+.ledger-title { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+.ledger-row {
+  display: grid;
+  grid-template-columns: 1.2em 1fr 6em 5em 4.5em;
+  gap: 0 10px;
+  align-items: start;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.ledger-row:hover { background: var(--panel-alt); }
+.ledger-toggle { color: var(--muted); font-size: 0.75rem; user-select: none; }
+.ledger-label { color: var(--ink); font-weight: 600; }
+.ledger-role  { color: var(--muted); font-size: 0.78rem; }
+.ledger-status { font-weight: 700; font-size: 0.78rem; }
+.status-ok      { color: var(--teal); }
+.status-pending { color: var(--amber); }
+.status-failed  { color: var(--red); }
+.ledger-rows-count { text-align: right; color: var(--muted); }
+.ledger-sql-block {
+  display: none;
+  grid-column: 1 / -1;
+  background: var(--panel-alt);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-top: 6px;
+}
+.ledger-sql-block pre {
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--ink);
+  font-family: "Cascadia Code","Courier New",monospace;
+}
+.ledger-row.open .ledger-toggle { color: var(--sky); }
+.ledger-row.open .ledger-sql-block { display: block; }
+
+/* ─── Legend ─── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot  { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+/* ─── Status bar ─── */
+#status-bar {
+  display: none;
+  background: var(--navy);
+  color: rgba(255,255,255,0.85);
+  padding: 8px 40px;
+  font-size: 0.82rem;
+  letter-spacing: 0.3px;
+}
+#status-bar.error { background: var(--red); }
+
+/* ─── Footer ─── */
+footer {
+  background: #f0f5f8;
+  border-top: 1px solid var(--border);
+  padding: 24px 40px;
+  margin-top: 24px;
+}
+.footer-title { font-size: 0.85rem; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+@media (max-width: 780px) { .footer-grid { grid-template-columns: 1fr; } }
+.footer-field label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.footer-field input,
+.footer-field textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 0.83rem;
+  font-family: inherit;
+  background: var(--panel);
+  color: var(--ink);
+  resize: vertical;
+}
+.footer-field textarea { height: 120px; font-family: "Cascadia Code","Courier New",monospace; }
+.footer-actions { display: flex; gap: 8px; flex-direction: column; }
+.btn {
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: var(--sky); color: #fff; }
+.btn-primary:hover:not(:disabled) { opacity: 0.85; }
+.btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--panel-alt); }
+#footer-status { font-size: 0.8rem; color: var(--muted); margin-top: 6px; min-height: 1.2em; }
+</style>
+</head>
+<body>
+
+<!-- ═══ Header ═══ -->
+<header>
+  <h1>American Airlines — Peak Network Delay Month &amp; Contributors</h1>
+  <div class="subtitle">Monthly departure delay trend · peak month identification · origin &amp; route drilldown</div>
+  <div class="badge">Dynamic &nbsp;|&nbsp; American Airlines &nbsp;|&nbsp; ontime.fact_ontime</div>
+</header>
+
+<!-- Status bar -->
+<div id="status-bar"></div>
+
+<!-- ═══ Empty state ═══ -->
+<div id="empty-state">
+  <div class="icon">&#9992;</div>
+  <h2>Enter your access token to load the dashboard</h2>
+  <p>This dashboard queries the OnTime ClickHouse database live. Enter your JWE token below and click <strong>Fetch Data</strong> to begin.</p>
+  <div class="hint">
+    <strong>What this dashboard shows:</strong><br>
+    1. Monthly trend of AA departure delays across all years<br>
+    2. Peak month identification (worst average departure delay)<br>
+    3. Origin airports driving the peak month<br>
+    4. Worst routes by average delay in the peak month<br>
+    5. Network concentration analysis (broad vs. concentrated)
+  </div>
+</div>
+
+<!-- ═══ Dashboard (hidden until data loads) ═══ -->
+<div id="dashboard">
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card peak">
+      <div class="kpi-label">Peak Month</div>
+      <div class="kpi-value" id="kpi-month">—</div>
+      <div class="kpi-sub" id="kpi-month-sub">worst avg departure delay on record</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Peak Avg Dep Delay</div>
+      <div class="kpi-value" id="kpi-delay">—</div>
+      <div class="kpi-sub">minutes per departed flight</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Peak % Delayed 15+</div>
+      <div class="kpi-value" id="kpi-del15">—</div>
+      <div class="kpi-sub">flights departing ≥ 15 min late</div>
+    </div>
+    <div class="kpi-card ok">
+      <div class="kpi-label">Flights in Peak Month</div>
+      <div class="kpi-value" id="kpi-flights">—</div>
+      <div class="kpi-sub">completed, non-cancelled departures</div>
+    </div>
+  </div>
+
+  <!-- ─── Section 1: Network-Wide Trend ─── -->
+  <div class="card">
+    <div class="section-title">Network-Wide Monthly Trend — AA Departure Delays</div>
+    <p class="section-note">All months with completed AA departures · average departure delay (minutes) · peak month annotated in red</p>
+    <div class="chart-wrap" id="ts-chart-wrap">
+      <canvas id="ts-chart"></canvas>
+    </div>
+    <div class="legend" style="margin-top:14px;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--sky)"></div> Monthly avg delay</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Peak month</div>
+    </div>
+  </div>
+
+  <!-- ─── Section 2: Peak Month Drilldown ─── -->
+  <div style="margin-bottom:8px;">
+    <div class="section-title" style="margin-bottom:0;border-bottom:none;font-size:1.15rem;">Peak Month Drilldown</div>
+    <p class="section-note" id="drilldown-label">Loading contributor data...</p>
+  </div>
+
+  <div class="two-col">
+    <!-- Origin bar chart -->
+    <div class="card" style="margin-bottom:0;">
+      <div class="section-title">Top Origins by Avg Delay</div>
+      <p class="section-note">Origins with ≥ 100 flights · sorted by avg departure delay</p>
+      <div class="chart-wrap" id="origin-chart-wrap">
+        <canvas id="origin-chart"></canvas>
+      </div>
+      <div class="legend" style="margin-top:10px;">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Avg delay &gt; 50 min</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div> 30–50 min</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--sky)"></div> &lt; 30 min</div>
+      </div>
+    </div>
+
+    <!-- Narrative panel -->
+    <div class="card" style="margin-bottom:0;">
+      <div class="section-title">Concentration Analysis</div>
+      <div class="narrative-panel" id="narrative-panel">
+        <p style="color:var(--muted);font-size:0.85rem;">Loading concentration data...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Section 3: Route Table ─── -->
+  <div class="card" style="margin-top:24px;">
+    <div class="section-title">Worst Routes in Peak Month</div>
+    <p class="section-note">Routes with ≥ 30 flights · sorted by avg departure delay · top 15 shown</p>
+    <div class="route-table-wrap" id="route-table-wrap">
+      <p style="color:var(--muted);font-size:0.85rem;padding:16px 0;">Loading route data...</p>
+    </div>
+  </div>
+
+  <!-- ─── Query Ledger ─── -->
+  <div class="card ledger-wrap">
+    <div class="ledger-title">Query Ledger — Data Provenance</div>
+    <div id="ledger"></div>
+  </div>
+
+</div><!-- /#dashboard -->
+
+
+<!-- ═══ Footer — controls ═══ -->
+<footer>
+  <div class="footer-title">Data Connection</div>
+  <div class="footer-grid">
+    <div class="footer-field">
+      <label>JWE Access Token</label>
+      <input type="password" id="jwe-input" placeholder="Paste token here…" autocomplete="off">
+      <div style="margin-top:6px;display:flex;gap:6px;">
+        <button class="btn btn-ghost" id="forget-btn" onclick="forgetToken()" style="font-size:0.78rem;padding:5px 10px;">Forget token</button>
+      </div>
+    </div>
+    <div class="footer-field">
+      <label>Primary SQL Query</label>
+      <textarea id="sql-input">SELECT
+    toStartOfMonth(FlightDate) AS flight_month,
+    count() AS total_flights,
+    round(avg(DepDelay), 2) AS avg_dep_delay_min,
+    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15
+FROM ontime.fact_ontime
+WHERE Reporting_Airline = 'AA'
+  AND Cancelled = 0
+  AND DepDelay IS NOT NULL
+GROUP BY flight_month
+ORDER BY flight_month</textarea>
+    </div>
+    <div class="footer-actions">
+      <button class="btn btn-primary" id="fetch-btn" onclick="startFetch()">Fetch Data</button>
+      <div id="footer-status"></div>
+    </div>
+  </div>
+</footer>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   Constants & State
+═══════════════════════════════════════════════════════ */
+const JWE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+const ENDPOINT = (jwe, sql) =>
+  `https://mcp.demo.altinity.cloud/${jwe}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+
+let isRunning = false;
+let activeRunId = 0;
+let tsChartInst = null;
+let originChartInst = null;
+
+/* ═══════════════════════════════════════════════════════
+   Ledger
+═══════════════════════════════════════════════════════ */
+const ledgerEntries = {};
+let ledgerSeq = 0;
+
+function ledgerAdd(label, role, sql) {
+  const id = 'q' + (++ledgerSeq);
+  ledgerEntries[id] = { id, label, role, sql, status: 'pending', rows: '—' };
+  renderLedger();
+  return id;
+}
+
+function ledgerUpdate(id, status, rows, sql) {
+  if (!ledgerEntries[id]) return;
+  ledgerEntries[id].status = status;
+  ledgerEntries[id].rows = rows ?? ledgerEntries[id].rows;
+  if (sql) ledgerEntries[id].sql = sql;
+  renderLedger();
+}
+
+function renderLedger() {
+  const container = document.getElementById('ledger');
+  container.innerHTML = Object.values(ledgerEntries).map(e => {
+    const statusClass = e.status === 'ok' ? 'status-ok' : e.status === 'pending' ? 'status-pending' : 'status-failed';
+    const statusLabel = e.status === 'ok' ? 'OK' : e.status === 'pending' ? 'Pending' : 'Failed';
+    const escapedSql = (e.sql || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return `
+      <div class="ledger-row" data-id="${e.id}" onclick="toggleLedgerRow('${e.id}')">
+        <span class="ledger-toggle">&#9654;</span>
+        <span class="ledger-label">${e.label}</span>
+        <span class="ledger-role">${e.role}</span>
+        <span class="ledger-status ${statusClass}">${statusLabel}</span>
+        <span class="ledger-rows-count">${e.rows}</span>
+        <div class="ledger-sql-block"><pre>${escapedSql}</pre></div>
+      </div>`;
+  }).join('');
+}
+
+function toggleLedgerRow(id) {
+  const row = document.querySelector(`.ledger-row[data-id="${id}"]`);
+  if (!row) return;
+  const isOpen = row.classList.toggle('open');
+  row.querySelector('.ledger-toggle').innerHTML = isOpen ? '&#9660;' : '&#9654;';
+  const sqlBlock = row.querySelector('.ledger-sql-block');
+  if (sqlBlock) sqlBlock.style.display = isOpen ? 'block' : 'none';
+}
+
+/* ═══════════════════════════════════════════════════════
+   Temporal helpers
+═══════════════════════════════════════════════════════ */
+function normalizeDate(val) {
+  // ClickHouse Date may arrive as ISO timestamp — take first 10 chars
+  return String(val ?? '').slice(0, 10);
+}
+
+function formatMonth(dateKey) {
+  // dateKey: YYYY-MM-DD
+  if (!dateKey || dateKey.length < 7) return dateKey;
+  const [y, m] = dateKey.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m, 10) - 1] ?? m} ${y}`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Fetch helpers
+═══════════════════════════════════════════════════════ */
+function toObjects(columns, rows) {
+  if (!columns || !rows) return [];
+  return rows.map(row => Object.fromEntries(columns.map((c, i) => [c, row[i]])));
+}
+
+async function runQuery(jwe, sql) {
+  const resp = await fetch(ENDPOINT(jwe, sql));
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error(`HTTP ${resp.status}: ${text.slice(0, 300)}`);
+  }
+  const payload = await resp.json();
+  return toObjects(payload.columns ?? [], payload.rows ?? []);
+}
+
+/* ═══════════════════════════════════════════════════════
+   Token management
+═══════════════════════════════════════════════════════ */
+function forgetToken() {
+  localStorage.removeItem(JWE_KEY);
+  document.getElementById('jwe-input').value = '';
+  setFooterStatus('Token cleared from storage.');
+}
+
+function setFooterStatus(msg) {
+  document.getElementById('footer-status').textContent = msg;
+}
+
+/* ═══════════════════════════════════════════════════════
+   KPI helpers
+═══════════════════════════════════════════════════════ */
+function setKpi(id, val) { document.getElementById(id).textContent = val; }
+
+function fmtNum(v, decimals = 1) {
+  if (v == null) return '—';
+  return Number(v).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtInt(v) {
+  if (v == null) return '—';
+  return Number(v).toLocaleString('en-US', { maximumFractionDigits: 0 });
+}
+
+/* ═══════════════════════════════════════════════════════
+   Delay color classifier
+═══════════════════════════════════════════════════════ */
+function delayPillClass(min) {
+  if (min >= 50) return 'pill-red';
+  if (min >= 30) return 'pill-amber';
+  return 'pill-sky';
+}
+
+function originBarColor(min) {
+  if (min >= 50) return getComputedStyle(document.documentElement).getPropertyValue('--red').trim();
+  if (min >= 30) return getComputedStyle(document.documentElement).getPropertyValue('--amber').trim();
+  return getComputedStyle(document.documentElement).getPropertyValue('--sky').trim();
+}
+
+/* ═══════════════════════════════════════════════════════
+   Render: Time-series chart
+═══════════════════════════════════════════════════════ */
+function renderTimeSeries(rows, peakKey) {
+  const ctx = document.getElementById('ts-chart').getContext('2d');
+
+  const labels = rows.map(r => r._dateKey);
+  const delays = rows.map(r => r.avg_dep_delay_min);
+  const peakIdx = rows.findIndex(r => r._dateKey === peakKey);
+
+  const sky = '#3c88b5';
+  const red = '#c54f36';
+
+  const pointColors = labels.map((_, i) => i === peakIdx ? red : sky);
+  const pointSizes  = labels.map((_, i) => i === peakIdx ? 8 : 3);
+  const pointHover  = labels.map((_, i) => i === peakIdx ? 10 : 5);
+
+  if (tsChartInst) tsChartInst.destroy();
+
+  const annotations = {};
+  if (peakIdx >= 0) {
+    annotations.peakLine = {
+      type: 'line',
+      xMin: peakIdx,
+      xMax: peakIdx,
+      borderColor: red,
+      borderWidth: 2,
+      borderDash: [6, 3],
+      label: {
+        display: true,
+        content: 'Peak: ' + formatMonth(peakKey),
+        position: 'start',
+        color: red,
+        font: { size: 11, weight: 'bold' },
+        backgroundColor: 'rgba(255,255,255,0.85)',
+        padding: { x: 6, y: 3 },
+        borderRadius: 4,
+        yAdjust: -4
+      }
+    };
+  }
+
+  // Downsample x-axis labels for readability (show every 12th or so)
+  const tickLabels = labels.map((lbl, i) => {
+    if (lbl.slice(5, 7) === '01' && parseInt(lbl.slice(0, 4), 10) % 4 === 0) return formatMonth(lbl);
+    if (i === peakIdx) return formatMonth(lbl);
+    return '';
+  });
+
+  tsChartInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: tickLabels,
+      datasets: [{
+        label: 'Avg Dep Delay (min)',
+        data: delays,
+        borderColor: sky,
+        borderWidth: 1.8,
+        pointBackgroundColor: pointColors,
+        pointRadius: pointSizes,
+        pointHoverRadius: pointHover,
+        tension: 0.3,
+        fill: {
+          target: 'origin',
+          above: 'rgba(60,136,181,0.07)'
+        }
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => {
+              const idx = items[0].dataIndex;
+              return formatMonth(labels[idx]);
+            },
+            label: (item) => ` Avg Delay: ${fmtNum(item.raw, 2)} min`
+          }
+        },
+        annotation: { annotations }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(22,50,68,0.06)' },
+          ticks: { color: '#5c7080', font: { size: 10 }, maxRotation: 45, autoSkip: false }
+        },
+        y: {
+          grid: { color: 'rgba(22,50,68,0.08)' },
+          ticks: { color: '#5c7080', font: { size: 10 }, callback: v => v + ' min' },
+          title: { display: true, text: 'Avg Departure Delay (min)', color: '#5c7080', font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   Render: Origin bar chart
+═══════════════════════════════════════════════════════ */
+function renderOriginChart(rows) {
+  const ctx = document.getElementById('origin-chart').getContext('2d');
+
+  // Show top 12 by avg delay, reversed so highest is at top of horizontal bar
+  const top = rows.slice(0, 12).reverse();
+  const labels = top.map(r => r.OriginCode);
+  const delays = top.map(r => r.avg_dep_delay_min);
+  const colors = delays.map(d => originBarColor(d));
+
+  if (originChartInst) originChartInst.destroy();
+
+  originChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Avg Dep Delay (min)',
+        data: delays,
+        backgroundColor: colors,
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (item) => {
+              const r = top[item.dataIndex];
+              return [
+                ` Avg Delay: ${fmtNum(r.avg_dep_delay_min, 1)} min`,
+                ` Del15%: ${fmtNum(r.pct_dep_del15, 1)}%`,
+                ` Flights: ${fmtInt(r.flights)}`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(22,50,68,0.08)' },
+          ticks: { color: '#5c7080', font: { size: 10 }, callback: v => v + ' min' }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: '#163244', font: { size: 11, weight: '600' } }
+        }
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   Render: Route table
+═══════════════════════════════════════════════════════ */
+function renderRouteTable(rows, peakLabel) {
+  const wrap = document.getElementById('route-table-wrap');
+  if (!rows || rows.length === 0) {
+    wrap.innerHTML = '<p style="color:var(--muted);padding:16px 0;">No route data available.</p>';
+    return;
+  }
+  const rowsHtml = rows.map((r, i) => {
+    const route = `${r.OriginCode} &#8594; ${r.DestCode}`;
+    const pillClass = delayPillClass(r.avg_dep_delay_min);
+    const highlight = i === 0 ? 'highlight-row' : '';
+    return `
+      <tr class="${highlight}">
+        <td>${i + 1}</td>
+        <td><strong>${route}</strong></td>
+        <td class="num">${fmtInt(r.flights)}</td>
+        <td class="num"><span class="delay-pill ${pillClass}">${fmtNum(r.avg_dep_delay_min, 1)} min</span></td>
+        <td class="num">${fmtNum(r.pct_dep_del15, 1)}%</td>
+      </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Route</th>
+          <th class="num">Flights</th>
+          <th class="num">Avg Dep Delay</th>
+          <th class="num">% Del15</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="legend" style="margin-top:10px;">
+      <div class="legend-item"><span class="delay-pill pill-red" style="width:12px;height:12px;padding:0;border-radius:50%;"></span> &gt; 50 min</div>
+      <div class="legend-item"><span class="delay-pill pill-amber" style="width:12px;height:12px;padding:0;border-radius:50%;"></span> 30–50 min</div>
+      <div class="legend-item"><span class="delay-pill pill-sky" style="width:12px;height:12px;padding:0;border-radius:50%;"></span> &lt; 30 min</div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Render: Narrative / concentration panel
+═══════════════════════════════════════════════════════ */
+function renderNarrative(concRows, originRows, peakRow, peakLabel) {
+  const panel = document.getElementById('narrative-panel');
+  if (!concRows || concRows.length === 0) {
+    panel.innerHTML = '<p style="color:var(--muted);">Concentration data unavailable.</p>';
+    return;
+  }
+
+  const networkAvg = parseFloat(peakRow?.avg_dep_delay_min ?? 0);
+  const totalFlights = parseInt(peakRow?.total_flights ?? 0, 10);
+
+  // Top origins by flight volume
+  const top1 = concRows[0];
+  const top1Pct = parseFloat(top1?.pct_of_total_flights ?? 0);
+  const top1Avg = parseFloat(top1?.avg_dep_delay_min ?? 0);
+
+  // Count origins above network average
+  const aboveAvgCount = concRows.filter(r => parseFloat(r.avg_dep_delay_min) > networkAvg).length;
+  const totalOriginsShown = concRows.length;
+
+  // Top 3 by volume flight share
+  const top3Pct = concRows.slice(0, 3).reduce((s, r) => s + parseFloat(r.pct_of_total_flights ?? 0), 0);
+
+  // Find CLT if present
+  const clt = concRows.find(r => r.OriginCode === 'CLT');
+  const cltNote = clt
+    ? `<strong>CLT</strong> (Charlotte) alone contributed <strong>${fmtNum(parseFloat(clt.pct_of_total_flights), 1)}%</strong> of all flights and averaged <strong>${fmtNum(parseFloat(clt.avg_dep_delay_min), 1)} min</strong> — far above the network average.`
+    : `The top origin (<strong>${top1?.OriginCode}</strong>) alone contributed <strong>${fmtNum(top1Pct, 1)}%</strong> of all peak-month flights and averaged <strong>${fmtNum(top1Avg, 1)} min</strong> delay.`;
+
+  // Determine verdict: concentrated if top 3 share > 40% and top 1 avg > network avg*1.2
+  const isConcentrated = top3Pct > 35 || (clt && parseFloat(clt.avg_dep_delay_min) > networkAvg * 1.15);
+  const verdictClass = isConcentrated ? '' : 'broad';
+  const verdictText  = isConcentrated ? 'CONCENTRATED' : 'BROAD';
+  const verdictDesc  = isConcentrated
+    ? `The ${peakLabel} delay peak was driven by a concentrated set of hubs, not a network-wide surge.`
+    : `The ${peakLabel} delay peak was broad, affecting the majority of the AA network.`;
+
+  panel.innerHTML = `
+    <h4>Is the peak broad or concentrated?</h4>
+    <div class="verdict ${verdictClass}">${verdictText}</div>
+    <p>${verdictDesc}</p>
+    <p style="margin-top:10px;">${cltNote}</p>
+    <p style="margin-top:10px;">
+      Among the top-20 origins by volume, <strong>${aboveAvgCount} of ${totalOriginsShown}</strong> had average delays exceeding the
+      <strong>${fmtNum(networkAvg, 1)} min</strong> network average for ${peakLabel}.
+      The top 3 busiest origins account for <strong>${fmtNum(top3Pct, 1)}%</strong> of all peak-month departures.
+    </p>
+    <div class="narrative-stat">
+      <span>Network avg: ${fmtNum(networkAvg, 1)} min</span>
+      <span>Total flights: ${fmtInt(totalFlights)}</span>
+      <span>Origins above avg: ${aboveAvgCount}/${totalOriginsShown}</span>
+      <span>Top-3 flight share: ${fmtNum(top3Pct, 1)}%</span>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Main fetch orchestration
+═══════════════════════════════════════════════════════ */
+async function startFetch() {
+  if (isRunning) return;
+
+  const jwe = document.getElementById('jwe-input').value.trim();
+  const sql = document.getElementById('sql-input').value.trim();
+
+  if (!jwe) { setFooterStatus('Please enter a JWE token.'); return; }
+  if (!sql) { setFooterStatus('SQL query is empty.'); return; }
+
+  // Persist token
+  localStorage.setItem(JWE_KEY, jwe);
+
+  isRunning = true;
+  const runId = ++activeRunId;
+  document.getElementById('fetch-btn').disabled = true;
+  setFooterStatus('Running primary query…');
+
+  // Reset ledger
+  Object.keys(ledgerEntries).forEach(k => delete ledgerEntries[k]);
+  ledgerSeq = 0;
+
+  // Hide empty state, show dashboard shell
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  // ── Primary query ──
+  const primaryId = ledgerAdd('Monthly AA Trend', 'Primary', sql);
+  let monthlyRows;
+
+  try {
+    monthlyRows = await runQuery(jwe, sql);
+    if (runId !== activeRunId) return;
+
+    // Normalize dates
+    monthlyRows.forEach(r => { r._dateKey = normalizeDate(r.flight_month); });
+    monthlyRows.sort((a, b) => a._dateKey.localeCompare(b._dateKey));
+
+    ledgerUpdate(primaryId, 'ok', monthlyRows.length);
+    setFooterStatus(`Primary query: ${monthlyRows.length} months loaded.`);
+
+    // Find peak month (max avg_dep_delay_min)
+    const peakRow = monthlyRows.reduce((best, r) =>
+      parseFloat(r.avg_dep_delay_min) > parseFloat(best.avg_dep_delay_min) ? r : best,
+      monthlyRows[0]);
+
+    const peakKey   = peakRow._dateKey;           // e.g. "2024-07-01"
+    const peakMonth = peakKey.slice(0, 7) + '-01'; // ensure YYYY-MM-01 for SQL
+    const peakLabel = formatMonth(peakKey);
+
+    // KPIs
+    setKpi('kpi-month', peakLabel);
+    document.getElementById('kpi-month-sub').textContent = `worst avg departure delay · vs ${fmtNum(monthlyRows.reduce((s, r) => s + parseFloat(r.avg_dep_delay_min), 0) / monthlyRows.length, 1)} min overall avg`;
+    setKpi('kpi-delay', fmtNum(peakRow.avg_dep_delay_min, 2) + ' min');
+    setKpi('kpi-del15', fmtNum(peakRow.pct_dep_del15, 2) + '%');
+    setKpi('kpi-flights', fmtInt(peakRow.total_flights));
+
+    document.getElementById('drilldown-label').textContent =
+      `Showing contributor analysis for ${peakLabel} — ${fmtInt(peakRow.total_flights)} completed AA departures, ${fmtNum(peakRow.avg_dep_delay_min, 2)} min avg delay`;
+
+    // Render time series
+    renderTimeSeries(monthlyRows, peakKey);
+
+  } catch (err) {
+    if (runId !== activeRunId) return;
+    ledgerUpdate(primaryId, 'failed', null);
+    setFooterStatus('Primary query failed: ' + err.message);
+    document.getElementById('fetch-btn').disabled = false;
+    isRunning = false;
+    return;
+  }
+
+  // From here: enrichment queries (failures degrade only their component)
+  const peakRow = monthlyRows.reduce((best, r) =>
+    parseFloat(r.avg_dep_delay_min) > parseFloat(best.avg_dep_delay_min) ? r : best, monthlyRows[0]);
+  const peakKey   = peakRow._dateKey;
+  const peakMonth = peakKey.slice(0, 7) + '-01';
+  const peakLabel = formatMonth(peakKey);
+
+  // ── Origin contributors ──
+  const originSql = `SELECT
+    OriginCode,
+    count() AS flights,
+    round(avg(DepDelay), 2) AS avg_dep_delay_min,
+    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15
+FROM ontime.fact_ontime
+WHERE Reporting_Airline = 'AA'
+  AND Cancelled = 0
+  AND DepDelay IS NOT NULL
+  AND toStartOfMonth(FlightDate) = '${peakMonth}'
+GROUP BY OriginCode
+HAVING flights >= 100
+ORDER BY avg_dep_delay_min DESC
+LIMIT 15`;
+
+  const originId = ledgerAdd(`Origin Contributors (${peakLabel})`, 'Enrichment', originSql);
+  let originRows = [];
+  try {
+    originRows = await runQuery(jwe, originSql);
+    if (runId !== activeRunId) return;
+    ledgerUpdate(originId, 'ok', originRows.length);
+    renderOriginChart(originRows);
+  } catch (err) {
+    if (runId !== activeRunId) return;
+    ledgerUpdate(originId, 'failed', null);
+    document.getElementById('origin-chart-wrap').innerHTML =
+      `<p style="color:var(--red);font-size:0.85rem;padding:16px;">Origin query failed: ${err.message}</p>`;
+  }
+
+  // ── Route contributors ──
+  const routeSql = `SELECT
+    OriginCode,
+    DestCode,
+    count() AS flights,
+    round(avg(DepDelay), 2) AS avg_dep_delay_min,
+    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15
+FROM ontime.fact_ontime
+WHERE Reporting_Airline = 'AA'
+  AND Cancelled = 0
+  AND DepDelay IS NOT NULL
+  AND toStartOfMonth(FlightDate) = '${peakMonth}'
+GROUP BY OriginCode, DestCode
+HAVING flights >= 30
+ORDER BY avg_dep_delay_min DESC
+LIMIT 15`;
+
+  const routeId = ledgerAdd(`Route Contributors (${peakLabel})`, 'Enrichment', routeSql);
+  try {
+    const routeRows = await runQuery(jwe, routeSql);
+    if (runId !== activeRunId) return;
+    ledgerUpdate(routeId, 'ok', routeRows.length);
+    renderRouteTable(routeRows, peakLabel);
+  } catch (err) {
+    if (runId !== activeRunId) return;
+    ledgerUpdate(routeId, 'failed', null);
+    document.getElementById('route-table-wrap').innerHTML =
+      `<p style="color:var(--red);font-size:0.85rem;padding:16px;">Route query failed: ${err.message}</p>`;
+  }
+
+  // ── Concentration pattern ──
+  const concSql = `SELECT
+    OriginCode,
+    count() AS flights,
+    round(100.0 * count() / sum(count()) OVER (), 2) AS pct_of_total_flights,
+    round(avg(DepDelay), 2) AS avg_dep_delay_min,
+    round(100.0 * sum(DepDel15) / count(), 2) AS pct_dep_del15
+FROM ontime.fact_ontime
+WHERE Reporting_Airline = 'AA'
+  AND Cancelled = 0
+  AND DepDelay IS NOT NULL
+  AND toStartOfMonth(FlightDate) = '${peakMonth}'
+GROUP BY OriginCode
+ORDER BY flights DESC
+LIMIT 20`;
+
+  const concId = ledgerAdd(`Concentration Pattern (${peakLabel})`, 'Enrichment', concSql);
+  try {
+    const concRows = await runQuery(jwe, concSql);
+    if (runId !== activeRunId) return;
+    ledgerUpdate(concId, 'ok', concRows.length);
+    renderNarrative(concRows, originRows, peakRow, peakLabel);
+  } catch (err) {
+    if (runId !== activeRunId) return;
+    ledgerUpdate(concId, 'failed', null);
+    document.getElementById('narrative-panel').innerHTML =
+      `<p style="color:var(--red);font-size:0.85rem;">Concentration query failed: ${err.message}</p>`;
+  }
+
+  // Done
+  if (runId !== activeRunId) return;
+  setFooterStatus('All queries complete.');
+  document.getElementById('fetch-btn').disabled = false;
+  isRunning = false;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Page init
+═══════════════════════════════════════════════════════ */
+(function init() {
+  const stored = localStorage.getItem(JWE_KEY);
+  if (stored) {
+    document.getElementById('jwe-input').value = stored;
+    // Auto-run
+    setTimeout(startFetch, 100);
+  }
+})();
+</script>
+</body>
+</html>

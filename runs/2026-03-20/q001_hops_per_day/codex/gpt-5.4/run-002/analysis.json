@@ -1,0 +1,22 @@
+{
+  "sql": "WITH airport_offsets AS\n(\n    SELECT\n        airport_id,\n        any(utc_local_time_variation) AS utc_local_time_variation\n    FROM ontime.airports_latest\n    GROUP BY airport_id\n),\nlegs AS\n(\n    SELECT\n        o.FlightDate,\n        o.TailNum,\n        o.FlightNum,\n        o.Carrier,\n        o.OriginAirportID,\n        o.DestAirportID,\n        o.Origin,\n        o.Dest,\n        o.DepTime,\n        toDateTime(o.FlightDate)\n            + toIntervalDay(if(o.DepTime = 2400, 1, 0))\n            + toIntervalMinute(intDiv(if(o.DepTime = 2400, 0, o.DepTime), 100) * 60 + modulo(if(o.DepTime = 2400, 0, o.DepTime), 100)) AS dep_local_ts,\n        (\n            if(length(a1o.utc_local_time_variation) = 5,\n                if(substring(a1o.utc_local_time_variation, 1, 1) = '-', -1, 1)\n                * (toInt32(substring(a1o.utc_local_time_variation, 2, 2)) * 60 + toInt32(substring(a1o.utc_local_time_variation, 4, 2))),\n                0\n            )\n        ) AS origin_offset_minutes\n    FROM ontime.ontime AS o\n    LEFT JOIN airport_offsets AS a1o ON o.OriginAirportID = a1o.airport_id\n    WHERE o.Cancelled = 0\n      AND o.Diverted = 0\n      AND o.DepTime IS NOT NULL\n      AND o.TailNum != ''\n      AND o.FlightNum != ''\n),\nitineraries AS\n(\n    SELECT\n        FlightDate,\n        TailNum,\n        FlightNum,\n        Carrier,\n        length(ordered_legs) AS Hops,\n        arrayStringConcat(\n            arrayMap(x -\u003e concat(formatDateTime(x.2, '%H:%i'), ' ', x.3, '-\u003e', x.4), ordered_legs),\n            ' | '\n        ) AS Route\n    FROM\n    (\n        SELECT\n            FlightDate,\n            TailNum,\n            FlightNum,\n            Carrier,\n            arraySort(x -\u003e x.1, groupArray((\n                dep_local_ts - toIntervalMinute(origin_offset_minutes),\n                dep_local_ts,\n                Origin,\n                Dest\n            ))) AS ordered_legs\n        FROM legs\n        GROUP BY\n            FlightDate,\n            TailNum,\n            FlightNum,\n            Carrier\n    )\n),\nmax_hops AS\n(\n    SELECT max(Hops) AS max_hops_observed FROM itineraries\n),\nmax_hops_counts AS\n(\n    SELECT count() AS max_hop_itinerary_count\n    FROM itineraries\n    CROSS JOIN max_hops\n    WHERE Hops = max_hops_observed\n)\nSELECT\n    TailNum AS `Aircraft ID`,\n    FlightNum AS `Flight Number`,\n    Carrier,\n    FlightDate AS Date,\n    Hops,\n    Route,\n    max_hops_observed AS `Maximum Hops Observed`,\n    max_hop_itinerary_count AS `Maximum-Hop Itinerary Count`\nFROM itineraries\nCROSS JOIN max_hops\nCROSS JOIN max_hops_counts\nORDER BY\n    Hops DESC,\n    Date DESC,\n    Carrier,\n    `Flight Number`,\n    `Aircraft ID`\nLIMIT 10",
+  "report_markdown": "# Highest daily hops for one aircraft on one flight number\n\n{{data_overview_md}}\n\nThe key derived value is {{metric.primary_value}}.\n\n{{result_table_md}}\n\nThe maximum-hop pattern should be characterized as {{metric.recurrence_signal}}. The single most recent itinerary among the maximum-hop rows is {{metric.most_recent_max_itinerary}}. Across the top 10 longest itineraries, the main route clustering signal is {{metric.route_cluster_summary}}.",
+  "metrics": {
+    "summary_facts": [
+      "State the maximum value in `Maximum Hops Observed` and use `Maximum-Hop Itinerary Count` to judge whether the pattern is recurring or closer to a one-off.",
+      "Identify the first row as the most recent itinerary among the maximum-hop rows and summarize its carrier, flight number, date, and full route.",
+      "Describe the most visible repeated route or flight-number clustering across the 10 returned itineraries."
+    ],
+    "named_values": {
+      "most_recent_max_itinerary": "carrier, flight number, date, and route from the first row in the result set",
+      "primary_value": "maximum value in `Maximum Hops Observed`",
+      "recurrence_signal": "interpretation of `Maximum-Hop Itinerary Count` as a recurring pattern or a one-off itinerary",
+      "route_cluster_summary": "short description of the dominant repeated route or flight-number cluster visible across the top 10 rows"
+    },
+    "named_lists": {
+      "example_list": [
+        "Ordered list of the strongest repeated route signatures or clustered itinerary patterns visible in the top 10 rows"
+      ]
+    }
+  }
+}

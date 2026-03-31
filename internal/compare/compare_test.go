@@ -277,14 +277,14 @@ func TestBuildAnalysisPromptIncludesPresentationArtifacts(t *testing.T) {
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/report.md",
 		"2026-03-16/q003_delta_atl_departure_delay_hotspots/gemini/gemini-3.1-pro-preview/run-001/visual.html",
-		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freport.md",
-		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freview.md",
-		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Fprompt.report.md",
-		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Fprompt.visual.md",
-		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
-		"https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
-		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_src",
-		"https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/tree/main/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_build",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freport.md",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Freview.md",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Fprompt.report.md",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-16%2Fq003_delta_atl_departure_delay_hotspots%2Fclaude%2Fopus%2Frun-001%2Fprompt.visual.md",
+		"https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/query.sql",
+		"https://boristyshkevich.github.io/ExploringDatabyLLMs/runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual.html",
+		"https://github.com/BorisTyshkevich/ExploringDatabyLLMs/tree/main/runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_src",
+		"https://github.com/BorisTyshkevich/ExploringDatabyLLMs/tree/main/runs/2026-03-16/q003_delta_atl_departure_delay_hotspots/claude/opus/run-001/visual_build",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)
@@ -360,9 +360,9 @@ func TestBuildAnalysisPromptIncludesMultiQuerySQLArtifacts(t *testing.T) {
 		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/main.sql",
 		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
 		"2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
-		"main.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/main.sql",
-		"q1.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
-		"q2.sql: https://github.com/boristyshkevich/ExploringDatabyLLMs-runs/blob/main/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
+		"main.sql: https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/main.sql",
+		"q1.sql: https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q1.sql",
+		"q2.sql: https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/runs/2026-03-24/q006_peak_aa_delay_month_network/codex/gpt-5.4/run-002/queries/q2.sql",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected prompt to contain %q, got:\n%s", want, got)
@@ -383,10 +383,10 @@ func TestPublishedRelativePathAndURLs(t *testing.T) {
 	if got.LocalPath != "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md" {
 		t.Fatalf("unexpected local path: %s", got.LocalPath)
 	}
-	if got.PublishedPath != "2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md" {
+	if got.PublishedPath != "runs/2026-03-17/q001_hops_per_day/codex/gpt-5.4/run-003/report.md" {
 		t.Fatalf("unexpected published path: %s", got.PublishedPath)
 	}
-	if got.URL != "https://boristyshkevich.github.io/ExploringDatabyLLMs-runs/md.html?file=2026-03-17%2Fq001_hops_per_day%2Fcodex%2Fgpt-5.4%2Frun-003%2Freport.md" {
+	if got.URL != "https://boristyshkevich.github.io/ExploringDatabyLLMs/md.html?file=runs%2F2026-03-17%2Fq001_hops_per_day%2Fcodex%2Fgpt-5.4%2Frun-003%2Freport.md" {
 		t.Fatalf("unexpected report URL: %s", got.URL)
 	}
 }

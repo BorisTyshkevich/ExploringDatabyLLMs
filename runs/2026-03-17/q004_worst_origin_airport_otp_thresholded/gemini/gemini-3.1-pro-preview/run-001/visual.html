@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Worst origin airports by departure on-time performance</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-top: #eaf3f8;
+            --bg-bottom: #f6fafc;
+            --panel: #ffffff;
+            --panel-alt: #f3f7fa;
+            --ink: #163244;
+            --muted: #5d7485;
+            --navy: #0e3a52;
+            --slate: #5c7080;
+            --sky: #3c88b5;
+            --teal: #1f8a70;
+            --amber: #d48a1f;
+            --red: #c54f36;
+            --border: rgba(22, 50, 68, 0.10);
+            --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+            --radius-lg: 16px;
+            --radius-sm: 8px;
+        }
+        body { margin: 0; font-family: "Segoe UI", "Helvetica Neue", sans-serif; background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+        .header { background: var(--navy); color: white; padding: 2rem 1rem; text-align: center; }
+        .header h1 { margin: 0 0 0.5rem; font-family: Georgia, ui-serif, serif; font-size: 2rem; }
+        .header p { margin: 0; color: var(--panel-alt); opacity: 0.9; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 2rem 1rem; width: 100%; box-sizing: border-box; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--panel); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .kpi-label { color: var(--slate); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; font-weight: 600; }
+        .kpi-value { font-size: 2.25rem; font-weight: 600; color: var(--navy); }
+        .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .chart-container { position: relative; height: 400px; width: 100%; }
+        .card h2 { margin-top: 0; margin-bottom: 1.5rem; font-family: Georgia, ui-serif, serif; color: var(--navy); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+        th, td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+        th { color: var(--slate); font-weight: 600; background: var(--panel-alt); }
+        tbody tr:hover { background: var(--panel-alt); }
+        .footer-control { background: var(--panel); padding: 2rem 1rem; border-top: 1px solid var(--border); margin-top: auto; }
+        .control-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center; max-width: 800px; }
+        .control-row input[type="password"] { flex: 1; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 1rem; }
+        .btn { padding: 0.75rem 1.5rem; border: none; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; font-size: 1rem; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary { background: var(--navy); color: white; }
+        .btn-secondary { background: var(--panel-alt); color: var(--ink); border: 1px solid var(--border); }
+        textarea { width: 100%; height: 250px; padding: 1rem; font-family: monospace; font-size: 0.9rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fafafa; box-sizing: border-box; }
+        
+        .ledger-entry { border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+        .ledger-header { display: flex; padding: 0.75rem 1rem; background: var(--panel-alt); cursor: pointer; align-items: center; gap: 1rem; font-family: monospace; font-size: 0.9rem; }
+        .ledger-status { padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; }
+        .status-Pending { background: var(--amber); color: white; }
+        .status-OK { background: var(--teal); color: white; }
+        .status-Failed { background: var(--red); color: white; }
+        .ledger-sql { padding: 1rem; background: var(--ink); color: #fff; font-family: monospace; margin: 0; overflow-x: auto; display: none; white-space: pre-wrap; font-size: 0.85rem; }
+        .ledger-entry.expanded .ledger-sql { display: block; }
+        .error-panel { display: none; background: var(--red); color: white; padding: 1.5rem; border-radius: var(--radius-lg); margin-bottom: 2rem; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Worst Origin Airports</h1>
+    <p>Ranked by departure on-time performance (min 50,000 departures)</p>
+</div>
+
+<div class="container error-panel" id="error-panel"></div>
+
+<div class="container" id="dashboard" style="display: none;">
+    <div class="kpi-grid">
+        <div class="card kpi-card">
+            <div class="kpi-label">Worst Airport</div>
+            <div class="kpi-value" id="kpi-worst-airport">-</div>
+        </div>
+        <div class="card kpi-card">
+            <div class="kpi-label">Worst OTP</div>
+            <div class="kpi-value" id="kpi-worst-otp">-</div>
+        </div>
+        <div class="card kpi-card">
+            <div class="kpi-label">Highest Avg Delay</div>
+            <div class="kpi-value" id="kpi-highest-delay">-</div>
+        </div>
+        <div class="card kpi-card">
+            <div class="kpi-label">Ranked Airports</div>
+            <div class="kpi-value" id="kpi-count">-</div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="card">
+            <h2>Departure OTP (%)</h2>
+            <div class="chart-container">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Departures vs. OTP</h2>
+            <div class="chart-container">
+                <canvas id="scatterChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem; overflow-x: auto;">
+        <h2>Detailed Rankings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Origin</th>
+                    <th>Location</th>
+                    <th>Departures</th>
+                    <th>OTP %</th>
+                    <th>Avg Delay (m)</th>
+                    <th>P90 Delay (m)</th>
+                    <th>Period</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>Query Ledger</h2>
+        <div class="ledger-entry" id="primary-ledger">
+            <div class="ledger-header" onclick="toggleLedger()">
+                <span id="l-icon" class="ledger-toggle" style="width: 1em;">▶</span>
+                <span class="ledger-role" style="flex:1;">Primary Analytical Query</span>
+                <span id="l-status" class="ledger-status status-Pending">Pending</span>
+                <span id="l-rows" class="ledger-rows" style="width: 5em; text-align: right;">-</span>
+            </div>
+            <pre id="l-sql" class="ledger-sql"></pre>
+        </div>
+    </div>
+</div>
+
+<div class="footer-control">
+    <div class="container" style="padding-top: 0; padding-bottom: 0;">
+        <h3 style="margin-top: 0; color: var(--navy); font-family: Georgia, serif;">Data Connection</h3>
+        <p style="color: var(--slate); margin-bottom: 1.5rem;">Provide an MCP JWE token to execute the analytical query securely.</p>
+        <div class="control-row">
+            <input type="password" id="jwe-input" placeholder="Enter JWE Token" />
+            <button class="btn btn-secondary" onclick="forgetToken()">Forget</button>
+            <button class="btn btn-primary" onclick="executeQuery()">Execute Query</button>
+        </div>
+        <textarea id="sql-input">WITH OriginStats AS (
+    SELECT
+        Origin,
+        any(OriginCityName) AS OriginCityName,
+        any(OriginState) AS OriginState,
+        count() AS CompletedDepartures,
+        countIf(DepDel15 = 0) / count() AS DepartureOtpPct,
+        avg(DepDelayMinutes) AS AvgDepDelayMinutes,
+        quantile(0.90)(DepDelayMinutes) AS P90DepDelayMinutes,
+        min(FlightDate) AS FirstFlightDate,
+        max(FlightDate) AS LastFlightDate
+    FROM default.ontime_v2
+    WHERE Cancelled = 0
+    GROUP BY Origin
+    HAVING CompletedDepartures >= 50000
+)
+SELECT
+    Origin,
+    OriginCityName,
+    OriginState,
+    CompletedDepartures,
+    DepartureOtpPct,
+    AvgDepDelayMinutes,
+    P90DepDelayMinutes,
+    FirstFlightDate,
+    LastFlightDate
+FROM OriginStats
+ORDER BY
+    DepartureOtpPct ASC,
+    AvgDepDelayMinutes DESC,
+    CompletedDepartures DESC,
+    Origin ASC
+LIMIT 25;</textarea>
+    </div>
+</div>
+
+<script>
+const AUTH_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+let barChart, scatterChart;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const stored = localStorage.getItem(AUTH_KEY);
+    if (stored) {
+        document.getElementById('jwe-input').value = stored;
+    }
+});
+
+function normalizeDate(val) {
+    if (!val) return '';
+    return String(val).slice(0, 10);
+}
+
+async function executeQuery() {
+    const token = document.getElementById('jwe-input').value.trim();
+    const query = document.getElementById('sql-input').value.trim();
+    const errorPanel = document.getElementById('error-panel');
+    
+    if (!token || !query) {
+        errorPanel.style.display = 'block';
+        errorPanel.innerText = 'Please provide both a token and a query.';
+        return;
+    }
+    
+    localStorage.setItem(AUTH_KEY, token);
+    
+    // Update Ledger
+    document.getElementById('l-status').className = 'ledger-status status-Pending';
+    document.getElementById('l-status').innerText = 'Pending';
+    document.getElementById('l-rows').innerText = '-';
+    document.getElementById('l-sql').innerText = query;
+    
+    errorPanel.style.display = 'none';
+    
+    try {
+        const url = 'https://mcp.demo.altinity.cloud/' + encodeURIComponent(token) + '/openapi/execute_query?query=' + encodeURIComponent(query);
+        const res = await fetch(url);
+        
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(errText || 'HTTP ' + res.status);
+        }
+        
+        const data = await res.json();
+        const rows = data.rows || [];
+        
+        document.getElementById('l-status').className = 'ledger-status status-OK';
+        document.getElementById('l-status').innerText = 'OK';
+        document.getElementById('l-rows').innerText = rows.length + ' rows';
+        
+        renderDashboard(rows);
+    } catch (e) {
+        document.getElementById('l-status').className = 'ledger-status status-Failed';
+        document.getElementById('l-status').innerText = 'Failed';
+        
+        errorPanel.style.display = 'block';
+        errorPanel.innerText = 'Error: ' + e.message;
+        document.getElementById('dashboard').style.display = 'none';
+    }
+}
+
+function forgetToken() {
+    localStorage.removeItem(AUTH_KEY);
+    document.getElementById('jwe-input').value = '';
+}
+
+function toggleLedger() {
+    const entry = document.getElementById('primary-ledger');
+    entry.classList.toggle('expanded');
+    const icon = document.getElementById('l-icon');
+    icon.innerText = entry.classList.contains('expanded') ? '▼' : '▶';
+}
+
+function renderDashboard(rows) {
+    if (!rows || rows.length === 0) {
+        const ep = document.getElementById('error-panel');
+        ep.style.display = 'block';
+        ep.innerText = 'Query returned 0 rows.';
+        document.getElementById('dashboard').style.display = 'none';
+        return;
+    }
+    
+    document.getElementById('dashboard').style.display = 'block';
+    
+    const worst = rows[0];
+    document.getElementById('kpi-worst-airport').innerText = worst.Origin;
+    document.getElementById('kpi-worst-otp').innerText = (worst.DepartureOtpPct * 100).toFixed(1) + '%';
+    
+    const maxDelay = Math.max(...rows.map(r => Number(r.AvgDepDelayMinutes)));
+    document.getElementById('kpi-highest-delay').innerText = maxDelay.toFixed(1) + ' m';
+    document.getElementById('kpi-count').innerText = rows.length;
+    
+    renderBarChart(rows);
+    renderScatterChart(rows);
+    
+    const tbody = document.getElementById('table-body');
+    tbody.innerHTML = '';
+    rows.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><strong>${r.Origin}</strong></td>
+            <td>${r.OriginCityName}, ${r.OriginState}</td>
+            <td>${Number(r.CompletedDepartures).toLocaleString()}</td>
+            <td>${(r.DepartureOtpPct * 100).toFixed(1)}%</td>
+            <td>${Number(r.AvgDepDelayMinutes).toFixed(1)}</td>
+            <td>${Number(r.P90DepDelayMinutes).toFixed(1)}</td>
+            <td style="white-space:nowrap; font-size: 0.85em;">${normalizeDate(r.FirstFlightDate)}<br>to ${normalizeDate(r.LastFlightDate)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderBarChart(rows) {
+    const ctx = document.getElementById('barChart').getContext('2d');
+    if (barChart) barChart.destroy();
+    
+    const labels = rows.map((r, i) => i === 0 ? r.Origin + ' (Worst)' : r.Origin);
+    const data = rows.map(r => r.DepartureOtpPct * 100);
+    const bgColors = rows.map((r, i) => i < 5 ? '#c54f36' : '#3c88b5');
+    
+    barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: bgColors,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { 
+                    title: { display: true, text: 'On-Time Performance (%)', color: '#5c7080' },
+                    min: Math.max(0, Math.floor(Math.min(...data) - 2)) 
+                },
+                y: {
+                    ticks: { color: '#163244', font: { weight: '600' } }
+                }
+            }
+        }
+    });
+}
+
+function renderScatterChart(rows) {
+    const ctx = document.getElementById('scatterChart').getContext('2d');
+    if (scatterChart) scatterChart.destroy();
+    
+    const points = rows.map((r, i) => ({
+        x: Number(r.CompletedDepartures),
+        y: r.DepartureOtpPct * 100,
+        origin: i === 0 ? r.Origin + ' (Worst)' : r.Origin,
+        isWorst5: i < 5
+    }));
+    
+    scatterChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                data: points,
+                backgroundColor: points.map(p => p.isWorst5 ? '#c54f36' : '#3c88b5'),
+                pointRadius: points.map(p => p.origin.includes('Worst') ? 8 : 5),
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => {
+                            const p = ctx.raw;
+                            return `${p.origin}: ${p.x.toLocaleString()} deps, ${p.y.toFixed(1)}% OTP`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { 
+                    type: 'logarithmic',
+                    title: { display: true, text: 'Completed Departures (Log Scale)', color: '#5c7080' },
+                    ticks: { callback: function(value) { return Number(value).toLocaleString(); } }
+                },
+                y: { 
+                    title: { display: true, text: 'Departure OTP (%)', color: '#5c7080' }
+                }
+            }
+        }
+    });
+}
+</script>
+</body>
+</html>

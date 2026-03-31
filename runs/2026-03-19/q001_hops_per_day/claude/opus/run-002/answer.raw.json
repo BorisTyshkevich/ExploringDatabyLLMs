@@ -1,0 +1,30 @@
+{
+  "sql": "WITH sorted AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        count() AS Hops,\n        arraySort(x -> x.1, groupArray(tuple(DepTime, Origin, Dest))) AS legs\n    FROM ontime.ontime\n    WHERE Tail_Number != '' AND DepTime IS NOT NULL\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate\n    HAVING Hops >= 6\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    IATA_CODE_Reporting_Airline,\n    FlightDate,\n    Hops,\n    arrayStringConcat(arrayMap(x -> x.2, legs), ' -> ')\n        || ' -> ' || legs[length(legs)].3 AS Route,\n    arrayStringConcat(\n        arrayMap(\n            x -> concat(x.2, ' ', lpad(toString(x.1 DIV 100), 2, '0'), ':', lpad(toString(x.1 MOD 100), 2, '0')),\n            legs\n        ), ', '\n    ) AS DepSchedule\nFROM sorted\nORDER BY Hops DESC, FlightDate DESC\nLIMIT 10",
+  "report_markdown": "# {{question_title}}\n\n{{data_overview_md}}\n\n## Key finding\n\nThe maximum observed hop count is **{{metric.max_hops}}** legs in a single day for one aircraft operating under one flight number. All {{metric.max_hops}}-hop itineraries belong to **{{metric.carrier}}** (Southwest Airlines), reflecting its characteristic point-to-point, multi-stop scheduling model.\n\n## Most recent maximum-hop itinerary\n\nThe most recent {{metric.max_hops}}-hop itinerary was **{{metric.most_recent_carrier}} {{metric.most_recent_flight}}** on **{{metric.most_recent_date}}**, aircraft **{{metric.most_recent_tail}}**, flying the route:\n\n> {{metric.most_recent_route}}\n\nDeparture times from each origin: {{metric.most_recent_schedule}}\n\nThe aircraft began its day at ISP (Long Island MacArthur) at 05:43 and reached SEA (Seattle-Tacoma) after 20:41, covering eight legs coast-to-coast over roughly 15 hours.\n\n## Route repetition and clustering\n\nAmong the top 10 longest itineraries, strong route repetition is evident:\n\n- **WN 3149** (CLE -> BNA -> PNS -> HOU -> MCI -> PHX -> BUR -> OAK -> DEN) appears **4 times** across January-February 2024, indicating a recurring weekly schedule pattern.\n- **WN 2787** (MSY -> ATL -> CMH -> BWI -> RDU -> BNA -> DTW -> MDW -> LAX) appears **3 times** across September-October 2022.\n- **WN 154** (ELP -> DAL -> LIT -> ATL -> RIC -> MDW -> MCI -> PHX -> SAN) appears **twice** in April 2023.\n- **WN 366** appears once with a distinct route (ISP -> BWI -> MYR -> BNA -> VPS -> DAL -> LAS -> OAK -> SEA).\n\nThese are clearly **repeating weekly operating patterns**, not one-off itineraries. Southwest regularly assigns a single flight number to an aircraft that hops across the country through 8 or more cities in a single day.\n\n## Top 10 results\n\n{{result_table_md}}",
+  "metrics": {
+    "summary_facts": [
+      "The maximum hop count is 8 legs in a single day for one aircraft on one flight number.",
+      "All top-10 itineraries belong to Southwest Airlines (WN).",
+      "WN 3149 repeats the same 8-hop CLE-to-DEN route 4 times in Jan-Feb 2024.",
+      "WN 2787 repeats the same 8-hop MSY-to-LAX route 3 times in Sep-Oct 2022."
+    ],
+    "named_values": {
+      "max_hops": "8",
+      "carrier": "WN (Southwest Airlines)",
+      "most_recent_tail": "N957WN",
+      "most_recent_flight": "366",
+      "most_recent_carrier": "WN",
+      "most_recent_date": "2024-12-01",
+      "most_recent_route": "ISP -> BWI -> MYR -> BNA -> VPS -> DAL -> LAS -> OAK -> SEA",
+      "most_recent_schedule": "ISP 05:43, BWI 08:10, MYR 10:20, BNA 11:42, VPS 14:01, DAL 16:43, LAS 18:28, OAK 20:41"
+    },
+    "named_lists": {
+      "repeated_routes": [
+        "WN 3149: CLE -> BNA -> PNS -> HOU -> MCI -> PHX -> BUR -> OAK -> DEN (4 occurrences)",
+        "WN 2787: MSY -> ATL -> CMH -> BWI -> RDU -> BNA -> DTW -> MDW -> LAX (3 occurrences)",
+        "WN 154: ELP -> DAL -> LIT -> ATL -> RIC -> MDW -> MCI -> PHX -> SAN (2 occurrences)",
+        "WN 366: ISP -> BWI -> MYR -> BNA -> VPS -> DAL -> LAS -> OAK -> SEA (1 occurrence)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": [
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "Carrier",
+    "FlightDate",
+    "Hops",
+    "Route",
+    "DepartureTimes"
+  ],
+  "row_count": 10,
+  "sample_rows": [
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0543 (ISP), 0810 (BWI), 1020 (MYR), 1142 (BNA), 1401 (VPS), 1643 (DAL), 1828 (LAS), 2041 (OAK)",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "366",
+      "Hops": 8,
+      "Route": "ISP → BWI → MYR → BNA → VPS → DAL → LAS → OAK → SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0621 (CLE), 0801 (BNA), 1007 (PNS), 1234 (HOU), 1514 (MCI), 1747 (PHX), 1902 (BUR), 2117 (OAK)",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+      "Tail_Number": "N7835A"
+    }
+  ],
+  "field_shape_notes": {
+    "FlightDate": "ISO-like timestamp string"
+  },
+  "mode_hint": "Dynamic mode still fetches live data in the browser via query.sql and the configured endpoint."
+}

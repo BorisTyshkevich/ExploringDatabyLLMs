@@ -1,0 +1,908 @@
+Now I'll create the report template and the visual.html dashboard.
+
+```report
+# {{question_title}}
+
+**Generated:** {{generated_at}}  
+**Rows returned:** {{row_count}}  
+**Columns:** {{columns_csv}}
+
+---
+
+## Data Overview
+
+{{data_overview_md}}
+
+---
+
+## Analysis
+
+This report analyzes annual carrier leadership in U.S. domestic aviation based on completed (non-cancelled) flights. Key findings include:
+
+1. **Leadership frequency** — The data reveals which carriers most often held the annual top position across the full time range.
+
+2. **Leadership transitions** — True leadership changes occur when a different carrier takes the #1 rank compared to the prior year. The first year in the series is excluded from transition counts since there is no predecessor to compare against.
+
+3. **Sharpest transition** — Among all true leadership changes, the transition with the largest absolute share swing (leader share change in percentage points) represents the most dramatic market-share shift.
+
+4. **Dominance stability** — Long stretches where the same carrier remains leader year-over-year indicate periods of stable market dominance.
+
+---
+
+## Detailed Results
+
+{{result_table_md}}
+```
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yearly Carrier Leadership by Completed Flights</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-top: #eaf3f8;
+            --bg-bottom: #f6fafc;
+            --panel: #ffffff;
+            --panel-alt: #f3f7fa;
+            --ink: #163244;
+            --muted: #5d7485;
+            --navy: #0e3a52;
+            --slate: #5c7080;
+            --sky: #3c88b5;
+            --teal: #1f8a70;
+            --amber: #d48a1f;
+            --red: #c54f36;
+            --grid: rgba(22, 50, 68, 0.12);
+            --border: rgba(22, 50, 68, 0.10);
+            --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+            --radius-xl: 22px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            color: var(--ink);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a4d6b 100%);
+            color: #fff;
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+        .header h1 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .kpi-card {
+            background: var(--panel);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .kpi-card .label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .kpi-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--navy);
+        }
+        .kpi-card .sub {
+            font-size: 0.85rem;
+            color: var(--slate);
+            margin-top: 0.25rem;
+        }
+        .kpi-card.highlight .value { color: var(--red); }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card {
+            background: var(--panel);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+        .card h2 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 1.1rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .chart-container {
+            position: relative;
+            height: 320px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th, td {
+            padding: 0.6rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--panel-alt);
+            font-weight: 600;
+            color: var(--navy);
+            position: sticky;
+            top: 0;
+        }
+        tr:hover { background: var(--panel-alt); }
+        .transition-row { background: rgba(197, 79, 54, 0.08); }
+        .sharpest-row { background: rgba(197, 79, 54, 0.18); font-weight: 600; }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--muted);
+        }
+        #dashboard-content { display: none; }
+        .ledger-section {
+            margin-bottom: 1.5rem;
+        }
+        .ledger-section h3 {
+            font-size: 0.9rem;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+        .ledger-table {
+            width: 100%;
+            font-size: 0.8rem;
+        }
+        .ledger-table th {
+            background: var(--panel-alt);
+            font-weight: 600;
+        }
+        .ledger-row { cursor: pointer; }
+        .ledger-row:hover { background: var(--panel-alt); }
+        .ledger-toggle {
+            font-family: monospace;
+            width: 1.5em;
+            text-align: center;
+        }
+        .ledger-sql {
+            display: none;
+            background: var(--panel-alt);
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            margin: 0.5rem 0;
+        }
+        .ledger-sql pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 0.75rem;
+            color: var(--ink);
+            margin: 0;
+        }
+        .ledger-sql.expanded { display: block; }
+        .status-ok { color: var(--teal); font-weight: 600; }
+        .status-pending { color: var(--amber); }
+        .status-failed { color: var(--red); }
+        .control-footer {
+            background: var(--panel);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .control-footer h3 {
+            font-size: 0.95rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 0.25rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+        .form-group textarea {
+            font-family: monospace;
+            font-size: 0.75rem;
+            min-height: 150px;
+            resize: vertical;
+        }
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary {
+            background: var(--navy);
+            color: #fff;
+        }
+        .btn-primary:hover { background: #1a5a7a; }
+        .btn-secondary {
+            background: var(--panel-alt);
+            color: var(--ink);
+        }
+        .btn-secondary:hover { background: #e8eff4; }
+        .status-msg {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+        .status-msg.error { color: var(--red); }
+        .export-row {
+            margin-top: 1rem;
+            text-align: right;
+        }
+        @media (max-width: 600px) {
+            .card-grid { grid-template-columns: 1fr; }
+            .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Yearly Carrier Leadership by Completed Flights</h1>
+        <p>Annual market share leaders among U.S. domestic carriers</p>
+    </header>
+
+    <main class="container">
+        <div id="empty-state" class="empty-state">
+            <p>Enter your JWE token and run the query to load the dashboard.</p>
+        </div>
+
+        <div id="dashboard-content">
+            <section class="kpi-strip" id="kpi-strip"></section>
+
+            <section class="card-grid">
+                <article class="card">
+                    <h2>Carrier Rank by Year (Top 5)</h2>
+                    <div class="chart-container">
+                        <canvas id="bumpChart"></canvas>
+                    </div>
+                </article>
+                <article class="card">
+                    <h2>Leader Market Share Over Time</h2>
+                    <div class="chart-container">
+                        <canvas id="shareChart"></canvas>
+                    </div>
+                </article>
+            </section>
+
+            <article class="card" style="margin-bottom:1.5rem;">
+                <h2>Leadership Transitions</h2>
+                <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;">
+                    Years when a new carrier claimed the top position. The sharpest transition is highlighted.
+                </p>
+                <div style="max-height:300px;overflow-y:auto;">
+                    <table id="transitionTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Prior Leader</th>
+                                <th>New Leader</th>
+                                <th>Share Swing (pp)</th>
+                                <th>Gap to #2 (pp)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </article>
+
+            <section class="ledger-section">
+                <h3>Query Ledger</h3>
+                <table class="ledger-table" id="ledgerTable">
+                    <thead>
+                        <tr>
+                            <th class="ledger-toggle"></th>
+                            <th>Query</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Rows</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <div class="export-row">
+                <button class="btn btn-secondary" id="exportBtn">Export CSV</button>
+            </div>
+        </div>
+
+        <footer class="control-footer">
+            <h3>Data Connection</h3>
+            <div class="form-group">
+                <label for="jweInput">JWE Token</label>
+                <input type="password" id="jweInput" placeholder="Paste your JWE token">
+            </div>
+            <div class="form-group">
+                <label for="sqlInput">SQL Query</label>
+                <textarea id="sqlInput"></textarea>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" id="fetchBtn">Fetch Data</button>
+                <button class="btn btn-secondary" id="forgetBtn">Forget Token</button>
+            </div>
+            <div class="status-msg" id="statusMsg"></div>
+        </footer>
+    </main>
+
+    <script>
+    (function() {
+        const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+        const SAVED_SQL = `WITH 
+-- Step 1: Annual totals for completed flights
+annual_totals AS (
+    SELECT 
+        Year,
+        count() AS TotalCompletedFlights
+    FROM default.ontime_v2
+    WHERE Cancelled = 0
+    GROUP BY Year
+),
+
+-- Step 2: Carrier-year aggregates for completed flights
+carrier_year_stats AS (
+    SELECT 
+        Year,
+        Reporting_Airline,
+        count() AS CompletedFlights
+    FROM default.ontime_v2
+    WHERE Cancelled = 0
+    GROUP BY Year, Reporting_Airline
+),
+
+-- Step 3: Ranked carrier-year with share calculation
+ranked_carriers AS (
+    SELECT 
+        cy.Year,
+        cy.Reporting_Airline,
+        cy.CompletedFlights,
+        round(100.0 * cy.CompletedFlights / at.TotalCompletedFlights, 4) AS SharePct,
+        row_number() OVER (PARTITION BY cy.Year ORDER BY cy.CompletedFlights DESC, cy.Reporting_Airline ASC) AS RankInYear
+    FROM carrier_year_stats cy
+    JOIN annual_totals at ON cy.Year = at.Year
+),
+
+-- Step 4: Extract leaders (rank 1) and runners-up (rank 2) per year
+year_leaders AS (
+    SELECT 
+        Year,
+        argMax(Reporting_Airline, RankInYear = 1) AS LeaderReportingAirline,
+        argMax(SharePct, RankInYear = 1) AS LeaderSharePct,
+        argMax(Reporting_Airline, RankInYear = 2) AS RunnerUpReportingAirline,
+        argMax(SharePct, RankInYear = 2) AS RunnerUpSharePct
+    FROM ranked_carriers
+    WHERE RankInYear IN (1, 2)
+    GROUP BY Year
+),
+
+-- Step 5: Compute leader transitions with YoY share change
+leader_transitions AS (
+    SELECT 
+        Year,
+        LeaderReportingAirline,
+        RunnerUpReportingAirline,
+        round(LeaderSharePct - RunnerUpSharePct, 4) AS LeaderShareGapPctPts,
+        LeaderSharePct,
+        lagInFrame(LeaderReportingAirline) OVER (ORDER BY Year) AS PriorYearLeaderReportingAirline,
+        lagInFrame(LeaderSharePct) OVER (ORDER BY Year) AS PriorYearLeaderSharePct,
+        row_number() OVER (ORDER BY Year) AS YearSeq
+    FROM year_leaders
+),
+
+-- Step 6: Final leader transition metrics
+leader_metrics AS (
+    SELECT 
+        Year,
+        LeaderReportingAirline,
+        RunnerUpReportingAirline,
+        LeaderShareGapPctPts,
+        LeaderSharePct,
+        PriorYearLeaderReportingAirline,
+        CASE WHEN YearSeq = 1 THEN NULL ELSE round(LeaderSharePct - PriorYearLeaderSharePct, 4) END AS LeaderShareChangePctPts,
+        CASE 
+            WHEN YearSeq = 1 THEN 0
+            WHEN LeaderReportingAirline != PriorYearLeaderReportingAirline THEN 1
+            ELSE 0
+        END AS LeaderChanged
+    FROM leader_transitions
+),
+
+-- Step 7: Top 5 carriers per year for bump chart
+top5_carriers AS (
+    SELECT *
+    FROM ranked_carriers
+    WHERE RankInYear <= 5
+)
+
+-- Final output combining carrier_year rows
+SELECT 
+    'carrier_year' AS RowType,
+    tc.Year,
+    tc.Reporting_Airline,
+    tc.RankInYear,
+    tc.CompletedFlights,
+    tc.SharePct,
+    lm.LeaderReportingAirline,
+    lm.RunnerUpReportingAirline,
+    lm.LeaderShareGapPctPts,
+    lm.PriorYearLeaderReportingAirline,
+    lm.LeaderChanged,
+    lm.LeaderShareChangePctPts
+FROM top5_carriers tc
+JOIN leader_metrics lm ON tc.Year = lm.Year
+ORDER BY 
+    tc.Year ASC,
+    RowType ASC,
+    tc.RankInYear ASC,
+    tc.Reporting_Airline ASC`;
+
+        const jweInput = document.getElementById('jweInput');
+        const sqlInput = document.getElementById('sqlInput');
+        const fetchBtn = document.getElementById('fetchBtn');
+        const forgetBtn = document.getElementById('forgetBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const emptyState = document.getElementById('empty-state');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const kpiStrip = document.getElementById('kpi-strip');
+        const transitionTbody = document.querySelector('#transitionTable tbody');
+        const ledgerTbody = document.querySelector('#ledgerTable tbody');
+        const exportBtn = document.getElementById('exportBtn');
+
+        let bumpChartInstance = null;
+        let shareChartInstance = null;
+        let fetchedData = [];
+        const ledgerEntries = [];
+
+        // Predefined color palette for carriers
+        const CARRIER_COLORS = [
+            '#0e3a52', '#3c88b5', '#1f8a70', '#d48a1f', '#c54f36',
+            '#6a4c93', '#2d6a4f', '#e07a5f', '#457b9d', '#8d99ae'
+        ];
+        const carrierColorMap = new Map();
+        let colorIndex = 0;
+
+        function getCarrierColor(carrier) {
+            if (!carrierColorMap.has(carrier)) {
+                carrierColorMap.set(carrier, CARRIER_COLORS[colorIndex % CARRIER_COLORS.length]);
+                colorIndex++;
+            }
+            return carrierColorMap.get(carrier);
+        }
+
+        function init() {
+            const storedJwe = localStorage.getItem(STORAGE_KEY);
+            if (storedJwe) {
+                jweInput.value = '********';
+                jweInput.dataset.stored = storedJwe;
+            }
+            sqlInput.value = SAVED_SQL;
+
+            fetchBtn.addEventListener('click', handleFetch);
+            forgetBtn.addEventListener('click', handleForget);
+            exportBtn.addEventListener('click', handleExport);
+            jweInput.addEventListener('input', () => {
+                delete jweInput.dataset.stored;
+            });
+        }
+
+        function addLedgerEntry(label, role, sql) {
+            const entry = { label, role, sql: sql || '', status: 'Pending', rows: '-' };
+            ledgerEntries.push(entry);
+            renderLedger();
+            return ledgerEntries.length - 1;
+        }
+
+        function updateLedgerEntry(index, status, rows, sql) {
+            if (ledgerEntries[index]) {
+                ledgerEntries[index].status = status;
+                ledgerEntries[index].rows = rows;
+                if (sql) ledgerEntries[index].sql = sql;
+                renderLedger();
+            }
+        }
+
+        function renderLedger() {
+            ledgerTbody.innerHTML = '';
+            ledgerEntries.forEach((entry, idx) => {
+                const row = document.createElement('tr');
+                row.className = 'ledger-row';
+                row.innerHTML = `
+                    <td class="ledger-toggle">▶</td>
+                    <td>${entry.label}</td>
+                    <td>${entry.role}</td>
+                    <td class="${entry.status === 'OK' ? 'status-ok' : entry.status === 'Failed' ? 'status-failed' : 'status-pending'}">${entry.status}</td>
+                    <td>${entry.rows}</td>
+                `;
+                const sqlDiv = document.createElement('tr');
+                sqlDiv.innerHTML = `<td colspan="5"><div class="ledger-sql" id="ledger-sql-${idx}"><pre>${escapeHtml(entry.sql)}</pre></div></td>`;
+                row.addEventListener('click', () => {
+                    const toggle = row.querySelector('.ledger-toggle');
+                    const sqlBlock = document.getElementById(`ledger-sql-${idx}`);
+                    if (sqlBlock.classList.contains('expanded')) {
+                        sqlBlock.classList.remove('expanded');
+                        toggle.textContent = '▶';
+                    } else {
+                        sqlBlock.classList.add('expanded');
+                        toggle.textContent = '▼';
+                    }
+                });
+                ledgerTbody.appendChild(row);
+                ledgerTbody.appendChild(sqlDiv);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function handleFetch() {
+            const token = jweInput.dataset.stored || jweInput.value.trim();
+            const sql = sqlInput.value.trim();
+
+            if (!token || token === '********') {
+                statusMsg.textContent = 'Please enter a valid JWE token.';
+                statusMsg.className = 'status-msg error';
+                return;
+            }
+            if (!sql) {
+                statusMsg.textContent = 'SQL query is required.';
+                statusMsg.className = 'status-msg error';
+                return;
+            }
+
+            localStorage.setItem(STORAGE_KEY, token);
+            jweInput.value = '********';
+            jweInput.dataset.stored = token;
+
+            statusMsg.textContent = 'Fetching data...';
+            statusMsg.className = 'status-msg';
+
+            const ledgerIdx = addLedgerEntry('Primary Query', 'Main Analysis', sql);
+
+            try {
+                const url = `https://mcp.demo.altinity.cloud/${token}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+                const res = await fetch(url);
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                const payload = await res.json();
+
+                if (!payload.columns) {
+                    throw new Error('Invalid response: missing columns');
+                }
+
+                const rows = payload.rows ?? [];
+                const count = payload.count ?? rows.length;
+
+                updateLedgerEntry(ledgerIdx, 'OK', count, sql);
+
+                if (count === 0) {
+                    statusMsg.textContent = 'Query returned no rows.';
+                    statusMsg.className = 'status-msg';
+                    emptyState.innerHTML = '<p>No data returned. Adjust your query and try again.</p>';
+                    emptyState.style.display = 'block';
+                    dashboardContent.style.display = 'none';
+                    return;
+                }
+
+                const columns = payload.columns;
+                fetchedData = rows.map(r => {
+                    const obj = {};
+                    columns.forEach((col, i) => { obj[col] = r[i]; });
+                    return obj;
+                });
+
+                renderDashboard(fetchedData);
+                statusMsg.textContent = `Loaded ${count} rows successfully.`;
+                statusMsg.className = 'status-msg';
+                emptyState.style.display = 'none';
+                dashboardContent.style.display = 'block';
+
+            } catch (err) {
+                updateLedgerEntry(ledgerIdx, 'Failed', '-', sql);
+                statusMsg.textContent = `Error: ${err.message}`;
+                statusMsg.className = 'status-msg error';
+            }
+        }
+
+        function handleForget() {
+            localStorage.removeItem(STORAGE_KEY);
+            jweInput.value = '';
+            delete jweInput.dataset.stored;
+            statusMsg.textContent = 'Token forgotten.';
+            statusMsg.className = 'status-msg';
+        }
+
+        function handleExport() {
+            if (!fetchedData.length) return;
+            const headers = Object.keys(fetchedData[0]);
+            const csvRows = [headers.join(',')];
+            fetchedData.forEach(row => {
+                csvRows.push(headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`).join(','));
+            });
+            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'carrier_leadership.csv';
+            a.click();
+        }
+
+        function renderDashboard(data) {
+            // Extract unique years and leaders
+            const years = [...new Set(data.map(d => d.Year))].sort((a, b) => a - b);
+            const totalYears = years.length;
+
+            // Get leader info per year (from first row of each year since all rows in a year have same leader info)
+            const leaderByYear = new Map();
+            years.forEach(y => {
+                const row = data.find(d => d.Year === y);
+                leaderByYear.set(y, {
+                    leader: row?.LeaderReportingAirline ?? '',
+                    runnerUp: row?.RunnerUpReportingAirline ?? '',
+                    gap: row?.LeaderShareGapPctPts ?? 0,
+                    priorLeader: row?.PriorYearLeaderReportingAirline ?? '',
+                    changed: row?.LeaderChanged ?? 0,
+                    shareChange: row?.LeaderShareChangePctPts ?? null
+                });
+            });
+
+            // Count distinct annual leaders
+            const distinctLeaders = new Set([...leaderByYear.values()].map(v => v.leader)).size;
+
+            // Find all true leadership transitions (LeaderChanged = 1)
+            const transitions = [];
+            years.forEach(y => {
+                const info = leaderByYear.get(y);
+                if (info.changed === 1) {
+                    transitions.push({
+                        year: y,
+                        priorLeader: info.priorLeader,
+                        newLeader: info.leader,
+                        shareSwing: info.shareChange,
+                        gap: info.gap
+                    });
+                }
+            });
+
+            // Count leader appearances
+            const leaderCounts = new Map();
+            [...leaderByYear.values()].forEach(v => {
+                leaderCounts.set(v.leader, (leaderCounts.get(v.leader) || 0) + 1);
+            });
+
+            // Find largest gap
+            let largestGap = 0;
+            let largestGapYear = years[0];
+            years.forEach(y => {
+                const info = leaderByYear.get(y);
+                if (info.gap > largestGap) {
+                    largestGap = info.gap;
+                    largestGapYear = y;
+                }
+            });
+
+            // Find sharpest transition (largest absolute share swing)
+            let sharpestTransition = null;
+            let sharpestSwing = 0;
+            transitions.forEach(t => {
+                const absSwing = Math.abs(t.shareSwing ?? 0);
+                if (absSwing > sharpestSwing) {
+                    sharpestSwing = absSwing;
+                    sharpestTransition = t;
+                }
+            });
+
+            // Render KPIs
+            kpiStrip.innerHTML = `
+                <div class="kpi-card">
+                    <div class="label">Years Analyzed</div>
+                    <div class="value">${totalYears}</div>
+                    <div class="sub">${years[0]}–${years[years.length - 1]}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="label">Distinct Annual Leaders</div>
+                    <div class="value">${distinctLeaders}</div>
+                    <div class="sub">${[...leaderCounts.entries()].sort((a,b)=>b[1]-a[1]).map(e=>`${e[0]}: ${e[1]}yr`).join(', ')}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="label">Largest Leader Gap</div>
+                    <div class="value">${largestGap.toFixed(2)}pp</div>
+                    <div class="sub">in ${largestGapYear}</div>
+                </div>
+                <div class="kpi-card highlight">
+                    <div class="label">Sharpest Transition</div>
+                    <div class="value">${sharpestTransition ? `${sharpestSwing.toFixed(2)}pp` : 'None'}</div>
+                    <div class="sub">${sharpestTransition ? `${sharpestTransition.year}: ${sharpestTransition.priorLeader} → ${sharpestTransition.newLeader}` : 'No transitions'}</div>
+                </div>
+            `;
+
+            // Render Transition Table
+            transitionTbody.innerHTML = '';
+            if (transitions.length === 0) {
+                transitionTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);">No leadership transitions in this period</td></tr>';
+            } else {
+                transitions.forEach(t => {
+                    const isSharpest = sharpestTransition && t.year === sharpestTransition.year;
+                    const tr = document.createElement('tr');
+                    tr.className = isSharpest ? 'sharpest-row' : 'transition-row';
+                    tr.innerHTML = `
+                        <td>${t.year}${isSharpest ? ' ★' : ''}</td>
+                        <td>${t.priorLeader}</td>
+                        <td>${t.newLeader}</td>
+                        <td>${(t.shareSwing ?? 0).toFixed(2)}</td>
+                        <td>${(t.gap ?? 0).toFixed(2)}</td>
+                    `;
+                    transitionTbody.appendChild(tr);
+                });
+            }
+
+            // Prepare chart data
+            // Bump chart: rank by year for top 5 carriers
+            const carriers = [...new Set(data.map(d => d.Reporting_Airline))];
+            carriers.forEach(c => getCarrierColor(c)); // Pre-assign colors
+
+            const bumpDatasets = carriers.map(carrier => {
+                const carrierData = data.filter(d => d.Reporting_Airline === carrier);
+                return {
+                    label: carrier,
+                    data: years.map(y => {
+                        const row = carrierData.find(d => d.Year === y);
+                        return row ? { x: y, y: row.RankInYear } : null;
+                    }).filter(d => d !== null),
+                    borderColor: getCarrierColor(carrier),
+                    backgroundColor: getCarrierColor(carrier),
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: false
+                };
+            });
+
+            // Share chart: share % for leader carriers over time
+            const leaderCarriers = [...new Set([...leaderByYear.values()].map(v => v.leader))];
+            const shareDatasets = leaderCarriers.map(carrier => {
+                const carrierData = data.filter(d => d.Reporting_Airline === carrier && d.RankInYear <= 5);
+                return {
+                    label: carrier,
+                    data: years.map(y => {
+                        const row = carrierData.find(d => d.Year === y);
+                        return row ? row.SharePct : null;
+                    }),
+                    borderColor: getCarrierColor(carrier),
+                    backgroundColor: getCarrierColor(carrier) + '33',
+                    tension: 0.3,
+                    pointRadius: 3,
+                    fill: false,
+                    spanGaps: true
+                };
+            });
+
+            // Render Bump Chart
+            const bumpCtx = document.getElementById('bumpChart').getContext('2d');
+            if (bumpChartInstance) bumpChartInstance.destroy();
+            bumpChartInstance = new Chart(bumpCtx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: bumpDatasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            reverse: true,
+                            min: 1,
+                            max: 5,
+                            ticks: { stepSize: 1 },
+                            title: { display: true, text: 'Rank' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12 } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: Rank #${ctx.raw.y}`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Render Share Chart
+            const shareCtx = document.getElementById('shareChart').getContext('2d');
+            if (shareChartInstance) shareChartInstance.destroy();
+            shareChartInstance = new Chart(shareCtx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: shareDatasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Market Share (%)' },
+                            beginAtZero: false
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12 } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: ${ctx.raw?.toFixed(2) ?? '-'}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        init();
+    })();
+    </script>
+</body>
+</html>
+```

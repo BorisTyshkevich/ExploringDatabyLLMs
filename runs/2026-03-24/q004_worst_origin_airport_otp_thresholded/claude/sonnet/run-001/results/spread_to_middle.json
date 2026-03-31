@@ -1,0 +1,41 @@
+{
+  "columns": [
+    "rank_worst",
+    "total_qualifying",
+    "OriginCode",
+    "airport_name",
+    "completed_departures",
+    "otp_pct",
+    "avg_dep_delay_min",
+    "p90_dep_delay_min",
+    "spread_from_worst_pct"
+  ],
+  "rows": [
+    {
+      "OriginCode": "CEC",
+      "airport_name": "Jack McNamara Field",
+      "avg_dep_delay_min": 19.5,
+      "completed_departures": 11891,
+      "otp_pct": 69.24,
+      "p90_dep_delay_min": 84,
+      "rank_worst": 1,
+      "spread_from_worst_pct": 0,
+      "total_qualifying": 304
+    },
+    {
+      "OriginCode": "PNS",
+      "airport_name": "Pensacola International",
+      "avg_dep_delay_min": 7.36,
+      "completed_departures": 320689,
+      "otp_pct": 85.31,
+      "p90_dep_delay_min": 27,
+      "rank_worst": 152,
+      "spread_from_worst_pct": 16.07,
+      "total_qualifying": 304
+    }
+  ],
+  "row_count": 2,
+  "generated_at": "2026-03-24T07:52:39.48737Z",
+  "source_query_sha256": "c2545d6e1d0806551b8428dd1884fa2c3137ed07126610b15f0534bff7e1db0a",
+  "log_comment": "qforge|question=q004|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=spread_to_middle"
+}

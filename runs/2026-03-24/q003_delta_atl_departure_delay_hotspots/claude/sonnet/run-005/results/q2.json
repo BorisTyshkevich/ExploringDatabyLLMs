@@ -1,0 +1,408 @@
+{
+  "columns": [
+    "DestCode",
+    "DepTimeBlk",
+    "flight_month",
+    "monthly_flights",
+    "avg_dep_delay_min",
+    "pct_dep_del15"
+  ],
+  "rows": [
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 18.8,
+      "flight_month": "1991-04-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 36.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 19.4,
+      "flight_month": "1991-05-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 46.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 45.5,
+      "flight_month": "1992-08-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 74.2
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 21.2,
+      "flight_month": "1992-12-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 17.2,
+      "flight_month": "1993-01-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 45.2
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 39.8,
+      "flight_month": "1993-03-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 27.9,
+      "flight_month": "1993-04-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 21.1,
+      "flight_month": "1993-05-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 63.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 21.7,
+      "flight_month": "1993-06-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 40
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 18.1,
+      "flight_month": "1993-07-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 25.8
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 17.5,
+      "flight_month": "1993-08-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 41.9
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 8.4,
+      "flight_month": "1993-10-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 16.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 13.5,
+      "flight_month": "1993-11-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 16.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 19,
+      "flight_month": "1993-12-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 46.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 30.2,
+      "flight_month": "1994-03-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 43.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 22.5,
+      "flight_month": "1994-04-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 33.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 16.6,
+      "flight_month": "1998-07-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 25.8
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 5.5,
+      "flight_month": "1998-10-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 9.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 4.8,
+      "flight_month": "1998-11-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 13.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 5.5,
+      "flight_month": "1998-12-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 9.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 7.4,
+      "flight_month": "2001-05-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 16.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 25.6,
+      "flight_month": "2005-03-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 43.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 12,
+      "flight_month": "2005-05-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 22.6
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 13.6,
+      "flight_month": "2005-08-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 29
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 41.3,
+      "flight_month": "2011-07-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 50
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 36.1,
+      "flight_month": "2012-12-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 27,
+      "flight_month": "2013-01-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 41.9
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 26.4,
+      "flight_month": "2013-03-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 40
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 26.6,
+      "flight_month": "2013-09-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 50
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 15.7,
+      "flight_month": "2014-03-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 22.6
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 43.9,
+      "flight_month": "2014-06-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 60
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 11.5,
+      "flight_month": "2016-03-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 35.5
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 13.2,
+      "flight_month": "2016-05-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 36.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 46.4,
+      "flight_month": "2016-08-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 48.4
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 56.7,
+      "flight_month": "2017-05-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 73.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 50.2,
+      "flight_month": "2017-06-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 70
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 39.5,
+      "flight_month": "2017-08-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 33.6,
+      "flight_month": "2017-10-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 34.9,
+      "flight_month": "2018-01-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 33.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 63.9,
+      "flight_month": "2018-07-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 66.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 51.2,
+      "flight_month": "2018-08-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 25.2,
+      "flight_month": "2018-09-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 30
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 64.1,
+      "flight_month": "2019-07-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 48.4
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 72.1,
+      "flight_month": "2019-08-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 58.1
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 25.1,
+      "flight_month": "2024-04-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 36.7
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 12.6,
+      "flight_month": "2024-05-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 30
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 49,
+      "flight_month": "2024-06-01T00:00:00Z",
+      "monthly_flights": 30,
+      "pct_dep_del15": 53.3
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 75.2,
+      "flight_month": "2024-08-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 51.6
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay_min": 9.4,
+      "flight_month": "2024-10-01T00:00:00Z",
+      "monthly_flights": 31,
+      "pct_dep_del15": 12.9
+    }
+  ],
+  "row_count": 49,
+  "generated_at": "2026-03-24T11:57:06.409903Z",
+  "source_query_sha256": "1cb1a1e1640fda9e97c7ad3e55e0cf9f95397d406ce74822e07934ed9b2ef17f",
+  "log_comment": "qforge|question=q003|run=run-005|runner=claude|model=sonnet|phase=full|subquestion=q2"
+}

@@ -1,0 +1,118 @@
+{
+  "columns": [
+    "OriginCode",
+    "airport_name",
+    "city",
+    "total_departures",
+    "otp_rate",
+    "pct_delayed",
+    "avg_dep_delay_when_late",
+    "p90_delay_min"
+  ],
+  "rows": [
+    {
+      "OriginCode": "MDW",
+      "airport_name": "Chicago Midway International",
+      "avg_dep_delay_when_late": 26.82,
+      "city": "Chicago, IL",
+      "otp_rate": 76.52,
+      "p90_delay_min": 37,
+      "pct_delayed": 23.48,
+      "total_departures": 2512354
+    },
+    {
+      "OriginCode": "ORD",
+      "airport_name": "Chicago O'Hare International",
+      "avg_dep_delay_when_late": 30.55,
+      "city": "Chicago, IL",
+      "otp_rate": 78.61,
+      "p90_delay_min": 43,
+      "pct_delayed": 21.39,
+      "total_departures": 11143829
+    },
+    {
+      "OriginCode": "EWR",
+      "airport_name": "Newark Liberty International",
+      "avg_dep_delay_when_late": 34.46,
+      "city": "Newark, NJ",
+      "otp_rate": 78.69,
+      "p90_delay_min": 44,
+      "pct_delayed": 21.31,
+      "total_departures": 4548110
+    },
+    {
+      "OriginCode": "HOU",
+      "airport_name": "William P Hobby",
+      "avg_dep_delay_when_late": 24.81,
+      "city": "Houston, TX",
+      "otp_rate": 78.92,
+      "p90_delay_min": 33,
+      "pct_delayed": 21.08,
+      "total_departures": 2084605
+    },
+    {
+      "OriginCode": "DAL",
+      "airport_name": "Dallas Love Field",
+      "avg_dep_delay_when_late": 24.04,
+      "city": "Dallas, TX",
+      "otp_rate": 78.99,
+      "p90_delay_min": 32,
+      "pct_delayed": 21.01,
+      "total_departures": 1931453
+    },
+    {
+      "OriginCode": "JFK",
+      "airport_name": "John F. Kennedy International",
+      "avg_dep_delay_when_late": 35.88,
+      "city": "New York, NY",
+      "otp_rate": 79.51,
+      "p90_delay_min": 41,
+      "pct_delayed": 20.49,
+      "total_departures": 3072487
+    },
+    {
+      "OriginCode": "BWI",
+      "airport_name": "Baltimore/Washington International Thurgood Marshall",
+      "avg_dep_delay_when_late": 25.68,
+      "city": "Baltimore, MD",
+      "otp_rate": 79.63,
+      "p90_delay_min": 33,
+      "pct_delayed": 20.37,
+      "total_departures": 3285196
+    },
+    {
+      "OriginCode": "LAS",
+      "airport_name": "Harry Reid International",
+      "avg_dep_delay_when_late": 27.12,
+      "city": "Las Vegas, NV",
+      "otp_rate": 79.75,
+      "p90_delay_min": 34,
+      "pct_delayed": 20.25,
+      "total_departures": 5189435
+    },
+    {
+      "OriginCode": "DEN",
+      "airport_name": "Denver International",
+      "avg_dep_delay_when_late": 27.54,
+      "city": "Denver, CO",
+      "otp_rate": 79.93,
+      "p90_delay_min": 36,
+      "pct_delayed": 20.07,
+      "total_departures": 7385210
+    },
+    {
+      "OriginCode": "FLL",
+      "airport_name": "Fort Lauderdale-Hollywood International",
+      "avg_dep_delay_when_late": 32.53,
+      "city": "Fort Lauderdale, FL",
+      "otp_rate": 79.99,
+      "p90_delay_min": 38,
+      "pct_delayed": 20.01,
+      "total_departures": 2312776
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-24T12:11:36.785127Z",
+  "source_query_sha256": "c9afcec15879b921811ecc73fe552ed2bf0ae68dfc27819a1b2fbfe031d0e0b7",
+  "log_comment": "qforge|question=q004|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q3"
+}

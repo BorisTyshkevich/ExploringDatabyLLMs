@@ -1,0 +1,76 @@
+{
+  "columns": [
+    "region",
+    "airport_count",
+    "airports"
+  ],
+  "rows": [
+    {
+      "airport_count": 17,
+      "airports": [
+        "LAS",
+        "OAK",
+        "SEA",
+        "PHX",
+        "BUR",
+        "DEN",
+        "ELP",
+        "SAN",
+        "LAX",
+        "SLC",
+        "SJC",
+        "COS",
+        "SMF",
+        "PSP",
+        "RNO",
+        "ABQ",
+        "MAF"
+      ],
+      "region": "West"
+    },
+    {
+      "airport_count": 14,
+      "airports": [
+        "BNA",
+        "VPS",
+        "DAL",
+        "PNS",
+        "HOU",
+        "MCI",
+        "LIT",
+        "MDW",
+        "MSY",
+        "ORD",
+        "STL",
+        "ICT",
+        "JAN",
+        "MEM"
+      ],
+      "region": "Central"
+    },
+    {
+      "airport_count": 14,
+      "airports": [
+        "ISP",
+        "BWI",
+        "MYR",
+        "CLE",
+        "ATL",
+        "RIC",
+        "CMH",
+        "RDU",
+        "DTW",
+        "TPA",
+        "LGA",
+        "FLL",
+        "MCO",
+        "IAD"
+      ],
+      "region": "East"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-25T21:17:52.522421Z",
+  "source_query_sha256": "251d6c5e79ee641b20da93118f65f199ed5be32ffa8c33d1aa9b240ad83f7e29",
+  "log_comment": "qforge|question=q001|run=run-004|runner=claude|model=sonnet|phase=full|section=q2"
+}

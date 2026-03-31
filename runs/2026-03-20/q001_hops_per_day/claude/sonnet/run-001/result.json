@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "Carrier",
+    "FlightDate",
+    "Hops",
+    "Route",
+    "DepartureTimes"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0543 (ISP), 0810 (BWI), 1020 (MYR), 1142 (BNA), 1401 (VPS), 1643 (DAL), 1828 (LAS), 2041 (OAK)",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "366",
+      "Hops": 8,
+      "Route": "ISP → BWI → MYR → BNA → VPS → DAL → LAS → OAK → SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0621 (CLE), 0801 (BNA), 1007 (PNS), 1234 (HOU), 1514 (MCI), 1747 (PHX), 1902 (BUR), 2117 (OAK)",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+      "Tail_Number": "N7835A"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0618 (CLE), 0800 (BNA), 1012 (PNS), 1239 (HOU), 1515 (MCI), 1756 (PHX), 1859 (BUR), 2059 (OAK)",
+      "FlightDate": "2024-01-28T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+      "Tail_Number": "N429WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0620 (CLE), 0810 (BNA), 1017 (PNS), 1237 (HOU), 1510 (MCI), 1800 (PHX), 1903 (BUR), 2102 (OAK)",
+      "FlightDate": "2024-01-21T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+      "Tail_Number": "N228WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0625 (CLE), 0805 (BNA), 1011 (PNS), 1241 (HOU), 1607 (MCI), 1909 (PHX), 2006 (BUR), 2156 (OAK)",
+      "FlightDate": "2024-01-14T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "Route": "CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+      "Tail_Number": "N569WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0627 (ELP), 0939 (DAL), 1124 (LIT), 1434 (ATL), 1656 (RIC), 1831 (MDW), 2040 (MCI), 2246 (PHX)",
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "Route": "ELP → DAL → LIT → ATL → RIC → MDW → MCI → PHX → SAN",
+      "Tail_Number": "N7742B"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0622 (ELP), 0941 (DAL), 1122 (LIT), 1433 (ATL), 1659 (RIC), 1832 (MDW), 2041 (MCI), 2226 (PHX)",
+      "FlightDate": "2023-04-16T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "Route": "ELP → DAL → LIT → ATL → RIC → MDW → MCI → PHX → SAN",
+      "Tail_Number": "N929WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0608 (MSY), 0944 (ATL), 1156 (CMH), 1354 (BWI), 1553 (RDU), 1729 (BNA), 2045 (DTW), 2149 (MDW)",
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "Route": "MSY → ATL → CMH → BWI → RDU → BNA → DTW → MDW → LAX",
+      "Tail_Number": "N8631A"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0610 (MSY), 0917 (ATL), 1142 (CMH), 1355 (BWI), 1536 (RDU), 1716 (BNA), 2040 (DTW), 2147 (MDW)",
+      "FlightDate": "2022-10-02T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "Route": "MSY → ATL → CMH → BWI → RDU → BNA → DTW → MDW → LAX",
+      "Tail_Number": "N8809L"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "0601 (MSY), 0918 (ATL), 1141 (CMH), 1347 (BWI), 1539 (RDU), 1724 (BNA), 2112 (DTW), 2242 (MDW)",
+      "FlightDate": "2022-09-25T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "Route": "MSY → ATL → CMH → BWI → RDU → BNA → DTW → MDW → LAX",
+      "Tail_Number": "N8811L"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-20T09:56:28.15814Z",
+  "source_query_sha256": "d6f0579e4e56b0755522f1088d8e268f6e0c69cd655dfc21abeb88a5f97134e3",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full"
+}

@@ -1,0 +1,48 @@
+{
+  "schema_version": "2",
+  "status": "ok",
+  "question_id": "q007",
+  "question_slug": "q007_hops_per_day_semantic_discovery",
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "dataset": "ontime",
+  "runner": "claude",
+  "model": "sonnet",
+  "cli_bin": "claude",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime/mcp.yaml",
+  "started_at": "2026-03-19T12:20:33.167427Z",
+  "finished_at": "2026-03-19T12:28:38.199097Z",
+  "duration_sec": 485,
+  "log_comment": "qforge|question=q007|run=run-003|runner=claude|model=sonnet|phase=full",
+  "query_sha256": "1acefa97780fec243358e0d42390ba5ce42abe40a696b522cc847d777e799136",
+  "result_row_count": 10,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "ok"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/answer.sql.raw.md",
+    "answer_raw_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/answer.raw.json",
+    "analysis_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/analysis.json",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-19/q007_hops_per_day_semantic_discovery/claude/sonnet/run-003/visual.html"
+  },
+  "metadata": {
+    "browser_validation": "ok",
+    "browser_validation_live_fetch": "non_dynamic_mode",
+    "execution_response_bytes": "2198",
+    "visual_validation": "ok"
+  }
+}

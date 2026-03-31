@@ -1,0 +1,1689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Highest daily hops for one aircraft on one flight number</title>
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+>
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+></script>
+<style>
+    :root {
+        --bg-top: #eaf3f8;
+        --bg-bottom: #f6fafc;
+        --panel: #ffffff;
+        --panel-alt: #f3f7fa;
+        --ink: #163244;
+        --muted: #5d7485;
+        --navy: #0e3a52;
+        --slate: #5c7080;
+        --sky: #3c88b5;
+        --teal: #1f8a70;
+        --amber: #d48a1f;
+        --red: #c54f36;
+        --grid: rgba(22, 50, 68, 0.12);
+        --border: rgba(22, 50, 68, 0.10);
+        --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+        --radius-xl: 22px;
+        --radius-lg: 16px;
+        --radius-md: 12px;
+        --radius-sm: 8px;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+        background:
+            radial-gradient(circle at top left, rgba(60, 136, 181, 0.16), transparent 32%),
+            radial-gradient(circle at top right, rgba(31, 138, 112, 0.08), transparent 28%),
+            linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    }
+
+    h1, h2, h3, h4 {
+        margin: 0;
+        font-family: Georgia, ui-serif, serif;
+        color: var(--navy);
+    }
+
+    p {
+        margin: 0;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+        font: inherit;
+    }
+
+    .page {
+        width: min(1280px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 24px 0 32px;
+    }
+
+    .hero {
+        padding: 26px 28px;
+        border-radius: var(--radius-xl);
+        color: #f4fbff;
+        background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 45%),
+            linear-gradient(135deg, #0e3a52 0%, #20597a 58%, #3c88b5 100%);
+        box-shadow: var(--shadow);
+    }
+
+    .hero-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 10px;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 999px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        background: rgba(255, 255, 255, 0.10);
+    }
+
+    .hero p {
+        max-width: 860px;
+        color: rgba(244, 251, 255, 0.88);
+        line-height: 1.5;
+    }
+
+    .run-badge {
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #f4fbff;
+    }
+
+    .dashboard {
+        margin-top: 20px;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+    }
+
+    .panel-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .panel-header p {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .warning {
+        margin-top: 20px;
+        padding: 16px 18px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(212, 138, 31, 0.22);
+        background: rgba(212, 138, 31, 0.10);
+        color: #7a5416;
+    }
+
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .kpi-card {
+        padding: 18px;
+    }
+
+    .kpi-label {
+        margin-bottom: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .kpi-value {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--navy);
+    }
+
+    .kpi-detail {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .filter-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 14px;
+        padding: 18px;
+        margin-bottom: 20px;
+    }
+
+    .field label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .field input,
+    .field select,
+    .footer-grid input,
+    .footer-grid textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: #fff;
+        color: var(--ink);
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .footer-grid input:focus,
+    .footer-grid textarea:focus {
+        outline: 2px solid rgba(60, 136, 181, 0.25);
+        border-color: var(--sky);
+    }
+
+    .filter-actions {
+        display: flex;
+        align-items: end;
+        gap: 10px;
+    }
+
+    .button,
+    .button-secondary {
+        padding: 11px 14px;
+        border: 0;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+    }
+
+    .button {
+        background: var(--navy);
+        color: #fff;
+    }
+
+    .button:hover,
+    .button-secondary:hover {
+        transform: translateY(-1px);
+    }
+
+    .button:disabled,
+    .button-secondary:disabled {
+        cursor: default;
+        opacity: 0.55;
+        transform: none;
+    }
+
+    .button-secondary {
+        background: var(--panel-alt);
+        color: var(--navy);
+        border: 1px solid var(--border);
+    }
+
+    .map-panel {
+        padding: 20px;
+    }
+
+    .map-shell {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background:
+            radial-gradient(circle at 20% 20%, rgba(60, 136, 181, 0.16), transparent 28%),
+            linear-gradient(180deg, #dbeaf3, #eef6fb);
+        min-height: 470px;
+    }
+
+    .map-canvas {
+        height: 470px;
+        width: 100%;
+    }
+
+    .map-state {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        text-align: center;
+        background: rgba(238, 246, 251, 0.72);
+        color: var(--navy);
+        z-index: 500;
+    }
+
+    .map-state-card {
+        max-width: 520px;
+        padding: 18px 20px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(14, 58, 82, 0.12);
+        background: rgba(255, 255, 255, 0.84);
+        backdrop-filter: blur(6px);
+    }
+
+    .map-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .below-map {
+        display: grid;
+        grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .mini-card,
+    .detail-panel,
+    .table-panel,
+    .ledger-panel,
+    footer.panel {
+        padding: 20px;
+    }
+
+    .legend-list,
+    .detail-list,
+    .comparison-list,
+    .sequence-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .legend-row,
+    .comparison-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--ink);
+    }
+
+    .legend-key {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+    }
+
+    .swatch-line {
+        width: 30px;
+        height: 0;
+        border-top: 4px solid currentColor;
+        border-radius: 999px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .detail-metric {
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--panel-alt);
+    }
+
+    .detail-metric strong {
+        display: block;
+        margin-top: 6px;
+        color: var(--navy);
+        font-size: 17px;
+    }
+
+    .sequence-list {
+        margin-top: 14px;
+    }
+
+    .sequence-step {
+        display: grid;
+        grid-template-columns: 34px minmax(72px, 110px) minmax(72px, 100px) minmax(0, 1fr);
+        gap: 10px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: #fff;
+    }
+
+    .sequence-index {
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: var(--navy);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .sequence-time {
+        font-variant-numeric: tabular-nums;
+        color: var(--navy);
+        font-weight: 700;
+    }
+
+    .sequence-code {
+        font-weight: 700;
+        color: var(--sky);
+    }
+
+    .sequence-name {
+        color: var(--muted);
+    }
+
+    .table-wrap {
+        overflow: auto;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--panel-alt);
+        color: var(--navy);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+    tbody tr {
+        cursor: pointer;
+        transition: background 120ms ease, color 120ms ease;
+    }
+
+    tbody tr:hover {
+        background: var(--panel-alt);
+    }
+
+    tbody tr.active-row {
+        background: var(--navy);
+        color: #f5fbff;
+    }
+
+    tbody tr.active-row td {
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .soft {
+        color: var(--muted);
+    }
+
+    .status-text {
+        margin-top: 10px;
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    .status-ok {
+        color: var(--teal);
+    }
+
+    .status-pending,
+    .status-degraded {
+        color: var(--amber);
+    }
+
+    .status-failed {
+        color: var(--red);
+    }
+
+    .ledger-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .ledger-entry {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .ledger-summary {
+        display: grid;
+        grid-template-columns: 1.2em minmax(0, 1fr) 7em 6em 4em;
+        gap: 10px;
+        align-items: center;
+        padding: 12px 14px;
+        cursor: pointer;
+    }
+
+    .ledger-summary:hover {
+        background: var(--panel-alt);
+    }
+
+    .ledger-toggle {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        color: var(--navy);
+    }
+
+    .ledger-label {
+        min-width: 0;
+    }
+
+    .ledger-label strong,
+    .ledger-label span {
+        display: block;
+        overflow-wrap: anywhere;
+    }
+
+    .ledger-label span {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 13px;
+    }
+
+    .ledger-cell {
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .ledger-sql {
+        display: none;
+        padding: 0 14px 14px;
+    }
+
+    .ledger-entry.expanded .ledger-sql {
+        display: block;
+    }
+
+    .ledger-sql pre {
+        margin: 0;
+        padding: 14px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        border-radius: var(--radius-sm);
+        background: var(--panel-alt);
+        border: 1px solid var(--border);
+        color: var(--ink);
+    }
+
+    footer.panel {
+        margin-top: 20px;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .footer-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    textarea {
+        min-height: 260px;
+        resize: vertical;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .empty-hint {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--panel-alt);
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip {
+        border-radius: 10px;
+    }
+
+    @media (max-width: 900px) {
+        .below-map,
+        .footer-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sequence-step {
+            grid-template-columns: 34px minmax(64px, 96px) minmax(60px, 88px) minmax(0, 1fr);
+        }
+
+        .ledger-summary {
+            grid-template-columns: 1.2em minmax(0, 1fr);
+        }
+
+        .ledger-cell {
+            display: none;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+    <header class="hero">
+        <div class="hero-top">
+            <div class="eyebrow">OnTime Analyst Dashboard</div>
+            <div class="run-badge" id="runBadge">Awaiting query run</div>
+        </div>
+        <h1>Highest daily hops for one aircraft on one flight number</h1>
+        <p>
+            Lead itinerary map for the top-ranked daily hop chain, with route repetition context from the saved analytical query
+            and airport-coordinate enrichment from <span class="mono">ontime.airports_latest</span>.
+        </p>
+    </header>
+
+    <div id="warningPanel" class="warning hidden"></div>
+
+    <main id="dashboard" class="dashboard hidden">
+        <section id="kpiGrid" class="kpi-grid"></section>
+
+        <section class="panel filter-bar">
+            <div class="field">
+                <label for="carrierFilter">Carrier</label>
+                <select id="carrierFilter"></select>
+            </div>
+            <div class="field">
+                <label for="repeatFilter">Route repetition</label>
+                <select id="repeatFilter">
+                    <option value="all">All routes</option>
+                    <option value="unique">Unique only in top 10</option>
+                    <option value="repeated">Repeated in top 10</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="airportFilter">Airport code contains</label>
+                <input id="airportFilter" type="text" placeholder="Example: OAK">
+            </div>
+            <div class="filter-actions">
+                <button id="resetFiltersBtn" class="button-secondary" type="button">Reset filters</button>
+                <button id="exportBtn" class="button-secondary" type="button">Export visible CSV</button>
+            </div>
+        </section>
+
+        <section class="panel map-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Lead Itinerary Map</h2>
+                    <p id="mapSubtitle">The selected itinerary route redraws here. Airport coordinates are added by a separate enrichment query.</p>
+                </div>
+                <div class="soft" id="selectionSummary"></div>
+            </div>
+            <div class="map-shell">
+                <div id="mapCanvas" class="map-canvas" role="img" aria-label="Itinerary map"></div>
+                <div id="mapState" class="map-state">
+                    <div class="map-state-card">
+                        <h3>Map ready for itinerary enrichment</h3>
+                        <p class="soft">The first successful primary query will render the lead itinerary immediately and upgrade the map once airport coordinates are available.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="map-meta">
+                <span id="mapFootnote">Map stays visible even if enrichment is still pending or degraded.</span>
+            </div>
+        </section>
+
+        <section class="below-map">
+            <section class="panel mini-card">
+                <div class="panel-header">
+                    <div>
+                        <h2>Legend</h2>
+                        <p>Route styling and repetition context</p>
+                    </div>
+                </div>
+                <div class="legend-list">
+                    <div class="legend-row">
+                        <div class="legend-key"><span class="swatch-line" style="color: var(--red)"></span>Highlighted itinerary path</div>
+                        <span class="soft">Selected aircraft-day route</span>
+                    </div>
+                    <div class="legend-row">
+                        <div class="legend-key"><span class="swatch" style="background: var(--navy)"></span>Airport stop</div>
+                        <span class="soft">Ordered stop sequence</span>
+                    </div>
+                    <div class="legend-row">
+                        <div class="legend-key"><span class="swatch" style="background: var(--amber)"></span>Repeated-route context</div>
+                        <span class="soft">Repeated within the ranked top 10</span>
+                    </div>
+                    <div class="legend-row">
+                        <div class="legend-key"><span class="swatch" style="background: var(--teal)"></span>Max-hop cohort</div>
+                        <span class="soft">Rows tied at the overall hop maximum</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel detail-panel">
+                <div class="panel-header">
+                    <div>
+                        <h2>Route Sequence And Detail</h2>
+                        <p id="detailSubtitle">Click an itinerary row to refresh this panel and redraw the selected route.</p>
+                    </div>
+                </div>
+                <div id="detailMetrics" class="detail-grid"></div>
+                <div id="comparisonList" class="comparison-list"></div>
+                <div id="sequenceList" class="sequence-list"></div>
+            </section>
+        </section>
+
+        <section class="panel table-panel" style="margin-top: 20px;">
+            <div class="panel-header">
+                <div>
+                    <h2>Top 10 Itineraries</h2>
+                    <p>Rows are ordered by hop count, date, and aircraft ID. Selecting a row updates the map and route details only.</p>
+                </div>
+                <div class="soft" id="tableCount"></div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aircraft</th>
+                            <th>Flight</th>
+                            <th>Date</th>
+                            <th>Hops</th>
+                            <th>Route</th>
+                            <th>Repeated Route</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel ledger-panel" style="margin-top: 20px;">
+            <div class="panel-header">
+                <div>
+                    <h2>Query Ledger</h2>
+                    <p>Primary and enrichment queries are tracked together. Expand any entry to review the full SQL text.</p>
+                </div>
+            </div>
+            <div id="ledgerList" class="ledger-list"></div>
+        </section>
+    </main>
+
+    <footer class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Dynamic Query Controls</h2>
+                <p>Primary query runs from the embedded saved SQL. The browser token is stored locally and never echoed in page status.</p>
+            </div>
+        </div>
+        <div class="footer-grid">
+            <div>
+                <div class="field">
+                    <label for="tokenInput">JWE token</label>
+                    <input id="tokenInput" type="password" placeholder="Stored locally as needed">
+                </div>
+                <div class="footer-actions">
+                    <button id="fetchBtn" class="button" type="button">Fetch dashboard</button>
+                    <button id="forgetBtn" class="button-secondary" type="button">Forget stored token</button>
+                </div>
+                <div id="statusText" class="status-text">Enter a token and run the saved query.</div>
+                <div class="empty-hint">
+                    Dynamic mode uses the tokenized endpoint template
+                    <span class="mono">https://mcp.demo.altinity.cloud/{JWE}/openapi/execute_query?query=...</span>.
+                    The page auto-runs on load when a stored token is already present.
+                </div>
+            </div>
+            <div class="field">
+                <label for="sqlInput">Primary analytical SQL</label>
+                <textarea id="sqlInput" spellcheck="false">WITH legs AS (
+    SELECT
+        o.Tail_Number,
+        o.Flight_Number_Reporting_Airline,
+        o.IATA_CODE_Reporting_Airline,
+        o.FlightDate,
+        toDateTime(
+            concat(
+                toString(o.FlightDate),
+                ' ',
+                leftPad(toString(intDiv(o.DepTime, 100)), 2, '0'),
+                ':',
+                leftPad(toString(o.DepTime % 100), 2, '0'),
+                ':00'
+            )
+        ) AS dep_ts,
+        concat(
+            leftPad(toString(intDiv(o.DepTime, 100)), 2, '0'),
+            ':',
+            leftPad(toString(o.DepTime % 100), 2, '0')
+        ) AS dep_hhmm,
+        o.Origin,
+        o.Dest
+    FROM ontime.ontime AS o
+    WHERE o.Cancelled = 0
+      AND o.Diverted = 0
+      AND o.DepTime IS NOT NULL
+      AND o.Tail_Number != ''
+      AND o.Flight_Number_Reporting_Airline != ''
+),
+itineraries AS (
+    SELECT
+        Tail_Number,
+        Flight_Number_Reporting_Airline,
+        IATA_CODE_Reporting_Airline,
+        FlightDate,
+        count() AS Hops,
+        arraySort(
+            x -> (x.1, x.2, x.3),
+            groupArray((dep_ts, toString(Origin), toString(Dest), dep_hhmm))
+        ) AS ordered_legs,
+        arrayStringConcat(
+            arrayConcat([ordered_legs[1].2], arrayMap(x -> x.3, ordered_legs)),
+            ' -> '
+        ) AS Route,
+        arrayStringConcat(
+            arrayMap(x -> concat(x.4, ' ', x.2), ordered_legs),
+            ' | '
+        ) AS `Departure Times From Origin`
+    FROM legs
+    GROUP BY
+        Tail_Number,
+        Flight_Number_Reporting_Airline,
+        IATA_CODE_Reporting_Airline,
+        FlightDate
+),
+max_hops AS (
+    SELECT max(Hops) AS value
+    FROM itineraries
+),
+scored AS (
+    SELECT
+        Tail_Number,
+        Flight_Number_Reporting_Airline,
+        IATA_CODE_Reporting_Airline,
+        FlightDate,
+        Hops,
+        Route,
+        `Departure Times From Origin`,
+        (SELECT value FROM max_hops) AS `Max Hops Overall`,
+        (SELECT count() FROM itineraries WHERE Hops = (SELECT value FROM max_hops)) AS `Max Hop Itinerary Count`,
+        count() OVER (PARTITION BY Hops, Route) AS `Same-Hops Route Count`
+    FROM itineraries
+),
+top10 AS (
+    SELECT
+        Tail_Number,
+        Flight_Number_Reporting_Airline,
+        IATA_CODE_Reporting_Airline,
+        FlightDate,
+        Hops,
+        Route,
+        `Departure Times From Origin`,
+        `Max Hops Overall`,
+        `Max Hop Itinerary Count`,
+        `Same-Hops Route Count`
+    FROM scored
+    ORDER BY Hops DESC, FlightDate DESC, Tail_Number DESC
+    LIMIT 10
+)
+SELECT
+    Tail_Number AS `Aircraft ID`,
+    Flight_Number_Reporting_Airline AS `Flight Number`,
+    IATA_CODE_Reporting_Airline AS Carrier,
+    FlightDate AS Date,
+    Hops,
+    Route,
+    `Departure Times From Origin`,
+    `Max Hops Overall`,
+    `Max Hop Itinerary Count`,
+    `Same-Hops Route Count`,
+    count() OVER (PARTITION BY Route) AS `Route Frequency In Top 10`
+FROM top10
+ORDER BY Hops DESC, Date DESC, `Aircraft ID` DESC</textarea>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+(() => {
+    const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+    const ENDPOINT_TEMPLATE = 'https://mcp.demo.altinity.cloud/{JWE}/openapi/execute_query?query=';
+
+    const state = {
+        isRunning: false,
+        activeRunId: 0,
+        allRows: [],
+        filteredRows: [],
+        selectedId: null,
+        topRowId: null,
+        coordMap: new Map(),
+        ledgerEntries: new Map(),
+        map: null,
+        mapLayers: { markers: null, route: null },
+        enrichmentLedgerId: null
+    };
+
+    const el = {
+        dashboard: document.getElementById('dashboard'),
+        warningPanel: document.getElementById('warningPanel'),
+        kpiGrid: document.getElementById('kpiGrid'),
+        carrierFilter: document.getElementById('carrierFilter'),
+        repeatFilter: document.getElementById('repeatFilter'),
+        airportFilter: document.getElementById('airportFilter'),
+        resetFiltersBtn: document.getElementById('resetFiltersBtn'),
+        exportBtn: document.getElementById('exportBtn'),
+        mapCanvas: document.getElementById('mapCanvas'),
+        mapState: document.getElementById('mapState'),
+        mapSubtitle: document.getElementById('mapSubtitle'),
+        mapFootnote: document.getElementById('mapFootnote'),
+        detailMetrics: document.getElementById('detailMetrics'),
+        comparisonList: document.getElementById('comparisonList'),
+        sequenceList: document.getElementById('sequenceList'),
+        tableBody: document.getElementById('tableBody'),
+        tableCount: document.getElementById('tableCount'),
+        selectionSummary: document.getElementById('selectionSummary'),
+        ledgerList: document.getElementById('ledgerList'),
+        tokenInput: document.getElementById('tokenInput'),
+        fetchBtn: document.getElementById('fetchBtn'),
+        forgetBtn: document.getElementById('forgetBtn'),
+        statusText: document.getElementById('statusText'),
+        sqlInput: document.getElementById('sqlInput'),
+        runBadge: document.getElementById('runBadge')
+    };
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function dateKey(value) {
+        return String(value ?? '').slice(0, 10);
+    }
+
+    function formatDate(value) {
+        const key = dateKey(value);
+        if (!key) {
+            return 'Unknown';
+        }
+        const parsed = new Date(`${key}T00:00:00Z`);
+        if (Number.isNaN(parsed.getTime())) {
+            return key;
+        }
+        return parsed.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            timeZone: 'UTC'
+        });
+    }
+
+    function integer(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : 0;
+    }
+
+    function quotedSqlString(value) {
+        return `'${String(value ?? '').replaceAll('\\', '\\\\').replaceAll("'", "''")}'`;
+    }
+
+    function normalizeRows(columns, rows) {
+        return (rows ?? []).map((row, index) => {
+            const obj = {};
+            columns.forEach((column, columnIndex) => {
+                obj[column] = row?.[columnIndex] ?? null;
+            });
+            const routeCodes = String(obj.Route ?? '')
+                .split(' -> ')
+                .map((item) => item.trim())
+                .filter(Boolean);
+            const departureSegments = String(obj['Departure Times From Origin'] ?? '')
+                .split('|')
+                .map((item) => item.trim())
+                .filter(Boolean)
+                .map((item) => {
+                    const parts = item.split(/\s+/);
+                    return {
+                        time: parts[0] ?? '',
+                        code: parts[1] ?? ''
+                    };
+                });
+            return {
+                ...obj,
+                __id: `row-${index}`,
+                __dateKey: dateKey(obj.Date),
+                __routeCodes: routeCodes,
+                __departureSegments: departureSegments,
+                __hops: integer(obj.Hops),
+                __sameRouteCount: integer(obj['Same-Hops Route Count']),
+                __routeFrequency: integer(obj['Route Frequency In Top 10']),
+                __maxHopCount: integer(obj['Max Hop Itinerary Count']),
+                __maxHopsOverall: integer(obj['Max Hops Overall'])
+            };
+        });
+    }
+
+    function setStatus(text, statusClass = '') {
+        el.statusText.className = `status-text ${statusClass}`.trim();
+        el.statusText.textContent = text;
+    }
+
+    function setWarning(text = '') {
+        if (!text) {
+            el.warningPanel.classList.add('hidden');
+            el.warningPanel.textContent = '';
+            return;
+        }
+        el.warningPanel.textContent = text;
+        el.warningPanel.classList.remove('hidden');
+    }
+
+    function setRunBadge(text) {
+        el.runBadge.textContent = text;
+    }
+
+    function buildEndpoint(token, sql) {
+        return ENDPOINT_TEMPLATE.replace('{JWE}', encodeURIComponent(token)) + encodeURIComponent(sql);
+    }
+
+    function createLedgerEntry({ label, role, sql, status, rows, detail }) {
+        const id = `ledger-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'ledger-entry';
+        wrapper.innerHTML = `
+            <div class="ledger-summary" role="button" tabindex="0">
+                <div class="ledger-toggle">▶</div>
+                <div class="ledger-label">
+                    <strong>${escapeHtml(label)}</strong>
+                    <span>${escapeHtml(detail ?? '')}</span>
+                </div>
+                <div class="ledger-cell" data-role="role">${escapeHtml(role)}</div>
+                <div class="ledger-cell" data-role="status"></div>
+                <div class="ledger-cell mono" data-role="rows"></div>
+            </div>
+            <div class="ledger-sql"><pre></pre></div>
+        `;
+        const summary = wrapper.querySelector('.ledger-summary');
+        summary.addEventListener('click', () => toggleLedger(wrapper));
+        summary.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleLedger(wrapper);
+            }
+        });
+        el.ledgerList.appendChild(wrapper);
+        state.ledgerEntries.set(id, wrapper);
+        updateLedgerEntry(id, { sql, status, rows, detail });
+        return id;
+    }
+
+    function toggleLedger(wrapper) {
+        const expanded = wrapper.classList.toggle('expanded');
+        const toggle = wrapper.querySelector('.ledger-toggle');
+        toggle.textContent = expanded ? '▼' : '▶';
+    }
+
+    function updateLedgerEntry(id, { sql, status, rows, detail }) {
+        const wrapper = state.ledgerEntries.get(id);
+        if (!wrapper) {
+            return;
+        }
+        if (typeof status === 'string') {
+            const statusCell = wrapper.querySelector('[data-role="status"]');
+            statusCell.textContent = status;
+            statusCell.className = `ledger-cell status-${status.toLowerCase()}`;
+        }
+        if (typeof rows !== 'undefined') {
+            wrapper.querySelector('[data-role="rows"]').textContent = rows === null ? '-' : String(rows);
+        }
+        if (typeof detail === 'string') {
+            wrapper.querySelector('.ledger-label span').textContent = detail;
+        }
+        if (typeof sql === 'string') {
+            wrapper.querySelector('pre').textContent = sql;
+        }
+    }
+
+    async function runTabularQuery({ sql, token, ledgerId }) {
+        const response = await fetch(buildEndpoint(token, sql));
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(body || `HTTP ${response.status}`);
+        }
+        const payload = await response.json();
+        if (!Array.isArray(payload?.columns)) {
+            throw new Error('Response columns were not usable.');
+        }
+        const rows = payload?.rows ?? [];
+        if (payload.rows !== null && !Array.isArray(rows)) {
+            throw new Error('Response rows were not usable.');
+        }
+        updateLedgerEntry(ledgerId, {
+            status: 'OK',
+            rows: Array.isArray(rows) ? rows.length : 0
+        });
+        return {
+            columns: payload.columns,
+            rows: Array.isArray(rows) ? rows : []
+        };
+    }
+
+    function buildKpis(row) {
+        const repetition = row.__routeFrequency > 1
+            ? `${row.__routeFrequency} copies in top 10`
+            : 'Unique route in top 10';
+        return [
+            {
+                label: 'Tail Number',
+                value: row['Aircraft ID'] ?? 'Unknown',
+                detail: `Carrier ${row.Carrier ?? 'Unknown'}`
+            },
+            {
+                label: 'Flight Number',
+                value: row['Flight Number'] ?? 'Unknown',
+                detail: `Lead itinerary in ranked result`
+            },
+            {
+                label: 'Date',
+                value: formatDate(row.Date),
+                detail: row.__dateKey || 'Unknown date'
+            },
+            {
+                label: 'Hop Count',
+                value: String(row.__hops),
+                detail: `Overall max ${row.__maxHopsOverall}`
+            },
+            {
+                label: 'Route Repetition',
+                value: repetition,
+                detail: `${row.__sameRouteCount} same-hop copies of this route`
+            }
+        ];
+    }
+
+    function renderKpis() {
+        const topRow = state.allRows.find((row) => row.__id === state.topRowId);
+        if (!topRow) {
+            el.kpiGrid.innerHTML = '';
+            return;
+        }
+        el.kpiGrid.innerHTML = buildKpis(topRow).map((item) => `
+            <section class="panel kpi-card">
+                <div class="kpi-label">${escapeHtml(item.label)}</div>
+                <div class="kpi-value">${escapeHtml(item.value)}</div>
+                <div class="kpi-detail">${escapeHtml(item.detail)}</div>
+            </section>
+        `).join('');
+    }
+
+    function populateCarrierFilter() {
+        const carriers = Array.from(new Set(state.allRows.map((row) => row.Carrier).filter(Boolean))).sort();
+        const current = el.carrierFilter.value;
+        el.carrierFilter.innerHTML = `<option value="all">All carriers</option>${carriers.map((carrier) => `<option value="${escapeHtml(carrier)}">${escapeHtml(carrier)}</option>`).join('')}`;
+        if (carriers.includes(current)) {
+            el.carrierFilter.value = current;
+        }
+    }
+
+    function applyFilters() {
+        const carrier = el.carrierFilter.value;
+        const repeat = el.repeatFilter.value;
+        const airportText = el.airportFilter.value.trim().toUpperCase();
+
+        state.filteredRows = state.allRows.filter((row) => {
+            if (carrier !== 'all' && row.Carrier !== carrier) {
+                return false;
+            }
+            if (repeat === 'unique' && row.__routeFrequency !== 1) {
+                return false;
+            }
+            if (repeat === 'repeated' && row.__routeFrequency <= 1) {
+                return false;
+            }
+            if (airportText && !row.__routeCodes.some((code) => code.includes(airportText))) {
+                return false;
+            }
+            return true;
+        });
+
+        const selectedStillVisible = state.filteredRows.some((row) => row.__id === state.selectedId);
+        if (!selectedStillVisible) {
+            state.selectedId = state.filteredRows[0]?.__id ?? null;
+        }
+
+        renderTable();
+        renderSelection();
+    }
+
+    function rowById(id) {
+        return state.allRows.find((row) => row.__id === id) ?? null;
+    }
+
+    function selectedRow() {
+        return rowById(state.selectedId);
+    }
+
+    function topRow() {
+        return rowById(state.topRowId);
+    }
+
+    function renderTable() {
+        if (!state.filteredRows.length) {
+            el.tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="soft">No itineraries match the current filters.</td>
+                </tr>
+            `;
+            el.tableCount.textContent = '0 visible rows';
+            return;
+        }
+
+        el.tableBody.innerHTML = state.filteredRows.map((row) => {
+            const activeClass = row.__id === state.selectedId ? 'active-row' : '';
+            const repeatLabel = row.__routeFrequency > 1
+                ? `${row.__routeFrequency} in top 10`
+                : 'Unique';
+            return `
+                <tr class="${activeClass}" data-row-id="${escapeHtml(row.__id)}">
+                    <td><strong>${escapeHtml(row['Aircraft ID'])}</strong><br><span class="soft">${escapeHtml(row.Carrier)}</span></td>
+                    <td>${escapeHtml(row['Flight Number'])}</td>
+                    <td>${escapeHtml(formatDate(row.Date))}</td>
+                    <td>${escapeHtml(String(row.__hops))}</td>
+                    <td>${escapeHtml(row.Route)}</td>
+                    <td>${escapeHtml(repeatLabel)}</td>
+                </tr>
+            `;
+        }).join('');
+
+        el.tableCount.textContent = `${state.filteredRows.length} visible row${state.filteredRows.length === 1 ? '' : 's'}`;
+        Array.from(el.tableBody.querySelectorAll('tr[data-row-id]')).forEach((rowElement) => {
+            rowElement.addEventListener('click', () => {
+                state.selectedId = rowElement.getAttribute('data-row-id');
+                renderTable();
+                renderSelection();
+            });
+        });
+    }
+
+    function routeDisplayName(code) {
+        const airport = state.coordMap.get(code);
+        if (!airport) {
+            return code;
+        }
+        return `${code} · ${airport.name}`;
+    }
+
+    function buildSequence(row) {
+        const codes = row.__routeCodes;
+        const departures = row.__departureSegments;
+        return codes.map((code, index) => {
+            const airport = state.coordMap.get(code);
+            return {
+                index: index + 1,
+                code,
+                time: departures[index]?.time ?? (index === codes.length - 1 ? 'Arrive' : 'Unknown'),
+                name: airport?.name ?? 'Airport reference pending',
+                tz: airport?.utc_local_time_variation ?? ''
+            };
+        });
+    }
+
+    function renderSelection() {
+        const row = selectedRow();
+        if (!row) {
+            el.selectionSummary.textContent = 'No itinerary selected';
+            el.detailMetrics.innerHTML = '';
+            el.comparisonList.innerHTML = '';
+            el.sequenceList.innerHTML = '<div class="soft">No itinerary is available for the current filter state.</div>';
+            showMapState('No plotted itinerary', 'Adjust filters or rerun the primary query to display a route.');
+            return;
+        }
+
+        el.selectionSummary.textContent = `Selected itinerary: ${row['Aircraft ID']} on ${formatDate(row.Date)}`;
+        el.detailMetrics.innerHTML = `
+            <div class="detail-metric">
+                <span class="soft">Selected aircraft</span>
+                <strong>${escapeHtml(row['Aircraft ID'])}</strong>
+            </div>
+            <div class="detail-metric">
+                <span class="soft">Selected flight number</span>
+                <strong>${escapeHtml(row['Flight Number'])}</strong>
+            </div>
+            <div class="detail-metric">
+                <span class="soft">Selected date</span>
+                <strong>${escapeHtml(formatDate(row.Date))}</strong>
+            </div>
+            <div class="detail-metric">
+                <span class="soft">Selected hop count</span>
+                <strong>${escapeHtml(String(row.__hops))}</strong>
+            </div>
+        `;
+
+        el.comparisonList.innerHTML = `
+            <div class="comparison-row"><span>Same-hops copies of this exact route</span><strong>${escapeHtml(String(row.__sameRouteCount))}</strong></div>
+            <div class="comparison-row"><span>Route frequency inside the returned top 10</span><strong>${escapeHtml(String(row.__routeFrequency))}</strong></div>
+            <div class="comparison-row"><span>Itineraries tied at the global hop maximum</span><strong>${escapeHtml(String(row.__maxHopCount))}</strong></div>
+        `;
+
+        const sequence = buildSequence(row);
+        el.sequenceList.innerHTML = sequence.map((stop) => `
+            <div class="sequence-step">
+                <span class="sequence-index">${escapeHtml(String(stop.index))}</span>
+                <span class="sequence-time">${escapeHtml(stop.time)}</span>
+                <span class="sequence-code">${escapeHtml(stop.code)}</span>
+                <span class="sequence-name">${escapeHtml(stop.name)}${stop.tz ? ` (${escapeHtml(stop.tz)})` : ''}</span>
+            </div>
+        `).join('');
+
+        renderMapForSelection(row);
+    }
+
+    function ensureMap() {
+        if (state.map || !window.L) {
+            return;
+        }
+        state.map = L.map(el.mapCanvas, {
+            zoomControl: true,
+            attributionControl: true
+        }).setView([39.5, -98.35], 4);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(state.map);
+
+        state.mapLayers.route = L.layerGroup().addTo(state.map);
+        state.mapLayers.markers = L.layerGroup().addTo(state.map);
+        requestAnimationFrame(() => state.map?.invalidateSize());
+    }
+
+    function showMapState(title, message) {
+        el.mapState.innerHTML = `
+            <div class="map-state-card">
+                <h3>${escapeHtml(title)}</h3>
+                <p class="soft">${escapeHtml(message)}</p>
+            </div>
+        `;
+        el.mapState.classList.remove('hidden');
+    }
+
+    function hideMapState() {
+        el.mapState.classList.add('hidden');
+    }
+
+    function clearMapLayers() {
+        state.mapLayers.route?.clearLayers();
+        state.mapLayers.markers?.clearLayers();
+    }
+
+    function setEnrichmentLedgerStatus(status, detail) {
+        if (!state.enrichmentLedgerId) {
+            return;
+        }
+        const coordCount = state.coordMap.size ? String(state.coordMap.size) : '-';
+        updateLedgerEntry(state.enrichmentLedgerId, {
+            status,
+            rows: coordCount,
+            detail
+        });
+    }
+
+    function renderMapForSelection(row) {
+        if (!row) {
+            return;
+        }
+        if (!window.L) {
+            showMapState('Map library unavailable', 'Leaflet failed to load, so the route cannot be drawn. The itinerary analysis remains available below.');
+            setEnrichmentLedgerStatus('Degraded', 'Leaflet did not load; non-map analysis is still rendered.');
+            return;
+        }
+
+        ensureMap();
+        clearMapLayers();
+
+        const points = row.__routeCodes
+            .map((code, index) => {
+                const airport = state.coordMap.get(code);
+                if (!airport) {
+                    return null;
+                }
+                return {
+                    ...airport,
+                    code,
+                    index
+                };
+            })
+            .filter(Boolean);
+
+        if (points.length < 2) {
+            const missingCodes = row.__routeCodes.filter((code) => !state.coordMap.has(code));
+            const reason = missingCodes.length
+                ? `Missing airport coordinates for ${missingCodes.join(', ')}.`
+                : 'Not enough airport coordinates were available to plot this itinerary.';
+            showMapState('Map degraded for selected itinerary', `${reason} The route sequence and ranked table still reflect the selected row.`);
+            el.mapSubtitle.textContent = `Selected route: ${row.Route}`;
+            el.mapFootnote.textContent = 'The map card remains visible while non-map analysis continues.';
+            setEnrichmentLedgerStatus('Degraded', `Airport-coordinate enrichment returned an incomplete route for ${row['Aircraft ID']} on ${row.__dateKey}.`);
+            return;
+        }
+
+        hideMapState();
+        points.forEach((point, index) => {
+            const isEndpoint = index === 0 || index === points.length - 1;
+            const marker = L.circleMarker([point.latitude, point.longitude], {
+                radius: isEndpoint ? 7 : 5,
+                color: 'white',
+                weight: 1.5,
+                fillColor: isEndpoint ? '#d48a1f' : '#0e3a52',
+                fillOpacity: 0.95
+            });
+            marker.bindPopup(`<strong>${escapeHtml(point.code)}</strong><br>${escapeHtml(point.name ?? '')}`);
+            marker.addTo(state.mapLayers.markers);
+        });
+
+        const line = L.polyline(points.map((point) => [point.latitude, point.longitude]), {
+            color: '#c54f36',
+            weight: 4,
+            opacity: 0.85
+        });
+        line.addTo(state.mapLayers.route);
+
+        const bounds = L.latLngBounds(points.map((point) => [point.latitude, point.longitude]));
+        state.map.fitBounds(bounds.pad(0.15));
+        requestAnimationFrame(() => state.map?.invalidateSize());
+
+        el.mapSubtitle.textContent = `Selected route: ${row.Route}`;
+        el.mapFootnote.textContent = `${points.length} plotted airports reused from cached enrichment results.`;
+        setEnrichmentLedgerStatus('OK', `Airport-coordinate enrichment cached for ${state.coordMap.size} airports and reused across itinerary selection changes.`);
+    }
+
+    function enrichmentSqlForCodes(codes) {
+        const sorted = Array.from(new Set(codes.filter(Boolean))).sort();
+        return `SELECT
+    code,
+    name,
+    latitude,
+    longitude,
+    utc_local_time_variation
+FROM ontime.airports_latest
+WHERE code IN (${sorted.map(quotedSqlString).join(', ')})
+ORDER BY code`;
+    }
+
+    async function runEnrichment(runId, token) {
+        const uniqueCodes = Array.from(new Set(state.allRows.flatMap((row) => row.__routeCodes))).filter(Boolean);
+        if (!uniqueCodes.length) {
+            showMapState('No airport codes returned', 'The primary result set did not expose airport codes needed for map enrichment.');
+            return;
+        }
+
+        const sql = enrichmentSqlForCodes(uniqueCodes);
+        state.enrichmentLedgerId = createLedgerEntry({
+            label: 'Airport-coordinate enrichment',
+            role: 'Enrichment',
+            sql,
+            status: 'Pending',
+            rows: '-',
+            detail: 'Pending coordinates from ontime.airports_latest for itinerary map rendering.'
+        });
+
+        try {
+            const payload = await runTabularQuery({
+                sql,
+                token,
+                ledgerId: state.enrichmentLedgerId
+            });
+            if (runId !== state.activeRunId) {
+                return;
+            }
+            state.coordMap = new Map(normalizeRows(payload.columns, payload.rows).map((row) => [
+                row.code,
+                {
+                    code: row.code,
+                    name: row.name,
+                    latitude: Number(row.latitude),
+                    longitude: Number(row.longitude),
+                    utc_local_time_variation: row.utc_local_time_variation
+                }
+            ]));
+            renderSelection();
+        } catch (error) {
+            if (runId !== state.activeRunId) {
+                return;
+            }
+            updateLedgerEntry(state.enrichmentLedgerId, {
+                status: 'Failed',
+                rows: '-',
+                detail: `Airport-coordinate enrichment failed; map degraded while the itinerary table and details remain available.`
+            });
+            showMapState('Map degraded after enrichment failure', error.message || 'Airport-coordinate enrichment failed.');
+            el.mapFootnote.textContent = 'Primary itinerary analysis remains available without map coordinates.';
+        }
+    }
+
+    async function runDashboard() {
+        if (state.isRunning) {
+            return;
+        }
+        const token = el.tokenInput.value.trim();
+        const sql = el.sqlInput.value.trim();
+
+        if (!token) {
+            setStatus('Enter a JWE token before fetching the dashboard.', 'status-failed');
+            return;
+        }
+        if (!sql) {
+            setStatus('Primary SQL is empty.', 'status-failed');
+            return;
+        }
+
+        state.isRunning = true;
+        state.activeRunId += 1;
+        const runId = state.activeRunId;
+        el.fetchBtn.disabled = true;
+        setWarning('');
+        setStatus('Running primary query…', 'status-pending');
+        setRunBadge('Primary query in progress');
+        localStorage.setItem(STORAGE_KEY, token);
+        el.ledgerList.innerHTML = '';
+        state.ledgerEntries.clear();
+        state.coordMap = new Map();
+        state.enrichmentLedgerId = null;
+
+        const primaryLedgerId = createLedgerEntry({
+            label: 'Primary analytical query',
+            role: 'Primary',
+            sql,
+            status: 'Pending',
+            rows: '-',
+            detail: 'Saved SQL driving ranked itineraries and KPI context.'
+        });
+
+        try {
+            const payload = await runTabularQuery({ sql, token, ledgerId: primaryLedgerId });
+            if (runId !== state.activeRunId) {
+                return;
+            }
+
+            const normalized = normalizeRows(payload.columns, payload.rows);
+            state.allRows = normalized;
+            state.filteredRows = normalized.slice();
+            state.topRowId = normalized[0]?.__id ?? null;
+            state.selectedId = normalized[0]?.__id ?? null;
+            populateCarrierFilter();
+
+            if (!normalized.length) {
+                el.dashboard.classList.remove('hidden');
+                renderKpis();
+                applyFilters();
+                showMapState('No rows returned', 'The saved query completed successfully but returned no itineraries.');
+                setWarning('The primary query returned zero rows. Filters, details, and map containers remain stable for reruns.');
+                setStatus('Primary query completed with zero rows.', 'status-pending');
+                setRunBadge('Primary query returned zero rows');
+                return;
+            }
+
+            renderKpis();
+            applyFilters();
+            el.dashboard.classList.remove('hidden');
+            showMapState('Coordinate enrichment pending', 'The selected itinerary is available now. Airport coordinates are loading for the route map.');
+            setStatus(`Primary query returned ${normalized.length} rows. Starting airport-coordinate enrichment…`, 'status-ok');
+            setRunBadge(`Loaded ${normalized.length} itinerary rows`);
+            await runEnrichment(runId, token);
+        } catch (error) {
+            if (runId !== state.activeRunId) {
+                return;
+            }
+            state.allRows = [];
+            state.filteredRows = [];
+            state.selectedId = null;
+            state.topRowId = null;
+            el.dashboard.classList.add('hidden');
+            setWarning(error.message || 'Primary query failed.');
+            setStatus('Primary query failed. Review the query ledger and API message.', 'status-failed');
+            setRunBadge('Primary query failed');
+            updateLedgerEntry(primaryLedgerId, {
+                status: 'Failed',
+                rows: '-',
+                detail: 'Primary query failed; analytical content remains hidden until a successful run.'
+            });
+        } finally {
+            if (runId === state.activeRunId) {
+                state.isRunning = false;
+                el.fetchBtn.disabled = false;
+            }
+        }
+    }
+
+    function exportVisibleCsv() {
+        if (!state.filteredRows.length) {
+            setStatus('No visible rows to export.', 'status-pending');
+            return;
+        }
+        const columns = ['Aircraft ID', 'Flight Number', 'Carrier', 'Date', 'Hops', 'Route', 'Departure Times From Origin', 'Same-Hops Route Count', 'Route Frequency In Top 10'];
+        const csvLines = [
+            columns.join(','),
+            ...state.filteredRows.map((row) => columns.map((column) => {
+                const raw = row[column] ?? '';
+                const escaped = String(raw).replaceAll('"', '""');
+                return `"${escaped}"`;
+            }).join(','))
+        ];
+        const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'highest_daily_hops_visible_rows.csv';
+        link.click();
+        URL.revokeObjectURL(url);
+        setStatus(`Exported ${state.filteredRows.length} visible rows.`, 'status-ok');
+    }
+
+    function resetFilters() {
+        el.carrierFilter.value = 'all';
+        el.repeatFilter.value = 'all';
+        el.airportFilter.value = '';
+        applyFilters();
+    }
+
+    el.fetchBtn.addEventListener('click', runDashboard);
+    el.forgetBtn.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        el.tokenInput.value = '';
+        setStatus('Stored token removed from local storage.', 'status-pending');
+    });
+    el.carrierFilter.addEventListener('change', applyFilters);
+    el.repeatFilter.addEventListener('change', applyFilters);
+    el.airportFilter.addEventListener('input', applyFilters);
+    el.resetFiltersBtn.addEventListener('click', resetFilters);
+    el.exportBtn.addEventListener('click', exportVisibleCsv);
+
+    const storedToken = localStorage.getItem(STORAGE_KEY) ?? '';
+    if (storedToken) {
+        el.tokenInput.value = storedToken;
+        setStatus('Stored token found. Auto-running the saved query…', 'status-pending');
+        runDashboard();
+    }
+})();
+</script>
+</body>
+</html>

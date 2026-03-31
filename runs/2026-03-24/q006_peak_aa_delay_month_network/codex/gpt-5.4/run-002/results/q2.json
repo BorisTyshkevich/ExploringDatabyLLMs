@@ -1,0 +1,168 @@
+{
+  "columns": [
+    "OriginCode",
+    "origin_city",
+    "flights",
+    "avg_dep_delay",
+    "pct_dep_15_plus",
+    "total_dep_delay_minutes",
+    "network_delay_share_pct",
+    "network_flight_share_pct"
+  ],
+  "rows": [
+    {
+      "OriginCode": "DFW",
+      "avg_dep_delay": 38.52,
+      "flights": 14962,
+      "network_delay_share_pct": 17.98,
+      "network_flight_share_pct": 17.38,
+      "origin_city": "Dallas/Fort Worth, TX",
+      "pct_dep_15_plus": 46.59,
+      "total_dep_delay_minutes": 593021
+    },
+    {
+      "OriginCode": "CLT",
+      "avg_dep_delay": 51.99,
+      "flights": 10568,
+      "network_delay_share_pct": 16.99,
+      "network_flight_share_pct": 12.28,
+      "origin_city": "Charlotte, NC",
+      "pct_dep_15_plus": 52.24,
+      "total_dep_delay_minutes": 560409
+    },
+    {
+      "OriginCode": "ORD",
+      "avg_dep_delay": 35.76,
+      "flights": 4844,
+      "network_delay_share_pct": 5.48,
+      "network_flight_share_pct": 5.63,
+      "origin_city": "Chicago, IL",
+      "pct_dep_15_plus": 39.22,
+      "total_dep_delay_minutes": 180836
+    },
+    {
+      "OriginCode": "MIA",
+      "avg_dep_delay": 34.35,
+      "flights": 4881,
+      "network_delay_share_pct": 5.28,
+      "network_flight_share_pct": 5.67,
+      "origin_city": "Miami, FL",
+      "pct_dep_15_plus": 39.89,
+      "total_dep_delay_minutes": 174016
+    },
+    {
+      "OriginCode": "PHL",
+      "avg_dep_delay": 34.61,
+      "flights": 4555,
+      "network_delay_share_pct": 5.01,
+      "network_flight_share_pct": 5.29,
+      "origin_city": "Philadelphia, PA",
+      "pct_dep_15_plus": 40.66,
+      "total_dep_delay_minutes": 165343
+    },
+    {
+      "OriginCode": "PHX",
+      "avg_dep_delay": 30.21,
+      "flights": 4366,
+      "network_delay_share_pct": 4.31,
+      "network_flight_share_pct": 5.07,
+      "origin_city": "Phoenix, AZ",
+      "pct_dep_15_plus": 30.85,
+      "total_dep_delay_minutes": 142288
+    },
+    {
+      "OriginCode": "DCA",
+      "avg_dep_delay": 26.13,
+      "flights": 2454,
+      "network_delay_share_pct": 2.16,
+      "network_flight_share_pct": 2.85,
+      "origin_city": "Washington, DC",
+      "pct_dep_15_plus": 28.77,
+      "total_dep_delay_minutes": 71144
+    },
+    {
+      "OriginCode": "LAX",
+      "avg_dep_delay": 25.08,
+      "flights": 2564,
+      "network_delay_share_pct": 2.13,
+      "network_flight_share_pct": 2.98,
+      "origin_city": "Los Angeles, CA",
+      "pct_dep_15_plus": 25.47,
+      "total_dep_delay_minutes": 70220
+    },
+    {
+      "OriginCode": "MCO",
+      "avg_dep_delay": 36.99,
+      "flights": 1496,
+      "network_delay_share_pct": 1.79,
+      "network_flight_share_pct": 1.74,
+      "origin_city": "Orlando, FL",
+      "pct_dep_15_plus": 35.43,
+      "total_dep_delay_minutes": 58872
+    },
+    {
+      "OriginCode": "AUS",
+      "avg_dep_delay": 41.6,
+      "flights": 1180,
+      "network_delay_share_pct": 1.59,
+      "network_flight_share_pct": 1.37,
+      "origin_city": "Austin, TX",
+      "pct_dep_15_plus": 31.53,
+      "total_dep_delay_minutes": 52335
+    },
+    {
+      "OriginCode": "LAS",
+      "avg_dep_delay": 40.25,
+      "flights": 1143,
+      "network_delay_share_pct": 1.47,
+      "network_flight_share_pct": 1.33,
+      "origin_city": "Las Vegas, NV",
+      "pct_dep_15_plus": 37.71,
+      "total_dep_delay_minutes": 48474
+    },
+    {
+      "OriginCode": "BOS",
+      "avg_dep_delay": 21.97,
+      "flights": 1596,
+      "network_delay_share_pct": 1.23,
+      "network_flight_share_pct": 1.85,
+      "origin_city": "Boston, MA",
+      "pct_dep_15_plus": 25.5,
+      "total_dep_delay_minutes": 40504
+    },
+    {
+      "OriginCode": "RDU",
+      "avg_dep_delay": 35.03,
+      "flights": 1064,
+      "network_delay_share_pct": 1.21,
+      "network_flight_share_pct": 1.24,
+      "origin_city": "Raleigh/Durham, NC",
+      "pct_dep_15_plus": 34.96,
+      "total_dep_delay_minutes": 39809
+    },
+    {
+      "OriginCode": "JFK",
+      "avg_dep_delay": 29.7,
+      "flights": 1143,
+      "network_delay_share_pct": 1.11,
+      "network_flight_share_pct": 1.33,
+      "origin_city": "New York, NY",
+      "pct_dep_15_plus": 24.23,
+      "total_dep_delay_minutes": 36739
+    },
+    {
+      "OriginCode": "LGA",
+      "avg_dep_delay": 26.11,
+      "flights": 1270,
+      "network_delay_share_pct": 1.11,
+      "network_flight_share_pct": 1.48,
+      "origin_city": "New York, NY",
+      "pct_dep_15_plus": 26.93,
+      "total_dep_delay_minutes": 36573
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T16:50:05.610731Z",
+  "source_query_sha256": "8d405082f3f049a509b6b1aa053151751cb5a84035b782f11e78229a2c943103",
+  "log_comment": "qforge|question=q006|run=run-002|runner=codex|model=gpt-5.4|phase=full|subquestion=q2"
+}

@@ -1,0 +1,40 @@
+{
+  "columns": [
+    "Year",
+    "new_leader",
+    "new_leader_flights",
+    "prev_leader",
+    "prev_leader_flights",
+    "swing"
+  ],
+  "rows": [
+    {
+      "Year": 1990,
+      "new_leader": "US",
+      "new_leader_flights": 991989,
+      "prev_leader": "DL",
+      "prev_leader_flights": 778612,
+      "swing": 213377
+    },
+    {
+      "Year": 1992,
+      "new_leader": "DL",
+      "new_leader_flights": 910094,
+      "prev_leader": "US",
+      "prev_leader_flights": 900252,
+      "swing": 9842
+    },
+    {
+      "Year": 2000,
+      "new_leader": "WN",
+      "new_leader_flights": 902660,
+      "prev_leader": "DL",
+      "prev_leader_flights": 892387,
+      "swing": 10273
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T11:08:49.942097Z",
+  "source_query_sha256": "362a4a98cf9fcc2b3af5a5b30bd0950f518f55c21a2f5947550ee86fb3b60e2e",
+  "log_comment": "qforge|question=q002|run=run-004|runner=claude|model=sonnet|phase=full|subquestion=q2"
+}

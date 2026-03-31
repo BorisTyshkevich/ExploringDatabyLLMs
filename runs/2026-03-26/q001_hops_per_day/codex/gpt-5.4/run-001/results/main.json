@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "aircraft_id",
+    "flight_number",
+    "carrier",
+    "flight_date",
+    "hop_count",
+    "route_recurrence_count",
+    "route"
+  ],
+  "rows": [
+    {
+      "aircraft_id": "N957WN",
+      "carrier": "WN",
+      "flight_date": "2024-12-01T00:00:00Z",
+      "flight_number": "366",
+      "hop_count": 8,
+      "route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "route_recurrence_count": 1
+    },
+    {
+      "aircraft_id": "N7835A",
+      "carrier": "WN",
+      "flight_date": "2024-02-18T00:00:00Z",
+      "flight_number": "3149",
+      "hop_count": 8,
+      "route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "route_recurrence_count": 4
+    },
+    {
+      "aircraft_id": "N7742B",
+      "carrier": "WN",
+      "flight_date": "2023-04-30T00:00:00Z",
+      "flight_number": "154",
+      "hop_count": 8,
+      "route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "route_recurrence_count": 2
+    },
+    {
+      "aircraft_id": "N8631A",
+      "carrier": "WN",
+      "flight_date": "2022-10-23T00:00:00Z",
+      "flight_number": "2787",
+      "hop_count": 8,
+      "route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "route_recurrence_count": 5
+    },
+    {
+      "aircraft_id": "N416WN",
+      "carrier": "WN",
+      "flight_date": "2022-09-01T00:00:00Z",
+      "flight_number": "1956",
+      "hop_count": 8,
+      "route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "route_recurrence_count": 40
+    },
+    {
+      "aircraft_id": "N7713A",
+      "carrier": "WN",
+      "flight_date": "2022-08-31T00:00:00Z",
+      "flight_number": "2884",
+      "hop_count": 8,
+      "route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "route_recurrence_count": 46
+    },
+    {
+      "aircraft_id": "N219WN",
+      "carrier": "WN",
+      "flight_date": "2021-10-31T00:00:00Z",
+      "flight_number": "3378",
+      "hop_count": 8,
+      "route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "route_recurrence_count": 7
+    },
+    {
+      "aircraft_id": "N262WN",
+      "carrier": "WN",
+      "flight_date": "2021-08-27T00:00:00Z",
+      "flight_number": "904",
+      "hop_count": 8,
+      "route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "route_recurrence_count": 20
+    },
+    {
+      "aircraft_id": "N484WN",
+      "carrier": "WN",
+      "flight_date": "2021-08-25T00:00:00Z",
+      "flight_number": "2294",
+      "hop_count": 8,
+      "route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "route_recurrence_count": 12
+    },
+    {
+      "aircraft_id": "N225WN",
+      "carrier": "WN",
+      "flight_date": "2021-08-08T00:00:00Z",
+      "flight_number": "3530",
+      "hop_count": 8,
+      "route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "route_recurrence_count": 5
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-26T12:23:37.825259Z",
+  "source_query_sha256": "09465b5da4ec19ce7b057f03fb6cef42a6262672c23cbac56f038cd7aa03873c",
+  "log_comment": "qforge|question=q001|run=run-001|runner=codex|model=gpt-5.4|phase=full|section=main"
+}

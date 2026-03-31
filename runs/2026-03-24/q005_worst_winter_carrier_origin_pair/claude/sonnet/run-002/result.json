@@ -1,0 +1,72 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "DH (Independence Air) departing from ORD (Chicago O'Hare) ranks worst among all qualifying winter carrier-origin pairs with at least 1,000 winter flights. Across 19,986 winter departures, it achieved only 56.58% on-time performance and averaged 28.35 minutes of departure delay per completed flight — both the worst figures in the dataset by a meaningful margin. The next-worst qualifying pairs (PI/DFW at 61.5%, PI/LAX at 62.95%) trail DH/ORD by more than four percentage points.",
+      "columns_csv": "carrier, origin, winter_flights, otp_pct, avg_dep_delay_min",
+      "first_row": {
+        "avg_dep_delay_min": 28.35,
+        "carrier": "DH",
+        "origin": "ORD",
+        "otp_pct": 56.58,
+        "winter_flights": 19986
+      },
+      "row_count": 20,
+      "subquestion": "Which winter carrier-airport pair ranks worst overall?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "Operational causes dominate decisively across all worst pairs that have delay-cause data. For DH/ORD the breakdown is 15.6% weather vs 84.4% operational (carrier delay + NAS + late aircraft + security). YV/ORD is even more skewed: 5.0% weather vs 95.0% operational. AA/EYW sits at 5.7% weather vs 94.3% operational; F9/PBI at 1.5% vs 98.5%; OO/OTH at 2.9% vs 97.1%. OH/RSW is the most weather-affected at 26.8% weather vs 73.2% operational. In every case, operational causes account for the majority of reported delay minutes, making poor operational execution rather than weather the primary driver of chronic winter under-performance.",
+      "columns_csv": "carrier, origin, winter_flights, otp_pct, avg_dep_delay_min, weather_min, carrier_min, nas_min, security_min, late_aircraft_min, total_reported_delay, weather_share_pct, operational_share_pct",
+      "first_row": {
+        "avg_dep_delay_min": 28.35,
+        "carrier": "DH",
+        "carrier_min": 123407,
+        "late_aircraft_min": 133239,
+        "nas_min": 41492,
+        "operational_share_pct": 84.4,
+        "origin": "ORD",
+        "otp_pct": 56.58,
+        "security_min": 116,
+        "total_reported_delay": 353430,
+        "weather_min": 55176,
+        "weather_share_pct": 15.6,
+        "winter_flights": 19986
+      },
+      "row_count": 10,
+      "subquestion": "Are the worst pairs driven more by weather or by operational causes?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The weakest pairs are moderately spread rather than tightly concentrated. Among the 30 worst qualifying winter pairs, B6 (JetBlue) is the most frequent carrier with 6 pairs spread across MIA, RNO, SRQ, FLL, PHX, and PBI. PI, OO, and OH each contribute 3 pairs. YV, F9, EV, and FL each have 2 pairs, while DH, AS, AA, NW, G4, XE, and EA appear once each — 15 distinct carriers in total. On the airport side, ORD and EWR each host 2 pairs, FLL appears twice (B6 and F9), and no single airport dominates the list. The weakness is carrier-driven more than airport-driven: B6's Florida leisure-market airports and regional carriers at high-congestion or weather-prone hubs account for most of the bottom tier, but there is no single choke-point airport that concentrates failure.",
+      "columns_csv": "carrier, pairs_in_worst30, avg_otp_pct, origins",
+      "first_row": {
+        "avg_otp_pct": 68.43,
+        "carrier": "B6",
+        "origins": [
+          "MIA",
+          "RNO",
+          "SRQ",
+          "FLL",
+          "PHX",
+          "PBI"
+        ],
+        "pairs_in_worst30": 6
+      },
+      "row_count": 15,
+      "subquestion": "Are the weakest pairs concentrated in a small number of carriers or airports?",
+      "subquestion_id": "q3"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T13:10:15.788999Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

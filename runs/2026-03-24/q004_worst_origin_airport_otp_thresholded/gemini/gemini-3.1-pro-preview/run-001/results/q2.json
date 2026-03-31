@@ -1,0 +1,44 @@
+{
+  "columns": [
+    "OriginCode",
+    "OriginCityName",
+    "completed_departures",
+    "on_time_performance",
+    "avg_departure_delay",
+    "p90_departure_delay",
+    "first_date",
+    "last_date",
+    "rnk",
+    "total_airports"
+  ],
+  "rows": [
+    {
+      "OriginCityName": "Chicago, IL",
+      "OriginCode": "MDW",
+      "avg_departure_delay": 11.8,
+      "completed_departures": 2512354,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7652,
+      "p90_departure_delay": 36,
+      "rnk": 1,
+      "total_airports": 160
+    },
+    {
+      "OriginCityName": "Islip, NY",
+      "OriginCode": "ISP",
+      "avg_departure_delay": 8.01,
+      "completed_departures": 246627,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8503,
+      "p90_departure_delay": 25,
+      "rnk": 80,
+      "total_airports": 160
+    }
+  ],
+  "row_count": 2,
+  "generated_at": "2026-03-24T12:25:52.21759Z",
+  "source_query_sha256": "0dc52161f59205a5fd36dcf49134db9d692e43262e8a4e1dd54a3ce55454ab1d",
+  "log_comment": "qforge|question=q004|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full|subquestion=q2"
+}

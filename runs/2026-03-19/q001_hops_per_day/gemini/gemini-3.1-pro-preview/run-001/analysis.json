@@ -1,0 +1,17 @@
+{
+  "sql": "SELECT FlightDate AS Date, Tail_Number AS AircraftID, Flight_Number_Reporting_Airline AS FlightNumber, Reporting_Airline AS Carrier, count() AS Hops, arrayStringConcat(arrayMap(x -\u003e x.2 || ' (' || leftPad(toString(x.1), 4, '0') || ')', arraySort(groupArray(tuple(DepTime, Origin, Dest)))), ' - ') || ' - ' || arraySort(groupArray(tuple(DepTime, Origin, Dest)))[-1].3 AS Route FROM ontime.ontime WHERE Cancelled = 0 AND Tail_Number != '' AND Tail_Number != 'UNKNOW' AND DepTime IS NOT NULL GROUP BY Date, AircraftID, FlightNumber, Carrier ORDER BY Hops DESC, Date DESC LIMIT 10",
+  "report_markdown": "# Highest daily hops for one aircraft on one flight number\n\n{{data_overview_md}}\n\nThe maximum number of daily hops observed for a single aircraft under the same flight number is {{metric.max_hops}}. This behavior does not appear to be a one-off itinerary, but rather a repeated operating pattern, particularly noticeable with Southwest Airlines (WN).\n\nThe most recent itinerary achieving this maximum is flight {{metric.recent_flight}} on {{metric.recent_date}} operated by {{metric.recent_carrier}} (Aircraft {{metric.recent_aircraft}}). The route was:\n**{{metric.recent_route}}**\n\nAcross the top 10 longest itineraries, there is notable route repetition. For instance, Southwest's flight 3149 flew the exact same 8-hop route (`CLE - BNA - PNS - HOU - MCI - PHX - BUR - OAK - DEN`) on multiple dates in early 2024. Similar identical 8-hop patterns are seen for flight 154 in April 2023 and flight 2787 in Fall 2022. This indicates intentional, cyclic aircraft scheduling across numerous stations within a single day.",
+  "metrics": {
+    "summary_facts": [
+      "The maximum number of daily hops for a single aircraft on one flight number is 8, observed as a repeating scheduled pattern for Southwest Airlines."
+    ],
+    "named_values": {
+      "max_hops": "8",
+      "recent_aircraft": "N957WN",
+      "recent_carrier": "WN",
+      "recent_date": "2024-12-01",
+      "recent_flight": "366",
+      "recent_route": "ISP (0543) - BWI (0810) - MYR (1020) - BNA (1142) - VPS (1401) - DAL (1643) - LAS (1828) - OAK (2041) - SEA"
+    }
+  }
+}

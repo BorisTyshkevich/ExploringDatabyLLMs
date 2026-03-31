@@ -1,0 +1,268 @@
+{
+  "columns": [
+    "carrier",
+    "origin",
+    "winter_flights",
+    "pct_ontime",
+    "avg_dep_delay_min",
+    "weather_pct",
+    "operational_pct",
+    "rank"
+  ],
+  "rows": [
+    {
+      "avg_dep_delay_min": 28.35,
+      "carrier": "DH",
+      "operational_pct": 84.39,
+      "origin": "ORD",
+      "pct_ontime": 56.58,
+      "rank": 1,
+      "weather_pct": 15.61,
+      "winter_flights": 19986
+    },
+    {
+      "avg_dep_delay_min": 16.21,
+      "carrier": "PI",
+      "operational_pct": null,
+      "origin": "DFW",
+      "pct_ontime": 61.5,
+      "rank": 2,
+      "weather_pct": null,
+      "winter_flights": 1187
+    },
+    {
+      "avg_dep_delay_min": 21.24,
+      "carrier": "PI",
+      "operational_pct": null,
+      "origin": "LAX",
+      "pct_ontime": 62.95,
+      "rank": 3,
+      "weather_pct": null,
+      "winter_flights": 1131
+    },
+    {
+      "avg_dep_delay_min": 15.66,
+      "carrier": "PI",
+      "operational_pct": null,
+      "origin": "DAY",
+      "pct_ontime": 63.15,
+      "rank": 4,
+      "weather_pct": null,
+      "winter_flights": 12406
+    },
+    {
+      "avg_dep_delay_min": 19.84,
+      "carrier": "AS",
+      "operational_pct": 91.57,
+      "origin": "DUT",
+      "pct_ontime": 63.29,
+      "rank": 5,
+      "weather_pct": 8.43,
+      "winter_flights": 1114
+    },
+    {
+      "avg_dep_delay_min": 29.07,
+      "carrier": "YV",
+      "operational_pct": 95.04,
+      "origin": "ORD",
+      "pct_ontime": 63.57,
+      "rank": 6,
+      "weather_pct": 4.96,
+      "winter_flights": 35962
+    },
+    {
+      "avg_dep_delay_min": 31.3,
+      "carrier": "OO",
+      "operational_pct": 97.09,
+      "origin": "OTH",
+      "pct_ontime": 63.63,
+      "rank": 7,
+      "weather_pct": 2.91,
+      "winter_flights": 1834
+    },
+    {
+      "avg_dep_delay_min": 32.05,
+      "carrier": "AA",
+      "operational_pct": 94.34,
+      "origin": "EYW",
+      "pct_ontime": 64.12,
+      "rank": 8,
+      "weather_pct": 5.66,
+      "winter_flights": 2553
+    },
+    {
+      "avg_dep_delay_min": 27.1,
+      "carrier": "F9",
+      "operational_pct": 98.46,
+      "origin": "PBI",
+      "pct_ontime": 65.74,
+      "rank": 9,
+      "weather_pct": 1.54,
+      "winter_flights": 3298
+    },
+    {
+      "avg_dep_delay_min": 21.68,
+      "carrier": "OH",
+      "operational_pct": 73.17,
+      "origin": "RSW",
+      "pct_ontime": 66.27,
+      "rank": 10,
+      "weather_pct": 26.83,
+      "winter_flights": 1352
+    },
+    {
+      "avg_dep_delay_min": 28.16,
+      "carrier": "B6",
+      "operational_pct": 98.51,
+      "origin": "MIA",
+      "pct_ontime": 66.89,
+      "rank": 11,
+      "weather_pct": 1.49,
+      "winter_flights": 3123
+    },
+    {
+      "avg_dep_delay_min": 29.37,
+      "carrier": "OO",
+      "operational_pct": 86.48,
+      "origin": "ASE",
+      "pct_ontime": 67.17,
+      "rank": 12,
+      "weather_pct": 13.52,
+      "winter_flights": 33506
+    },
+    {
+      "avg_dep_delay_min": 18.3,
+      "carrier": "EV",
+      "operational_pct": 92.04,
+      "origin": "SLC",
+      "pct_ontime": 67.51,
+      "rank": 13,
+      "weather_pct": 7.96,
+      "winter_flights": 5238
+    },
+    {
+      "avg_dep_delay_min": 24.95,
+      "carrier": "NW",
+      "operational_pct": 99.21,
+      "origin": "SJU",
+      "pct_ontime": 67.57,
+      "rank": 14,
+      "weather_pct": 0.79,
+      "winter_flights": 2066
+    },
+    {
+      "avg_dep_delay_min": 21.85,
+      "carrier": "EV",
+      "operational_pct": 96.52,
+      "origin": "DEN",
+      "pct_ontime": 67.66,
+      "rank": 15,
+      "weather_pct": 3.48,
+      "winter_flights": 15766
+    },
+    {
+      "avg_dep_delay_min": 33.02,
+      "carrier": "B6",
+      "operational_pct": 98.43,
+      "origin": "RNO",
+      "pct_ontime": 67.84,
+      "rank": 16,
+      "weather_pct": 1.57,
+      "winter_flights": 1107
+    },
+    {
+      "avg_dep_delay_min": 23.24,
+      "carrier": "G4",
+      "operational_pct": 87.8,
+      "origin": "SCK",
+      "pct_ontime": 68.15,
+      "rank": 17,
+      "weather_pct": 12.2,
+      "winter_flights": 1077
+    },
+    {
+      "avg_dep_delay_min": 23.23,
+      "carrier": "OH",
+      "operational_pct": 58.59,
+      "origin": "EWR",
+      "pct_ontime": 68.15,
+      "rank": 18,
+      "weather_pct": 41.41,
+      "winter_flights": 1570
+    },
+    {
+      "avg_dep_delay_min": 24.95,
+      "carrier": "B6",
+      "operational_pct": 99.84,
+      "origin": "SRQ",
+      "pct_ontime": 68.31,
+      "rank": 19,
+      "weather_pct": 0.16,
+      "winter_flights": 4276
+    },
+    {
+      "avg_dep_delay_min": 20.44,
+      "carrier": "FL",
+      "operational_pct": 97.75,
+      "origin": "SFO",
+      "pct_ontime": 68.31,
+      "rank": 20,
+      "weather_pct": 2.25,
+      "winter_flights": 1565
+    },
+    {
+      "avg_dep_delay_min": 20.47,
+      "carrier": "OH",
+      "operational_pct": 71.3,
+      "origin": "ATL",
+      "pct_ontime": 68.71,
+      "rank": 21,
+      "weather_pct": 28.7,
+      "winter_flights": 18017
+    },
+    {
+      "avg_dep_delay_min": 23.93,
+      "carrier": "FL",
+      "operational_pct": 99.63,
+      "origin": "EWR",
+      "pct_ontime": 68.85,
+      "rank": 22,
+      "weather_pct": 0.37,
+      "winter_flights": 2825
+    },
+    {
+      "avg_dep_delay_min": 21.5,
+      "carrier": "XE",
+      "operational_pct": 95.25,
+      "origin": "EWR",
+      "pct_ontime": 68.91,
+      "rank": 23,
+      "weather_pct": 4.75,
+      "winter_flights": 56646
+    },
+    {
+      "avg_dep_delay_min": 24.77,
+      "carrier": "OO",
+      "operational_pct": 97.25,
+      "origin": "CEC",
+      "pct_ontime": 68.95,
+      "rank": 24,
+      "weather_pct": 2.75,
+      "winter_flights": 3002
+    },
+    {
+      "avg_dep_delay_min": 21.38,
+      "carrier": "B6",
+      "operational_pct": 98.7,
+      "origin": "FLL",
+      "pct_ontime": 68.97,
+      "rank": 25,
+      "weather_pct": 1.3,
+      "winter_flights": 94789
+    }
+  ],
+  "row_count": 25,
+  "generated_at": "2026-03-24T08:07:10.935392Z",
+  "source_query_sha256": "1914332db12438418aaaeecac15fdcd7d636f4c52be12fae533773668e7e849e",
+  "log_comment": "qforge|question=q005|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=worst_pair"
+}

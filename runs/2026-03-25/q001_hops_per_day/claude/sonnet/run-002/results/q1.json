@@ -1,0 +1,85 @@
+{
+  "columns": [
+    "Route",
+    "max_hops",
+    "occurrences",
+    "first_seen",
+    "last_seen"
+  ],
+  "rows": [
+    {
+      "Route": "FLL-JAX-IND-MDW-MCI-DAL-ABQ-LAX-SJC",
+      "first_seen": "2008-03-10T00:00:00Z",
+      "last_seen": "2008-08-21T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 114
+    },
+    {
+      "Route": "PVD-BWI-TPA-MSY-DAL-TUL-PHX-LAS-OAK",
+      "first_seen": "2010-05-09T00:00:00Z",
+      "last_seen": "2010-08-13T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 81
+    },
+    {
+      "Route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "first_seen": "2022-06-05T00:00:00Z",
+      "last_seen": "2022-09-05T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 75
+    },
+    {
+      "Route": "RIC-ATL-OKC-DEN-PHX-LAS-BOI-OAK-ONT",
+      "first_seen": "2014-08-10T00:00:00Z",
+      "last_seen": "2014-10-30T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 69
+    },
+    {
+      "Route": "HOU-STL-CMH-BWI-LIT-DAL-AUS-SJC-ONT",
+      "first_seen": "2014-08-10T00:00:00Z",
+      "last_seen": "2014-10-30T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 68
+    },
+    {
+      "Route": "BDL-BWI-PBI-TPA-STL-DEN-GEG-SEA-OAK",
+      "first_seen": "2010-05-10T00:00:00Z",
+      "last_seen": "2010-08-13T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 68
+    },
+    {
+      "Route": "LAS-BUR-OAK-DEN-OKC-DAL-AUS-PHX-SEA",
+      "first_seen": "2010-05-10T00:00:00Z",
+      "last_seen": "2010-08-13T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 66
+    },
+    {
+      "Route": "OAK-LAX-SAT-DAL-TUL-DEN-ABQ-PHX-SMF",
+      "first_seen": "2010-05-10T00:00:00Z",
+      "last_seen": "2010-08-13T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 66
+    },
+    {
+      "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO",
+      "first_seen": "2009-08-16T00:00:00Z",
+      "last_seen": "2009-10-30T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 65
+    },
+    {
+      "Route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "first_seen": "2022-06-05T00:00:00Z",
+      "last_seen": "2022-09-05T00:00:00Z",
+      "max_hops": 8,
+      "occurrences": 64
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-25T17:40:23.586475Z",
+  "source_query_sha256": "58d2a579bccfe944807e2c5d4531564ad7876f04e184e70a4b0107185ffffb92",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q1"
+}

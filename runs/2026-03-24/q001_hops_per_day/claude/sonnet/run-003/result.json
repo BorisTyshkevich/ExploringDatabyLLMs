@@ -1,0 +1,81 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "The highest-hop example is Southwest Airlines (WN) flight 366 operated by tail **N957WN** on **2024-12-01**, with **8 hops** tracing **ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA**. The aircraft started at Long Island MacArthur (ISP) early morning, stopped at Baltimore/Washington (BWI), Myrtle Beach (MYR), Nashville (BNA), Fort Walton Beach/Destin (VPS), Dallas Love Field (DAL), Las Vegas (LAS), and Oakland (OAK), finishing in Seattle/Tacoma (SEA) — a full cross-country marathon from the New York metro area to the Pacific Northwest. All other 8-hop itineraries in the top 10 also belong to Southwest.",
+      "columns_csv": "Tail_Number, FlightNum, Carrier, FlightDate, hop_count, Route, itinerary_sequence",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN",
+        "hop_count": 8,
+        "itinerary_sequence": "ISP,BWI,MYR,BNA,VPS,DAL,LAS,OAK,SEA"
+      },
+      "row_count": 10,
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "The most recent top-ranked itinerary is **WN flight 366 / tail N957WN on 2024-12-01** (ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA), which is also the lead itinerary. It is the only occurrence of that flight number in the top 10 and carries the latest date in the entire ranked set.",
+      "columns_csv": "Tail_Number, FlightNum, Carrier, FlightDate, hop_count, Route, itinerary_sequence",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN",
+        "hop_count": 8,
+        "itinerary_sequence": "ISP,BWI,MYR,BNA,VPS,DAL,LAS,OAK,SEA"
+      },
+      "row_count": 1,
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The top itineraries are strongly **recurring scheduled patterns**. Among the top 10 rows there are only 4 distinct routes. WN flight 3149 (CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN) ran on 4 consecutive Sundays in Jan–Feb 2024 with different tail numbers each time. WN flight 2787 (MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX) ran 3 times in Sep–Oct 2022. WN flight 154 (ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN) ran twice in Apr 2023. Only WN 366 appears once. The consistent weekly cadence and published flight numbers confirm these are regular Southwest scheduled turns, not anomalies.",
+      "columns_csv": "FlightNum, Carrier, Route, occurrences, first_seen, last_seen",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightNum": "3149",
+        "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+        "first_seen": "2024-01-14T00:00:00Z",
+        "last_seen": "2024-02-18T00:00:00Z",
+        "occurrences": 4
+      },
+      "row_count": 4,
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "subquestion_id": "q3"
+    },
+    {
+      "answer_preview": "Every top itinerary is a Southwest Airlines **coast-to-coast diagonal sweep** across the continental US. Routes originate in the East or Southeast (Long Island NY, Cleveland OH, El Paso TX, New Orleans LA) and arc west through the South, Midwest, or Mid-Atlantic before terminating on the West Coast or Mountain West (Seattle, Denver, San Diego, Los Angeles). The lead route ISP→SEA traverses roughly 2,800 miles from the New York metro to the Pacific Northwest, passing through the Mid-Atlantic, Southeast Gulf Coast, South-Central, Southwest, and Pacific Coast in a single day. The pattern reflects Southwest's hub-and-spoke-free point-to-point network, where a single aircraft and flight number chain together many short segments to cover the full width of the country.",
+      "columns_csv": "OriginCode, DestCode, DepTime, OriginName, OriginLat, OriginLon, DestName, DestLat, DestLon",
+      "first_row": {
+        "DepTime": 543,
+        "DestCode": "BWI",
+        "DestLat": 39.17583333,
+        "DestLon": -76.66888889,
+        "DestName": "Baltimore/Washington International Thurgood Marshall",
+        "OriginCode": "ISP",
+        "OriginLat": 40.79611111,
+        "OriginLon": -73.10055556,
+        "OriginName": "Long Island MacArthur"
+      },
+      "row_count": 8,
+      "subquestion": "What geographic pattern do the top itineraries show?",
+      "subquestion_id": "q4"
+    }
+  ],
+  "row_count": 4,
+  "generated_at": "2026-03-24T09:58:54.47161Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

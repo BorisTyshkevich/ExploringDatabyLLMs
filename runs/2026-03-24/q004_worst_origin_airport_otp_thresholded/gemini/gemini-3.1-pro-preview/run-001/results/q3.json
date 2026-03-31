@@ -1,0 +1,218 @@
+{
+  "columns": [
+    "OriginCode",
+    "OriginCityName",
+    "completed_departures",
+    "on_time_performance",
+    "avg_departure_delay",
+    "p90_departure_delay",
+    "first_date",
+    "last_date"
+  ],
+  "rows": [
+    {
+      "OriginCityName": "Chicago, IL",
+      "OriginCode": "MDW",
+      "avg_departure_delay": 11.8,
+      "completed_departures": 2512354,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7652,
+      "p90_departure_delay": 35
+    },
+    {
+      "OriginCityName": "Chicago, IL",
+      "OriginCode": "ORD",
+      "avg_departure_delay": 12.16,
+      "completed_departures": 11143843,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7861,
+      "p90_departure_delay": 44
+    },
+    {
+      "OriginCityName": "Newark, NJ",
+      "OriginCode": "EWR",
+      "avg_departure_delay": 12.62,
+      "completed_departures": 4548113,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7869,
+      "p90_departure_delay": 42
+    },
+    {
+      "OriginCityName": "Houston, TX",
+      "OriginCode": "HOU",
+      "avg_departure_delay": 10.31,
+      "completed_departures": 2084605,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7892,
+      "p90_departure_delay": 34.9
+    },
+    {
+      "OriginCityName": "Dallas, TX",
+      "OriginCode": "DAL",
+      "avg_departure_delay": 10.34,
+      "completed_departures": 1931453,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7899,
+      "p90_departure_delay": 32
+    },
+    {
+      "OriginCityName": "New York, NY",
+      "OriginCode": "JFK",
+      "avg_departure_delay": 11.99,
+      "completed_departures": 3072552,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7952,
+      "p90_departure_delay": 42
+    },
+    {
+      "OriginCityName": "Baltimore, MD",
+      "OriginCode": "BWI",
+      "avg_departure_delay": 10.39,
+      "completed_departures": 3285203,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7963,
+      "p90_departure_delay": 32.9
+    },
+    {
+      "OriginCityName": "Las Vegas, NV",
+      "OriginCode": "LAS",
+      "avg_departure_delay": 9.99,
+      "completed_departures": 5189435,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7975,
+      "p90_departure_delay": 35
+    },
+    {
+      "OriginCityName": "Denver, CO",
+      "OriginCode": "DEN",
+      "avg_departure_delay": 10.65,
+      "completed_departures": 7385210,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7993,
+      "p90_departure_delay": 35
+    },
+    {
+      "OriginCityName": "Fort Lauderdale, FL",
+      "OriginCode": "FLL",
+      "avg_departure_delay": 11.25,
+      "completed_departures": 2312776,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.7999,
+      "p90_departure_delay": 37
+    },
+    {
+      "OriginCityName": "San Francisco, CA",
+      "OriginCode": "SFO",
+      "avg_departure_delay": 10.58,
+      "completed_departures": 5139849,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.804,
+      "p90_departure_delay": 37
+    },
+    {
+      "OriginCityName": "Dallas/Fort Worth, TX",
+      "OriginCode": "DFW",
+      "avg_departure_delay": 10.64,
+      "completed_departures": 10023965,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8049,
+      "p90_departure_delay": 36
+    },
+    {
+      "OriginCityName": "Miami, FL",
+      "OriginCode": "MIA",
+      "avg_departure_delay": 11.12,
+      "completed_departures": 2818035,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8057,
+      "p90_departure_delay": 38
+    },
+    {
+      "OriginCityName": "Philadelphia, PA",
+      "OriginCode": "PHL",
+      "avg_departure_delay": 10.43,
+      "completed_departures": 3556123,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8066,
+      "p90_departure_delay": 34
+    },
+    {
+      "OriginCityName": "Atlanta, GA",
+      "OriginCode": "ATL",
+      "avg_departure_delay": 9.97,
+      "completed_departures": 12072831,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.81,
+      "p90_departure_delay": 32
+    },
+    {
+      "OriginCityName": "Phoenix, AZ",
+      "OriginCode": "PHX",
+      "avg_departure_delay": 8.7,
+      "completed_departures": 6317052,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8168,
+      "p90_departure_delay": 30
+    },
+    {
+      "OriginCityName": "Orlando, FL",
+      "OriginCode": "MCO",
+      "avg_departure_delay": 10.24,
+      "completed_departures": 4129525,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8173,
+      "p90_departure_delay": 30
+    },
+    {
+      "OriginCityName": "White Plains, NY",
+      "OriginCode": "HPN",
+      "avg_departure_delay": 10.61,
+      "completed_departures": 270205,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8187,
+      "p90_departure_delay": 40
+    },
+    {
+      "OriginCityName": "Charlotte, NC",
+      "OriginCode": "CLT",
+      "avg_departure_delay": 9.18,
+      "completed_departures": 5181891,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8197,
+      "p90_departure_delay": 34
+    },
+    {
+      "OriginCityName": "Boston, MA",
+      "OriginCode": "BOS",
+      "avg_departure_delay": 9.68,
+      "completed_departures": 4205108,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "on_time_performance": 0.8216,
+      "p90_departure_delay": 37
+    }
+  ],
+  "row_count": 20,
+  "generated_at": "2026-03-24T12:25:52.654078Z",
+  "source_query_sha256": "e83432ad77bc9e330b03cef0bdc63ad2da4f893562936644337aa1a922e890ef",
+  "log_comment": "qforge|question=q004|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full|subquestion=q3"
+}

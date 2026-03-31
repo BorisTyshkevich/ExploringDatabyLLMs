@@ -1,0 +1,35 @@
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": null,
+  "row_count": 1,
+  "mode_hint": "This visual pass receives only verified section answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "main",
+      "subquestion": "Find the longest itineraries with the highest number of hops for a single aircraft using the same flight number.\nDefine uniqueness by the full textual `Route` string and output the most recent top 10 unique routes by departure time.\nDo not exclude rows solely because `Tail_Number` is empty. If an itinerary qualifies but the aircraft id is missing in the source data, keep it in the result and surface the aircraft id as empty / unknown rather than filtering it out.\nCount hops from distinct same-day legs, not raw source rows; do not let duplicate or conflicting same-time rows inflate hop count or create artifact routes.\n\nReturn:\n\n- aircraft id\n- flight number\n- carrier\n- flight date\n- hop count\n- route recurrence count: total number of days across the analyzed window on which this exact Route string was flown by any aircraft\n- textual `Route` in chronological order, including every origin and the final destination, using `-` as the delimiter throughout, for example `SMF-SAN-PHX-COS-DEN`",
+      "answer_markdown": "Across the most recent five years in the OnTime data, the longest same-aircraft, same-flight-number daily itineraries reached 8 hops. The 10 most recent unique routes at that maximum include ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA on 2024-12-01 (route recurrence 1 day), CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN on 2024-02-18 (4 days), and ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN on 2023-04-30 (2 days).",
+      "sql": "WITH\n    (SELECT max(FlightDate) FROM ontime.fact_ontime) AS max_fd,\n    addYears(max_fd, -5) AS start_fd,\n    base AS (\n        SELECT\n            FlightDate,\n            Carrier,\n            FlightNum,\n            if(Tail_Number = '', '', Tail_Number) AS aircraft_id,\n            OriginCode,\n            DestCode,\n            coalesce(CRSDepTime, DepTime, 0) AS dep_sort,\n            coalesce(CRSArrTime, ArrTime, 0) AS arr_sort\n        FROM ontime.fact_ontime\n        WHERE FlightDate \u003e start_fd\n          AND Cancelled = 0\n          AND FlightNum != ''\n          AND Carrier != ''\n    ),\n    dedup AS (\n        SELECT\n            FlightDate,\n            Carrier,\n            FlightNum,\n            aircraft_id,\n            dep_sort,\n            min(arr_sort) AS arr_sort,\n            min(OriginCode) AS OriginCode,\n            min(DestCode) AS DestCode\n        FROM base\n        GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, dep_sort\n    ),\n    itineraries AS (\n        SELECT\n            FlightDate,\n            Carrier,\n            FlightNum,\n            aircraft_id,\n            min(dep_sort) AS first_dep_time,\n            arraySort(x -\u003e (x.1, x.2, x.3, x.4), groupArray((dep_sort, arr_sort, OriginCode, DestCode))) AS legs,\n            length(legs) AS hop_count,\n            arrayStringConcat(arrayConcat(arrayMap(x -\u003e x.3, legs), [legs[length(legs)].4]), '-') AS Route\n        FROM dedup\n        GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n        HAVING hop_count \u003e 1\n    ),\n    route_days AS (\n        SELECT\n            Route,\n            countDistinct(FlightDate) AS route_recurrence_count\n        FROM itineraries\n        GROUP BY Route\n    ),\n    ranked AS (\n        SELECT\n            i.aircraft_id,\n            i.FlightNum,\n            i.Carrier,\n            i.FlightDate,\n            i.hop_count,\n            r.route_recurrence_count,\n            i.Route,\n            i.first_dep_time,\n            row_number() OVER (\n                PARTITION BY i.Route\n                ORDER BY i.FlightDate DESC, i.first_dep_time DESC, i.hop_count DESC, i.Carrier, i.FlightNum, i.aircraft_id\n            ) AS rn\n        FROM itineraries AS i\n        INNER JOIN route_days AS r ON i.Route = r.Route\n    )\nSELECT\n    aircraft_id,\n    FlightNum AS flight_number,\n    Carrier AS carrier,\n    FlightDate AS flight_date,\n    hop_count,\n    route_recurrence_count,\n    Route\nFROM ranked\nWHERE rn = 1\nORDER BY hop_count DESC, flight_date DESC, first_dep_time DESC, Route\nLIMIT 10",
+      "is_primary": true,
+      "date_field_hint": "flight_date",
+      "row_count": 10,
+      "result_columns": [
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "route_recurrence_count",
+        "Route"
+      ],
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8,
+        "route_recurrence_count": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,284 @@
+{
+  "columns": [
+    "airport_code",
+    "airport_name",
+    "lat",
+    "lon"
+  ],
+  "rows": [
+    {
+      "airport_code": "ABQ",
+      "airport_name": "Albuquerque International Sunport",
+      "lat": 35.03805556,
+      "lon": -106.61
+    },
+    {
+      "airport_code": "ATL",
+      "airport_name": "Hartsfield-Jackson Atlanta International",
+      "lat": 33.63666667,
+      "lon": -84.42805556
+    },
+    {
+      "airport_code": "BNA",
+      "airport_name": "Nashville International",
+      "lat": 36.12388889,
+      "lon": -86.67777778
+    },
+    {
+      "airport_code": "BUR",
+      "airport_name": "Bob Hope",
+      "lat": 34.20055556,
+      "lon": -118.35861111
+    },
+    {
+      "airport_code": "BWI",
+      "airport_name": "Baltimore/Washington International Thurgood Marshall",
+      "lat": 39.17583333,
+      "lon": -76.66888889
+    },
+    {
+      "airport_code": "CLE",
+      "airport_name": "Cleveland-Hopkins International",
+      "lat": 41.41027778,
+      "lon": -81.85333333
+    },
+    {
+      "airport_code": "CMH",
+      "airport_name": "John Glenn Columbus International",
+      "lat": 39.99694444,
+      "lon": -82.89222222
+    },
+    {
+      "airport_code": "COS",
+      "airport_name": "City of Colorado Springs Municipal",
+      "lat": 38.80583333,
+      "lon": -104.70083333
+    },
+    {
+      "airport_code": "DAL",
+      "airport_name": "Dallas Love Field",
+      "lat": 32.84611111,
+      "lon": -96.85083333
+    },
+    {
+      "airport_code": "DEN",
+      "airport_name": "Denver International",
+      "lat": 39.86111111,
+      "lon": -104.67194444
+    },
+    {
+      "airport_code": "DTW",
+      "airport_name": "Detroit Metro Wayne County",
+      "lat": 42.2125,
+      "lon": -83.35333333
+    },
+    {
+      "airport_code": "ELP",
+      "airport_name": "El Paso International",
+      "lat": 31.80666667,
+      "lon": -106.37333333
+    },
+    {
+      "airport_code": "FLL",
+      "airport_name": "Fort Lauderdale-Hollywood International",
+      "lat": 26.07138889,
+      "lon": -80.14944444
+    },
+    {
+      "airport_code": "HOU",
+      "airport_name": "William P Hobby",
+      "lat": 29.64611111,
+      "lon": -95.27722222
+    },
+    {
+      "airport_code": "IAD",
+      "airport_name": "Washington Dulles International",
+      "lat": 38.95611111,
+      "lon": -77.46166667
+    },
+    {
+      "airport_code": "ICT",
+      "airport_name": "Wichita Dwight D Eisenhower National",
+      "lat": 37.65027778,
+      "lon": -97.43222222
+    },
+    {
+      "airport_code": "ISP",
+      "airport_name": "Long Island MacArthur",
+      "lat": 40.79611111,
+      "lon": -73.10055556
+    },
+    {
+      "airport_code": "JAN",
+      "airport_name": "Jackson Medgar Wiley Evers International",
+      "lat": 32.31111111,
+      "lon": -90.07583333
+    },
+    {
+      "airport_code": "LAS",
+      "airport_name": "Harry Reid International",
+      "lat": 36.08,
+      "lon": -115.15222222
+    },
+    {
+      "airport_code": "LAX",
+      "airport_name": "Los Angeles International",
+      "lat": 33.94305556,
+      "lon": -118.40888889
+    },
+    {
+      "airport_code": "LGA",
+      "airport_name": "LaGuardia",
+      "lat": 40.77722222,
+      "lon": -73.8725
+    },
+    {
+      "airport_code": "LIT",
+      "airport_name": "Bill and Hillary Clinton Nat Adams Field",
+      "lat": 34.72944444,
+      "lon": -92.22472222
+    },
+    {
+      "airport_code": "MAF",
+      "airport_name": "Midland International Air and Space Port",
+      "lat": 31.9425,
+      "lon": -102.20194444
+    },
+    {
+      "airport_code": "MCI",
+      "airport_name": "Kansas City International",
+      "lat": 39.29722222,
+      "lon": -94.71333333
+    },
+    {
+      "airport_code": "MCO",
+      "airport_name": "Orlando International",
+      "lat": 28.42916667,
+      "lon": -81.30666667
+    },
+    {
+      "airport_code": "MDW",
+      "airport_name": "Chicago Midway International",
+      "lat": 41.78583333,
+      "lon": -87.7525
+    },
+    {
+      "airport_code": "MEM",
+      "airport_name": "Memphis International",
+      "lat": 35.04277778,
+      "lon": -89.97666667
+    },
+    {
+      "airport_code": "MSY",
+      "airport_name": "Louis Armstrong New Orleans International",
+      "lat": 29.98888889,
+      "lon": -90.25
+    },
+    {
+      "airport_code": "MYR",
+      "airport_name": "Myrtle Beach International",
+      "lat": 33.67972222,
+      "lon": -78.92833333
+    },
+    {
+      "airport_code": "OAK",
+      "airport_name": "Oakland International",
+      "lat": 37.72138889,
+      "lon": -122.22111111
+    },
+    {
+      "airport_code": "ORD",
+      "airport_name": "Chicago O'Hare International",
+      "lat": 41.97694444,
+      "lon": -87.90805556
+    },
+    {
+      "airport_code": "PHX",
+      "airport_name": "Phoenix Sky Harbor International",
+      "lat": 33.43361111,
+      "lon": -112.01194444
+    },
+    {
+      "airport_code": "PNS",
+      "airport_name": "Pensacola International",
+      "lat": 30.47277778,
+      "lon": -87.18805556
+    },
+    {
+      "airport_code": "PSP",
+      "airport_name": "Palm Springs International",
+      "lat": 33.82972222,
+      "lon": -116.50666667
+    },
+    {
+      "airport_code": "RDU",
+      "airport_name": "Raleigh-Durham International",
+      "lat": 35.87583333,
+      "lon": -78.78555556
+    },
+    {
+      "airport_code": "RIC",
+      "airport_name": "Richmond International",
+      "lat": 37.51722222,
+      "lon": -77.32416667
+    },
+    {
+      "airport_code": "RNO",
+      "airport_name": "Reno/Tahoe International",
+      "lat": 39.49916667,
+      "lon": -119.76805556
+    },
+    {
+      "airport_code": "SAN",
+      "airport_name": "San Diego International",
+      "lat": 32.73361111,
+      "lon": -117.18972222
+    },
+    {
+      "airport_code": "SEA",
+      "airport_name": "Seattle/Tacoma International",
+      "lat": 47.45,
+      "lon": -122.31166667
+    },
+    {
+      "airport_code": "SJC",
+      "airport_name": "Norman Y. Mineta San Jose International",
+      "lat": 37.36305556,
+      "lon": -121.92861111
+    },
+    {
+      "airport_code": "SLC",
+      "airport_name": "Salt Lake City International",
+      "lat": 40.78833333,
+      "lon": -111.97777778
+    },
+    {
+      "airport_code": "SMF",
+      "airport_name": "Sacramento International",
+      "lat": 38.69555556,
+      "lon": -121.59083333
+    },
+    {
+      "airport_code": "STL",
+      "airport_name": "St Louis Lambert International",
+      "lat": 38.74861111,
+      "lon": -90.37
+    },
+    {
+      "airport_code": "TPA",
+      "airport_name": "Tampa International",
+      "lat": 27.97555556,
+      "lon": -82.53333333
+    },
+    {
+      "airport_code": "VPS",
+      "airport_name": "Eglin AFB Destin Fort Walton Beach",
+      "lat": 30.48333333,
+      "lon": -86.52611111
+    }
+  ],
+  "row_count": 45,
+  "generated_at": "2026-03-25T21:50:07.91846Z",
+  "source_query_sha256": "bce67cd3a5867cb2ca0af29d62c8d7f0d3ba6389de38b829aa4d8c80dd2e8d38",
+  "log_comment": "qforge|question=q001|run=run-005|runner=claude|model=sonnet|phase=full|section=q2"
+}

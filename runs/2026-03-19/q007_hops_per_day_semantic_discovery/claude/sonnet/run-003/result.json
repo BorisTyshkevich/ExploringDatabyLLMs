@@ -1,0 +1,96 @@
+{
+  "columns": [
+    "Tail_Number",
+    "Flight_Number_Reporting_Airline",
+    "IATA_CODE_Reporting_Airline",
+    "FlightDate",
+    "Hops",
+    "Route"
+  ],
+  "rows": [
+    {
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "366",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "ISP(543) -\u003e BWI(810) -\u003e MYR(1020) -\u003e BNA(1142) -\u003e VPS(1401) -\u003e DAL(1643) -\u003e LAS(1828) -\u003e OAK(2041) -\u003e SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE(621) -\u003e BNA(801) -\u003e PNS(1007) -\u003e HOU(1234) -\u003e MCI(1514) -\u003e PHX(1747) -\u003e BUR(1902) -\u003e OAK(2117) -\u003e DEN",
+      "Tail_Number": "N7835A"
+    },
+    {
+      "FlightDate": "2024-02-04T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "BUR(0) -\u003e OAK(0) -\u003e PHX(0) -\u003e CLE(614) -\u003e BNA(810) -\u003e PNS(1010) -\u003e HOU(1239) -\u003e MCI(1514) -\u003e PHX",
+      "Tail_Number": "N263WN"
+    },
+    {
+      "FlightDate": "2024-01-28T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE(618) -\u003e BNA(800) -\u003e PNS(1012) -\u003e HOU(1239) -\u003e MCI(1515) -\u003e PHX(1756) -\u003e BUR(1859) -\u003e OAK(2059) -\u003e DEN",
+      "Tail_Number": "N429WN"
+    },
+    {
+      "FlightDate": "2024-01-21T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE(620) -\u003e BNA(810) -\u003e PNS(1017) -\u003e HOU(1237) -\u003e MCI(1510) -\u003e PHX(1800) -\u003e BUR(1903) -\u003e OAK(2102) -\u003e DEN",
+      "Tail_Number": "N228WN"
+    },
+    {
+      "FlightDate": "2024-01-14T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "3149",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "CLE(625) -\u003e BNA(805) -\u003e PNS(1011) -\u003e HOU(1241) -\u003e MCI(1607) -\u003e PHX(1909) -\u003e BUR(2006) -\u003e OAK(2156) -\u003e DEN",
+      "Tail_Number": "N569WN"
+    },
+    {
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "ELP(627) -\u003e DAL(939) -\u003e LIT(1124) -\u003e ATL(1434) -\u003e RIC(1656) -\u003e MDW(1831) -\u003e MCI(2040) -\u003e PHX(2246) -\u003e SAN",
+      "Tail_Number": "N7742B"
+    },
+    {
+      "FlightDate": "2023-04-16T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "154",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "ELP(622) -\u003e DAL(941) -\u003e LIT(1122) -\u003e ATL(1433) -\u003e RIC(1659) -\u003e MDW(1832) -\u003e MCI(2041) -\u003e PHX(2226) -\u003e SAN",
+      "Tail_Number": "N929WN"
+    },
+    {
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "MSY(608) -\u003e ATL(944) -\u003e CMH(1156) -\u003e BWI(1354) -\u003e RDU(1553) -\u003e BNA(1729) -\u003e DTW(2045) -\u003e MDW(2149) -\u003e LAX",
+      "Tail_Number": "N8631A"
+    },
+    {
+      "FlightDate": "2022-10-02T00:00:00Z",
+      "Flight_Number_Reporting_Airline": "2787",
+      "Hops": 8,
+      "IATA_CODE_Reporting_Airline": "WN",
+      "Route": "MSY(610) -\u003e ATL(917) -\u003e CMH(1142) -\u003e BWI(1355) -\u003e RDU(1536) -\u003e BNA(1716) -\u003e DTW(2040) -\u003e MDW(2147) -\u003e LAX",
+      "Tail_Number": "N8809L"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-19T12:23:06.840438Z",
+  "source_query_sha256": "1acefa97780fec243358e0d42390ba5ce42abe40a696b522cc847d777e799136",
+  "log_comment": "qforge|question=q007|run=run-003|runner=claude|model=sonnet|phase=full"
+}

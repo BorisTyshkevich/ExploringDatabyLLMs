@@ -1,0 +1,75 @@
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": null,
+  "row_count": 3,
+  "mode_hint": "This visual pass receives only verified subquestion answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "q1",
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "answer_markdown": "The highest-hop example is an 8-hop Southwest itinerary flown by aircraft N957WN as flight 366 on 2024-12-01, with route ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
+      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -\u003e (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() \u003e 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -\u003e x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1",
+      "row_count": 1,
+      "result_columns": [
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "Route"
+      ],
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8
+      }
+    },
+    {
+      "id": "q2",
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "answer_markdown": "The most recent top-ranked itinerary is also the latest 8-hop unique route: N957WN operating Southwest flight 366 on 2024-12-01 over ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
+      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -\u003e (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() \u003e 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -\u003e x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1",
+      "row_count": 1,
+      "result_columns": [
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "Route"
+      ],
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8
+      }
+    },
+    {
+      "id": "q3",
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "answer_markdown": "They look mostly like recurring patterns rather than one-offs. Among the 10 most recent unique 8-hop routes, 9 recur on multiple dates, averaging 14.1 occurrences each, although the single most recent example appears only once.",
+      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -\u003e (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() \u003e 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -\u003e x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ), top10 AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 10 ), route_occurrences AS ( SELECT t.Route, count() AS occurrences FROM top10 t INNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count GROUP BY t.Route ) SELECT count() AS route_count, countIf(occurrences = 1) AS one_off_routes, countIf(occurrences \u003e 1) AS recurring_routes, round(avg(occurrences), 2) AS avg_occurrences, max(occurrences) AS max_occurrences FROM route_occurrences",
+      "row_count": 1,
+      "result_columns": [
+        "route_count",
+        "one_off_routes",
+        "recurring_routes",
+        "avg_occurrences",
+        "max_occurrences"
+      ],
+      "first_row": {
+        "avg_occurrences": 14.1,
+        "max_occurrences": 46,
+        "one_off_routes": 1,
+        "recurring_routes": 9,
+        "route_count": 10
+      }
+    }
+  ]
+}

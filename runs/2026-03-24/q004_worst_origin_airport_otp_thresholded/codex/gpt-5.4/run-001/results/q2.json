@@ -1,0 +1,38 @@
+{
+  "columns": [
+    "worst_code",
+    "worst_airport",
+    "worst_dep_otp_pct",
+    "middle_code",
+    "middle_airport",
+    "middle_dep_otp_pct",
+    "otp_gap_pct_points",
+    "worst_avg_dep_delay_min",
+    "middle_avg_dep_delay_min",
+    "avg_delay_gap_min",
+    "worst_p90_dep_delay_min",
+    "middle_p90_dep_delay_min",
+    "p90_delay_gap_min"
+  ],
+  "rows": [
+    {
+      "avg_delay_gap_min": 3.71,
+      "middle_airport": "Richmond International",
+      "middle_avg_dep_delay_min": 8.09,
+      "middle_code": "RIC",
+      "middle_dep_otp_pct": 84.87,
+      "middle_p90_dep_delay_min": 28.39,
+      "otp_gap_pct_points": 8.35,
+      "p90_delay_gap_min": 8.54,
+      "worst_airport": "Chicago Midway International",
+      "worst_avg_dep_delay_min": 11.8,
+      "worst_code": "MDW",
+      "worst_dep_otp_pct": 76.52,
+      "worst_p90_dep_delay_min": 36.93
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-24T14:18:38.012339Z",
+  "source_query_sha256": "2c1b482a586d9adb93a4f648f83c67bafd8ff25e90cd777ecdc1870256f0ebf2",
+  "log_comment": "qforge|question=q004|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q2"
+}

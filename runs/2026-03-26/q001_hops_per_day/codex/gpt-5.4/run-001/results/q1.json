@@ -1,0 +1,74 @@
+{
+  "columns": [
+    "route",
+    "route_recurrence_count",
+    "recurrence_tier",
+    "tier_count"
+  ],
+  "rows": [
+    {
+      "recurrence_tier": "one-off",
+      "route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "route_recurrence_count": 1,
+      "tier_count": 1
+    },
+    {
+      "recurrence_tier": "occasional",
+      "route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "route_recurrence_count": 4,
+      "tier_count": 5
+    },
+    {
+      "recurrence_tier": "occasional",
+      "route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "route_recurrence_count": 2,
+      "tier_count": 5
+    },
+    {
+      "recurrence_tier": "occasional",
+      "route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "route_recurrence_count": 5,
+      "tier_count": 5
+    },
+    {
+      "recurrence_tier": "recurring",
+      "route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "route_recurrence_count": 40,
+      "tier_count": 4
+    },
+    {
+      "recurrence_tier": "recurring",
+      "route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "route_recurrence_count": 46,
+      "tier_count": 4
+    },
+    {
+      "recurrence_tier": "occasional",
+      "route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "route_recurrence_count": 7,
+      "tier_count": 5
+    },
+    {
+      "recurrence_tier": "recurring",
+      "route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "route_recurrence_count": 20,
+      "tier_count": 4
+    },
+    {
+      "recurrence_tier": "recurring",
+      "route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "route_recurrence_count": 12,
+      "tier_count": 4
+    },
+    {
+      "recurrence_tier": "occasional",
+      "route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "route_recurrence_count": 5,
+      "tier_count": 5
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-26T12:24:38.332988Z",
+  "source_query_sha256": "293f3d2fbe8455cfe69a273b9e5c928aa6a85369bc4846532f995a4a32ac49d4",
+  "log_comment": "qforge|question=q001|run=run-001|runner=codex|model=gpt-5.4|phase=full|section=q1"
+}

@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "The highest-hop example is **WN flight 366 on 2024-12-01**, operated by tail **N957WN**, covering **8 hops** (9 airports) along the route **ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA**. The aircraft started at Long Island MacArthur (ISP), made stops in Baltimore (BWI), Myrtle Beach (MYR), Nashville (BNA), Fort Walton Beach (VPS), Dallas Love Field (DAL), Las Vegas (LAS), and Oakland (OAK), before finishing in Seattle (SEA). All top-10 itineraries share the same 8-hop maximum and are Southwest Airlines operations.",
+      "columns_csv": "Rank, FlightDate, Tail_Number, FlightNum, Carrier, HopCount, Route, LegSeq",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "HopCount": 8,
+        "LegSeq": [
+          {
+            "": "BWI"
+          },
+          {
+            "": "MYR"
+          },
+          {
+            "": "BNA"
+          },
+          {
+            "": "VPS"
+          },
+          {
+            "": "DAL"
+          },
+          {
+            "": "LAS"
+          },
+          {
+            "": "OAK"
+          },
+          {
+            "": "SEA"
+          }
+        ],
+        "Rank": 1,
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN"
+      },
+      "row_count": 10,
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "The most recent top-ranked itinerary is **WN flight 366 on 2024-12-01** (tail N957WN), route ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA. It is both Rank 1 (the lead itinerary) and the most recent date in the top-10, ahead of the next most recent (WN 3149 on 2024-02-18).",
+      "columns_csv": "FlightDate, Tail_Number, FlightNum, Carrier, HopCount, Route",
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "HopCount": 8,
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN"
+      },
+      "row_count": 1,
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The top itineraries are overwhelmingly **recurring scheduled patterns**, not one-offs. The most frequent 8-hop route (WN 2215: CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO) ran **61 times** between August and October 2009. WN 1923 ran 60 times, WN 2558 ran 55 times. These routes operated nearly every day of a seasonal schedule window, indicating deliberate long-day rotations assigned to a flight number — not anomalies.",
+      "columns_csv": "FlightNum, Carrier, Route, DateCount, FirstSeen, LastSeen",
+      "first_row": {
+        "Carrier": "WN",
+        "DateCount": 61,
+        "FirstSeen": "2009-08-17T00:00:00Z",
+        "FlightNum": "2215",
+        "LastSeen": "2009-10-30T00:00:00Z",
+        "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO"
+      },
+      "row_count": 10,
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "subquestion_id": "q3"
+    },
+    {
+      "answer_preview": "All 8-hop itineraries trace **long east-to-west (or southeast-to-northwest) transcontinental sweeps** across the continental United States. Routes consistently originate in the Eastern US (e.g., Columbus OH, Pittsburgh PA, Hartford CT, Fort Lauderdale FL, Richmond VA) and terminate at West Coast or Pacific Northwest airports (e.g., Reno, San Jose, Oakland, Portland, Ontario CA, Seattle). Along the way they pass through Midwest hubs (MDW, MCI, STL), Southern cities (DAL, HOU, BNA), and Desert Southwest airports (PHX, ELP, ABQ, LAS). The pattern reflects Southwest Airlines routing an aircraft through its network in a single long operational day, effectively a transcontinental relay covering 2,000+ miles west to east.",
+      "columns_csv": "FlightNum, Carrier, Route, DateCount, StartName, StartLat, StartLon, EndName, EndLat, EndLon",
+      "first_row": {
+        "Carrier": "WN",
+        "DateCount": 61,
+        "EndLat": 39.49916667,
+        "EndLon": -119.76805556,
+        "EndName": "Reno/Tahoe International",
+        "FlightNum": "2215",
+        "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO",
+        "StartLat": 39.99694444,
+        "StartLon": -82.89222222,
+        "StartName": "John Glenn Columbus International"
+      },
+      "row_count": 10,
+      "subquestion": "What geographic pattern do the top itineraries show?",
+      "subquestion_id": "q4"
+    }
+  ],
+  "row_count": 4,
+  "generated_at": "2026-03-24T08:52:34.387559Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

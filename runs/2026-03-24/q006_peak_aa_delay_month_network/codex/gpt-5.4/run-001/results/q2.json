@@ -1,0 +1,120 @@
+{
+  "columns": [
+    "OriginCode",
+    "flight_volume",
+    "total_departure_delay_minutes",
+    "avg_departure_delay_minutes",
+    "pct_departing_15_plus_late"
+  ],
+  "rows": [
+    {
+      "OriginCode": "DFW",
+      "avg_departure_delay_minutes": 38.52,
+      "flight_volume": 14962,
+      "pct_departing_15_plus_late": 46.59,
+      "total_departure_delay_minutes": 593021
+    },
+    {
+      "OriginCode": "CLT",
+      "avg_departure_delay_minutes": 51.99,
+      "flight_volume": 10568,
+      "pct_departing_15_plus_late": 52.24,
+      "total_departure_delay_minutes": 560409
+    },
+    {
+      "OriginCode": "ORD",
+      "avg_departure_delay_minutes": 35.76,
+      "flight_volume": 4844,
+      "pct_departing_15_plus_late": 39.22,
+      "total_departure_delay_minutes": 180836
+    },
+    {
+      "OriginCode": "MIA",
+      "avg_departure_delay_minutes": 34.35,
+      "flight_volume": 4881,
+      "pct_departing_15_plus_late": 39.89,
+      "total_departure_delay_minutes": 174016
+    },
+    {
+      "OriginCode": "PHL",
+      "avg_departure_delay_minutes": 34.61,
+      "flight_volume": 4555,
+      "pct_departing_15_plus_late": 40.66,
+      "total_departure_delay_minutes": 165343
+    },
+    {
+      "OriginCode": "PHX",
+      "avg_departure_delay_minutes": 30.21,
+      "flight_volume": 4366,
+      "pct_departing_15_plus_late": 30.85,
+      "total_departure_delay_minutes": 142288
+    },
+    {
+      "OriginCode": "DCA",
+      "avg_departure_delay_minutes": 26.13,
+      "flight_volume": 2454,
+      "pct_departing_15_plus_late": 28.77,
+      "total_departure_delay_minutes": 71144
+    },
+    {
+      "OriginCode": "LAX",
+      "avg_departure_delay_minutes": 25.08,
+      "flight_volume": 2564,
+      "pct_departing_15_plus_late": 25.47,
+      "total_departure_delay_minutes": 70220
+    },
+    {
+      "OriginCode": "MCO",
+      "avg_departure_delay_minutes": 36.99,
+      "flight_volume": 1496,
+      "pct_departing_15_plus_late": 35.43,
+      "total_departure_delay_minutes": 58872
+    },
+    {
+      "OriginCode": "AUS",
+      "avg_departure_delay_minutes": 41.6,
+      "flight_volume": 1180,
+      "pct_departing_15_plus_late": 31.53,
+      "total_departure_delay_minutes": 52335
+    },
+    {
+      "OriginCode": "LAS",
+      "avg_departure_delay_minutes": 40.25,
+      "flight_volume": 1143,
+      "pct_departing_15_plus_late": 37.71,
+      "total_departure_delay_minutes": 48474
+    },
+    {
+      "OriginCode": "BOS",
+      "avg_departure_delay_minutes": 21.97,
+      "flight_volume": 1596,
+      "pct_departing_15_plus_late": 25.5,
+      "total_departure_delay_minutes": 40504
+    },
+    {
+      "OriginCode": "RDU",
+      "avg_departure_delay_minutes": 35.03,
+      "flight_volume": 1064,
+      "pct_departing_15_plus_late": 34.96,
+      "total_departure_delay_minutes": 39809
+    },
+    {
+      "OriginCode": "JFK",
+      "avg_departure_delay_minutes": 29.7,
+      "flight_volume": 1143,
+      "pct_departing_15_plus_late": 24.23,
+      "total_departure_delay_minutes": 36739
+    },
+    {
+      "OriginCode": "LGA",
+      "avg_departure_delay_minutes": 26.11,
+      "flight_volume": 1270,
+      "pct_departing_15_plus_late": 26.93,
+      "total_departure_delay_minutes": 36573
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T16:18:17.310907Z",
+  "source_query_sha256": "245c84be90be9f6dc70b29acd2a0b4042ff740ea8874058fe9a25969c5573972",
+  "log_comment": "qforge|question=q006|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q2"
+}

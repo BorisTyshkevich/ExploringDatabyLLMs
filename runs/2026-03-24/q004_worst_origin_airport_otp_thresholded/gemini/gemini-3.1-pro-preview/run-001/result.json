@@ -1,0 +1,69 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "Chicago Midway International (MDW) ranks worst on departure on-time performance among qualifying airports. Over the entire historical dataset, MDW recorded an on-time performance of only 76.5%, significantly lower than its peers.",
+      "columns_csv": "OriginCode, OriginCityName, completed_departures, on_time_performance, avg_departure_delay, p90_departure_delay, first_date, last_date",
+      "first_row": {
+        "OriginCityName": "Chicago, IL",
+        "OriginCode": "MDW",
+        "avg_departure_delay": 11.8,
+        "completed_departures": 2512354,
+        "first_date": "1987-10-01T00:00:00Z",
+        "last_date": "2025-11-30T00:00:00Z",
+        "on_time_performance": 0.7652,
+        "p90_departure_delay": 38
+      },
+      "row_count": 160,
+      "subquestion": "Which airport ranks worst on departure on-time performance?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "There is an 8.5 percentage point gap between the worst airport and the median of the ranked set. While Chicago Midway (MDW) sits at the bottom with a 76.5% on-time performance, an average qualifying airport in the middle of the rankings (such as Islip, NY) achieves an on-time performance of approximately 85.0%.",
+      "columns_csv": "OriginCode, OriginCityName, completed_departures, on_time_performance, avg_departure_delay, p90_departure_delay, first_date, last_date, rnk, total_airports",
+      "first_row": {
+        "OriginCityName": "Chicago, IL",
+        "OriginCode": "MDW",
+        "avg_departure_delay": 11.8,
+        "completed_departures": 2512354,
+        "first_date": "1987-10-01T00:00:00Z",
+        "last_date": "2025-11-30T00:00:00Z",
+        "on_time_performance": 0.7652,
+        "p90_departure_delay": 36,
+        "rnk": 1,
+        "total_airports": 160
+      },
+      "row_count": 2,
+      "subquestion": "How large is the spread between the worst airport and the middle of the ranked set?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The weakest performing airports are overwhelmingly major airline hubs. The bottom tier of the rankings is dominated by heavily trafficked hubs such as Chicago O'Hare (ORD), Newark (EWR), Houston (HOU), Dallas (DAL), JFK, and Baltimore (BWI), rather than being a mixed group of large and mid-sized regional airports.",
+      "columns_csv": "OriginCode, OriginCityName, completed_departures, on_time_performance, avg_departure_delay, p90_departure_delay, first_date, last_date",
+      "first_row": {
+        "OriginCityName": "Chicago, IL",
+        "OriginCode": "MDW",
+        "avg_departure_delay": 11.8,
+        "completed_departures": 2512354,
+        "first_date": "1987-10-01T00:00:00Z",
+        "last_date": "2025-11-30T00:00:00Z",
+        "on_time_performance": 0.7652,
+        "p90_departure_delay": 35
+      },
+      "row_count": 20,
+      "subquestion": "Are the weakest airports mostly major hubs, or is the bottom group more mixed?",
+      "subquestion_id": "q3"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T12:25:52.654793Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

@@ -1,0 +1,1258 @@
+{
+  "columns": [
+    "entity_type",
+    "entity_key",
+    "entity_label",
+    "stop_position",
+    "avg_departure_delay",
+    "avg_arrival_delay",
+    "delay_15_plus_rate",
+    "diversion_incidence"
+  ],
+  "rows": [
+    {
+      "avg_arrival_delay": 20,
+      "avg_departure_delay": 30,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "RNO",
+      "entity_label": "departures from RNO",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 3.67,
+      "avg_departure_delay": 19,
+      "delay_15_plus_rate": 0.667,
+      "diversion_incidence": 0,
+      "entity_key": "OAK",
+      "entity_label": "departures from OAK",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 4,
+      "avg_departure_delay": 7.5,
+      "delay_15_plus_rate": 0.5,
+      "diversion_incidence": 0,
+      "entity_key": "COS",
+      "entity_label": "departures from COS",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 1.8,
+      "avg_departure_delay": 8.4,
+      "delay_15_plus_rate": 0.4,
+      "diversion_incidence": 0,
+      "entity_key": "DAL",
+      "entity_label": "departures from DAL",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 11,
+      "avg_departure_delay": 3.33,
+      "delay_15_plus_rate": 0.333,
+      "diversion_incidence": 0,
+      "entity_key": "MDW",
+      "entity_label": "departures from MDW",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -2.67,
+      "avg_departure_delay": 9,
+      "delay_15_plus_rate": 0.333,
+      "diversion_incidence": 0,
+      "entity_key": "ATL",
+      "entity_label": "departures from ATL",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 0.75,
+      "avg_departure_delay": 5.5,
+      "delay_15_plus_rate": 0.25,
+      "diversion_incidence": 0,
+      "entity_key": "PHX",
+      "entity_label": "departures from PHX",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -1.25,
+      "avg_departure_delay": 6,
+      "delay_15_plus_rate": 0.25,
+      "diversion_incidence": 0,
+      "entity_key": "DEN",
+      "entity_label": "departures from DEN",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -7,
+      "avg_departure_delay": 4,
+      "delay_15_plus_rate": 0.25,
+      "diversion_incidence": 0,
+      "entity_key": "BNA",
+      "entity_label": "departures from BNA",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -0.4,
+      "avg_departure_delay": -1.8,
+      "delay_15_plus_rate": 0.2,
+      "diversion_incidence": 0,
+      "entity_key": "MSY",
+      "entity_label": "departures from MSY",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 11,
+      "avg_departure_delay": 13,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "RDU",
+      "entity_label": "departures from RDU",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 6,
+      "avg_departure_delay": 13,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PSP",
+      "entity_label": "departures from PSP",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": 5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DTW",
+      "entity_label": "departures from DTW",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": 2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MCO",
+      "entity_label": "departures from MCO",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 0,
+      "avg_departure_delay": 11,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "SLC",
+      "entity_label": "departures from SLC",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -2,
+      "avg_departure_delay": 8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MEM",
+      "entity_label": "departures from MEM",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -2,
+      "avg_departure_delay": 9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "SAN",
+      "entity_label": "departures from SAN",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -3,
+      "avg_departure_delay": 2.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "CMH",
+      "entity_label": "departures from CMH",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -3,
+      "avg_departure_delay": -3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "TPA",
+      "entity_label": "departures from TPA",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -3.67,
+      "avg_departure_delay": 0,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BUR",
+      "entity_label": "departures from BUR",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -6,
+      "avg_departure_delay": 9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ABQ",
+      "entity_label": "departures from ABQ",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -9,
+      "avg_departure_delay": -2.67,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "HOU",
+      "entity_label": "departures from HOU",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -9.4,
+      "avg_departure_delay": 0.8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BWI",
+      "entity_label": "departures from BWI",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "FLL",
+      "entity_label": "departures from FLL",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": 0.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LAS",
+      "entity_label": "departures from LAS",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ORD",
+      "entity_label": "departures from ORD",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -11,
+      "avg_departure_delay": 7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "IAD",
+      "entity_label": "departures from IAD",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -11,
+      "avg_departure_delay": -1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LIT",
+      "entity_label": "departures from LIT",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -12,
+      "avg_departure_delay": 6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "RIC",
+      "entity_label": "departures from RIC",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -14,
+      "avg_departure_delay": -8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PNS",
+      "entity_label": "departures from PNS",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -15,
+      "avg_departure_delay": 0.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ELP",
+      "entity_label": "departures from ELP",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -15,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "SMF",
+      "entity_label": "departures from SMF",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -16,
+      "avg_departure_delay": 1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "VPS",
+      "entity_label": "departures from VPS",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -17,
+      "avg_departure_delay": -5.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MYR",
+      "entity_label": "departures from MYR",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -18,
+      "avg_departure_delay": -7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ICT",
+      "entity_label": "departures from ICT",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -19.5,
+      "avg_departure_delay": -0.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MCI",
+      "entity_label": "departures from MCI",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -20,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "STL",
+      "entity_label": "departures from STL",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -21,
+      "avg_departure_delay": -7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ISP",
+      "entity_label": "departures from ISP",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -22,
+      "avg_departure_delay": -7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MAF",
+      "entity_label": "departures from MAF",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -23,
+      "avg_departure_delay": -3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LGA",
+      "entity_label": "departures from LGA",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -34,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "CLE",
+      "entity_label": "departures from CLE",
+      "entity_type": "airport",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 27,
+      "avg_departure_delay": 4,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "MDW-LAX",
+      "entity_label": "MDW to LAX",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 27,
+      "avg_departure_delay": 44,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "OAK-RNO",
+      "entity_label": "OAK to RNO",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 26,
+      "avg_departure_delay": 29,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "DAL-LAX",
+      "entity_label": "DAL to LAX",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 25,
+      "avg_departure_delay": 3,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "MSY-ATL",
+      "entity_label": "MSY to ATL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 23,
+      "avg_departure_delay": 31,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "PHX-SAN",
+      "entity_label": "PHX to SAN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 20,
+      "avg_departure_delay": 30,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "RNO-LAS",
+      "entity_label": "RNO to LAS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 17,
+      "avg_departure_delay": 13,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "COS-DEN",
+      "entity_label": "COS to DEN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 15,
+      "avg_departure_delay": 19,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "BNA-DTW",
+      "entity_label": "BNA to DTW",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 11,
+      "avg_departure_delay": 24,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "ATL-CMH",
+      "entity_label": "ATL to CMH",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 10,
+      "avg_departure_delay": 21,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "DAL-ABQ",
+      "entity_label": "DAL to ABQ",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 9,
+      "avg_departure_delay": 25,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "DEN-PSP",
+      "entity_label": "DEN to PSP",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": 17,
+      "delay_15_plus_rate": 1,
+      "diversion_incidence": 0,
+      "entity_key": "OAK-DEN",
+      "entity_label": "OAK to DEN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 12,
+      "avg_departure_delay": 11,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "CMH-BWI",
+      "entity_label": "CMH to BWI",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 11,
+      "avg_departure_delay": 13,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "RDU-BNA",
+      "entity_label": "RDU to BNA",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 8,
+      "avg_departure_delay": 4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BWI-RDU",
+      "entity_label": "BWI to RDU",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 6,
+      "avg_departure_delay": 13,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PSP-OAK",
+      "entity_label": "PSP to OAK",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 5,
+      "avg_departure_delay": 1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PHX-COS",
+      "entity_label": "PHX to COS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 4,
+      "avg_departure_delay": 8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BUR-SJC",
+      "entity_label": "BUR to SJC",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 4,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DEN-SLC",
+      "entity_label": "DEN to SLC",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 4,
+      "avg_departure_delay": 10,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MDW-IAD",
+      "entity_label": "MDW to IAD",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": 9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BNA-MYR",
+      "entity_label": "BNA to MYR",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": 5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DTW-MDW",
+      "entity_label": "DTW to MDW",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": 2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MCO-MEM",
+      "entity_label": "MCO to MEM",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 2,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MDW-MCI",
+      "entity_label": "MDW to MCI",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 0,
+      "avg_departure_delay": 11,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "SLC-LAS",
+      "entity_label": "SLC to LAS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -1,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DAL-LAS",
+      "entity_label": "DAL to LAS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -2,
+      "avg_departure_delay": 7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ELP-DAL",
+      "entity_label": "ELP to DAL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -2,
+      "avg_departure_delay": 8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MEM-MDW",
+      "entity_label": "MEM to MDW",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -2,
+      "avg_departure_delay": 9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "SAN-PHX",
+      "entity_label": "SAN to PHX",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -3,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BWI-MYR",
+      "entity_label": "BWI to MYR",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -3,
+      "avg_departure_delay": -3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "TPA-BWI",
+      "entity_label": "TPA to BWI",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -4,
+      "avg_departure_delay": -1.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MSY-DAL",
+      "entity_label": "MSY to DAL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -5,
+      "avg_departure_delay": 11,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BWI-ORD",
+      "entity_label": "BWI to ORD",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -6,
+      "avg_departure_delay": 9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ABQ-LAS",
+      "entity_label": "ABQ to LAS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -6,
+      "avg_departure_delay": 4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ATL-MSY",
+      "entity_label": "ATL to MSY",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -6,
+      "avg_departure_delay": 3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DEN-LAS",
+      "entity_label": "DEN to LAS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -6,
+      "avg_departure_delay": -3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MSY-BNA",
+      "entity_label": "MSY to BNA",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -7,
+      "avg_departure_delay": 2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "HOU-JAN",
+      "entity_label": "HOU to JAN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -7,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PHX-ELP",
+      "entity_label": "PHX to ELP",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -7.5,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BUR-OAK",
+      "entity_label": "BUR to OAK",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -8,
+      "avg_departure_delay": -0.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LAS-BUR",
+      "entity_label": "LAS to BUR",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -9,
+      "avg_departure_delay": 2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "COS-PHX",
+      "entity_label": "COS to PHX",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -9,
+      "avg_departure_delay": -1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DAL-LIT",
+      "entity_label": "DAL to LIT",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "FLL-MSY",
+      "entity_label": "FLL to MSY",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": -6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "HOU-MCI",
+      "entity_label": "HOU to MCI",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "HOU-MSY",
+      "entity_label": "HOU to MSY",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -10,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ORD-DEN",
+      "entity_label": "ORD to DEN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -11,
+      "avg_departure_delay": 7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "IAD-ATL",
+      "entity_label": "IAD to ATL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -11,
+      "avg_departure_delay": -1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LIT-ATL",
+      "entity_label": "LIT to ATL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -12,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DEN-COS",
+      "entity_label": "DEN to COS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -12,
+      "avg_departure_delay": 1.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LAS-OAK",
+      "entity_label": "LAS to OAK",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -12,
+      "avg_departure_delay": 6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "RIC-MDW",
+      "entity_label": "RIC to MDW",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -13,
+      "avg_departure_delay": -1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ATL-RIC",
+      "entity_label": "ATL to RIC",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -13,
+      "avg_departure_delay": -6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MSY-TPA",
+      "entity_label": "MSY to TPA",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -14,
+      "avg_departure_delay": -8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PNS-HOU",
+      "entity_label": "PNS to HOU",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -15,
+      "avg_departure_delay": -2,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BWI-MCO",
+      "entity_label": "BWI to MCO",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -15,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "SMF-SAN",
+      "entity_label": "SMF to SAN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -16,
+      "avg_departure_delay": 1,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "VPS-DAL",
+      "entity_label": "VPS to DAL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -17,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "DAL-MAF",
+      "entity_label": "DAL to MAF",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -17,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MYR-BNA",
+      "entity_label": "MYR to BNA",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -17,
+      "avg_departure_delay": -6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MYR-CMH",
+      "entity_label": "MYR to CMH",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -18,
+      "avg_departure_delay": -3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BNA-VPS",
+      "entity_label": "BNA to VPS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -18,
+      "avg_departure_delay": -6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "CMH-DAL",
+      "entity_label": "CMH to DAL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -18,
+      "avg_departure_delay": -7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ICT-DEN",
+      "entity_label": "ICT to DEN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -18,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "OAK-SEA",
+      "entity_label": "OAK to SEA",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -18,
+      "avg_departure_delay": -8,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "PHX-BUR",
+      "entity_label": "PHX to BUR",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -19.5,
+      "avg_departure_delay": -0.5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MCI-PHX",
+      "entity_label": "MCI to PHX",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -20,
+      "avg_departure_delay": -5,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "STL-ICT",
+      "entity_label": "STL to ICT",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -21,
+      "avg_departure_delay": -7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ISP-BWI",
+      "entity_label": "ISP to BWI",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -22,
+      "avg_departure_delay": -7,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "MAF-DEN",
+      "entity_label": "MAF to DEN",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -23,
+      "avg_departure_delay": -3,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "LGA-STL",
+      "entity_label": "LGA to STL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -27,
+      "avg_departure_delay": -9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BNA-PNS",
+      "entity_label": "BNA to PNS",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -28,
+      "avg_departure_delay": -6,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "ELP-HOU",
+      "entity_label": "ELP to HOU",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -32,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "BWI-FLL",
+      "entity_label": "BWI to FLL",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": -34,
+      "avg_departure_delay": -4,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "CLE-BNA",
+      "entity_label": "CLE to BNA",
+      "entity_type": "leg",
+      "stop_position": null
+    },
+    {
+      "avg_arrival_delay": 5.8,
+      "avg_departure_delay": 11.7,
+      "delay_15_plus_rate": 0.5,
+      "diversion_incidence": 0,
+      "entity_key": "8",
+      "entity_label": "leg 8",
+      "entity_type": "stop_position",
+      "stop_position": 8
+    },
+    {
+      "avg_arrival_delay": -0.5,
+      "avg_departure_delay": 5.5,
+      "delay_15_plus_rate": 0.2,
+      "diversion_incidence": 0,
+      "entity_key": "6",
+      "entity_label": "leg 6",
+      "entity_type": "stop_position",
+      "stop_position": 6
+    },
+    {
+      "avg_arrival_delay": -6.3,
+      "avg_departure_delay": 4.3,
+      "delay_15_plus_rate": 0.1,
+      "diversion_incidence": 0,
+      "entity_key": "7",
+      "entity_label": "leg 7",
+      "entity_type": "stop_position",
+      "stop_position": 7
+    },
+    {
+      "avg_arrival_delay": -6.7,
+      "avg_departure_delay": 0.7,
+      "delay_15_plus_rate": 0.1,
+      "diversion_incidence": 0,
+      "entity_key": "2",
+      "entity_label": "leg 2",
+      "entity_type": "stop_position",
+      "stop_position": 2
+    },
+    {
+      "avg_arrival_delay": -6.8,
+      "avg_departure_delay": 0.2,
+      "delay_15_plus_rate": 0.1,
+      "diversion_incidence": 0,
+      "entity_key": "4",
+      "entity_label": "leg 4",
+      "entity_type": "stop_position",
+      "stop_position": 4
+    },
+    {
+      "avg_arrival_delay": -8.3,
+      "avg_departure_delay": 3.8,
+      "delay_15_plus_rate": 0.1,
+      "diversion_incidence": 0,
+      "entity_key": "5",
+      "entity_label": "leg 5",
+      "entity_type": "stop_position",
+      "stop_position": 5
+    },
+    {
+      "avg_arrival_delay": -14,
+      "avg_departure_delay": -2.5,
+      "delay_15_plus_rate": 0.1,
+      "diversion_incidence": 0,
+      "entity_key": "1",
+      "entity_label": "leg 1",
+      "entity_type": "stop_position",
+      "stop_position": 1
+    },
+    {
+      "avg_arrival_delay": -5.4,
+      "avg_departure_delay": 1.9,
+      "delay_15_plus_rate": 0,
+      "diversion_incidence": 0,
+      "entity_key": "3",
+      "entity_label": "leg 3",
+      "entity_type": "stop_position",
+      "stop_position": 3
+    }
+  ],
+  "row_count": 124,
+  "generated_at": "2026-03-26T18:13:53.093386Z",
+  "source_query_sha256": "9d14ee5dc6f05edf91e2e485ba51d318ce9dab2fdfeadcfeecbea60efe99ecc4",
+  "log_comment": "qforge|question=q001|run=run-002|runner=codex|model=gpt-5.4|phase=full|section=q3"
+}

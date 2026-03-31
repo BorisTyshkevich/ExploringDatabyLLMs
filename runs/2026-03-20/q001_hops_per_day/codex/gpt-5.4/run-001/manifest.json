@@ -1,0 +1,53 @@
+{
+  "schema_version": "3",
+  "status": "partial",
+  "question_id": "q001",
+  "question_slug": "q001_hops_per_day",
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "dataset": "ontime",
+  "runner": "codex",
+  "model": "gpt-5.4",
+  "cli_bin": "codex",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime/mcp.yaml",
+  "started_at": "2026-03-20T11:56:29.939472Z",
+  "finished_at": "2026-03-20T12:12:52.902164Z",
+  "duration_sec": 982,
+  "sql_generation_provider_duration_ms": 297209,
+  "presentation_provider_duration_ms": 645689,
+  "log_comment": "qforge|question=q001|run=run-001|runner=codex|model=gpt-5.4|phase=full",
+  "query_sha256": "3bf232d62adc070ca98b7586997488a7b8ab64861749966e7511c9a2294220b6",
+  "result_row_count": 10,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "failed"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/answer.sql.raw.md",
+    "answer_raw_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json",
+    "analysis_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/analysis.json",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/result.json",
+    "visual_input_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/visual_input.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-20/q001_hops_per_day/codex/gpt-5.4/run-001/visual.html"
+  },
+  "metadata": {
+    "browser_validation": "failed",
+    "browser_validation_errors": "live_fetch failed: context canceled",
+    "browser_validation_live_fetch": "failed",
+    "browser_validation_status": "Enter a token and run the saved query.",
+    "execution_response_bytes": "2965",
+    "visual_validation": "ok"
+  }
+}

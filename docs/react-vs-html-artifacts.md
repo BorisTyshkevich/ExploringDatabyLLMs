@@ -72,8 +72,8 @@ Case:
 - runner/model: `claude/sonnet`
 - date: March 24, 2026
 - comparison:
-  - HTML run: [`run-002`](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-24/q001_hops_per_day/claude/sonnet/run-002/manifest.json)
-  - React run: [`run-003`](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-24/q001_hops_per_day/claude/sonnet/run-003/manifest.json)
+  - HTML run: [`run-002`](/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-24/q001_hops_per_day/claude/sonnet/run-002/manifest.json)
+  - React run: [`run-003`](/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-24/q001_hops_per_day/claude/sonnet/run-003/manifest.json)
 
 Observed timings from `manifest.json`:
 

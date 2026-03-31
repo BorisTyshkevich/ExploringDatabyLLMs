@@ -1,0 +1,330 @@
+{
+  "columns": [
+    "airport_code",
+    "state_code",
+    "country_code",
+    "geo_bucket",
+    "airport_mentions"
+  ],
+  "rows": [
+    {
+      "airport_code": "BWI",
+      "airport_mentions": 5,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "MD"
+    },
+    {
+      "airport_code": "DAL",
+      "airport_mentions": 5,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "DEN",
+      "airport_mentions": 5,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "CO"
+    },
+    {
+      "airport_code": "LAS",
+      "airport_mentions": 5,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "NV"
+    },
+    {
+      "airport_code": "MSY",
+      "airport_mentions": 5,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "LA"
+    },
+    {
+      "airport_code": "OAK",
+      "airport_mentions": 5,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "BNA",
+      "airport_mentions": 4,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "TN"
+    },
+    {
+      "airport_code": "PHX",
+      "airport_mentions": 4,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "AZ"
+    },
+    {
+      "airport_code": "ATL",
+      "airport_mentions": 3,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "GA"
+    },
+    {
+      "airport_code": "BUR",
+      "airport_mentions": 3,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "HOU",
+      "airport_mentions": 3,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "MDW",
+      "airport_mentions": 3,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "IL"
+    },
+    {
+      "airport_code": "CMH",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "OH"
+    },
+    {
+      "airport_code": "COS",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "CO"
+    },
+    {
+      "airport_code": "ELP",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "LAX",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "MCI",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "MO"
+    },
+    {
+      "airport_code": "MYR",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "SC"
+    },
+    {
+      "airport_code": "SAN",
+      "airport_mentions": 2,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "ABQ",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "NM"
+    },
+    {
+      "airport_code": "CLE",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "OH"
+    },
+    {
+      "airport_code": "DTW",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "MI"
+    },
+    {
+      "airport_code": "FLL",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "IAD",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "VA"
+    },
+    {
+      "airport_code": "ICT",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "KS"
+    },
+    {
+      "airport_code": "ISP",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "NY"
+    },
+    {
+      "airport_code": "JAN",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "MS"
+    },
+    {
+      "airport_code": "LGA",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "NY"
+    },
+    {
+      "airport_code": "LIT",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "AR"
+    },
+    {
+      "airport_code": "MAF",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "MCO",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "MEM",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "TN"
+    },
+    {
+      "airport_code": "ORD",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "IL"
+    },
+    {
+      "airport_code": "PNS",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "PSP",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "RDU",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "NC"
+    },
+    {
+      "airport_code": "RIC",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "VA"
+    },
+    {
+      "airport_code": "RNO",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "NV"
+    },
+    {
+      "airport_code": "SEA",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "WA"
+    },
+    {
+      "airport_code": "SJC",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "SLC",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "interior_west_central",
+      "state_code": "UT"
+    },
+    {
+      "airport_code": "SMF",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "far_west",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "STL",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "MO"
+    },
+    {
+      "airport_code": "TPA",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "VPS",
+      "airport_mentions": 1,
+      "country_code": "US",
+      "geo_bucket": "east",
+      "state_code": "FL"
+    }
+  ],
+  "row_count": 45,
+  "generated_at": "2026-03-26T12:25:18.384492Z",
+  "source_query_sha256": "03905a1c0ff45b1ccf33b4b663b6098f1a650dbf0cd9bc1ec8456a596c0e4d0e",
+  "log_comment": "qforge|question=q001|run=run-001|runner=codex|model=gpt-5.4|phase=full|section=q2"
+}

@@ -1,0 +1,22 @@
+{
+  "columns": [
+    "network_delay",
+    "top_5_origins_delay",
+    "top_10_routes_delay",
+    "top_5_origins_pct",
+    "top_10_routes_pct"
+  ],
+  "rows": [
+    {
+      "network_delay": 3127538,
+      "top_10_routes_delay": 156919,
+      "top_10_routes_pct": 5.02,
+      "top_5_origins_delay": 1624257,
+      "top_5_origins_pct": 51.93
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-24T16:36:01.80439Z",
+  "source_query_sha256": "bbb9e2bfbc5a1cf4d3e460581d4e44f54a08ff4d4950c4976a3509898fbde165",
+  "log_comment": "qforge|question=q006|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full|subquestion=q4"
+}

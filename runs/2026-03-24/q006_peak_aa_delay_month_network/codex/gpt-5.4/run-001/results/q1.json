@@ -1,0 +1,3221 @@
+{
+  "columns": [
+    "month",
+    "flight_volume",
+    "avg_departure_delay_minutes",
+    "pct_departing_15_plus_late",
+    "worst_month_rank"
+  ],
+  "rows": [
+    {
+      "avg_departure_delay_minutes": 4.27,
+      "flight_volume": 55871,
+      "month": "1987-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.8,
+      "worst_month_rank": 402
+    },
+    {
+      "avg_departure_delay_minutes": 5.06,
+      "flight_volume": 52853,
+      "month": "1987-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10,
+      "worst_month_rank": 371
+    },
+    {
+      "avg_departure_delay_minutes": 8.49,
+      "flight_volume": 54441,
+      "month": "1987-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.92,
+      "worst_month_rank": 235
+    },
+    {
+      "avg_departure_delay_minutes": 7.58,
+      "flight_volume": 53683,
+      "month": "1988-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.91,
+      "worst_month_rank": 276
+    },
+    {
+      "avg_departure_delay_minutes": 6.67,
+      "flight_volume": 51696,
+      "month": "1988-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.74,
+      "worst_month_rank": 313
+    },
+    {
+      "avg_departure_delay_minutes": 5.37,
+      "flight_volume": 56859,
+      "month": "1988-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.16,
+      "worst_month_rank": 357
+    },
+    {
+      "avg_departure_delay_minutes": 4.56,
+      "flight_volume": 55799,
+      "month": "1988-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.45,
+      "worst_month_rank": 390
+    },
+    {
+      "avg_departure_delay_minutes": 4.14,
+      "flight_volume": 57346,
+      "month": "1988-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.43,
+      "worst_month_rank": 406
+    },
+    {
+      "avg_departure_delay_minutes": 4.47,
+      "flight_volume": 56125,
+      "month": "1988-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.91,
+      "worst_month_rank": 392
+    },
+    {
+      "avg_departure_delay_minutes": 4.69,
+      "flight_volume": 58556,
+      "month": "1988-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.29,
+      "worst_month_rank": 385
+    },
+    {
+      "avg_departure_delay_minutes": 4.93,
+      "flight_volume": 58914,
+      "month": "1988-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.21,
+      "worst_month_rank": 376
+    },
+    {
+      "avg_departure_delay_minutes": 3.66,
+      "flight_volume": 57274,
+      "month": "1988-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.04,
+      "worst_month_rank": 422
+    },
+    {
+      "avg_departure_delay_minutes": 5.14,
+      "flight_volume": 61233,
+      "month": "1988-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.46,
+      "worst_month_rank": 366
+    },
+    {
+      "avg_departure_delay_minutes": 8.25,
+      "flight_volume": 58636,
+      "month": "1988-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.29,
+      "worst_month_rank": 240
+    },
+    {
+      "avg_departure_delay_minutes": 8.78,
+      "flight_volume": 62025,
+      "month": "1988-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.15,
+      "worst_month_rank": 221
+    },
+    {
+      "avg_departure_delay_minutes": 7.92,
+      "flight_volume": 62009,
+      "month": "1989-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.24,
+      "worst_month_rank": 255
+    },
+    {
+      "avg_departure_delay_minutes": 10.22,
+      "flight_volume": 53213,
+      "month": "1989-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.24,
+      "worst_month_rank": 166
+    },
+    {
+      "avg_departure_delay_minutes": 10.08,
+      "flight_volume": 60666,
+      "month": "1989-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.47,
+      "worst_month_rank": 171
+    },
+    {
+      "avg_departure_delay_minutes": 4.09,
+      "flight_volume": 60796,
+      "month": "1989-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.77,
+      "worst_month_rank": 410
+    },
+    {
+      "avg_departure_delay_minutes": 5.97,
+      "flight_volume": 61845,
+      "month": "1989-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.71,
+      "worst_month_rank": 337
+    },
+    {
+      "avg_departure_delay_minutes": 10.51,
+      "flight_volume": 60236,
+      "month": "1989-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.78,
+      "worst_month_rank": 159
+    },
+    {
+      "avg_departure_delay_minutes": 6.49,
+      "flight_volume": 59977,
+      "month": "1989-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.45,
+      "worst_month_rank": 319
+    },
+    {
+      "avg_departure_delay_minutes": 5.99,
+      "flight_volume": 59339,
+      "month": "1989-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.19,
+      "worst_month_rank": 336
+    },
+    {
+      "avg_departure_delay_minutes": 4.79,
+      "flight_volume": 58202,
+      "month": "1989-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.4,
+      "worst_month_rank": 383
+    },
+    {
+      "avg_departure_delay_minutes": 4.17,
+      "flight_volume": 60194,
+      "month": "1989-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.88,
+      "worst_month_rank": 405
+    },
+    {
+      "avg_departure_delay_minutes": 4.86,
+      "flight_volume": 57432,
+      "month": "1989-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.94,
+      "worst_month_rank": 378
+    },
+    {
+      "avg_departure_delay_minutes": 10.35,
+      "flight_volume": 59374,
+      "month": "1989-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.63,
+      "worst_month_rank": 161
+    },
+    {
+      "avg_departure_delay_minutes": 6.96,
+      "flight_volume": 60695,
+      "month": "1990-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.35,
+      "worst_month_rank": 297
+    },
+    {
+      "avg_departure_delay_minutes": 9.93,
+      "flight_volume": 52306,
+      "month": "1990-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.95,
+      "worst_month_rank": 179
+    },
+    {
+      "avg_departure_delay_minutes": 9.11,
+      "flight_volume": 58919,
+      "month": "1990-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.17,
+      "worst_month_rank": 211
+    },
+    {
+      "avg_departure_delay_minutes": 4.48,
+      "flight_volume": 58240,
+      "month": "1990-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.1,
+      "worst_month_rank": 391
+    },
+    {
+      "avg_departure_delay_minutes": 4.83,
+      "flight_volume": 60678,
+      "month": "1990-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.98,
+      "worst_month_rank": 382
+    },
+    {
+      "avg_departure_delay_minutes": 7.09,
+      "flight_volume": 58523,
+      "month": "1990-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.56,
+      "worst_month_rank": 294
+    },
+    {
+      "avg_departure_delay_minutes": 4.29,
+      "flight_volume": 60511,
+      "month": "1990-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.02,
+      "worst_month_rank": 400
+    },
+    {
+      "avg_departure_delay_minutes": 5.87,
+      "flight_volume": 60669,
+      "month": "1990-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.42,
+      "worst_month_rank": 344
+    },
+    {
+      "avg_departure_delay_minutes": 3.77,
+      "flight_volume": 58810,
+      "month": "1990-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.86,
+      "worst_month_rank": 416
+    },
+    {
+      "avg_departure_delay_minutes": 3.68,
+      "flight_volume": 61065,
+      "month": "1990-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.49,
+      "worst_month_rank": 421
+    },
+    {
+      "avg_departure_delay_minutes": 4.66,
+      "flight_volume": 57599,
+      "month": "1990-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.7,
+      "worst_month_rank": 386
+    },
+    {
+      "avg_departure_delay_minutes": 15.9,
+      "flight_volume": 57281,
+      "month": "1990-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.87,
+      "worst_month_rank": 49
+    },
+    {
+      "avg_departure_delay_minutes": 9.49,
+      "flight_volume": 54406,
+      "month": "1991-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.31,
+      "worst_month_rank": 200
+    },
+    {
+      "avg_departure_delay_minutes": 3.5,
+      "flight_volume": 49591,
+      "month": "1991-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.49,
+      "worst_month_rank": 424
+    },
+    {
+      "avg_departure_delay_minutes": 3.75,
+      "flight_volume": 58122,
+      "month": "1991-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.77,
+      "worst_month_rank": 418
+    },
+    {
+      "avg_departure_delay_minutes": 3.99,
+      "flight_volume": 58378,
+      "month": "1991-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.9,
+      "worst_month_rank": 412
+    },
+    {
+      "avg_departure_delay_minutes": 5.31,
+      "flight_volume": 61484,
+      "month": "1991-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.42,
+      "worst_month_rank": 359
+    },
+    {
+      "avg_departure_delay_minutes": 3.77,
+      "flight_volume": 61497,
+      "month": "1991-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.36,
+      "worst_month_rank": 417
+    },
+    {
+      "avg_departure_delay_minutes": 3.49,
+      "flight_volume": 63548,
+      "month": "1991-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.58,
+      "worst_month_rank": 426
+    },
+    {
+      "avg_departure_delay_minutes": 3.45,
+      "flight_volume": 63734,
+      "month": "1991-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.7,
+      "worst_month_rank": 428
+    },
+    {
+      "avg_departure_delay_minutes": 2.7,
+      "flight_volume": 61278,
+      "month": "1991-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 5.69,
+      "worst_month_rank": 441
+    },
+    {
+      "avg_departure_delay_minutes": 5.97,
+      "flight_volume": 63392,
+      "month": "1991-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.22,
+      "worst_month_rank": 338
+    },
+    {
+      "avg_departure_delay_minutes": 3.89,
+      "flight_volume": 60151,
+      "month": "1991-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.6,
+      "worst_month_rank": 413
+    },
+    {
+      "avg_departure_delay_minutes": 7.28,
+      "flight_volume": 64659,
+      "month": "1991-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.81,
+      "worst_month_rank": 281
+    },
+    {
+      "avg_departure_delay_minutes": 6.32,
+      "flight_volume": 64451,
+      "month": "1992-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.1,
+      "worst_month_rank": 327
+    },
+    {
+      "avg_departure_delay_minutes": 4.06,
+      "flight_volume": 59667,
+      "month": "1992-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.04,
+      "worst_month_rank": 411
+    },
+    {
+      "avg_departure_delay_minutes": 5.5,
+      "flight_volume": 63193,
+      "month": "1992-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.12,
+      "worst_month_rank": 353
+    },
+    {
+      "avg_departure_delay_minutes": 3.06,
+      "flight_volume": 63221,
+      "month": "1992-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.31,
+      "worst_month_rank": 436
+    },
+    {
+      "avg_departure_delay_minutes": 3.7,
+      "flight_volume": 65363,
+      "month": "1992-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7,
+      "worst_month_rank": 420
+    },
+    {
+      "avg_departure_delay_minutes": 6.76,
+      "flight_volume": 64337,
+      "month": "1992-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.35,
+      "worst_month_rank": 306
+    },
+    {
+      "avg_departure_delay_minutes": 6.7,
+      "flight_volume": 66358,
+      "month": "1992-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.82,
+      "worst_month_rank": 312
+    },
+    {
+      "avg_departure_delay_minutes": 5.46,
+      "flight_volume": 66983,
+      "month": "1992-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.82,
+      "worst_month_rank": 354
+    },
+    {
+      "avg_departure_delay_minutes": 5.35,
+      "flight_volume": 65297,
+      "month": "1992-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.86,
+      "worst_month_rank": 358
+    },
+    {
+      "avg_departure_delay_minutes": 3.72,
+      "flight_volume": 67893,
+      "month": "1992-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.14,
+      "worst_month_rank": 419
+    },
+    {
+      "avg_departure_delay_minutes": 4.34,
+      "flight_volume": 63853,
+      "month": "1992-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.48,
+      "worst_month_rank": 397
+    },
+    {
+      "avg_departure_delay_minutes": 7.7,
+      "flight_volume": 66724,
+      "month": "1992-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.05,
+      "worst_month_rank": 269
+    },
+    {
+      "avg_departure_delay_minutes": 7.22,
+      "flight_volume": 65572,
+      "month": "1993-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.67,
+      "worst_month_rank": 286
+    },
+    {
+      "avg_departure_delay_minutes": 5.95,
+      "flight_volume": 60197,
+      "month": "1993-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.19,
+      "worst_month_rank": 339
+    },
+    {
+      "avg_departure_delay_minutes": 8.74,
+      "flight_volume": 67155,
+      "month": "1993-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.59,
+      "worst_month_rank": 223
+    },
+    {
+      "avg_departure_delay_minutes": 6.34,
+      "flight_volume": 66170,
+      "month": "1993-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.46,
+      "worst_month_rank": 326
+    },
+    {
+      "avg_departure_delay_minutes": 3.49,
+      "flight_volume": 68938,
+      "month": "1993-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 5.96,
+      "worst_month_rank": 427
+    },
+    {
+      "avg_departure_delay_minutes": 6.43,
+      "flight_volume": 66356,
+      "month": "1993-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.51,
+      "worst_month_rank": 322
+    },
+    {
+      "avg_departure_delay_minutes": 3.82,
+      "flight_volume": 66579,
+      "month": "1993-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.75,
+      "worst_month_rank": 414
+    },
+    {
+      "avg_departure_delay_minutes": 5.1,
+      "flight_volume": 66667,
+      "month": "1993-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.51,
+      "worst_month_rank": 369
+    },
+    {
+      "avg_departure_delay_minutes": 3.25,
+      "flight_volume": 63489,
+      "month": "1993-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.98,
+      "worst_month_rank": 432
+    },
+    {
+      "avg_departure_delay_minutes": 4.69,
+      "flight_volume": 64527,
+      "month": "1993-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.96,
+      "worst_month_rank": 384
+    },
+    {
+      "avg_departure_delay_minutes": 7.27,
+      "flight_volume": 58322,
+      "month": "1993-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.4,
+      "worst_month_rank": 284
+    },
+    {
+      "avg_departure_delay_minutes": 6.82,
+      "flight_volume": 63455,
+      "month": "1993-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.75,
+      "worst_month_rank": 304
+    },
+    {
+      "avg_departure_delay_minutes": 9.62,
+      "flight_volume": 58065,
+      "month": "1994-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.97,
+      "worst_month_rank": 194
+    },
+    {
+      "avg_departure_delay_minutes": 7.97,
+      "flight_volume": 52856,
+      "month": "1994-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.9,
+      "worst_month_rank": 250
+    },
+    {
+      "avg_departure_delay_minutes": 3.53,
+      "flight_volume": 61788,
+      "month": "1994-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.15,
+      "worst_month_rank": 423
+    },
+    {
+      "avg_departure_delay_minutes": 4.61,
+      "flight_volume": 59825,
+      "month": "1994-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.41,
+      "worst_month_rank": 387
+    },
+    {
+      "avg_departure_delay_minutes": 2.14,
+      "flight_volume": 61649,
+      "month": "1994-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 5.82,
+      "worst_month_rank": 446
+    },
+    {
+      "avg_departure_delay_minutes": 4.59,
+      "flight_volume": 59284,
+      "month": "1994-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.18,
+      "worst_month_rank": 389
+    },
+    {
+      "avg_departure_delay_minutes": 6.83,
+      "flight_volume": 61621,
+      "month": "1994-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.84,
+      "worst_month_rank": 303
+    },
+    {
+      "avg_departure_delay_minutes": 4.27,
+      "flight_volume": 62076,
+      "month": "1994-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.99,
+      "worst_month_rank": 403
+    },
+    {
+      "avg_departure_delay_minutes": 2.84,
+      "flight_volume": 59254,
+      "month": "1994-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.78,
+      "worst_month_rank": 438
+    },
+    {
+      "avg_departure_delay_minutes": 7.88,
+      "flight_volume": 60537,
+      "month": "1994-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.34,
+      "worst_month_rank": 259
+    },
+    {
+      "avg_departure_delay_minutes": 5.5,
+      "flight_volume": 57485,
+      "month": "1994-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.88,
+      "worst_month_rank": 352
+    },
+    {
+      "avg_departure_delay_minutes": 8.21,
+      "flight_volume": 59642,
+      "month": "1994-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.61,
+      "worst_month_rank": 242
+    },
+    {
+      "avg_departure_delay_minutes": 10.08,
+      "flight_volume": 60504,
+      "month": "1995-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.35,
+      "worst_month_rank": 172
+    },
+    {
+      "avg_departure_delay_minutes": 8.08,
+      "flight_volume": 54300,
+      "month": "1995-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.38,
+      "worst_month_rank": 248
+    },
+    {
+      "avg_departure_delay_minutes": 11.03,
+      "flight_volume": 59461,
+      "month": "1995-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.05,
+      "worst_month_rank": 137
+    },
+    {
+      "avg_departure_delay_minutes": 7.24,
+      "flight_volume": 56671,
+      "month": "1995-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.84,
+      "worst_month_rank": 285
+    },
+    {
+      "avg_departure_delay_minutes": 5.4,
+      "flight_volume": 56297,
+      "month": "1995-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.26,
+      "worst_month_rank": 355
+    },
+    {
+      "avg_departure_delay_minutes": 6.91,
+      "flight_volume": 55496,
+      "month": "1995-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.91,
+      "worst_month_rank": 299
+    },
+    {
+      "avg_departure_delay_minutes": 7.07,
+      "flight_volume": 57487,
+      "month": "1995-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.42,
+      "worst_month_rank": 296
+    },
+    {
+      "avg_departure_delay_minutes": 6.75,
+      "flight_volume": 57787,
+      "month": "1995-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.33,
+      "worst_month_rank": 307
+    },
+    {
+      "avg_departure_delay_minutes": 3.16,
+      "flight_volume": 54470,
+      "month": "1995-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.09,
+      "worst_month_rank": 434
+    },
+    {
+      "avg_departure_delay_minutes": 4.12,
+      "flight_volume": 56823,
+      "month": "1995-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.93,
+      "worst_month_rank": 408
+    },
+    {
+      "avg_departure_delay_minutes": 6.45,
+      "flight_volume": 53439,
+      "month": "1995-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.02,
+      "worst_month_rank": 320
+    },
+    {
+      "avg_departure_delay_minutes": 13.6,
+      "flight_volume": 54441,
+      "month": "1995-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.77,
+      "worst_month_rank": 83
+    },
+    {
+      "avg_departure_delay_minutes": 15.47,
+      "flight_volume": 52262,
+      "month": "1996-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.85,
+      "worst_month_rank": 54
+    },
+    {
+      "avg_departure_delay_minutes": 9.78,
+      "flight_volume": 50079,
+      "month": "1996-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.01,
+      "worst_month_rank": 185
+    },
+    {
+      "avg_departure_delay_minutes": 8.17,
+      "flight_volume": 55100,
+      "month": "1996-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.6,
+      "worst_month_rank": 244
+    },
+    {
+      "avg_departure_delay_minutes": 9.07,
+      "flight_volume": 53381,
+      "month": "1996-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.85,
+      "worst_month_rank": 213
+    },
+    {
+      "avg_departure_delay_minutes": 8.69,
+      "flight_volume": 54096,
+      "month": "1996-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.17,
+      "worst_month_rank": 226
+    },
+    {
+      "avg_departure_delay_minutes": 11.16,
+      "flight_volume": 53293,
+      "month": "1996-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.19,
+      "worst_month_rank": 129
+    },
+    {
+      "avg_departure_delay_minutes": 13.92,
+      "flight_volume": 54751,
+      "month": "1996-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.39,
+      "worst_month_rank": 78
+    },
+    {
+      "avg_departure_delay_minutes": 11.83,
+      "flight_volume": 55912,
+      "month": "1996-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.78,
+      "worst_month_rank": 117
+    },
+    {
+      "avg_departure_delay_minutes": 6.29,
+      "flight_volume": 51648,
+      "month": "1996-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.06,
+      "worst_month_rank": 329
+    },
+    {
+      "avg_departure_delay_minutes": 7.17,
+      "flight_volume": 53840,
+      "month": "1996-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.53,
+      "worst_month_rank": 287
+    },
+    {
+      "avg_departure_delay_minutes": 5.39,
+      "flight_volume": 51425,
+      "month": "1996-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.78,
+      "worst_month_rank": 356
+    },
+    {
+      "avg_departure_delay_minutes": 12.27,
+      "flight_volume": 55258,
+      "month": "1996-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.46,
+      "worst_month_rank": 109
+    },
+    {
+      "avg_departure_delay_minutes": 11.15,
+      "flight_volume": 53631,
+      "month": "1997-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.25,
+      "worst_month_rank": 130
+    },
+    {
+      "avg_departure_delay_minutes": 9.87,
+      "flight_volume": 49664,
+      "month": "1997-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.39,
+      "worst_month_rank": 182
+    },
+    {
+      "avg_departure_delay_minutes": 7.68,
+      "flight_volume": 55794,
+      "month": "1997-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.9,
+      "worst_month_rank": 270
+    },
+    {
+      "avg_departure_delay_minutes": 8.67,
+      "flight_volume": 54193,
+      "month": "1997-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.65,
+      "worst_month_rank": 227
+    },
+    {
+      "avg_departure_delay_minutes": 4.34,
+      "flight_volume": 55803,
+      "month": "1997-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.95,
+      "worst_month_rank": 396
+    },
+    {
+      "avg_departure_delay_minutes": 8.57,
+      "flight_volume": 54179,
+      "month": "1997-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.65,
+      "worst_month_rank": 232
+    },
+    {
+      "avg_departure_delay_minutes": 8.89,
+      "flight_volume": 56042,
+      "month": "1997-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.14,
+      "worst_month_rank": 218
+    },
+    {
+      "avg_departure_delay_minutes": 5.14,
+      "flight_volume": 56349,
+      "month": "1997-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.8,
+      "worst_month_rank": 365
+    },
+    {
+      "avg_departure_delay_minutes": 3.12,
+      "flight_volume": 53271,
+      "month": "1997-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.19,
+      "worst_month_rank": 435
+    },
+    {
+      "avg_departure_delay_minutes": 5.78,
+      "flight_volume": 55019,
+      "month": "1997-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.81,
+      "worst_month_rank": 348
+    },
+    {
+      "avg_departure_delay_minutes": 4.43,
+      "flight_volume": 52109,
+      "month": "1997-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.59,
+      "worst_month_rank": 393
+    },
+    {
+      "avg_departure_delay_minutes": 10.73,
+      "flight_volume": 54421,
+      "month": "1997-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.34,
+      "worst_month_rank": 151
+    },
+    {
+      "avg_departure_delay_minutes": 8.3,
+      "flight_volume": 54111,
+      "month": "1998-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.8,
+      "worst_month_rank": 239
+    },
+    {
+      "avg_departure_delay_minutes": 5.17,
+      "flight_volume": 49212,
+      "month": "1998-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.58,
+      "worst_month_rank": 363
+    },
+    {
+      "avg_departure_delay_minutes": 8.08,
+      "flight_volume": 54359,
+      "month": "1998-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.56,
+      "worst_month_rank": 247
+    },
+    {
+      "avg_departure_delay_minutes": 5.14,
+      "flight_volume": 53056,
+      "month": "1998-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.92,
+      "worst_month_rank": 367
+    },
+    {
+      "avg_departure_delay_minutes": 6.13,
+      "flight_volume": 53672,
+      "month": "1998-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.11,
+      "worst_month_rank": 332
+    },
+    {
+      "avg_departure_delay_minutes": 10.33,
+      "flight_volume": 52670,
+      "month": "1998-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.01,
+      "worst_month_rank": 162
+    },
+    {
+      "avg_departure_delay_minutes": 7.62,
+      "flight_volume": 54520,
+      "month": "1998-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.74,
+      "worst_month_rank": 275
+    },
+    {
+      "avg_departure_delay_minutes": 9.78,
+      "flight_volume": 54628,
+      "month": "1998-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.8,
+      "worst_month_rank": 186
+    },
+    {
+      "avg_departure_delay_minutes": 5.81,
+      "flight_volume": 52669,
+      "month": "1998-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.69,
+      "worst_month_rank": 346
+    },
+    {
+      "avg_departure_delay_minutes": 8.71,
+      "flight_volume": 54259,
+      "month": "1998-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.1,
+      "worst_month_rank": 225
+    },
+    {
+      "avg_departure_delay_minutes": 5.26,
+      "flight_volume": 52555,
+      "month": "1998-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.11,
+      "worst_month_rank": 362
+    },
+    {
+      "avg_departure_delay_minutes": 8.73,
+      "flight_volume": 53546,
+      "month": "1998-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.05,
+      "worst_month_rank": 224
+    },
+    {
+      "avg_departure_delay_minutes": 15.42,
+      "flight_volume": 52407,
+      "month": "1999-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.99,
+      "worst_month_rank": 55
+    },
+    {
+      "avg_departure_delay_minutes": 7.79,
+      "flight_volume": 44538,
+      "month": "1999-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.31,
+      "worst_month_rank": 262
+    },
+    {
+      "avg_departure_delay_minutes": 10.8,
+      "flight_volume": 54664,
+      "month": "1999-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.1,
+      "worst_month_rank": 149
+    },
+    {
+      "avg_departure_delay_minutes": 11.45,
+      "flight_volume": 52770,
+      "month": "1999-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.56,
+      "worst_month_rank": 122
+    },
+    {
+      "avg_departure_delay_minutes": 13.21,
+      "flight_volume": 54036,
+      "month": "1999-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.08,
+      "worst_month_rank": 91
+    },
+    {
+      "avg_departure_delay_minutes": 15.24,
+      "flight_volume": 53761,
+      "month": "1999-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.18,
+      "worst_month_rank": 58
+    },
+    {
+      "avg_departure_delay_minutes": 12.62,
+      "flight_volume": 56116,
+      "month": "1999-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.58,
+      "worst_month_rank": 105
+    },
+    {
+      "avg_departure_delay_minutes": 7.68,
+      "flight_volume": 57433,
+      "month": "1999-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.3,
+      "worst_month_rank": 271
+    },
+    {
+      "avg_departure_delay_minutes": 6.66,
+      "flight_volume": 58392,
+      "month": "1999-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.85,
+      "worst_month_rank": 314
+    },
+    {
+      "avg_departure_delay_minutes": 5.54,
+      "flight_volume": 61165,
+      "month": "1999-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.02,
+      "worst_month_rank": 351
+    },
+    {
+      "avg_departure_delay_minutes": 5.28,
+      "flight_volume": 58878,
+      "month": "1999-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.29,
+      "worst_month_rank": 361
+    },
+    {
+      "avg_departure_delay_minutes": 7.74,
+      "flight_volume": 59533,
+      "month": "1999-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.56,
+      "worst_month_rank": 265
+    },
+    {
+      "avg_departure_delay_minutes": 8.55,
+      "flight_volume": 58067,
+      "month": "2000-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.89,
+      "worst_month_rank": 234
+    },
+    {
+      "avg_departure_delay_minutes": 9.26,
+      "flight_volume": 55309,
+      "month": "2000-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.37,
+      "worst_month_rank": 207
+    },
+    {
+      "avg_departure_delay_minutes": 11.11,
+      "flight_volume": 60804,
+      "month": "2000-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.04,
+      "worst_month_rank": 132
+    },
+    {
+      "avg_departure_delay_minutes": 11.06,
+      "flight_volume": 58230,
+      "month": "2000-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.7,
+      "worst_month_rank": 136
+    },
+    {
+      "avg_departure_delay_minutes": 11.88,
+      "flight_volume": 59684,
+      "month": "2000-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.87,
+      "worst_month_rank": 116
+    },
+    {
+      "avg_departure_delay_minutes": 16.27,
+      "flight_volume": 58217,
+      "month": "2000-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.1,
+      "worst_month_rank": 43
+    },
+    {
+      "avg_departure_delay_minutes": 12.6,
+      "flight_volume": 61832,
+      "month": "2000-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.12,
+      "worst_month_rank": 106
+    },
+    {
+      "avg_departure_delay_minutes": 11.39,
+      "flight_volume": 62315,
+      "month": "2000-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.17,
+      "worst_month_rank": 124
+    },
+    {
+      "avg_departure_delay_minutes": 7.11,
+      "flight_volume": 59148,
+      "month": "2000-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.09,
+      "worst_month_rank": 290
+    },
+    {
+      "avg_departure_delay_minutes": 6.74,
+      "flight_volume": 61520,
+      "month": "2000-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.85,
+      "worst_month_rank": 309
+    },
+    {
+      "avg_departure_delay_minutes": 9.93,
+      "flight_volume": 59500,
+      "month": "2000-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.46,
+      "worst_month_rank": 178
+    },
+    {
+      "avg_departure_delay_minutes": 16.67,
+      "flight_volume": 57962,
+      "month": "2000-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26.98,
+      "worst_month_rank": 38
+    },
+    {
+      "avg_departure_delay_minutes": 7.64,
+      "flight_volume": 61478,
+      "month": "2001-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.61,
+      "worst_month_rank": 273
+    },
+    {
+      "avg_departure_delay_minutes": 10.67,
+      "flight_volume": 55245,
+      "month": "2001-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.91,
+      "worst_month_rank": 152
+    },
+    {
+      "avg_departure_delay_minutes": 10.13,
+      "flight_volume": 61673,
+      "month": "2001-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.8,
+      "worst_month_rank": 170
+    },
+    {
+      "avg_departure_delay_minutes": 7.97,
+      "flight_volume": 60605,
+      "month": "2001-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.69,
+      "worst_month_rank": 251
+    },
+    {
+      "avg_departure_delay_minutes": 6.35,
+      "flight_volume": 62512,
+      "month": "2001-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.43,
+      "worst_month_rank": 325
+    },
+    {
+      "avg_departure_delay_minutes": 10.98,
+      "flight_volume": 60580,
+      "month": "2001-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.6,
+      "worst_month_rank": 141
+    },
+    {
+      "avg_departure_delay_minutes": 8.95,
+      "flight_volume": 63539,
+      "month": "2001-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.74,
+      "worst_month_rank": 217
+    },
+    {
+      "avg_departure_delay_minutes": 10.23,
+      "flight_volume": 63356,
+      "month": "2001-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.36,
+      "worst_month_rank": 165
+    },
+    {
+      "avg_departure_delay_minutes": 15.09,
+      "flight_volume": 43291,
+      "month": "2001-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.68,
+      "worst_month_rank": 60
+    },
+    {
+      "avg_departure_delay_minutes": 8.98,
+      "flight_volume": 51170,
+      "month": "2001-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.16,
+      "worst_month_rank": 216
+    },
+    {
+      "avg_departure_delay_minutes": 5.66,
+      "flight_volume": 49323,
+      "month": "2001-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.58,
+      "worst_month_rank": 349
+    },
+    {
+      "avg_departure_delay_minutes": 6.62,
+      "flight_volume": 51983,
+      "month": "2001-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.28,
+      "worst_month_rank": 316
+    },
+    {
+      "avg_departure_delay_minutes": 4.84,
+      "flight_volume": 69356,
+      "month": "2002-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.15,
+      "worst_month_rank": 379
+    },
+    {
+      "avg_departure_delay_minutes": 2.94,
+      "flight_volume": 62701,
+      "month": "2002-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.4,
+      "worst_month_rank": 437
+    },
+    {
+      "avg_departure_delay_minutes": 6.21,
+      "flight_volume": 71121,
+      "month": "2002-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.73,
+      "worst_month_rank": 330
+    },
+    {
+      "avg_departure_delay_minutes": 4.33,
+      "flight_volume": 71145,
+      "month": "2002-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.24,
+      "worst_month_rank": 398
+    },
+    {
+      "avg_departure_delay_minutes": 3.49,
+      "flight_volume": 73628,
+      "month": "2002-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.51,
+      "worst_month_rank": 425
+    },
+    {
+      "avg_departure_delay_minutes": 7.89,
+      "flight_volume": 71590,
+      "month": "2002-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.17,
+      "worst_month_rank": 258
+    },
+    {
+      "avg_departure_delay_minutes": 7.1,
+      "flight_volume": 75708,
+      "month": "2002-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.11,
+      "worst_month_rank": 291
+    },
+    {
+      "avg_departure_delay_minutes": 4.84,
+      "flight_volume": 74297,
+      "month": "2002-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12,
+      "worst_month_rank": 380
+    },
+    {
+      "avg_departure_delay_minutes": 0.67,
+      "flight_volume": 68725,
+      "month": "2002-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.56,
+      "worst_month_rank": 454
+    },
+    {
+      "avg_departure_delay_minutes": 1.56,
+      "flight_volume": 71337,
+      "month": "2002-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.95,
+      "worst_month_rank": 448
+    },
+    {
+      "avg_departure_delay_minutes": 2.21,
+      "flight_volume": 65775,
+      "month": "2002-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.61,
+      "worst_month_rank": 445
+    },
+    {
+      "avg_departure_delay_minutes": 7.1,
+      "flight_volume": 67435,
+      "month": "2002-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.47,
+      "worst_month_rank": 292
+    },
+    {
+      "avg_departure_delay_minutes": 2.44,
+      "flight_volume": 65833,
+      "month": "2003-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.04,
+      "worst_month_rank": 443
+    },
+    {
+      "avg_departure_delay_minutes": 4.28,
+      "flight_volume": 56779,
+      "month": "2003-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.4,
+      "worst_month_rank": 401
+    },
+    {
+      "avg_departure_delay_minutes": 1.46,
+      "flight_volume": 64963,
+      "month": "2003-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.7,
+      "worst_month_rank": 449
+    },
+    {
+      "avg_departure_delay_minutes": 2.3,
+      "flight_volume": 61898,
+      "month": "2003-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.55,
+      "worst_month_rank": 444
+    },
+    {
+      "avg_departure_delay_minutes": 2.76,
+      "flight_volume": 62401,
+      "month": "2003-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.89,
+      "worst_month_rank": 439
+    },
+    {
+      "avg_departure_delay_minutes": 5.89,
+      "flight_volume": 61824,
+      "month": "2003-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.19,
+      "worst_month_rank": 342
+    },
+    {
+      "avg_departure_delay_minutes": 9.13,
+      "flight_volume": 64668,
+      "month": "2003-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.57,
+      "worst_month_rank": 210
+    },
+    {
+      "avg_departure_delay_minutes": 9.77,
+      "flight_volume": 63839,
+      "month": "2003-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.13,
+      "worst_month_rank": 188
+    },
+    {
+      "avg_departure_delay_minutes": 1.77,
+      "flight_volume": 59938,
+      "month": "2003-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.14,
+      "worst_month_rank": 447
+    },
+    {
+      "avg_departure_delay_minutes": 1.19,
+      "flight_volume": 62876,
+      "month": "2003-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.71,
+      "worst_month_rank": 450
+    },
+    {
+      "avg_departure_delay_minutes": 6.73,
+      "flight_volume": 55987,
+      "month": "2003-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.54,
+      "worst_month_rank": 310
+    },
+    {
+      "avg_departure_delay_minutes": 8.65,
+      "flight_volume": 59155,
+      "month": "2003-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.03,
+      "worst_month_rank": 228
+    },
+    {
+      "avg_departure_delay_minutes": 11.98,
+      "flight_volume": 58593,
+      "month": "2004-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.76,
+      "worst_month_rank": 113
+    },
+    {
+      "avg_departure_delay_minutes": 7.95,
+      "flight_volume": 55826,
+      "month": "2004-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.3,
+      "worst_month_rank": 252
+    },
+    {
+      "avg_departure_delay_minutes": 7.12,
+      "flight_volume": 60110,
+      "month": "2004-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.66,
+      "worst_month_rank": 289
+    },
+    {
+      "avg_departure_delay_minutes": 4.36,
+      "flight_volume": 58206,
+      "month": "2004-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.06,
+      "worst_month_rank": 394
+    },
+    {
+      "avg_departure_delay_minutes": 7.73,
+      "flight_volume": 57757,
+      "month": "2004-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.72,
+      "worst_month_rank": 266
+    },
+    {
+      "avg_departure_delay_minutes": 13.53,
+      "flight_volume": 57668,
+      "month": "2004-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.7,
+      "worst_month_rank": 86
+    },
+    {
+      "avg_departure_delay_minutes": 11.81,
+      "flight_volume": 58567,
+      "month": "2004-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.01,
+      "worst_month_rank": 118
+    },
+    {
+      "avg_departure_delay_minutes": 13.56,
+      "flight_volume": 58721,
+      "month": "2004-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.25,
+      "worst_month_rank": 85
+    },
+    {
+      "avg_departure_delay_minutes": 2.73,
+      "flight_volume": 52278,
+      "month": "2004-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.89,
+      "worst_month_rank": 440
+    },
+    {
+      "avg_departure_delay_minutes": 6.04,
+      "flight_volume": 56168,
+      "month": "2004-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.9,
+      "worst_month_rank": 334
+    },
+    {
+      "avg_departure_delay_minutes": 7.87,
+      "flight_volume": 54772,
+      "month": "2004-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.12,
+      "worst_month_rank": 261
+    },
+    {
+      "avg_departure_delay_minutes": 12.91,
+      "flight_volume": 57480,
+      "month": "2004-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.62,
+      "worst_month_rank": 98
+    },
+    {
+      "avg_departure_delay_minutes": 12.71,
+      "flight_volume": 55472,
+      "month": "2005-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.31,
+      "worst_month_rank": 104
+    },
+    {
+      "avg_departure_delay_minutes": 6.7,
+      "flight_volume": 51461,
+      "month": "2005-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.4,
+      "worst_month_rank": 311
+    },
+    {
+      "avg_departure_delay_minutes": 9.06,
+      "flight_volume": 57993,
+      "month": "2005-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.82,
+      "worst_month_rank": 214
+    },
+    {
+      "avg_departure_delay_minutes": 5.14,
+      "flight_volume": 55415,
+      "month": "2005-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.79,
+      "worst_month_rank": 364
+    },
+    {
+      "avg_departure_delay_minutes": 6.41,
+      "flight_volume": 56990,
+      "month": "2005-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.64,
+      "worst_month_rank": 323
+    },
+    {
+      "avg_departure_delay_minutes": 12.75,
+      "flight_volume": 56742,
+      "month": "2005-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.94,
+      "worst_month_rank": 102
+    },
+    {
+      "avg_departure_delay_minutes": 18.04,
+      "flight_volume": 58906,
+      "month": "2005-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 27.52,
+      "worst_month_rank": 28
+    },
+    {
+      "avg_departure_delay_minutes": 10.97,
+      "flight_volume": 57811,
+      "month": "2005-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.52,
+      "worst_month_rank": 142
+    },
+    {
+      "avg_departure_delay_minutes": 5.79,
+      "flight_volume": 52647,
+      "month": "2005-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.49,
+      "worst_month_rank": 347
+    },
+    {
+      "avg_departure_delay_minutes": 5.58,
+      "flight_volume": 53210,
+      "month": "2005-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.83,
+      "worst_month_rank": 350
+    },
+    {
+      "avg_departure_delay_minutes": 6.74,
+      "flight_volume": 53238,
+      "month": "2005-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.64,
+      "worst_month_rank": 308
+    },
+    {
+      "avg_departure_delay_minutes": 13.02,
+      "flight_volume": 53932,
+      "month": "2005-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.32,
+      "worst_month_rank": 93
+    },
+    {
+      "avg_departure_delay_minutes": 7.94,
+      "flight_volume": 54072,
+      "month": "2006-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.15,
+      "worst_month_rank": 253
+    },
+    {
+      "avg_departure_delay_minutes": 9.97,
+      "flight_volume": 48679,
+      "month": "2006-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.16,
+      "worst_month_rank": 176
+    },
+    {
+      "avg_departure_delay_minutes": 11.71,
+      "flight_volume": 55304,
+      "month": "2006-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.7,
+      "worst_month_rank": 119
+    },
+    {
+      "avg_departure_delay_minutes": 9.25,
+      "flight_volume": 53140,
+      "month": "2006-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.87,
+      "worst_month_rank": 208
+    },
+    {
+      "avg_departure_delay_minutes": 10.6,
+      "flight_volume": 54803,
+      "month": "2006-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.85,
+      "worst_month_rank": 154
+    },
+    {
+      "avg_departure_delay_minutes": 10.79,
+      "flight_volume": 53216,
+      "month": "2006-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.96,
+      "worst_month_rank": 150
+    },
+    {
+      "avg_departure_delay_minutes": 11.98,
+      "flight_volume": 53999,
+      "month": "2006-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.78,
+      "worst_month_rank": 114
+    },
+    {
+      "avg_departure_delay_minutes": 10.24,
+      "flight_volume": 54417,
+      "month": "2006-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.85,
+      "worst_month_rank": 164
+    },
+    {
+      "avg_departure_delay_minutes": 9.91,
+      "flight_volume": 50742,
+      "month": "2006-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.25,
+      "worst_month_rank": 181
+    },
+    {
+      "avg_departure_delay_minutes": 9.44,
+      "flight_volume": 52702,
+      "month": "2006-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.43,
+      "worst_month_rank": 201
+    },
+    {
+      "avg_departure_delay_minutes": 10.06,
+      "flight_volume": 50106,
+      "month": "2006-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.54,
+      "worst_month_rank": 173
+    },
+    {
+      "avg_departure_delay_minutes": 16.43,
+      "flight_volume": 52290,
+      "month": "2006-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 28.26,
+      "worst_month_rank": 40
+    },
+    {
+      "avg_departure_delay_minutes": 15.49,
+      "flight_volume": 52602,
+      "month": "2007-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 27.21,
+      "worst_month_rank": 53
+    },
+    {
+      "avg_departure_delay_minutes": 16.16,
+      "flight_volume": 46525,
+      "month": "2007-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 28.73,
+      "worst_month_rank": 45
+    },
+    {
+      "avg_departure_delay_minutes": 14.07,
+      "flight_volume": 53174,
+      "month": "2007-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.88,
+      "worst_month_rank": 75
+    },
+    {
+      "avg_departure_delay_minutes": 13.68,
+      "flight_volume": 50556,
+      "month": "2007-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.53,
+      "worst_month_rank": 82
+    },
+    {
+      "avg_departure_delay_minutes": 11.62,
+      "flight_volume": 52561,
+      "month": "2007-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.88,
+      "worst_month_rank": 120
+    },
+    {
+      "avg_departure_delay_minutes": 23.39,
+      "flight_volume": 50141,
+      "month": "2007-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 33.58,
+      "worst_month_rank": 12
+    },
+    {
+      "avg_departure_delay_minutes": 19.23,
+      "flight_volume": 52747,
+      "month": "2007-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 29.18,
+      "worst_month_rank": 21
+    },
+    {
+      "avg_departure_delay_minutes": 15.08,
+      "flight_volume": 52829,
+      "month": "2007-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.31,
+      "worst_month_rank": 61
+    },
+    {
+      "avg_departure_delay_minutes": 8.57,
+      "flight_volume": 50373,
+      "month": "2007-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.69,
+      "worst_month_rank": 231
+    },
+    {
+      "avg_departure_delay_minutes": 9.66,
+      "flight_volume": 52949,
+      "month": "2007-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.03,
+      "worst_month_rank": 192
+    },
+    {
+      "avg_departure_delay_minutes": 10.05,
+      "flight_volume": 50684,
+      "month": "2007-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.49,
+      "worst_month_rank": 174
+    },
+    {
+      "avg_departure_delay_minutes": 19.93,
+      "flight_volume": 50792,
+      "month": "2007-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 33.62,
+      "worst_month_rank": 20
+    },
+    {
+      "avg_departure_delay_minutes": 15.84,
+      "flight_volume": 50753,
+      "month": "2008-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 27.29,
+      "worst_month_rank": 51
+    },
+    {
+      "avg_departure_delay_minutes": 17.49,
+      "flight_volume": 46317,
+      "month": "2008-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 29.68,
+      "worst_month_rank": 34
+    },
+    {
+      "avg_departure_delay_minutes": 17.42,
+      "flight_volume": 49113,
+      "month": "2008-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 29.08,
+      "worst_month_rank": 35
+    },
+    {
+      "avg_departure_delay_minutes": 12.26,
+      "flight_volume": 47552,
+      "month": "2008-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.54,
+      "worst_month_rank": 110
+    },
+    {
+      "avg_departure_delay_minutes": 13.74,
+      "flight_volume": 52131,
+      "month": "2008-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.25,
+      "worst_month_rank": 80
+    },
+    {
+      "avg_departure_delay_minutes": 20.65,
+      "flight_volume": 49819,
+      "month": "2008-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 32.05,
+      "worst_month_rank": 17
+    },
+    {
+      "avg_departure_delay_minutes": 14.63,
+      "flight_volume": 52105,
+      "month": "2008-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.22,
+      "worst_month_rank": 67
+    },
+    {
+      "avg_departure_delay_minutes": 13.68,
+      "flight_volume": 51978,
+      "month": "2008-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.99,
+      "worst_month_rank": 81
+    },
+    {
+      "avg_departure_delay_minutes": 6.31,
+      "flight_volume": 47511,
+      "month": "2008-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.62,
+      "worst_month_rank": 328
+    },
+    {
+      "avg_departure_delay_minutes": 5.11,
+      "flight_volume": 49467,
+      "month": "2008-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.25,
+      "worst_month_rank": 368
+    },
+    {
+      "avg_departure_delay_minutes": 5.91,
+      "flight_volume": 44428,
+      "month": "2008-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.82,
+      "worst_month_rank": 341
+    },
+    {
+      "avg_departure_delay_minutes": 15.39,
+      "flight_volume": 46271,
+      "month": "2008-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.33,
+      "worst_month_rank": 56
+    },
+    {
+      "avg_departure_delay_minutes": 10.16,
+      "flight_volume": 46071,
+      "month": "2009-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.76,
+      "worst_month_rank": 167
+    },
+    {
+      "avg_departure_delay_minutes": 6.89,
+      "flight_volume": 41957,
+      "month": "2009-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.64,
+      "worst_month_rank": 301
+    },
+    {
+      "avg_departure_delay_minutes": 9.77,
+      "flight_volume": 46762,
+      "month": "2009-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.87,
+      "worst_month_rank": 187
+    },
+    {
+      "avg_departure_delay_minutes": 13.02,
+      "flight_volume": 44888,
+      "month": "2009-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.66,
+      "worst_month_rank": 94
+    },
+    {
+      "avg_departure_delay_minutes": 9.54,
+      "flight_volume": 45980,
+      "month": "2009-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.29,
+      "worst_month_rank": 198
+    },
+    {
+      "avg_departure_delay_minutes": 16.42,
+      "flight_volume": 44863,
+      "month": "2009-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26,
+      "worst_month_rank": 41
+    },
+    {
+      "avg_departure_delay_minutes": 14.22,
+      "flight_volume": 47043,
+      "month": "2009-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.46,
+      "worst_month_rank": 71
+    },
+    {
+      "avg_departure_delay_minutes": 10.62,
+      "flight_volume": 46981,
+      "month": "2009-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.54,
+      "worst_month_rank": 153
+    },
+    {
+      "avg_departure_delay_minutes": 4.95,
+      "flight_volume": 43891,
+      "month": "2009-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.46,
+      "worst_month_rank": 375
+    },
+    {
+      "avg_departure_delay_minutes": 10.91,
+      "flight_volume": 45375,
+      "month": "2009-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.75,
+      "worst_month_rank": 144
+    },
+    {
+      "avg_departure_delay_minutes": 4.13,
+      "flight_volume": 43543,
+      "month": "2009-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.62,
+      "worst_month_rank": 407
+    },
+    {
+      "avg_departure_delay_minutes": 14.15,
+      "flight_volume": 44995,
+      "month": "2009-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.54,
+      "worst_month_rank": 72
+    },
+    {
+      "avg_departure_delay_minutes": 7.87,
+      "flight_volume": 45415,
+      "month": "2010-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.73,
+      "worst_month_rank": 260
+    },
+    {
+      "avg_departure_delay_minutes": 10.28,
+      "flight_volume": 40026,
+      "month": "2010-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.43,
+      "worst_month_rank": 163
+    },
+    {
+      "avg_departure_delay_minutes": 11.27,
+      "flight_volume": 46729,
+      "month": "2010-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.28,
+      "worst_month_rank": 126
+    },
+    {
+      "avg_departure_delay_minutes": 7.07,
+      "flight_volume": 44378,
+      "month": "2010-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.36,
+      "worst_month_rank": 295
+    },
+    {
+      "avg_departure_delay_minutes": 11.08,
+      "flight_volume": 44700,
+      "month": "2010-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.44,
+      "worst_month_rank": 134
+    },
+    {
+      "avg_departure_delay_minutes": 12.49,
+      "flight_volume": 43864,
+      "month": "2010-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.79,
+      "worst_month_rank": 108
+    },
+    {
+      "avg_departure_delay_minutes": 10.55,
+      "flight_volume": 45844,
+      "month": "2010-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20,
+      "worst_month_rank": 157
+    },
+    {
+      "avg_departure_delay_minutes": 9.1,
+      "flight_volume": 45955,
+      "month": "2010-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.53,
+      "worst_month_rank": 212
+    },
+    {
+      "avg_departure_delay_minutes": 6.02,
+      "flight_volume": 43089,
+      "month": "2010-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.46,
+      "worst_month_rank": 335
+    },
+    {
+      "avg_departure_delay_minutes": 4.87,
+      "flight_volume": 44262,
+      "month": "2010-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.93,
+      "worst_month_rank": 377
+    },
+    {
+      "avg_departure_delay_minutes": 4.99,
+      "flight_volume": 43010,
+      "month": "2010-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.07,
+      "worst_month_rank": 372
+    },
+    {
+      "avg_departure_delay_minutes": 8.58,
+      "flight_volume": 44545,
+      "month": "2010-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.59,
+      "worst_month_rank": 230
+    },
+    {
+      "avg_departure_delay_minutes": 7.71,
+      "flight_volume": 44661,
+      "month": "2011-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.27,
+      "worst_month_rank": 268
+    },
+    {
+      "avg_departure_delay_minutes": 10.9,
+      "flight_volume": 39081,
+      "month": "2011-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.87,
+      "worst_month_rank": 145
+    },
+    {
+      "avg_departure_delay_minutes": 8.11,
+      "flight_volume": 45871,
+      "month": "2011-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.72,
+      "worst_month_rank": 246
+    },
+    {
+      "avg_departure_delay_minutes": 13.3,
+      "flight_volume": 43941,
+      "month": "2011-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.22,
+      "worst_month_rank": 88
+    },
+    {
+      "avg_departure_delay_minutes": 15.1,
+      "flight_volume": 43536,
+      "month": "2011-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.84,
+      "worst_month_rank": 59
+    },
+    {
+      "avg_departure_delay_minutes": 10.9,
+      "flight_volume": 44721,
+      "month": "2011-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.97,
+      "worst_month_rank": 146
+    },
+    {
+      "avg_departure_delay_minutes": 10.98,
+      "flight_volume": 46258,
+      "month": "2011-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.45,
+      "worst_month_rank": 140
+    },
+    {
+      "avg_departure_delay_minutes": 11.22,
+      "flight_volume": 45310,
+      "month": "2011-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.56,
+      "worst_month_rank": 128
+    },
+    {
+      "avg_departure_delay_minutes": 7.27,
+      "flight_volume": 43201,
+      "month": "2011-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.28,
+      "worst_month_rank": 282
+    },
+    {
+      "avg_departure_delay_minutes": 6.08,
+      "flight_volume": 44194,
+      "month": "2011-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.21,
+      "worst_month_rank": 333
+    },
+    {
+      "avg_departure_delay_minutes": 6.51,
+      "flight_volume": 41275,
+      "month": "2011-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.03,
+      "worst_month_rank": 318
+    },
+    {
+      "avg_departure_delay_minutes": 6.86,
+      "flight_volume": 42603,
+      "month": "2011-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.83,
+      "worst_month_rank": 302
+    },
+    {
+      "avg_departure_delay_minutes": 4.95,
+      "flight_volume": 43013,
+      "month": "2012-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.6,
+      "worst_month_rank": 374
+    },
+    {
+      "avg_departure_delay_minutes": 3.79,
+      "flight_volume": 41377,
+      "month": "2012-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.27,
+      "worst_month_rank": 415
+    },
+    {
+      "avg_departure_delay_minutes": 8.2,
+      "flight_volume": 45388,
+      "month": "2012-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.61,
+      "worst_month_rank": 243
+    },
+    {
+      "avg_departure_delay_minutes": 7.13,
+      "flight_volume": 42194,
+      "month": "2012-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.79,
+      "worst_month_rank": 288
+    },
+    {
+      "avg_departure_delay_minutes": 9.83,
+      "flight_volume": 44841,
+      "month": "2012-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.17,
+      "worst_month_rank": 184
+    },
+    {
+      "avg_departure_delay_minutes": 9.68,
+      "flight_volume": 42904,
+      "month": "2012-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.2,
+      "worst_month_rank": 191
+    },
+    {
+      "avg_departure_delay_minutes": 11.44,
+      "flight_volume": 44210,
+      "month": "2012-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.03,
+      "worst_month_rank": 123
+    },
+    {
+      "avg_departure_delay_minutes": 11.55,
+      "flight_volume": 43783,
+      "month": "2012-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.41,
+      "worst_month_rank": 121
+    },
+    {
+      "avg_departure_delay_minutes": 20.15,
+      "flight_volume": 40521,
+      "month": "2012-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 32.89,
+      "worst_month_rank": 18
+    },
+    {
+      "avg_departure_delay_minutes": 12.12,
+      "flight_volume": 41931,
+      "month": "2012-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.98,
+      "worst_month_rank": 111
+    },
+    {
+      "avg_departure_delay_minutes": 8.65,
+      "flight_volume": 41613,
+      "month": "2012-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.57,
+      "worst_month_rank": 229
+    },
+    {
+      "avg_departure_delay_minutes": 11.98,
+      "flight_volume": 43876,
+      "month": "2012-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.22,
+      "worst_month_rank": 112
+    },
+    {
+      "avg_departure_delay_minutes": 8.88,
+      "flight_volume": 43985,
+      "month": "2013-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.07,
+      "worst_month_rank": 219
+    },
+    {
+      "avg_departure_delay_minutes": 9.43,
+      "flight_volume": 39963,
+      "month": "2013-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.73,
+      "worst_month_rank": 203
+    },
+    {
+      "avg_departure_delay_minutes": 8.55,
+      "flight_volume": 45170,
+      "month": "2013-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.58,
+      "worst_month_rank": 233
+    },
+    {
+      "avg_departure_delay_minutes": 15.91,
+      "flight_volume": 43296,
+      "month": "2013-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.59,
+      "worst_month_rank": 48
+    },
+    {
+      "avg_departure_delay_minutes": 12.88,
+      "flight_volume": 45100,
+      "month": "2013-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.38,
+      "worst_month_rank": 100
+    },
+    {
+      "avg_departure_delay_minutes": 19.08,
+      "flight_volume": 44619,
+      "month": "2013-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 28.95,
+      "worst_month_rank": 23
+    },
+    {
+      "avg_departure_delay_minutes": 13.56,
+      "flight_volume": 46358,
+      "month": "2013-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.24,
+      "worst_month_rank": 84
+    },
+    {
+      "avg_departure_delay_minutes": 8.78,
+      "flight_volume": 46395,
+      "month": "2013-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.96,
+      "worst_month_rank": 220
+    },
+    {
+      "avg_departure_delay_minutes": 7.47,
+      "flight_volume": 42844,
+      "month": "2013-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.53,
+      "worst_month_rank": 278
+    },
+    {
+      "avg_departure_delay_minutes": 6.95,
+      "flight_volume": 45149,
+      "month": "2013-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.31,
+      "worst_month_rank": 298
+    },
+    {
+      "avg_departure_delay_minutes": 7.29,
+      "flight_volume": 42508,
+      "month": "2013-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.43,
+      "worst_month_rank": 280
+    },
+    {
+      "avg_departure_delay_minutes": 13.34,
+      "flight_volume": 42755,
+      "month": "2013-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.97,
+      "worst_month_rank": 87
+    },
+    {
+      "avg_departure_delay_minutes": 11.12,
+      "flight_volume": 43827,
+      "month": "2014-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.77,
+      "worst_month_rank": 131
+    },
+    {
+      "avg_departure_delay_minutes": 10.91,
+      "flight_volume": 39076,
+      "month": "2014-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.98,
+      "worst_month_rank": 143
+    },
+    {
+      "avg_departure_delay_minutes": 8.13,
+      "flight_volume": 45393,
+      "month": "2014-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.89,
+      "worst_month_rank": 245
+    },
+    {
+      "avg_departure_delay_minutes": 6.77,
+      "flight_volume": 43432,
+      "month": "2014-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.08,
+      "worst_month_rank": 305
+    },
+    {
+      "avg_departure_delay_minutes": 10.81,
+      "flight_volume": 44598,
+      "month": "2014-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.53,
+      "worst_month_rank": 147
+    },
+    {
+      "avg_departure_delay_minutes": 17.58,
+      "flight_volume": 45321,
+      "month": "2014-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 27.81,
+      "worst_month_rank": 33
+    },
+    {
+      "avg_departure_delay_minutes": 13.21,
+      "flight_volume": 46854,
+      "month": "2014-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.38,
+      "worst_month_rank": 90
+    },
+    {
+      "avg_departure_delay_minutes": 12.98,
+      "flight_volume": 45698,
+      "month": "2014-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.89,
+      "worst_month_rank": 96
+    },
+    {
+      "avg_departure_delay_minutes": 6.61,
+      "flight_volume": 43001,
+      "month": "2014-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.54,
+      "worst_month_rank": 317
+    },
+    {
+      "avg_departure_delay_minutes": 10.4,
+      "flight_volume": 44722,
+      "month": "2014-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.96,
+      "worst_month_rank": 160
+    },
+    {
+      "avg_departure_delay_minutes": 9.96,
+      "flight_volume": 42286,
+      "month": "2014-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.7,
+      "worst_month_rank": 177
+    },
+    {
+      "avg_departure_delay_minutes": 13.01,
+      "flight_volume": 45032,
+      "month": "2014-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.63,
+      "worst_month_rank": 95
+    },
+    {
+      "avg_departure_delay_minutes": 10.59,
+      "flight_volume": 43159,
+      "month": "2015-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.49,
+      "worst_month_rank": 155
+    },
+    {
+      "avg_departure_delay_minutes": 10.13,
+      "flight_volume": 37281,
+      "month": "2015-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.53,
+      "worst_month_rank": 169
+    },
+    {
+      "avg_departure_delay_minutes": 11.07,
+      "flight_volume": 44538,
+      "month": "2015-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.93,
+      "worst_month_rank": 135
+    },
+    {
+      "avg_departure_delay_minutes": 10.53,
+      "flight_volume": 44416,
+      "month": "2015-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.96,
+      "worst_month_rank": 158
+    },
+    {
+      "avg_departure_delay_minutes": 11.03,
+      "flight_volume": 43826,
+      "month": "2015-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.31,
+      "worst_month_rank": 138
+    },
+    {
+      "avg_departure_delay_minutes": 14.13,
+      "flight_volume": 43821,
+      "month": "2015-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.74,
+      "worst_month_rank": 73
+    },
+    {
+      "avg_departure_delay_minutes": 9.7,
+      "flight_volume": 80872,
+      "month": "2015-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.59,
+      "worst_month_rank": 190
+    },
+    {
+      "avg_departure_delay_minutes": 9.33,
+      "flight_volume": 78958,
+      "month": "2015-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.07,
+      "worst_month_rank": 205
+    },
+    {
+      "avg_departure_delay_minutes": 4.96,
+      "flight_volume": 73026,
+      "month": "2015-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.76,
+      "worst_month_rank": 373
+    },
+    {
+      "avg_departure_delay_minutes": 5.3,
+      "flight_volume": 76565,
+      "month": "2015-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.32,
+      "worst_month_rank": 360
+    },
+    {
+      "avg_departure_delay_minutes": 6.43,
+      "flight_volume": 73319,
+      "month": "2015-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.08,
+      "worst_month_rank": 321
+    },
+    {
+      "avg_departure_delay_minutes": 9.03,
+      "flight_volume": 75284,
+      "month": "2015-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.46,
+      "worst_month_rank": 215
+    },
+    {
+      "avg_departure_delay_minutes": 7.09,
+      "flight_volume": 72860,
+      "month": "2016-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.22,
+      "worst_month_rank": 293
+    },
+    {
+      "avg_departure_delay_minutes": 5.88,
+      "flight_volume": 70437,
+      "month": "2016-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.72,
+      "worst_month_rank": 343
+    },
+    {
+      "avg_departure_delay_minutes": 7.64,
+      "flight_volume": 78688,
+      "month": "2016-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.13,
+      "worst_month_rank": 272
+    },
+    {
+      "avg_departure_delay_minutes": 5.82,
+      "flight_volume": 74199,
+      "month": "2016-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.23,
+      "worst_month_rank": 345
+    },
+    {
+      "avg_departure_delay_minutes": 8.32,
+      "flight_volume": 78185,
+      "month": "2016-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.91,
+      "worst_month_rank": 237
+    },
+    {
+      "avg_departure_delay_minutes": 15.02,
+      "flight_volume": 78817,
+      "month": "2016-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.5,
+      "worst_month_rank": 62
+    },
+    {
+      "avg_departure_delay_minutes": 16.41,
+      "flight_volume": 80246,
+      "month": "2016-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25,
+      "worst_month_rank": 42
+    },
+    {
+      "avg_departure_delay_minutes": 14.82,
+      "flight_volume": 78743,
+      "month": "2016-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.37,
+      "worst_month_rank": 63
+    },
+    {
+      "avg_departure_delay_minutes": 5.92,
+      "flight_volume": 72217,
+      "month": "2016-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 13.95,
+      "worst_month_rank": 340
+    },
+    {
+      "avg_departure_delay_minutes": 4.59,
+      "flight_volume": 74346,
+      "month": "2016-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.6,
+      "worst_month_rank": 388
+    },
+    {
+      "avg_departure_delay_minutes": 4.23,
+      "flight_volume": 71638,
+      "month": "2016-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.32,
+      "worst_month_rank": 404
+    },
+    {
+      "avg_departure_delay_minutes": 9.33,
+      "flight_volume": 73252,
+      "month": "2016-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.43,
+      "worst_month_rank": 206
+    },
+    {
+      "avg_departure_delay_minutes": 7.47,
+      "flight_volume": 72152,
+      "month": "2017-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.06,
+      "worst_month_rank": 277
+    },
+    {
+      "avg_departure_delay_minutes": 4.29,
+      "flight_volume": 66332,
+      "month": "2017-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.69,
+      "worst_month_rank": 399
+    },
+    {
+      "avg_departure_delay_minutes": 7.77,
+      "flight_volume": 76889,
+      "month": "2017-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.97,
+      "worst_month_rank": 263
+    },
+    {
+      "avg_departure_delay_minutes": 9.65,
+      "flight_volume": 72911,
+      "month": "2017-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.67,
+      "worst_month_rank": 193
+    },
+    {
+      "avg_departure_delay_minutes": 8.3,
+      "flight_volume": 76830,
+      "month": "2017-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.74,
+      "worst_month_rank": 238
+    },
+    {
+      "avg_departure_delay_minutes": 14.07,
+      "flight_volume": 75835,
+      "month": "2017-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.58,
+      "worst_month_rank": 76
+    },
+    {
+      "avg_departure_delay_minutes": 14.68,
+      "flight_volume": 77897,
+      "month": "2017-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.09,
+      "worst_month_rank": 65
+    },
+    {
+      "avg_departure_delay_minutes": 9.6,
+      "flight_volume": 78275,
+      "month": "2017-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.28,
+      "worst_month_rank": 196
+    },
+    {
+      "avg_departure_delay_minutes": 4.09,
+      "flight_volume": 68733,
+      "month": "2017-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 11.48,
+      "worst_month_rank": 409
+    },
+    {
+      "avg_departure_delay_minutes": 5.06,
+      "flight_volume": 75350,
+      "month": "2017-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.23,
+      "worst_month_rank": 370
+    },
+    {
+      "avg_departure_delay_minutes": 3.36,
+      "flight_volume": 69574,
+      "month": "2017-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.32,
+      "worst_month_rank": 430
+    },
+    {
+      "avg_departure_delay_minutes": 7.9,
+      "flight_volume": 73432,
+      "month": "2017-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.84,
+      "worst_month_rank": 256
+    },
+    {
+      "avg_departure_delay_minutes": 6.9,
+      "flight_volume": 72120,
+      "month": "2018-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.12,
+      "worst_month_rank": 300
+    },
+    {
+      "avg_departure_delay_minutes": 7.34,
+      "flight_volume": 67534,
+      "month": "2018-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.83,
+      "worst_month_rank": 279
+    },
+    {
+      "avg_departure_delay_minutes": 6.2,
+      "flight_volume": 75719,
+      "month": "2018-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.24,
+      "worst_month_rank": 331
+    },
+    {
+      "avg_departure_delay_minutes": 6.64,
+      "flight_volume": 73928,
+      "month": "2018-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.5,
+      "worst_month_rank": 315
+    },
+    {
+      "avg_departure_delay_minutes": 11.27,
+      "flight_volume": 76991,
+      "month": "2018-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.17,
+      "worst_month_rank": 127
+    },
+    {
+      "avg_departure_delay_minutes": 13.96,
+      "flight_volume": 76966,
+      "month": "2018-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.21,
+      "worst_month_rank": 77
+    },
+    {
+      "avg_departure_delay_minutes": 16.8,
+      "flight_volume": 78863,
+      "month": "2018-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26.05,
+      "worst_month_rank": 37
+    },
+    {
+      "avg_departure_delay_minutes": 14.48,
+      "flight_volume": 78989,
+      "month": "2018-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.52,
+      "worst_month_rank": 68
+    },
+    {
+      "avg_departure_delay_minutes": 9.44,
+      "flight_volume": 73687,
+      "month": "2018-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.59,
+      "worst_month_rank": 202
+    },
+    {
+      "avg_departure_delay_minutes": 9.73,
+      "flight_volume": 78287,
+      "month": "2018-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.54,
+      "worst_month_rank": 189
+    },
+    {
+      "avg_departure_delay_minutes": 8.45,
+      "flight_volume": 74054,
+      "month": "2018-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.91,
+      "worst_month_rank": 236
+    },
+    {
+      "avg_departure_delay_minutes": 8.06,
+      "flight_volume": 74735,
+      "month": "2018-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.11,
+      "worst_month_rank": 249
+    },
+    {
+      "avg_departure_delay_minutes": 7.77,
+      "flight_volume": 75506,
+      "month": "2019-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.97,
+      "worst_month_rank": 264
+    },
+    {
+      "avg_departure_delay_minutes": 10.8,
+      "flight_volume": 70199,
+      "month": "2019-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.86,
+      "worst_month_rank": 148
+    },
+    {
+      "avg_departure_delay_minutes": 11.1,
+      "flight_volume": 78308,
+      "month": "2019-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.94,
+      "worst_month_rank": 133
+    },
+    {
+      "avg_departure_delay_minutes": 12.75,
+      "flight_volume": 74131,
+      "month": "2019-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.44,
+      "worst_month_rank": 103
+    },
+    {
+      "avg_departure_delay_minutes": 17.67,
+      "flight_volume": 78894,
+      "month": "2019-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.63,
+      "worst_month_rank": 31
+    },
+    {
+      "avg_departure_delay_minutes": 19.01,
+      "flight_volume": 76419,
+      "month": "2019-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 28.07,
+      "worst_month_rank": 24
+    },
+    {
+      "avg_departure_delay_minutes": 16.18,
+      "flight_volume": 79247,
+      "month": "2019-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.61,
+      "worst_month_rank": 44
+    },
+    {
+      "avg_departure_delay_minutes": 14.66,
+      "flight_volume": 80820,
+      "month": "2019-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.79,
+      "worst_month_rank": 66
+    },
+    {
+      "avg_departure_delay_minutes": 7.94,
+      "flight_volume": 76533,
+      "month": "2019-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.27,
+      "worst_month_rank": 254
+    },
+    {
+      "avg_departure_delay_minutes": 9.51,
+      "flight_volume": 80161,
+      "month": "2019-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.26,
+      "worst_month_rank": 199
+    },
+    {
+      "avg_departure_delay_minutes": 7.27,
+      "flight_volume": 77179,
+      "month": "2019-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.08,
+      "worst_month_rank": 283
+    },
+    {
+      "avg_departure_delay_minutes": 9.83,
+      "flight_volume": 79228,
+      "month": "2019-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.66,
+      "worst_month_rank": 183
+    },
+    {
+      "avg_departure_delay_minutes": 7.63,
+      "flight_volume": 75591,
+      "month": "2020-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.54,
+      "worst_month_rank": 274
+    },
+    {
+      "avg_departure_delay_minutes": 8.77,
+      "flight_volume": 71677,
+      "month": "2020-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.34,
+      "worst_month_rank": 222
+    },
+    {
+      "avg_departure_delay_minutes": 2.69,
+      "flight_volume": 65048,
+      "month": "2020-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.75,
+      "worst_month_rank": 442
+    },
+    {
+      "avg_departure_delay_minutes": -3.12,
+      "flight_volume": 25788,
+      "month": "2020-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.38,
+      "worst_month_rank": 458
+    },
+    {
+      "avg_departure_delay_minutes": -2.21,
+      "flight_volume": 21883,
+      "month": "2020-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 5.15,
+      "worst_month_rank": 457
+    },
+    {
+      "avg_departure_delay_minutes": -0.27,
+      "flight_volume": 27046,
+      "month": "2020-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 6.35,
+      "worst_month_rank": 456
+    },
+    {
+      "avg_departure_delay_minutes": 0.98,
+      "flight_volume": 45854,
+      "month": "2020-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 8.12,
+      "worst_month_rank": 453
+    },
+    {
+      "avg_departure_delay_minutes": -0.09,
+      "flight_volume": 46609,
+      "month": "2020-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.46,
+      "worst_month_rank": 455
+    },
+    {
+      "avg_departure_delay_minutes": 1.08,
+      "flight_volume": 38721,
+      "month": "2020-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.8,
+      "worst_month_rank": 452
+    },
+    {
+      "avg_departure_delay_minutes": 3.4,
+      "flight_volume": 40606,
+      "month": "2020-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.16,
+      "worst_month_rank": 429
+    },
+    {
+      "avg_departure_delay_minutes": 1.13,
+      "flight_volume": 38435,
+      "month": "2020-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 7.62,
+      "worst_month_rank": 451
+    },
+    {
+      "avg_departure_delay_minutes": 3.3,
+      "flight_volume": 38286,
+      "month": "2020-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.55,
+      "worst_month_rank": 431
+    },
+    {
+      "avg_departure_delay_minutes": 3.24,
+      "flight_volume": 37968,
+      "month": "2021-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 9.88,
+      "worst_month_rank": 433
+    },
+    {
+      "avg_departure_delay_minutes": 6.39,
+      "flight_volume": 32116,
+      "month": "2021-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 12.28,
+      "worst_month_rank": 324
+    },
+    {
+      "avg_departure_delay_minutes": 4.36,
+      "flight_volume": 47352,
+      "month": "2021-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.17,
+      "worst_month_rank": 395
+    },
+    {
+      "avg_departure_delay_minutes": 4.83,
+      "flight_volume": 51969,
+      "month": "2021-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 10.84,
+      "worst_month_rank": 381
+    },
+    {
+      "avg_departure_delay_minutes": 10.03,
+      "flight_volume": 60425,
+      "month": "2021-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.01,
+      "worst_month_rank": 175
+    },
+    {
+      "avg_departure_delay_minutes": 20.14,
+      "flight_volume": 68026,
+      "month": "2021-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 27.14,
+      "worst_month_rank": 19
+    },
+    {
+      "avg_departure_delay_minutes": 19.19,
+      "flight_volume": 71742,
+      "month": "2021-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26.51,
+      "worst_month_rank": 22
+    },
+    {
+      "avg_departure_delay_minutes": 17.83,
+      "flight_volume": 69904,
+      "month": "2021-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.63,
+      "worst_month_rank": 30
+    },
+    {
+      "avg_departure_delay_minutes": 7.73,
+      "flight_volume": 66817,
+      "month": "2021-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.42,
+      "worst_month_rank": 267
+    },
+    {
+      "avg_departure_delay_minutes": 12.98,
+      "flight_volume": 70672,
+      "month": "2021-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.84,
+      "worst_month_rank": 97
+    },
+    {
+      "avg_departure_delay_minutes": 9.61,
+      "flight_volume": 71561,
+      "month": "2021-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.35,
+      "worst_month_rank": 195
+    },
+    {
+      "avg_departure_delay_minutes": 9.58,
+      "flight_volume": 71369,
+      "month": "2021-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.68,
+      "worst_month_rank": 197
+    },
+    {
+      "avg_departure_delay_minutes": 7.9,
+      "flight_volume": 66461,
+      "month": "2022-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 15.22,
+      "worst_month_rank": 257
+    },
+    {
+      "avg_departure_delay_minutes": 12.79,
+      "flight_volume": 59505,
+      "month": "2022-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.43,
+      "worst_month_rank": 101
+    },
+    {
+      "avg_departure_delay_minutes": 9.93,
+      "flight_volume": 70494,
+      "month": "2022-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.9,
+      "worst_month_rank": 180
+    },
+    {
+      "avg_departure_delay_minutes": 13.18,
+      "flight_volume": 65827,
+      "month": "2022-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.11,
+      "worst_month_rank": 92
+    },
+    {
+      "avg_departure_delay_minutes": 14.13,
+      "flight_volume": 70498,
+      "month": "2022-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.19,
+      "worst_month_rank": 74
+    },
+    {
+      "avg_departure_delay_minutes": 23.41,
+      "flight_volume": 70266,
+      "month": "2022-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 30.76,
+      "worst_month_rank": 11
+    },
+    {
+      "avg_departure_delay_minutes": 21.3,
+      "flight_volume": 74166,
+      "month": "2022-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 28.73,
+      "worst_month_rank": 15
+    },
+    {
+      "avg_departure_delay_minutes": 17.38,
+      "flight_volume": 75025,
+      "month": "2022-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.01,
+      "worst_month_rank": 36
+    },
+    {
+      "avg_departure_delay_minutes": 12.54,
+      "flight_volume": 70908,
+      "month": "2022-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.71,
+      "worst_month_rank": 107
+    },
+    {
+      "avg_departure_delay_minutes": 11.95,
+      "flight_volume": 77023,
+      "month": "2022-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.44,
+      "worst_month_rank": 115
+    },
+    {
+      "avg_departure_delay_minutes": 13.75,
+      "flight_volume": 73103,
+      "month": "2022-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.4,
+      "worst_month_rank": 79
+    },
+    {
+      "avg_departure_delay_minutes": 20.98,
+      "flight_volume": 74975,
+      "month": "2022-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26.4,
+      "worst_month_rank": 16
+    },
+    {
+      "avg_departure_delay_minutes": 14.47,
+      "flight_volume": 73582,
+      "month": "2023-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.23,
+      "worst_month_rank": 69
+    },
+    {
+      "avg_departure_delay_minutes": 14.3,
+      "flight_volume": 69842,
+      "month": "2023-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 20.51,
+      "worst_month_rank": 70
+    },
+    {
+      "avg_departure_delay_minutes": 18.63,
+      "flight_volume": 77846,
+      "month": "2023-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 24.09,
+      "worst_month_rank": 26
+    },
+    {
+      "avg_departure_delay_minutes": 18.94,
+      "flight_volume": 75804,
+      "month": "2023-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.95,
+      "worst_month_rank": 25
+    },
+    {
+      "avg_departure_delay_minutes": 16.54,
+      "flight_volume": 79381,
+      "month": "2023-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.06,
+      "worst_month_rank": 39
+    },
+    {
+      "avg_departure_delay_minutes": 26.66,
+      "flight_volume": 79462,
+      "month": "2023-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 29.09,
+      "worst_month_rank": 6
+    },
+    {
+      "avg_departure_delay_minutes": 29.56,
+      "flight_volume": 81667,
+      "month": "2023-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 31.36,
+      "worst_month_rank": 4
+    },
+    {
+      "avg_departure_delay_minutes": 24.69,
+      "flight_volume": 83959,
+      "month": "2023-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26.12,
+      "worst_month_rank": 10
+    },
+    {
+      "avg_departure_delay_minutes": 14.7,
+      "flight_volume": 76332,
+      "month": "2023-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.74,
+      "worst_month_rank": 64
+    },
+    {
+      "avg_departure_delay_minutes": 11.03,
+      "flight_volume": 80910,
+      "month": "2023-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.4,
+      "worst_month_rank": 139
+    },
+    {
+      "avg_departure_delay_minutes": 8.25,
+      "flight_volume": 76396,
+      "month": "2023-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 14.21,
+      "worst_month_rank": 241
+    },
+    {
+      "avg_departure_delay_minutes": 10.14,
+      "flight_volume": 75372,
+      "month": "2023-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.68,
+      "worst_month_rank": 168
+    },
+    {
+      "avg_departure_delay_minutes": 22.59,
+      "flight_volume": 76098,
+      "month": "2024-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 27.1,
+      "worst_month_rank": 13
+    },
+    {
+      "avg_departure_delay_minutes": 10.59,
+      "flight_volume": 74745,
+      "month": "2024-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 17.26,
+      "worst_month_rank": 156
+    },
+    {
+      "avg_departure_delay_minutes": 21.66,
+      "flight_volume": 81367,
+      "month": "2024-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 26.19,
+      "worst_month_rank": 14
+    },
+    {
+      "avg_departure_delay_minutes": 17.63,
+      "flight_volume": 80429,
+      "month": "2024-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.46,
+      "worst_month_rank": 32
+    },
+    {
+      "avg_departure_delay_minutes": 32.74,
+      "flight_volume": 83760,
+      "month": "2024-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 34.88,
+      "worst_month_rank": 2
+    },
+    {
+      "avg_departure_delay_minutes": 29.05,
+      "flight_volume": 83639,
+      "month": "2024-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 33.24,
+      "worst_month_rank": 5
+    },
+    {
+      "avg_departure_delay_minutes": 36.33,
+      "flight_volume": 86083,
+      "month": "2024-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 38.04,
+      "worst_month_rank": 1
+    },
+    {
+      "avg_departure_delay_minutes": 26.38,
+      "flight_volume": 83502,
+      "month": "2024-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 30.88,
+      "worst_month_rank": 7
+    },
+    {
+      "avg_departure_delay_minutes": 11.34,
+      "flight_volume": 80163,
+      "month": "2024-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.29,
+      "worst_month_rank": 125
+    },
+    {
+      "avg_departure_delay_minutes": 9.2,
+      "flight_volume": 86046,
+      "month": "2024-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16.01,
+      "worst_month_rank": 209
+    },
+    {
+      "avg_departure_delay_minutes": 9.42,
+      "flight_volume": 76266,
+      "month": "2024-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 16,
+      "worst_month_rank": 204
+    },
+    {
+      "avg_departure_delay_minutes": 18.12,
+      "flight_volume": 76956,
+      "month": "2024-12-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.45,
+      "worst_month_rank": 27
+    },
+    {
+      "avg_departure_delay_minutes": 12.89,
+      "flight_volume": 72286,
+      "month": "2025-01-01T00:00:00Z",
+      "pct_departing_15_plus_late": 18.77,
+      "worst_month_rank": 99
+    },
+    {
+      "avg_departure_delay_minutes": 13.28,
+      "flight_volume": 68951,
+      "month": "2025-02-01T00:00:00Z",
+      "pct_departing_15_plus_late": 19.08,
+      "worst_month_rank": 89
+    },
+    {
+      "avg_departure_delay_minutes": 15.85,
+      "flight_volume": 81281,
+      "month": "2025-03-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.66,
+      "worst_month_rank": 50
+    },
+    {
+      "avg_departure_delay_minutes": 15.96,
+      "flight_volume": 81083,
+      "month": "2025-04-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.88,
+      "worst_month_rank": 47
+    },
+    {
+      "avg_departure_delay_minutes": 18,
+      "flight_volume": 84814,
+      "month": "2025-05-01T00:00:00Z",
+      "pct_departing_15_plus_late": 25.05,
+      "worst_month_rank": 29
+    },
+    {
+      "avg_departure_delay_minutes": 26.25,
+      "flight_volume": 83323,
+      "month": "2025-06-01T00:00:00Z",
+      "pct_departing_15_plus_late": 31.58,
+      "worst_month_rank": 8
+    },
+    {
+      "avg_departure_delay_minutes": 31.35,
+      "flight_volume": 84893,
+      "month": "2025-07-01T00:00:00Z",
+      "pct_departing_15_plus_late": 35.15,
+      "worst_month_rank": 3
+    },
+    {
+      "avg_departure_delay_minutes": 24.91,
+      "flight_volume": 81421,
+      "month": "2025-08-01T00:00:00Z",
+      "pct_departing_15_plus_late": 30.41,
+      "worst_month_rank": 9
+    },
+    {
+      "avg_departure_delay_minutes": 15.28,
+      "flight_volume": 76373,
+      "month": "2025-09-01T00:00:00Z",
+      "pct_departing_15_plus_late": 21.18,
+      "worst_month_rank": 57
+    },
+    {
+      "avg_departure_delay_minutes": 15.78,
+      "flight_volume": 84927,
+      "month": "2025-10-01T00:00:00Z",
+      "pct_departing_15_plus_late": 22.88,
+      "worst_month_rank": 52
+    },
+    {
+      "avg_departure_delay_minutes": 16,
+      "flight_volume": 77156,
+      "month": "2025-11-01T00:00:00Z",
+      "pct_departing_15_plus_late": 23.23,
+      "worst_month_rank": 46
+    }
+  ],
+  "row_count": 458,
+  "generated_at": "2026-03-24T16:18:17.155242Z",
+  "source_query_sha256": "2438aa0f4c082d7da176bc9cc07500a27d7cf378ef39f7d57e31f7b8550e1542",
+  "log_comment": "qforge|question=q006|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q1"
+}

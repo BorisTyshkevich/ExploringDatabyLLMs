@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worst winter carrier-origin pairs by departure performance</title>
+  <style>
+    :root {
+      --bg-top: #eaf3f8;
+      --bg-bottom: #f6fafc;
+      --panel: #ffffff;
+      --panel-alt: #f3f7fa;
+      --ink: #163244;
+      --muted: #5d7485;
+      --navy: #0e3a52;
+      --slate: #5c7080;
+      --sky: #3c88b5;
+      --teal: #1f8a70;
+      --amber: #d48a1f;
+      --red: #c54f36;
+      --grid: rgba(22, 50, 68, 0.12);
+      --border: rgba(22, 50, 68, 0.10);
+      --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(60, 136, 181, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(31, 138, 112, 0.10), transparent 24%),
+        linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 36px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(14, 58, 82, 0.98), rgba(60, 136, 181, 0.95));
+      color: white;
+      border-radius: var(--radius-xl);
+      padding: 28px 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -5% -45% auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.18), rgba(255,255,255,0.02) 65%, transparent 70%);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      font-family: Georgia, ui-serif, serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      max-width: 760px;
+      line-height: 1.03;
+    }
+
+    .hero p {
+      margin: 14px 0 0;
+      max-width: 820px;
+      color: rgba(255,255,255,0.84);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .status-banner {
+      margin-top: 16px;
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.12);
+      font-size: 0.92rem;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0.9;
+    }
+
+    #dashboard {
+      display: none;
+      margin-top: 22px;
+    }
+
+    .warning {
+      margin-top: 18px;
+      background: rgba(212, 138, 31, 0.14);
+      color: #7b5310;
+      border: 1px solid rgba(212, 138, 31, 0.25);
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 2px;
+    }
+
+    .panel-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      margin-top: 18px;
+    }
+
+    .bottom-grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      min-width: 0;
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .kpi-value {
+      margin-top: 10px;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.05;
+      color: var(--navy);
+    }
+
+    .kpi-sub {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      min-width: 170px;
+    }
+
+    .field label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    select, input, textarea, button {
+      font: inherit;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: white;
+      color: var(--ink);
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      background: var(--navy);
+      color: white;
+      font-weight: 600;
+    }
+
+    button.secondary {
+      background: var(--panel-alt);
+      color: var(--navy);
+      border: 1px solid var(--border);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+
+    .chart-wrap {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 10px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .narrative {
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    .narrative strong {
+      color: var(--navy);
+    }
+
+    .annotation {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--panel-alt);
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .mini-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      margin-top: 14px;
+    }
+
+    .mini-stat {
+      padding: 12px 14px;
+      background: var(--panel-alt);
+      border-radius: var(--radius-md);
+    }
+
+    .mini-stat .label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .mini-stat .value {
+      margin-top: 6px;
+      color: var(--navy);
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: 720px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 0.92rem;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #eef4f8;
+      color: var(--navy);
+      text-align: left;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tbody tr:hover {
+      background: var(--panel-alt);
+    }
+
+    .rank-pill {
+      display: inline-flex;
+      min-width: 34px;
+      justify-content: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(197, 79, 54, 0.10);
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .pair-cell {
+      min-width: 270px;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .ledger {
+      margin-top: 18px;
+    }
+
+    .ledger-row {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--panel);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .ledger-head {
+      display: grid;
+      grid-template-columns: 1.4em minmax(0, 1fr) 6.5em 5.5em 4.5em;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+
+    .ledger-head:hover {
+      background: var(--panel-alt);
+    }
+
+    .ledger-sql {
+      display: none;
+      padding: 0 14px 14px;
+    }
+
+    .ledger-sql.open {
+      display: block;
+    }
+
+    .ledger-sql pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: var(--panel-alt);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      color: var(--ink);
+    }
+
+    .status-ok { color: var(--teal); font-weight: 700; }
+    .status-pending { color: var(--amber); font-weight: 700; }
+    .status-failed { color: var(--red); font-weight: 700; }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 0.88rem; }
+    .empty-state { margin-top: 16px; color: rgba(255,255,255,0.78); font-size: 0.94rem; }
+
+    footer {
+      margin-top: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    footer .footer-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    footer textarea {
+      min-height: 160px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 960px) {
+      .panel-grid, .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+      .ledger-head {
+        grid-template-columns: 1.4em minmax(0, 1fr);
+      }
+      .ledger-head .compact-hide {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>Worst winter carrier-origin pairs by departure performance</h1>
+      <p>
+        Winter means December through February. This dashboard ranks the weakest carrier-origin departure pairs among combinations with at least 1,000 winter departures, then separates severity from delay-cause composition so operational concentration does not get confused with cause mix.
+      </p>
+      <div class="status-banner">
+        <span class="status-dot"></span>
+        <span id="hero-status">Waiting for a JWE token to run the winter ranking query.</span>
+      </div>
+      <div class="empty-state">
+        The saved SQL is preloaded below. Enter the shared JWE token in the footer to fetch live results from the OnTime analyst endpoint.
+      </div>
+    </header>
+
+    <div id="warning-panel" class="warning" style="display:none;"></div>
+
+    <main id="dashboard">
+      <section class="grid kpi-grid">
+        <article class="card">
+          <div class="kpi-label">Worst Winter Pair</div>
+          <div class="kpi-value" id="kpi-pair">-</div>
+          <div class="kpi-sub" id="kpi-pair-sub">-</div>
+        </article>
+        <article class="card">
+          <div class="kpi-label">Worst Winter OTP</div>
+          <div class="kpi-value" id="kpi-otp">-</div>
+          <div class="kpi-sub">Lowest departure on-time rate in the ranked winter set</div>
+        </article>
+        <article class="card">
+          <div class="kpi-label">Avg Delay of Worst Pair</div>
+          <div class="kpi-value" id="kpi-delay">-</div>
+          <div class="kpi-sub">Average departure delay minutes for the worst-ranked winter pair</div>
+        </article>
+        <article class="card">
+          <div class="kpi-label">Total Qualifying Pairs</div>
+          <div class="kpi-value" id="kpi-total">-</div>
+          <div class="kpi-sub">Carrier-origin winter pairs with at least 1,000 non-cancelled, non-diverted departures</div>
+        </article>
+      </section>
+
+      <section class="grid panel-grid">
+        <article class="card">
+          <div class="section-title">
+            <div>
+              <h2>Winter Severity Ranking</h2>
+              <p>Lower departure OTP is worse. Bars rank the fetched winter leaderboard after filters.</p>
+            </div>
+          </div>
+          <div class="controls">
+            <div class="field">
+              <label for="carrier-filter">Carrier</label>
+              <select id="carrier-filter"></select>
+            </div>
+            <div class="field">
+              <label for="origin-filter">Origin</label>
+              <select id="origin-filter"></select>
+            </div>
+            <div class="field">
+              <label for="topn-filter">Rows Shown</label>
+              <select id="topn-filter">
+                <option value="10">Top 10</option>
+                <option value="15">Top 15</option>
+                <option value="25" selected>Top 25</option>
+              </select>
+            </div>
+            <button type="button" class="secondary" id="reset-filters">Reset Filters</button>
+          </div>
+          <div class="chart-wrap">
+            <svg id="ranking-chart" viewBox="0 0 900 640" aria-label="Ranked bar chart of worst winter carrier-origin pairs"></svg>
+          </div>
+          <div class="legend">
+            <span><i class="swatch" style="background: var(--red);"></i>Worst-ranked winter pair</span>
+            <span><i class="swatch" style="background: var(--amber);"></i>Remaining weak winter pairs</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="section-title">
+            <div>
+              <h2>Winter Concentration Takeaway</h2>
+              <p>Concentration is derived from the top 10 weakest winter pairs, separate from the severity ranking itself.</p>
+            </div>
+          </div>
+          <div id="narrative-box" class="narrative"></div>
+          <div class="mini-grid">
+            <div class="mini-stat">
+              <div class="label">Top Carrier Presence</div>
+              <div class="value" id="mini-carrier">-</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Top Origin Presence</div>
+              <div class="value" id="mini-origin">-</div>
+            </div>
+            <div class="mini-stat">
+              <div class="label">Pairs in Ranking Table</div>
+              <div class="value" id="mini-table-count">-</div>
+            </div>
+          </div>
+          <div class="annotation" id="concentration-note">
+            Load the dashboard to evaluate whether the weakest winter pairs cluster more tightly by carrier or by origin.
+          </div>
+        </article>
+      </section>
+
+      <section class="grid bottom-grid">
+        <article class="card">
+          <div class="section-title">
+            <div>
+              <h2>Delay-Cause Shares for Top 10 Winter Pairs</h2>
+              <p>These stacked bars describe composition only. Pair selection comes from the fetched severity ranking, not hardcoded labels.</p>
+            </div>
+          </div>
+          <div id="cause-chart-note" class="annotation" style="margin-top:0; margin-bottom:12px;"></div>
+          <div class="chart-wrap">
+            <svg id="cause-chart" viewBox="0 0 900 620" aria-label="Stacked bar chart of delay-cause shares for top 10 winter pairs"></svg>
+          </div>
+          <div class="legend">
+            <span><i class="swatch" style="background: #c54f36;"></i>Carrier</span>
+            <span><i class="swatch" style="background: #d48a1f;"></i>Weather</span>
+            <span><i class="swatch" style="background: #3c88b5;"></i>NAS</span>
+            <span><i class="swatch" style="background: #1f8a70;"></i>Late aircraft</span>
+            <span><i class="swatch" style="background: #5c7080;"></i>Security</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="section-title">
+            <div>
+              <h2>Full Ranked Winter Table</h2>
+              <p>Compact table of the fetched `worst_pair` result, with current filters applied.</p>
+            </div>
+            <button type="button" class="secondary" id="export-btn">Export Filtered CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Carrier-Origin Pair</th>
+                  <th>Winter Flights</th>
+                  <th>Dep OTP</th>
+                  <th>Avg Delay</th>
+                  <th>Cause Coverage</th>
+                </tr>
+              </thead>
+              <tbody id="rank-table-body"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="ledger">
+        <div class="section-title">
+          <div>
+            <h2>Query Ledger</h2>
+            <p>Every primary and supporting query used for this winter dashboard is recorded here.</p>
+          </div>
+        </div>
+        <div id="ledger-list"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="section-title">
+          <div>
+            <h2>Live Query Controls</h2>
+            <p>The saved SQL below is the primary analytical query source for the page.</p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="jwe-token">JWE Token</label>
+          <input id="jwe-token" type="password" placeholder="Stored locally as shared dashboard auth">
+        </div>
+        <div class="footer-actions">
+          <button type="button" id="run-btn">Fetch Dashboard</button>
+          <button type="button" class="secondary" id="forget-btn">Forget Stored Token</button>
+          <span id="footer-status" class="footer-note">Waiting for input.</span>
+        </div>
+        <div class="field">
+          <label for="sql-input">Primary Saved SQL</label>
+          <textarea id="sql-input" spellcheck="false"></textarea>
+        </div>
+        <div class="footer-note">
+          Supporting queries for delay-cause mix, concentration pattern, and qualifying-pair count are triggered only after the primary winter ranking query succeeds, and each appears in the ledger.
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+      const ENDPOINT_TEMPLATE = 'https://mcp.demo.altinity.cloud/{JWE}/openapi/execute_query?query=';
+
+      const PRIMARY_SQL = `WITH ranked_pairs AS (
+SELECT
+  f.Carrier,
+  f.OriginCode,
+  a.DisplayAirportName,
+  count() AS winter_flights,
+  round(avg(if(f.DepDel15 = 0, 1.0, 0.0)) * 100, 2) AS dep_otp_pct,
+  round(avg(ifNull(toFloat64(f.DepDelay), 0.0)), 2) AS avg_dep_delay_min,
+  countIf(
+    (f.CarrierDelay IS NOT NULL) OR
+    (f.WeatherDelay IS NOT NULL) OR
+    (f.NASDelay IS NOT NULL) OR
+    (f.SecurityDelay IS NOT NULL) OR
+    (f.LateAircraftDelay IS NOT NULL)
+  ) AS flights_with_any_reported_cause,
+  countIf(
+    (f.CarrierDelay IS NULL) AND
+    (f.WeatherDelay IS NULL) AND
+    (f.NASDelay IS NULL) AND
+    (f.SecurityDelay IS NULL) AND
+    (f.LateAircraftDelay IS NULL)
+  ) AS flights_without_reported_cause
+FROM ontime.fact_ontime AS f
+LEFT JOIN ontime.dim_airports AS a
+  ON f.OriginAirportID = a.AirportID
+WHERE f.Month IN (12, 1, 2)
+  AND f.Cancelled = 0
+  AND f.Diverted = 0
+GROUP BY f.Carrier, f.OriginCode, a.DisplayAirportName
+HAVING winter_flights >= 1000
+)
+SELECT
+  Carrier,
+  OriginCode,
+  DisplayAirportName,
+  winter_flights,
+  dep_otp_pct,
+  avg_dep_delay_min,
+  flights_with_any_reported_cause,
+  flights_without_reported_cause
+FROM ranked_pairs
+ORDER BY dep_otp_pct ASC, avg_dep_delay_min DESC, winter_flights DESC
+LIMIT 25`;
+
+      const SUPPORTING_QUERIES = {
+        cause_mix: `WITH weak_pairs AS (
+SELECT
+  f.Carrier,
+  f.OriginCode,
+  count() AS winter_flights,
+  round(avg(if(f.DepDel15 = 0, 1.0, 0.0)) * 100, 2) AS dep_otp_pct,
+  round(avg(ifNull(toFloat64(f.DepDelay), 0.0)), 2) AS avg_dep_delay_min,
+  sum(ifNull(toUInt64(f.WeatherDelay), 0)) AS weather_delay_min,
+  sum(ifNull(toUInt64(f.CarrierDelay), 0)) AS carrier_delay_min,
+  sum(ifNull(toUInt64(f.NASDelay), 0)) AS nas_delay_min,
+  sum(ifNull(toUInt64(f.SecurityDelay), 0)) AS security_delay_min,
+  sum(ifNull(toUInt64(f.LateAircraftDelay), 0)) AS late_aircraft_delay_min,
+  countIf(
+    (f.CarrierDelay IS NOT NULL) OR
+    (f.WeatherDelay IS NOT NULL) OR
+    (f.NASDelay IS NOT NULL) OR
+    (f.SecurityDelay IS NOT NULL) OR
+    (f.LateAircraftDelay IS NOT NULL)
+  ) AS flights_with_any_reported_cause,
+  countIf(
+    (f.CarrierDelay IS NULL) AND
+    (f.WeatherDelay IS NULL) AND
+    (f.NASDelay IS NULL) AND
+    (f.SecurityDelay IS NULL) AND
+    (f.LateAircraftDelay IS NULL)
+  ) AS flights_without_reported_cause
+FROM ontime.fact_ontime AS f
+WHERE f.Month IN (12, 1, 2)
+  AND f.Cancelled = 0
+  AND f.Diverted = 0
+GROUP BY f.Carrier, f.OriginCode
+HAVING winter_flights >= 1000
+ORDER BY dep_otp_pct ASC, avg_dep_delay_min DESC
+LIMIT 10
+)
+SELECT
+  Carrier,
+  OriginCode,
+  winter_flights,
+  dep_otp_pct,
+  avg_dep_delay_min,
+  flights_with_any_reported_cause,
+  flights_without_reported_cause,
+  weather_delay_min,
+  carrier_delay_min,
+  nas_delay_min,
+  security_delay_min,
+  late_aircraft_delay_min,
+  weather_delay_min + carrier_delay_min + nas_delay_min + security_delay_min + late_aircraft_delay_min AS total_reported_cause_min,
+  round(weather_delay_min * 100.0 / nullIf(weather_delay_min + carrier_delay_min + nas_delay_min + security_delay_min + late_aircraft_delay_min, 0), 1) AS weather_share_pct,
+  round((carrier_delay_min + nas_delay_min + security_delay_min + late_aircraft_delay_min) * 100.0 / nullIf(weather_delay_min + carrier_delay_min + nas_delay_min + security_delay_min + late_aircraft_delay_min, 0), 1) AS operational_share_pct
+FROM weak_pairs
+ORDER BY dep_otp_pct ASC, avg_dep_delay_min DESC, winter_flights DESC`,
+        concentration_pattern: `WITH weak_pairs AS (
+SELECT
+  Carrier,
+  OriginCode,
+  count() AS winter_flights,
+  round(avg(if(DepDel15 = 0, 1.0, 0.0)) * 100, 2) AS dep_otp_pct,
+  round(avg(ifNull(toFloat64(DepDelay), 0.0)), 2) AS avg_dep_delay_min
+FROM ontime.fact_ontime
+WHERE Month IN (12, 1, 2)
+  AND Cancelled = 0
+  AND Diverted = 0
+GROUP BY Carrier, OriginCode
+HAVING winter_flights >= 1000
+ORDER BY dep_otp_pct ASC, avg_dep_delay_min DESC
+LIMIT 10
+)
+SELECT
+  'carrier' AS concentration_type,
+  Carrier AS entity,
+  count() AS weak_pair_count,
+  round(count() * 100.0 / (SELECT count() FROM weak_pairs), 1) AS weak_pair_share_pct
+FROM weak_pairs
+GROUP BY Carrier
+UNION ALL
+SELECT
+  'airport' AS concentration_type,
+  OriginCode AS entity,
+  count() AS weak_pair_count,
+  round(count() * 100.0 / (SELECT count() FROM weak_pairs), 1) AS weak_pair_share_pct
+FROM weak_pairs
+GROUP BY OriginCode
+ORDER BY concentration_type, weak_pair_count DESC, entity ASC`,
+        qualifying_count: `WITH ranked_pairs AS (
+SELECT
+  f.Carrier,
+  f.OriginCode,
+  count() AS winter_flights
+FROM ontime.fact_ontime AS f
+WHERE f.Month IN (12, 1, 2)
+  AND f.Cancelled = 0
+  AND f.Diverted = 0
+GROUP BY f.Carrier, f.OriginCode
+HAVING winter_flights >= 1000
+)
+SELECT count() AS total_qualifying_pairs
+FROM ranked_pairs`
+      };
+
+      const appState = {
+        isRunning: false,
+        activeRunId: 0,
+        rankingRows: [],
+        causeRows: [],
+        concentrationRows: [],
+        totalQualifyingPairs: null,
+        filters: {
+          carrier: 'ALL',
+          origin: 'ALL',
+          topN: 25
+        },
+        ledger: []
+      };
+
+      const els = {
+        dashboard: document.getElementById('dashboard'),
+        warning: document.getElementById('warning-panel'),
+        heroStatus: document.getElementById('hero-status'),
+        footerStatus: document.getElementById('footer-status'),
+        token: document.getElementById('jwe-token'),
+        sqlInput: document.getElementById('sql-input'),
+        runBtn: document.getElementById('run-btn'),
+        forgetBtn: document.getElementById('forget-btn'),
+        carrierFilter: document.getElementById('carrier-filter'),
+        originFilter: document.getElementById('origin-filter'),
+        topNFilter: document.getElementById('topn-filter'),
+        resetFilters: document.getElementById('reset-filters'),
+        exportBtn: document.getElementById('export-btn'),
+        rankingChart: document.getElementById('ranking-chart'),
+        causeChart: document.getElementById('cause-chart'),
+        tableBody: document.getElementById('rank-table-body'),
+        ledgerList: document.getElementById('ledger-list'),
+        narrativeBox: document.getElementById('narrative-box'),
+        concentrationNote: document.getElementById('concentration-note'),
+        causeChartNote: document.getElementById('cause-chart-note'),
+        miniCarrier: document.getElementById('mini-carrier'),
+        miniOrigin: document.getElementById('mini-origin'),
+        miniTableCount: document.getElementById('mini-table-count'),
+        kpiPair: document.getElementById('kpi-pair'),
+        kpiPairSub: document.getElementById('kpi-pair-sub'),
+        kpiOtp: document.getElementById('kpi-otp'),
+        kpiDelay: document.getElementById('kpi-delay'),
+        kpiTotal: document.getElementById('kpi-total')
+      };
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      function fmtNumber(value) {
+        return new Intl.NumberFormat('en-US').format(Number(value ?? 0));
+      }
+
+      function fmtPct(value) {
+        if (value == null || Number.isNaN(Number(value))) return 'n/a';
+        return `${Number(value).toFixed(2)}%`;
+      }
+
+      function fmtPctShort(value) {
+        if (value == null || Number.isNaN(Number(value))) return 'n/a';
+        return `${Number(value).toFixed(1)}%`;
+      }
+
+      function fmtMinutes(value) {
+        if (value == null || Number.isNaN(Number(value))) return 'n/a';
+        return `${Number(value).toFixed(2)} min`;
+      }
+
+      function pairKey(row) {
+        return `${row.Carrier}::${row.OriginCode}`;
+      }
+
+      function pairLabel(row) {
+        const airport = row.DisplayAirportName ? `${row.DisplayAirportName} (${row.OriginCode})` : row.OriginCode;
+        return `${row.Carrier} - ${airport}`;
+      }
+
+      function pairLabelLines(row) {
+        return [
+          `${row.Carrier} - ${row.OriginCode}`,
+          row.DisplayAirportName ? String(row.DisplayAirportName) : ''
+        ];
+      }
+
+      function barColor(index) {
+        return index === 0 ? '#c54f36' : '#d48a1f';
+      }
+
+      function setStatus(text, { warning = false } = {}) {
+        els.heroStatus.textContent = text;
+        els.footerStatus.textContent = text;
+        if (warning) {
+          els.warning.textContent = text;
+          els.warning.style.display = 'block';
+        } else {
+          els.warning.style.display = 'none';
+          els.warning.textContent = '';
+        }
+      }
+
+      function setRunning(isRunning) {
+        appState.isRunning = isRunning;
+        els.runBtn.disabled = isRunning;
+      }
+
+      function maskToken(token) {
+        if (!token) return '';
+        return '*'.repeat(Math.max(6, Math.min(18, token.length)));
+      }
+
+      function populateStoredToken() {
+        const stored = localStorage.getItem(STORAGE_KEY) ?? '';
+        if (stored) {
+          els.token.value = stored;
+          setStatus(`Stored JWE detected (${maskToken(stored)}). Ready to fetch live winter results.`);
+        }
+      }
+
+      function registerLedgerEntry(id, label, role, sql) {
+        const existing = appState.ledger.find((item) => item.id === id);
+        if (existing) {
+          existing.label = label;
+          existing.role = role;
+          existing.sql = sql ?? existing.sql;
+          existing.status = 'Pending';
+          existing.rows = '...';
+          existing.message = '';
+        } else {
+          appState.ledger.push({ id, label, role, sql, status: 'Pending', rows: '...', message: '' });
+        }
+        renderLedger();
+      }
+
+      function updateLedgerEntry(id, patch) {
+        const entry = appState.ledger.find((item) => item.id === id);
+        if (!entry) return;
+        Object.assign(entry, patch);
+        renderLedger();
+      }
+
+      function renderLedger() {
+        els.ledgerList.innerHTML = appState.ledger.map((entry) => {
+          const safeMessage = entry.message ? `<div class="muted small" style="margin-top:4px;">${escapeHtml(entry.message)}</div>` : '';
+          const statusClass = entry.status === 'OK' ? 'status-ok' : entry.status === 'Failed' ? 'status-failed' : 'status-pending';
+          return `
+            <div class="ledger-row">
+              <div class="ledger-head" data-ledger-id="${escapeHtml(entry.id)}">
+                <div class="mono">${entry.open ? '▼' : '▶'}</div>
+                <div>
+                  <div><strong>${escapeHtml(entry.label)}</strong></div>
+                  ${safeMessage}
+                </div>
+                <div class="compact-hide muted small">${escapeHtml(entry.role)}</div>
+                <div class="compact-hide ${statusClass}">${escapeHtml(entry.status)}</div>
+                <div class="compact-hide muted small">${escapeHtml(String(entry.rows))}</div>
+              </div>
+              <div class="ledger-sql ${entry.open ? 'open' : ''}">
+                <pre>${escapeHtml(entry.sql ?? '')}</pre>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        els.ledgerList.querySelectorAll('.ledger-head').forEach((head) => {
+          head.addEventListener('click', () => {
+            const { ledgerId } = head.dataset;
+            const entry = appState.ledger.find((item) => item.id === ledgerId);
+            if (!entry) return;
+            entry.open = !entry.open;
+            renderLedger();
+          });
+        });
+      }
+
+      function endpointFor(token, sql) {
+        const base = ENDPOINT_TEMPLATE.replace('{JWE}', encodeURIComponent(token));
+        return `${base}${encodeURIComponent(sql)}`;
+      }
+
+      async function runQuery({ token, sql, ledgerId, label, role, runId }) {
+        registerLedgerEntry(ledgerId, label, role, sql);
+        const response = await fetch(endpointFor(token, sql));
+        if (runId !== appState.activeRunId) {
+          throw new Error('Stale run ignored.');
+        }
+        if (!response.ok) {
+          const text = await response.text();
+          updateLedgerEntry(ledgerId, { status: 'Failed', rows: '0', message: text || `HTTP ${response.status}` });
+          throw new Error(text || `HTTP ${response.status}`);
+        }
+        const payload = await response.json();
+        if (!Array.isArray(payload.columns) || !('rows' in payload)) {
+          updateLedgerEntry(ledgerId, { status: 'Failed', rows: '0', message: 'Malformed payload: columns/rows missing.' });
+          throw new Error('Malformed payload: columns/rows missing.');
+        }
+        const rawRows = Array.isArray(payload.rows) ? payload.rows : [];
+        const rows = rawRows.map((row) => {
+          if (Array.isArray(row)) {
+            return Object.fromEntries(payload.columns.map((column, index) => [column, row[index]]));
+          }
+          return row ?? {};
+        });
+        updateLedgerEntry(ledgerId, { status: 'OK', rows: String(payload.count ?? rows.length), message: '' });
+        return { columns: payload.columns, rows, count: payload.count ?? rows.length };
+      }
+
+      function populateFilters(rows) {
+        const carriers = ['ALL', ...new Set(rows.map((row) => row.Carrier).filter(Boolean))];
+        const origins = ['ALL', ...new Set(rows.map((row) => row.OriginCode).filter(Boolean))];
+
+        const currentCarrier = appState.filters.carrier;
+        const currentOrigin = appState.filters.origin;
+
+        els.carrierFilter.innerHTML = carriers.map((value) => `<option value="${escapeHtml(value)}">${value === 'ALL' ? 'All carriers' : escapeHtml(value)}</option>`).join('');
+        els.originFilter.innerHTML = origins.map((value) => `<option value="${escapeHtml(value)}">${value === 'ALL' ? 'All origins' : escapeHtml(value)}</option>`).join('');
+
+        els.carrierFilter.value = carriers.includes(currentCarrier) ? currentCarrier : 'ALL';
+        els.originFilter.value = origins.includes(currentOrigin) ? currentOrigin : 'ALL';
+        els.topNFilter.value = String(appState.filters.topN);
+      }
+
+      function getFilteredRankingRows() {
+        const { carrier, origin, topN } = appState.filters;
+        return appState.rankingRows
+          .filter((row) => carrier === 'ALL' || row.Carrier === carrier)
+          .filter((row) => origin === 'ALL' || row.OriginCode === origin)
+          .slice(0, topN);
+      }
+
+      function renderKpis() {
+        const worst = appState.rankingRows[0];
+        if (!worst) return;
+        els.kpiPair.textContent = `${worst.Carrier} - ${worst.OriginCode}`;
+        els.kpiPairSub.textContent = `${worst.DisplayAirportName} with ${fmtNumber(worst.winter_flights)} winter departures`;
+        els.kpiOtp.textContent = fmtPct(worst.dep_otp_pct);
+        els.kpiDelay.textContent = fmtMinutes(worst.avg_dep_delay_min);
+        els.kpiTotal.textContent = appState.totalQualifyingPairs != null ? fmtNumber(appState.totalQualifyingPairs) : 'n/a';
+      }
+
+      function renderRankingChart(rows) {
+        if (!rows.length) {
+          els.rankingChart.innerHTML = `<text x="24" y="36" fill="#5d7485" font-size="15">No rows match the current filter selection.</text>`;
+          return;
+        }
+        const width = 900;
+        const labelWidth = 310;
+        const rightPad = 96;
+        const topPad = 26;
+        const rowGap = 34;
+        const barHeight = 18;
+        const chartWidth = width - labelWidth - rightPad - 24;
+        const maxOtp = Math.max(...rows.map((row) => Number(row.dep_otp_pct)));
+        const height = Math.max(240, topPad + rows.length * (barHeight + rowGap) + 36);
+
+        const lines = rows.map((row, index) => {
+          const y = topPad + index * (barHeight + rowGap);
+          const [line1, line2] = pairLabelLines(row);
+          const otp = Number(row.dep_otp_pct);
+          const barWidth = maxOtp > 0 ? (otp / maxOtp) * chartWidth : 0;
+          const fill = barColor(index);
+          return `
+            <g transform="translate(0, ${y})">
+              <text x="${labelWidth - 12}" y="2" text-anchor="end" fill="#0e3a52" font-size="12.5" font-weight="700">${escapeHtml(line1)}</text>
+              <text x="${labelWidth - 12}" y="16" text-anchor="end" fill="#5d7485" font-size="12">${escapeHtml(line2)}</text>
+              <rect x="${labelWidth}" y="0" width="${chartWidth}" height="${barHeight}" rx="7" fill="rgba(22,50,68,0.08)"></rect>
+              <rect x="${labelWidth}" y="0" width="${barWidth}" height="${barHeight}" rx="7" fill="${fill}"></rect>
+              <text x="${labelWidth + barWidth + 8}" y="13" fill="#0e3a52" font-size="13" font-weight="700">${fmtPct(row.dep_otp_pct)}</text>
+            </g>
+          `;
+        }).join('');
+
+        els.rankingChart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        els.rankingChart.innerHTML = `
+          <text x="${labelWidth}" y="16" fill="#5d7485" font-size="12">Departure OTP across winter flights. Lower is worse.</text>
+          ${lines}
+        `;
+      }
+
+      function renderCauseChart(filteredRows) {
+        const topKeys = filteredRows.slice(0, 10).map(pairKey);
+        const causeMap = new Map(appState.causeRows.map((row) => [pairKey(row), row]));
+        const causeRows = filteredRows.slice(0, 10).map((row) => {
+          const cause = causeMap.get(pairKey(row));
+          return cause ? { ...row, ...cause, DisplayAirportName: row.DisplayAirportName } : null;
+        }).filter(Boolean);
+
+        const width = 900;
+        const labelWidth = 310;
+        const rightPad = 96;
+        const topPad = 26;
+        const rowGap = 34;
+        const barHeight = 18;
+        const chartWidth = width - labelWidth - rightPad - 24;
+        const height = Math.max(220, topPad + Math.max(causeRows.length, 1) * (barHeight + rowGap) + 36);
+
+        if (!topKeys.length) {
+          els.causeChartNote.textContent = 'Apply a less restrictive filter to show winter delay-cause composition.';
+          els.causeChart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+          els.causeChart.innerHTML = `<text x="24" y="38" fill="#5d7485" font-size="15">No top-10 winter pairs are available for cause composition.</text>`;
+          return;
+        }
+
+        if (!causeRows.length) {
+          els.causeChartNote.textContent = 'The cause-mix supporting query did not return matching rows for the current top-10 winter selection.';
+          els.causeChart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+          els.causeChart.innerHTML = `<text x="24" y="38" fill="#5d7485" font-size="15">Cause composition unavailable for the current selection.</text>`;
+          return;
+        }
+
+        const measuredCount = causeRows.filter((row) => Number(row.total_reported_cause_min) > 0).length;
+        const unmeasured = causeRows.filter((row) => Number(row.total_reported_cause_min) === 0).map((row) => `${row.Carrier}-${row.OriginCode}`);
+        els.causeChartNote.textContent = measuredCount === causeRows.length
+          ? 'All displayed winter top-10 pairs include reported cause minutes.'
+          : `Cause reporting is incomplete for ${causeRows.length - measuredCount} of the displayed top-10 pairs: ${unmeasured.join(', ')}.`;
+
+        const colors = {
+          carrier_delay_min: '#c54f36',
+          weather_delay_min: '#d48a1f',
+          nas_delay_min: '#3c88b5',
+          late_aircraft_delay_min: '#1f8a70',
+          security_delay_min: '#5c7080'
+        };
+
+        const lines = causeRows.map((row, index) => {
+          const y = topPad + index * (barHeight + rowGap);
+          const total = Number(row.total_reported_cause_min ?? 0);
+          let currentX = labelWidth;
+          const segments = total > 0 ? [
+            ['carrier_delay_min', Number(row.carrier_delay_min ?? 0)],
+            ['weather_delay_min', Number(row.weather_delay_min ?? 0)],
+            ['nas_delay_min', Number(row.nas_delay_min ?? 0)],
+            ['late_aircraft_delay_min', Number(row.late_aircraft_delay_min ?? 0)],
+            ['security_delay_min', Number(row.security_delay_min ?? 0)]
+          ].map(([key, value]) => {
+            const widthPx = total > 0 ? (value / total) * chartWidth : 0;
+            const rect = `<rect x="${currentX}" y="0" width="${widthPx}" height="${barHeight}" rx="0" fill="${colors[key]}"></rect>`;
+            currentX += widthPx;
+            return rect;
+          }).join('') : '';
+
+          const [line1, line2] = pairLabelLines(row);
+          return `
+            <g transform="translate(0, ${y})">
+              <text x="${labelWidth - 12}" y="2" text-anchor="end" fill="#0e3a52" font-size="12.5" font-weight="700">${escapeHtml(line1)}</text>
+              <text x="${labelWidth - 12}" y="16" text-anchor="end" fill="#5d7485" font-size="12">${escapeHtml(line2)}</text>
+              <rect x="${labelWidth}" y="0" width="${chartWidth}" height="${barHeight}" rx="7" fill="rgba(22,50,68,0.08)"></rect>
+              ${segments}
+              <text x="${labelWidth + chartWidth + 8}" y="13" fill="#0e3a52" font-size="12" font-weight="700">${total > 0 ? fmtPctShort((row.operational_share_pct ?? 0)) + ' op' : 'no cause data'}</text>
+            </g>
+          `;
+        }).join('');
+
+        els.causeChart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        els.causeChart.innerHTML = `
+          <text x="${labelWidth}" y="16" fill="#5d7485" font-size="12">Share of reported delay minutes within the displayed winter top 10.</text>
+          ${lines}
+        `;
+      }
+
+      function renderNarrative() {
+        const carrierRows = appState.concentrationRows.filter((row) => row.concentration_type === 'carrier')
+          .sort((a, b) => Number(b.weak_pair_count) - Number(a.weak_pair_count) || String(a.entity).localeCompare(String(b.entity)));
+        const airportRows = appState.concentrationRows.filter((row) => row.concentration_type === 'airport')
+          .sort((a, b) => Number(b.weak_pair_count) - Number(a.weak_pair_count) || String(a.entity).localeCompare(String(b.entity)));
+
+        if (!carrierRows.length || !airportRows.length) {
+          els.narrativeBox.innerHTML = '<p>Concentration supporting data is unavailable, so this panel cannot judge whether the weakest winter pairs cluster more by carrier or by origin.</p>';
+          els.concentrationNote.textContent = 'Supporting concentration query unavailable.';
+          els.miniCarrier.textContent = 'n/a';
+          els.miniOrigin.textContent = 'n/a';
+          els.miniTableCount.textContent = fmtNumber(appState.rankingRows.length);
+          return;
+        }
+
+        const topCarrier = carrierRows[0];
+        const topOrigin = airportRows[0];
+        const leaning = Number(topCarrier.weak_pair_share_pct ?? 0) > Number(topOrigin.weak_pair_share_pct ?? 0)
+          ? 'carrier side'
+          : Number(topCarrier.weak_pair_share_pct ?? 0) < Number(topOrigin.weak_pair_share_pct ?? 0)
+            ? 'origin side'
+            : 'same level';
+
+        els.narrativeBox.innerHTML = `
+          <p>
+            The weakest winter pairs do <strong>not collapse into one dominant airport network</strong>. The clearest repeat pattern is on the carrier side:
+            <strong>${escapeHtml(topCarrier.entity)}</strong> contributes ${fmtNumber(topCarrier.weak_pair_count)} of the top 10 weak winter pairs
+            (${fmtPctShort(topCarrier.weak_pair_share_pct)}), while the most repeated origin,
+            <strong>${escapeHtml(topOrigin.entity)}</strong>, appears ${fmtNumber(topOrigin.weak_pair_count)} times
+            (${fmtPctShort(topOrigin.weak_pair_share_pct)}).
+          </p>
+          <p>
+            That means concentration leans toward the <strong>${escapeHtml(leaning)}</strong>, but only mildly: most carriers and origins appear once, so the winter problem set is broad rather than dominated by a single airport.
+          </p>
+        `;
+        els.concentrationNote.textContent = `Carrier concentration peaks at ${topCarrier.entity} (${fmtPctShort(topCarrier.weak_pair_share_pct)} of the top 10), versus ${topOrigin.entity} at ${fmtPctShort(topOrigin.weak_pair_share_pct)} on the origin side.`;
+        els.miniCarrier.textContent = `${topCarrier.entity} · ${fmtPctShort(topCarrier.weak_pair_share_pct)}`;
+        els.miniOrigin.textContent = `${topOrigin.entity} · ${fmtPctShort(topOrigin.weak_pair_share_pct)}`;
+        els.miniTableCount.textContent = fmtNumber(appState.rankingRows.length);
+      }
+
+      function renderTable(rows) {
+        if (!rows.length) {
+          els.tableBody.innerHTML = '<tr><td colspan="6" class="muted">No rows match the current filter selection.</td></tr>';
+          return;
+        }
+        els.tableBody.innerHTML = rows.map((row, index) => {
+          const causeCoverage = Number(row.winter_flights) > 0
+            ? (Number(row.flights_with_any_reported_cause ?? 0) / Number(row.winter_flights)) * 100
+            : null;
+          return `
+            <tr>
+              <td><span class="rank-pill">${index + 1}</span></td>
+              <td class="pair-cell">
+                <strong>${escapeHtml(row.Carrier)} - ${escapeHtml(row.OriginCode)}</strong><br>
+                <span class="muted">${escapeHtml(row.DisplayAirportName)}</span>
+              </td>
+              <td>${fmtNumber(row.winter_flights)}</td>
+              <td>${fmtPct(row.dep_otp_pct)}</td>
+              <td>${fmtMinutes(row.avg_dep_delay_min)}</td>
+              <td>${causeCoverage == null ? 'n/a' : fmtPctShort(causeCoverage)}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderAll() {
+        populateFilters(appState.rankingRows);
+        renderKpis();
+        const filtered = getFilteredRankingRows();
+        renderRankingChart(filtered);
+        renderCauseChart(filtered);
+        renderTable(filtered);
+        renderNarrative();
+        els.dashboard.style.display = 'block';
+      }
+
+      async function runDashboard(auto = false) {
+        if (appState.isRunning) return;
+
+        const token = els.token.value.trim();
+        const sql = els.sqlInput.value.trim();
+        if (!token) {
+          setStatus('Enter a JWE token before running the winter dashboard.', { warning: !auto });
+          return;
+        }
+        if (!sql) {
+          setStatus('Primary SQL is empty. Restore the saved winter ranking query before fetching.', { warning: true });
+          return;
+        }
+
+        setRunning(true);
+        appState.activeRunId += 1;
+        const runId = appState.activeRunId;
+        appState.ledger = [];
+        renderLedger();
+        setStatus('Running the primary winter ranking query.');
+
+        try {
+          const primary = await runQuery({
+            token,
+            sql,
+            ledgerId: 'worst_pair',
+            label: 'Worst winter pair ranking',
+            role: 'primary',
+            runId
+          });
+          if (runId !== appState.activeRunId) return;
+
+          localStorage.setItem(STORAGE_KEY, token);
+          appState.rankingRows = primary.rows;
+          appState.filters.topN = Number(els.topNFilter.value || 25);
+          renderAll();
+
+          setStatus('Primary winter ranking loaded. Fetching supporting cause and concentration queries.');
+
+          const supportingPromises = [
+            runQuery({
+              token,
+              sql: SUPPORTING_QUERIES.cause_mix,
+              ledgerId: 'cause_mix',
+              label: 'Delay-cause mix for top 10 winter pairs',
+              role: 'supporting',
+              runId
+            }).then((result) => {
+              if (runId !== appState.activeRunId) return;
+              appState.causeRows = result.rows;
+            }).catch((error) => {
+              if (runId !== appState.activeRunId) return;
+              appState.causeRows = [];
+              els.causeChartNote.textContent = `Cause-mix query failed: ${error.message}`;
+            }),
+            runQuery({
+              token,
+              sql: SUPPORTING_QUERIES.concentration_pattern,
+              ledgerId: 'concentration_pattern',
+              label: 'Carrier and origin concentration within top 10',
+              role: 'supporting',
+              runId
+            }).then((result) => {
+              if (runId !== appState.activeRunId) return;
+              appState.concentrationRows = result.rows;
+            }).catch((error) => {
+              if (runId !== appState.activeRunId) return;
+              appState.concentrationRows = [];
+              els.concentrationNote.textContent = `Concentration query failed: ${error.message}`;
+            }),
+            runQuery({
+              token,
+              sql: SUPPORTING_QUERIES.qualifying_count,
+              ledgerId: 'qualifying_count',
+              label: 'Full qualifying winter pair count',
+              role: 'supporting',
+              runId
+            }).then((result) => {
+              if (runId !== appState.activeRunId) return;
+              appState.totalQualifyingPairs = result.rows[0]?.total_qualifying_pairs ?? null;
+            }).catch(() => {
+              if (runId !== appState.activeRunId) return;
+              appState.totalQualifyingPairs = null;
+            })
+          ];
+
+          await Promise.allSettled(supportingPromises);
+          if (runId !== appState.activeRunId) return;
+
+          renderAll();
+          setStatus(`Loaded ${fmtNumber(appState.rankingRows.length)} ranked winter pairs and supporting analysis.`);
+        } catch (error) {
+          if (runId !== appState.activeRunId) return;
+          els.dashboard.style.display = 'none';
+          setStatus(`Primary query failed: ${error.message}`, { warning: true });
+        } finally {
+          if (runId === appState.activeRunId) {
+            setRunning(false);
+          }
+        }
+      }
+
+      function exportCsv() {
+        const rows = getFilteredRankingRows();
+        if (!rows.length) {
+          setStatus('There are no filtered rows to export.', { warning: true });
+          return;
+        }
+        const header = ['Rank', 'Carrier', 'OriginCode', 'DisplayAirportName', 'winter_flights', 'dep_otp_pct', 'avg_dep_delay_min', 'flights_with_any_reported_cause', 'flights_without_reported_cause'];
+        const lines = [header.join(',')];
+        rows.forEach((row, index) => {
+          const values = [
+            index + 1,
+            row.Carrier,
+            row.OriginCode,
+            row.DisplayAirportName,
+            row.winter_flights,
+            row.dep_otp_pct,
+            row.avg_dep_delay_min,
+            row.flights_with_any_reported_cause,
+            row.flights_without_reported_cause
+          ].map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`);
+          lines.push(values.join(','));
+        });
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'winter_worst_pairs_filtered.csv';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      els.runBtn.addEventListener('click', () => runDashboard(false));
+      els.forgetBtn.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        els.token.value = '';
+        setStatus('Stored JWE removed from local storage.');
+      });
+      els.carrierFilter.addEventListener('change', (event) => {
+        appState.filters.carrier = event.target.value;
+        renderAll();
+      });
+      els.originFilter.addEventListener('change', (event) => {
+        appState.filters.origin = event.target.value;
+        renderAll();
+      });
+      els.topNFilter.addEventListener('change', (event) => {
+        appState.filters.topN = Number(event.target.value || 25);
+        renderAll();
+      });
+      els.resetFilters.addEventListener('click', () => {
+        appState.filters = { carrier: 'ALL', origin: 'ALL', topN: 25 };
+        renderAll();
+      });
+      els.exportBtn.addEventListener('click', exportCsv);
+
+      els.sqlInput.value = PRIMARY_SQL;
+      populateStoredToken();
+      if ((localStorage.getItem(STORAGE_KEY) ?? '').trim()) {
+        runDashboard(true);
+      }
+    })();
+  </script>
+</body>
+</html>

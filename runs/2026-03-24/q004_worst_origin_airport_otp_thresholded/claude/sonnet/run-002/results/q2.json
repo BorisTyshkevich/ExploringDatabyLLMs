@@ -1,0 +1,20 @@
+{
+  "columns": [
+    "worst_otp",
+    "median_otp",
+    "spread_pp",
+    "qualifying_airports"
+  ],
+  "rows": [
+    {
+      "median_otp": 85.05,
+      "qualifying_airports": 160,
+      "spread_pp": 8.53,
+      "worst_otp": 76.52
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-24T12:11:35.689022Z",
+  "source_query_sha256": "5b4fb81eee3c1b04dd7b236375046421eebd6ae6474d26ea94ef954b2bf6ac6f",
+  "log_comment": "qforge|question=q004|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q2"
+}

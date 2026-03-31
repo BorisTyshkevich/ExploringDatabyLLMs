@@ -8,7 +8,14 @@ description: Builds visual dashboards in either static or dynamic mode, with opt
 - Use dynamic mode for browser dashboards that execute the saved SQL through the configured tokenized HTTP SQL endpoint and may run explicit enrichment or drill-down queries. See  `references/dynamic-mode.md`
 - Use static mode when embedding data into HTML dashboard. see `references/static-mode.md`
 
-## Second decision: presentation target
+## Second decision: dynamic auth mode
+
+- For dynamic dashboards, default to `OAuth2` unless the prompt explicitly asks for the legacy token-entry footer flow
+- Use `OAuth2` for redirect-based PKCE login where the dashboard page acts as its own redirect page and resumes automatically after callback
+- Use `JWE` when the prompt explicitly requests manual token entry, a token field in the footer, or the existing JWE workflow
+- Keep both auth modes valid for dynamic dashboards; do not remove JWE support
+
+## Third decision: presentation target
 
 - Use the default HTML target when the prompt asks for final `visual.html`
 - Use the React target when the prompt asks for source under `visual_src/` that will be built into the final browser artifact
@@ -19,6 +26,7 @@ description: Builds visual dashboards in either static or dynamic mode, with opt
 
 - Never hardcode KPIs or chart values; derive them from parsed data
 - Treat the saved SQL and the selected visual mode as part of the page contract
+- Treat the selected auth mode as part of the dynamic page contract; do not mix JWE footer prompts into OAuth2 dashboards unless the prompt asks for both explicitly
 - Prefer dataset-native dimensions and lookup tables when enrichment fields are needed
 - When generating JavaScript objects keyed by data values such as carrier codes, airport codes, route strings, or years, quote keys or use `Map`; do not emit bare keys that may be invalid tokens such as `9E`
 - Use optional chaining (`?.`) and nullish coalescing (`??`) in client-side JS

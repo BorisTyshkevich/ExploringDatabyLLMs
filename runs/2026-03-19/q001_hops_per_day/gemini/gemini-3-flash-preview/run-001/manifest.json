@@ -1,0 +1,50 @@
+{
+  "schema_version": "3",
+  "status": "partial",
+  "question_id": "q001",
+  "question_slug": "q001_hops_per_day",
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "dataset": "ontime",
+  "runner": "gemini",
+  "model": "gemini-3-flash-preview",
+  "cli_bin": "gemini",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime/mcp.yaml",
+  "started_at": "2026-03-19T18:37:15.661608Z",
+  "finished_at": "2026-03-19T18:43:16.660192Z",
+  "duration_sec": 360,
+  "presentation_provider_duration_ms": 47836,
+  "log_comment": "qforge|question=q001|run=run-004|runner=gemini|model=gemini-3-flash-preview|phase=full",
+  "query_sha256": "86e3ccd5006dc1696ee512efd0a9d34218ed245a93066033953abd52df582731",
+  "result_row_count": 10,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "failed"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/answer.sql.raw.md",
+    "answer_raw_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/answer.raw.json",
+    "analysis_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/analysis.json",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-19/q001_hops_per_day/gemini/gemini-3-flash-preview/run-001/visual.html"
+  },
+  "metadata": {
+    "browser_validation": "skipped_contract_failed",
+    "execution_response_bytes": "2211",
+    "visual_validation": "failed",
+    "visual_validation_errors": "missing SQL textarea control in footer",
+    "visual_validation_warnings": "missing theme tokens: --navy, --sky, --teal, --amber"
+  }
+}

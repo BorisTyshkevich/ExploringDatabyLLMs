@@ -1,0 +1,71 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "WN (Southwest Airlines) leads most often, topping the industry in 26 of 39 years (2000–2025). Delta (DL) led for 11 years (1987–1999, except 1990–1991 when US Airways held the top), and US Airways (US) led for 2 years (1990–1991).",
+      "columns_csv": "carrier, years_led",
+      "first_row": {
+        "carrier": "WN",
+        "years_led": 26
+      },
+      "row_count": 3,
+      "subquestion": "Which carrier leads most often across the full time range?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "There are 3 genuine leadership transitions in the full history. The 1990 transition from DL to US produced the largest swing: US Airways flew 991,989 flights versus Delta's prior-year total of 778,612, a swing of +213,377. The 1992 reversal back to DL was narrow at +9,842 flights over US's prior year, and the 2000 shift to WN was similarly narrow at +10,273 flights over DL's prior year. The average swing across all three transitions is about 78,000 flights, but that figure is dominated entirely by the 1990 outlier.",
+      "columns_csv": "Year, new_leader, new_leader_flights, prev_leader, prev_leader_flights, swing",
+      "first_row": {
+        "Year": 1990,
+        "new_leader": "US",
+        "new_leader_flights": 991989,
+        "prev_leader": "DL",
+        "prev_leader_flights": 778612,
+        "swing": 213377
+      },
+      "row_count": 3,
+      "subquestion": "When leadership changes, how large is the swing versus the prior leader?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The sharpest transition is 1990, when US Airways (US) displaced Delta (DL) with a swing of +213,377 completed flights versus Delta's 1989 output, and held a 174,169-flight lead over Delta as runner-up within that year. This is more than 20 times larger than either of the other two transitions (1992 and 2000).",
+      "columns_csv": "Year, new_leader, leader_flights, prev_leader, prev_leader_flights, swing_vs_prior, gap_vs_runner_up",
+      "first_row": {
+        "Year": 1990,
+        "gap_vs_runner_up": 174169,
+        "leader_flights": 991989,
+        "new_leader": "US",
+        "prev_leader": "DL",
+        "prev_leader_flights": 778612,
+        "swing_vs_prior": 213377
+      },
+      "row_count": 1,
+      "subquestion": "Which transition is the sharpest?",
+      "subquestion_id": "q3"
+    },
+    {
+      "answer_preview": "The market is defined by long stable eras, not frequent turnover. In 38 full years of data (1988–2025), there were only 3 leadership transitions. Delta (DL) dominated for roughly 11 years (1987–1999 with a brief 2-year interruption by US Airways in 1990–1991). Southwest (WN) has held an unbroken reign since 2000—26 consecutive years. Two carriers account for the top position in all but 2 years of the entire dataset.",
+      "columns_csv": "leader, era_start_year, era_end_year, years_in_era",
+      "first_row": {
+        "era_end_year": 1989,
+        "era_start_year": 1987,
+        "leader": "DL",
+        "years_in_era": 3
+      },
+      "row_count": 4,
+      "subquestion": "Does the market show long stable eras, or frequent turnover at the top?",
+      "subquestion_id": "q4"
+    }
+  ],
+  "row_count": 4,
+  "generated_at": "2026-03-24T11:08:50.660774Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

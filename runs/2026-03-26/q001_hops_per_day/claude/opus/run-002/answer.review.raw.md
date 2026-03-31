@@ -1,0 +1,1 @@
+Review written to `review.md` with **Verdict: PASS**. The analysis is materially correct — SQL logic, deduplication, route construction, recurrence counting, empty-tail handling, and all sub-question answers are verified against the executed results.

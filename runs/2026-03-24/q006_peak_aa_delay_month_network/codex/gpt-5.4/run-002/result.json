@@ -1,0 +1,96 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "July 2024 is the single worst American Airlines month for departure delays in the full available history. It leads the AA monthly leaderboard on both average departure delay and the share of flights leaving 15 or more minutes late, with 86,083 completed flights, a 36.33 minute average departure delay, and 38.04% of flights departing 15+ minutes late.",
+      "columns_csv": "month, flights, avg_dep_delay, pct_dep_15_plus, worst_month_rank",
+      "first_row": {
+        "avg_dep_delay": 4.27,
+        "flights": 55871,
+        "month": "1987-10-01T00:00:00Z",
+        "pct_dep_15_plus": 8.8,
+        "worst_month_rank": 402
+      },
+      "row_count": 458,
+      "subquestion": "Which month is the single worst American Airlines month for departure delays?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "In July 2024, Dallas/Fort Worth (DFW) and Charlotte (CLT) are the dominant origin contributors. DFW produced 593,021 departure-delay minutes and 17.98% of the month's total AA delay minutes, while CLT added 560,409 minutes and 16.99%; ORD, MIA, and PHL are the next tier. The displayed origin table uses a 1,000-flight readability filter, but each airport's share is still measured against the full July 2024 AA network.",
+      "columns_csv": "OriginCode, origin_city, flights, avg_dep_delay, pct_dep_15_plus, total_dep_delay_minutes, network_delay_share_pct, network_flight_share_pct",
+      "first_row": {
+        "OriginCode": "DFW",
+        "avg_dep_delay": 38.52,
+        "flights": 14962,
+        "network_delay_share_pct": 17.98,
+        "network_flight_share_pct": 17.38,
+        "origin_city": "Dallas/Fort Worth, TX",
+        "pct_dep_15_plus": 46.59,
+        "total_dep_delay_minutes": 593021
+      },
+      "row_count": 15,
+      "subquestion": "Which origins contribute most to that peak month?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "Among business-meaningful July 2024 AA routes, DFW-LAX is the largest route contributor by departure-delay minutes. CLT-MCO and DFW-SAT are close behind, followed by CLT-RDU and RDU-CLT. The displayed route table applies a 150-flight readability filter, but every route share is still computed against the full July 2024 AA network total.",
+      "columns_csv": "route, origin_city, dest_city, flights, avg_dep_delay, pct_dep_15_plus, total_dep_delay_minutes, network_delay_share_pct, network_flight_share_pct",
+      "first_row": {
+        "avg_dep_delay": 40.89,
+        "dest_city": "Los Angeles, CA",
+        "flights": 443,
+        "network_delay_share_pct": 0.56,
+        "network_flight_share_pct": 0.51,
+        "origin_city": "Dallas/Fort Worth, TX",
+        "pct_dep_15_plus": 46.5,
+        "route": "DFW-LAX",
+        "total_dep_delay_minutes": 18462
+      },
+      "row_count": 182,
+      "subquestion": "Which routes contribute most to that peak month?",
+      "subquestion_id": "q3"
+    },
+    {
+      "answer_preview": "July 2024 looks broad across the AA network, with notable hub concentration rather than a single-point failure. DFW alone accounts for 17.98% of delay minutes, and the top five origins account for 50.75%, but the top route contributes only 0.56% and the top ten routes together only 4.88% of delay minutes across 909 routes. That pattern points to network-wide disruption centered heavily in major hubs, especially DFW and CLT, not a narrow problem confined to a few routes.",
+      "columns_csv": "network_flights, network_delay_minutes, top_origin, top_origin_delay_minutes, top_origin_delay_share_pct, top_origin_flights, top_origin_flight_share_pct, top_route, top_route_delay_minutes, top_route_delay_share_pct, top_route_flights, top_route_flight_share_pct, top5_origin_delay_minutes, top5_origin_delay_share_pct, top5_origin_flights, top5_origin_flight_share_pct, top10_route_delay_minutes, top10_route_delay_share_pct, top10_route_flights, top10_route_flight_share_pct, origin_count, route_count",
+      "first_row": {
+        "network_delay_minutes": 3297804,
+        "network_flights": 86083,
+        "origin_count": 125,
+        "route_count": 909,
+        "top10_route_delay_minutes": 161038,
+        "top10_route_delay_share_pct": 4.88,
+        "top10_route_flight_share_pct": 3.88,
+        "top10_route_flights": 3340,
+        "top5_origin_delay_minutes": 1673625,
+        "top5_origin_delay_share_pct": 50.75,
+        "top5_origin_flight_share_pct": 46.25,
+        "top5_origin_flights": 39810,
+        "top_origin": "DFW",
+        "top_origin_delay_minutes": 593021,
+        "top_origin_delay_share_pct": 17.98,
+        "top_origin_flight_share_pct": 17.38,
+        "top_origin_flights": 14962,
+        "top_route": "DFW-LAX",
+        "top_route_delay_minutes": 18462,
+        "top_route_delay_share_pct": 0.56,
+        "top_route_flight_share_pct": 0.51,
+        "top_route_flights": 443
+      },
+      "row_count": 1,
+      "subquestion": "Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?",
+      "subquestion_id": "q4"
+    }
+  ],
+  "row_count": 4,
+  "generated_at": "2026-03-24T16:50:05.953638Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

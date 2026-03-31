@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worst Origin Airports by Departure OTP</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg-top: #eaf3f8;
+      --bg-bottom: #f6fafc;
+      --panel: #ffffff;
+      --panel-alt: #f3f7fa;
+      --ink: #163244;
+      --muted: #5d7485;
+      --navy: #0e3a52;
+      --slate: #5c7080;
+      --sky: #3c88b5;
+      --teal: #1f8a70;
+      --amber: #d48a1f;
+      --red: #c54f36;
+      --grid: rgba(22,50,68,0.12);
+      --border: rgba(22,50,68,0.10);
+      --shadow: 0 18px 45px rgba(14,58,82,0.10);
+      --radius-xl: 22px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    .page-header {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a5f82 100%);
+      color: white;
+      padding: 32px 40px;
+    }
+    .header-inner { max-width: 1280px; margin: 0 auto; }
+    .header-eyebrow {
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      opacity: 0.6; margin-bottom: 8px;
+    }
+    .header-title {
+      font-family: Georgia, ui-serif, serif;
+      font-size: 28px; font-weight: 700; margin-bottom: 8px;
+    }
+    .header-subtitle { font-size: 14px; opacity: 0.75; }
+
+    /* ── Empty state ─────────────────────────────────────── */
+    .empty-state {
+      max-width: 520px; margin: 80px auto; text-align: center;
+      color: var(--muted); padding: 0 24px;
+    }
+    .empty-state.hidden { display: none; }
+    .empty-icon { font-size: 52px; margin-bottom: 16px; }
+    .empty-state h2 {
+      font-family: Georgia, serif; font-size: 20px;
+      color: var(--navy); margin-bottom: 10px;
+    }
+    .empty-state p { font-size: 14px; line-height: 1.7; }
+
+    /* ── Main content ────────────────────────────────────── */
+    .main-content {
+      max-width: 1280px; margin: 0 auto;
+      padding: 32px 24px; display: none;
+    }
+    .main-content.visible { display: block; }
+
+    /* ── KPI strip ───────────────────────────────────────── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .kpi-label {
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--muted); margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-family: Georgia, serif;
+      font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1.1;
+    }
+    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .kpi-card.accent-red   .kpi-value { color: var(--red); }
+    .kpi-card.accent-amber .kpi-value { color: var(--amber); }
+    .kpi-card.accent-teal  .kpi-value { color: var(--teal); }
+
+    /* ── Cards ───────────────────────────────────────────── */
+    .card {
+      background: var(--panel);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .card-title {
+      font-family: Georgia, serif;
+      font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px;
+    }
+    .card-subtitle { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+    /* ── Chart grid ──────────────────────────────────────── */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px; margin-bottom: 28px;
+    }
+    @media (max-width: 920px) { .chart-grid { grid-template-columns: 1fr; } }
+    .chart-wrap { position: relative; }
+
+    /* ── Narrative ───────────────────────────────────────── */
+    .narrative-card {
+      background: var(--panel-alt);
+      border-left: 4px solid var(--sky);
+      border-radius: var(--radius-md);
+      padding: 20px 24px; margin-bottom: 28px;
+    }
+    .narrative-title {
+      font-family: Georgia, serif;
+      font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
+    }
+    .narrative-text { font-size: 14px; line-height: 1.75; color: var(--ink); }
+
+    /* ── Table ───────────────────────────────────────────── */
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      background: var(--navy); color: white;
+      padding: 10px 14px; text-align: left;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      white-space: nowrap; position: sticky; top: 0;
+    }
+    thead th.num { text-align: right; }
+    tbody tr:hover { background: var(--panel-alt); }
+    tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .rank-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      font-size: 11px; font-weight: 700;
+    }
+    .rank-worst  { background: var(--red);   color: #fff; }
+    .rank-bad    { background: var(--amber); color: #fff; }
+    .rank-normal { background: var(--panel-alt); color: var(--slate); }
+
+    .code-tag {
+      font-family: "Courier New", monospace;
+      font-weight: 700; font-size: 12px;
+      padding: 2px 6px; border-radius: 4px;
+      background: var(--panel-alt);
+    }
+    .tier-badge {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 20px; font-size: 10px; font-weight: 600;
+      white-space: nowrap;
+    }
+    .tier-hub      { background: #fdecea; color: var(--red);   }
+    .tier-large    { background: #fef3e2; color: var(--amber); }
+    .tier-mid      { background: #e8f5f0; color: var(--teal);  }
+    .tier-regional { background: #e8f1f8; color: var(--sky);   }
+
+    /* ── Legend ──────────────────────────────────────────── */
+    .legend {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      font-size: 11px; color: var(--muted); margin-top: 10px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    /* ── Ledger ──────────────────────────────────────────── */
+    .ledger { margin-bottom: 28px; }
+    .ledger-heading {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .ledger-table {
+      width: 100%; border-collapse: collapse;
+      background: var(--panel);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .ledger-row { cursor: pointer; border-bottom: 1px solid var(--border); }
+    .ledger-row:hover td { background: var(--panel-alt); }
+    .ledger-row td { padding: 10px 14px; }
+    .l-toggle { width: 1.5em; font-family: monospace; color: var(--slate); }
+    .l-label  { color: var(--navy); font-weight: 600; }
+    .l-role   { color: var(--muted); width: 7em; }
+    .l-status { width: 6em; }
+    .l-rows   { width: 5em; text-align: right; font-variant-numeric: tabular-nums; }
+    .s-ok      { color: var(--teal);  font-weight: 700; }
+    .s-pending { color: var(--amber); font-weight: 700; }
+    .s-failed  { color: var(--red);   font-weight: 700; }
+    .sql-expand { display: none; background: var(--panel-alt); border-top: 1px solid var(--border); }
+    .sql-expand.open { display: table-row; }
+    .sql-expand td { padding: 0; }
+    .sql-pre {
+      margin: 0; padding: 14px 18px;
+      font-family: "Courier New", monospace;
+      font-size: 11px; white-space: pre-wrap; word-break: break-all;
+      color: var(--ink); line-height: 1.55;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .btn {
+      padding: 9px 20px; border-radius: var(--radius-sm);
+      border: none; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn:hover  { opacity: 0.85; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-primary { background: var(--sky);   color: #fff; }
+    .btn-danger  { background: var(--red);   color: #fff; }
+    .btn-outline {
+      background: transparent; color: var(--navy);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Footer / controls ───────────────────────────────── */
+    footer {
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+      padding: 28px 40px; margin-top: 40px;
+    }
+    .footer-inner { max-width: 1280px; margin: 0 auto; }
+    .footer-title {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--muted); margin-bottom: 16px;
+    }
+    .control-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr auto;
+      gap: 12px; align-items: start; margin-bottom: 12px;
+    }
+    @media (max-width: 768px) { .control-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-label {
+      font-size: 11px; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    input[type="password"] {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px; font-size: 13px;
+      color: var(--ink); background: var(--panel-alt); width: 100%;
+    }
+    textarea {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px; font-size: 11px;
+      color: var(--ink); background: var(--panel-alt);
+      width: 100%; resize: vertical; min-height: 100px;
+      font-family: "Courier New", monospace; line-height: 1.5;
+    }
+    .control-actions {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      align-items: flex-end; padding-top: 18px;
+    }
+    .status-text { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    /* ── Table header row ────────────────────────────────── */
+    .table-header-row {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-inner">
+    <div class="header-eyebrow">OnTime Analytics &middot; Departure Performance</div>
+    <h1 class="header-title">Worst Origin Airports by Departure On-Time Performance</h1>
+    <p class="header-subtitle">Airports ranked by lowest departure OTP &middot; minimum 10,000 completed non-cancelled departures</p>
+  </div>
+</header>
+
+<div id="emptyState" class="empty-state">
+  <div class="empty-icon">&#9992;</div>
+  <h2>Enter your JWE token to load the dashboard</h2>
+  <p>Use the control panel below to authenticate and fetch departure OTP rankings from the OnTime dataset.</p>
+</div>
+
+<div id="mainContent" class="main-content">
+
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card accent-red">
+      <div class="kpi-label">Worst Airport</div>
+      <div class="kpi-value" id="kpiCode">—</div>
+      <div class="kpi-sub" id="kpiName">—</div>
+    </div>
+    <div class="kpi-card accent-red">
+      <div class="kpi-label">Worst OTP</div>
+      <div class="kpi-value" id="kpiOtp">—</div>
+      <div class="kpi-sub" id="kpiOtpSub">departure on-time rate</div>
+    </div>
+    <div class="kpi-card accent-amber">
+      <div class="kpi-label">Highest Avg Delay (Top 30)</div>
+      <div class="kpi-value" id="kpiDelay">—</div>
+      <div class="kpi-sub" id="kpiDelaySub">airport with most avg delay</div>
+    </div>
+    <div class="kpi-card accent-teal">
+      <div class="kpi-label">Qualifying Airports</div>
+      <div class="kpi-value" id="kpiTotal">—</div>
+      <div class="kpi-sub">&ge;10,000 completed departures</div>
+    </div>
+  </div>
+
+  <!-- Narrative -->
+  <div class="narrative-card">
+    <div class="narrative-title">Key Finding: Who Makes Up the Bottom Group?</div>
+    <div class="narrative-text" id="narrativeText">Loading analysis&hellip;</div>
+  </div>
+
+  <!-- Charts -->
+  <div class="chart-grid">
+    <div class="card">
+      <div class="card-title">Worst 25 Airports by Departure OTP</div>
+      <div class="card-subtitle">Ranked worst &rarr; least-worst &middot; worst 5 in red &middot; worst airport annotated</div>
+      <div class="chart-wrap" style="height:520px;">
+        <canvas id="rankChart"></canvas>
+      </div>
+      <div class="legend" style="margin-top:10px;">
+        <div class="legend-item"><div class="legend-dot" style="background:#8b2213;"></div>Worst airport (#1)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#c54f36;"></div>Worst 5</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#3c88b5;"></div>Ranks 6&ndash;25</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Flight Volume vs. Departure OTP</div>
+      <div class="card-subtitle">Log-scale x-axis &middot; worst airport annotated &middot; colored by volume tier</div>
+      <div class="chart-wrap" style="height:480px;">
+        <canvas id="scatterChart"></canvas>
+      </div>
+      <div class="legend" id="scatterLegend" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- Detail table -->
+  <div class="card" style="margin-bottom:28px;">
+    <div class="table-header-row">
+      <div>
+        <div class="card-title">Ranked Airport Detail</div>
+        <div class="card-subtitle">Full ranked result &middot; worst 5 highlighted &middot; volume tier from bottom_group_mix query</div>
+      </div>
+      <button class="btn btn-outline" onclick="exportCsv()">Export CSV</button>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Code</th>
+            <th>Airport</th>
+            <th class="num">OTP&nbsp;%</th>
+            <th class="num">Avg Delay</th>
+            <th class="num">P90 Delay</th>
+            <th class="num">Departures</th>
+            <th>Volume Tier</th>
+            <th>Period</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Query ledger -->
+  <div class="ledger">
+    <div class="ledger-heading">Query Ledger</div>
+    <table class="ledger-table">
+      <tbody id="ledgerBody"></tbody>
+    </table>
+  </div>
+
+</div><!-- /mainContent -->
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-title">Data Connection</div>
+    <div class="control-grid">
+      <div class="form-group">
+        <label class="form-label">JWE Token</label>
+        <input type="password" id="jweInput" placeholder="Paste JWE token&hellip;" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Primary SQL Query (worst_airport)</label>
+        <textarea id="sqlInput" rows="7"></textarea>
+      </div>
+      <div class="control-actions">
+        <button class="btn btn-primary" id="fetchBtn" onclick="runAll()">Fetch Data</button>
+        <button class="btn btn-danger" onclick="forgetToken()">Forget Token</button>
+      </div>
+    </div>
+    <div class="status-text" id="statusText">Ready &mdash; enter JWE token and click Fetch Data.</div>
+  </div>
+</footer>
+
+<script>
+// ── SQL Definitions ───────────────────────────────────────────────────────────
+
+const SQL_PRIMARY = `WITH airport_stats AS (
+    SELECT
+        OriginAirportID,
+        OriginCode,
+        count() AS completed_departures,
+        round(countIf(DepDel15 = 0) * 100.0 / count(), 2) AS otp_pct,
+        round(avg(DepDelay), 2) AS avg_dep_delay_min,
+        round(quantile(0.90)(DepDelay), 2) AS p90_dep_delay_min,
+        min(FlightDate) AS first_date,
+        max(FlightDate) AS last_date
+    FROM ontime.fact_ontime
+    WHERE Cancelled = 0
+    GROUP BY OriginAirportID, OriginCode
+    HAVING completed_departures >= 10000
+),
+ranked AS (
+    SELECT
+        s.*,
+        d.DisplayAirportName AS airport_name,
+        row_number() OVER (ORDER BY otp_pct ASC) AS rank_worst,
+        count() OVER () AS total_qualifying
+    FROM airport_stats s
+    LEFT JOIN ontime.dim_airports d ON s.OriginAirportID = d.AirportID
+)
+SELECT
+    rank_worst,
+    total_qualifying,
+    OriginCode,
+    airport_name,
+    completed_departures,
+    otp_pct,
+    avg_dep_delay_min,
+    p90_dep_delay_min,
+    first_date,
+    last_date
+FROM ranked
+ORDER BY rank_worst ASC
+LIMIT 30`;
+
+const SQL_SPREAD = `WITH airport_stats AS (
+    SELECT
+        OriginAirportID,
+        OriginCode,
+        count() AS completed_departures,
+        round(countIf(DepDel15 = 0) * 100.0 / count(), 2) AS otp_pct,
+        round(avg(DepDelay), 2) AS avg_dep_delay_min,
+        round(quantile(0.90)(DepDelay), 2) AS p90_dep_delay_min,
+        min(FlightDate) AS first_date,
+        max(FlightDate) AS last_date
+    FROM ontime.fact_ontime
+    WHERE Cancelled = 0
+    GROUP BY OriginAirportID, OriginCode
+    HAVING completed_departures >= 10000
+),
+ranked AS (
+    SELECT
+        s.*,
+        d.DisplayAirportName AS airport_name,
+        row_number() OVER (ORDER BY otp_pct ASC) AS rank_worst,
+        count() OVER () AS total_qualifying
+    FROM airport_stats s
+    LEFT JOIN ontime.dim_airports d ON s.OriginAirportID = d.AirportID
+)
+SELECT
+    rank_worst,
+    total_qualifying,
+    OriginCode,
+    airport_name,
+    completed_departures,
+    otp_pct,
+    avg_dep_delay_min,
+    p90_dep_delay_min,
+    round(otp_pct - min(otp_pct) OVER (), 2) AS spread_from_worst_pct
+FROM ranked
+WHERE rank_worst = 1
+   OR rank_worst = toUInt64(ceil(total_qualifying / 2.0))
+ORDER BY rank_worst ASC`;
+
+const SQL_MIX = `WITH airport_stats AS (
+    SELECT
+        OriginAirportID,
+        OriginCode,
+        count() AS completed_departures,
+        round(countIf(DepDel15 = 0) * 100.0 / count(), 2) AS otp_pct,
+        round(avg(DepDelay), 2) AS avg_dep_delay_min,
+        round(quantile(0.90)(DepDelay), 2) AS p90_dep_delay_min,
+        min(FlightDate) AS first_date,
+        max(FlightDate) AS last_date
+    FROM ontime.fact_ontime
+    WHERE Cancelled = 0
+    GROUP BY OriginAirportID, OriginCode
+    HAVING completed_departures >= 10000
+),
+ranked AS (
+    SELECT
+        s.*,
+        d.DisplayAirportName AS airport_name,
+        row_number() OVER (ORDER BY otp_pct ASC) AS rank_worst,
+        count() OVER () AS total_qualifying,
+        multiIf(
+            s.completed_departures >= 2000000, 'Major hub (2M+ dep)',
+            s.completed_departures >= 500000,  'Large airport (500k-2M dep)',
+            s.completed_departures >= 100000,  'Mid-size (100k-500k dep)',
+            'Regional/small (<100k dep)'
+        ) AS volume_tier
+    FROM airport_stats s
+    LEFT JOIN ontime.dim_airports d ON s.OriginAirportID = d.AirportID
+)
+SELECT
+    rank_worst,
+    OriginCode,
+    airport_name,
+    completed_departures,
+    volume_tier,
+    otp_pct,
+    avg_dep_delay_min,
+    p90_dep_delay_min
+FROM ranked
+WHERE rank_worst <= 30
+ORDER BY rank_worst ASC`;
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const JWE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+
+const TIER_COLOR = {
+  'Major hub (2M+ dep)':         '#c54f36',
+  'Large airport (500k-2M dep)': '#d48a1f',
+  'Mid-size (100k-500k dep)':    '#3c88b5',
+  'Regional/small (<100k dep)':  '#1f8a70',
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let isRunning  = false;
+let runId      = 0;
+let primaryData = [];
+let mixData     = [];
+let spreadData  = [];
+let rankChartObj   = null;
+let scatterChartObj = null;
+
+// ledger entries: { id, label, role, sql, status, rows }
+const ledgerEntries = [];
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+function setStatus(msg) {
+  document.getElementById('statusText').textContent = msg;
+}
+
+function normalizeDate(val) {
+  return String(val ?? '').slice(0, 10);
+}
+
+function fmtNum(n) {
+  return Number(n).toLocaleString();
+}
+
+// ── Token management ──────────────────────────────────────────────────────────
+function forgetToken() {
+  localStorage.removeItem(JWE_KEY);
+  document.getElementById('jweInput').value = '';
+  setStatus('Token forgotten.');
+}
+
+// ── Fetch helper ──────────────────────────────────────────────────────────────
+async function executeQuery(jwe, sql) {
+  const url = `https://mcp.demo.altinity.cloud/${encodeURIComponent(jwe)}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+  const resp = await fetch(url);
+  if (!resp.ok) {
+    const txt = await resp.text();
+    throw new Error(`HTTP ${resp.status}: ${txt.slice(0, 300)}`);
+  }
+  const json = await resp.json();
+  const { columns, rows } = json;
+  if (!columns || !Array.isArray(columns)) throw new Error('Response missing columns field');
+  return (rows ?? []).map(r => {
+    const obj = {};
+    columns.forEach((c, i) => { obj[c] = r[i]; });
+    return obj;
+  });
+}
+
+// ── Ledger ────────────────────────────────────────────────────────────────────
+function addLedgerEntry(id, label, role, sql) {
+  const entry = { id, label, role, sql, status: 'Pending', rows: '—' };
+  ledgerEntries.push(entry);
+  renderLedger();
+  return entry;
+}
+
+function updateLedger(id, status, rows) {
+  const e = ledgerEntries.find(x => x.id === id);
+  if (e) { e.status = status; e.rows = rows; renderLedger(); }
+}
+
+function renderLedger() {
+  const body = document.getElementById('ledgerBody');
+  body.innerHTML = '';
+  ledgerEntries.forEach((e, i) => {
+    const sCls = e.status === 'OK' ? 's-ok' : e.status === 'Pending' ? 's-pending' : 's-failed';
+    const expandId = `lsql-${i}`;
+    const toggleId = `ltog-${i}`;
+
+    const row = document.createElement('tr');
+    row.className = 'ledger-row';
+    row.innerHTML = `
+      <td class="l-toggle" id="${toggleId}">&#9658;</td>
+      <td class="l-label">${e.label}</td>
+      <td class="l-role">${e.role}</td>
+      <td class="l-status"><span class="${sCls}">${e.status}</span></td>
+      <td class="l-rows">${e.rows}</td>`;
+    row.addEventListener('click', () => {
+      const sqlRow = document.getElementById(expandId);
+      const tog    = document.getElementById(toggleId);
+      const open   = sqlRow.classList.toggle('open');
+      tog.innerHTML = open ? '&#9660;' : '&#9658;';
+    });
+
+    const sqlRow = document.createElement('tr');
+    sqlRow.id = expandId;
+    sqlRow.className = 'sql-expand';
+    sqlRow.innerHTML = `<td colspan="5"><pre class="sql-pre">${e.sql.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre></td>`;
+
+    body.appendChild(row);
+    body.appendChild(sqlRow);
+  });
+}
+
+// ── Main run ──────────────────────────────────────────────────────────────────
+async function runAll() {
+  if (isRunning) return;
+
+  const jwe = document.getElementById('jweInput').value.trim();
+  const sql = document.getElementById('sqlInput').value.trim();
+
+  if (!jwe) { setStatus('JWE token is required.'); return; }
+  if (!sql) { setStatus('SQL query is required.'); return; }
+
+  localStorage.setItem(JWE_KEY, jwe);
+  isRunning = true;
+  runId++;
+  const myRun = runId;
+
+  ledgerEntries.length = 0;
+  document.getElementById('fetchBtn').disabled = true;
+  setStatus('Fetching primary query (worst_airport)…');
+
+  addLedgerEntry('worst_airport',    'Worst Airport Ranking',           'Primary',    sql);
+  addLedgerEntry('spread_to_middle', 'Spread: Worst vs. Median Airport','Enrichment', SQL_SPREAD);
+  addLedgerEntry('bottom_group_mix', 'Bottom Group Volume Mix',         'Enrichment', SQL_MIX);
+
+  try {
+    // Primary
+    const rows1 = await executeQuery(jwe, sql);
+    if (myRun !== runId) return;
+    primaryData = rows1;
+    updateLedger('worst_airport', 'OK', rows1.length);
+    setStatus(`Primary: ${rows1.length} rows. Fetching supporting queries…`);
+
+    // Supporting in parallel
+    const [res2, res3] = await Promise.allSettled([
+      executeQuery(jwe, SQL_SPREAD),
+      executeQuery(jwe, SQL_MIX),
+    ]);
+    if (myRun !== runId) return;
+
+    spreadData = res2.status === 'fulfilled' ? res2.value : [];
+    mixData    = res3.status === 'fulfilled' ? res3.value : [];
+
+    updateLedger('spread_to_middle', res2.status === 'fulfilled' ? 'OK' : 'Failed',
+                 res2.status === 'fulfilled' ? res2.value.length : '—');
+    updateLedger('bottom_group_mix', res3.status === 'fulfilled' ? 'OK' : 'Failed',
+                 res3.status === 'fulfilled' ? res3.value.length : '—');
+
+    if (res2.status !== 'fulfilled') console.warn('spread_to_middle failed:', res2.reason);
+    if (res3.status !== 'fulfilled') console.warn('bottom_group_mix failed:', res3.reason);
+
+    renderDashboard();
+    setStatus(`Loaded: ${rows1.length} ranked airports · ${spreadData.length} spread rows · ${mixData.length} mix rows`);
+
+  } catch (err) {
+    if (myRun !== runId) return;
+    updateLedger('worst_airport', 'Failed', '—');
+    setStatus(`Error: ${err.message}`);
+  } finally {
+    if (myRun === runId) {
+      isRunning = false;
+      document.getElementById('fetchBtn').disabled = false;
+    }
+  }
+}
+
+// ── Dashboard render ──────────────────────────────────────────────────────────
+function renderDashboard() {
+  if (!primaryData.length) { setStatus('No data returned.'); return; }
+
+  // Build tier lookup from mixData
+  const tierMap = {};
+  mixData.forEach(r => { tierMap[r.OriginCode] = r.volume_tier; });
+
+  // Normalise rows
+  const data = primaryData.map(r => ({
+    rank:       Number(r.rank_worst),
+    total:      Number(r.total_qualifying),
+    code:       r.OriginCode,
+    name:       r.airport_name ?? r.OriginCode,
+    departures: Number(r.completed_departures),
+    otp:        Number(r.otp_pct),
+    avgDelay:   Number(r.avg_dep_delay_min),
+    p90Delay:   Number(r.p90_dep_delay_min),
+    firstDate:  normalizeDate(r.first_date),
+    lastDate:   normalizeDate(r.last_date),
+    tier:       tierMap[r.OriginCode] ?? 'Unknown',
+  }));
+
+  // KPIs
+  const worst    = data[0];
+  const total    = worst.total;
+  const maxDelay = data.reduce((m, r) => r.avgDelay > m.avgDelay ? r : m, data[0]);
+  const delayFreq = Math.round(100 / (100 - worst.otp));
+
+  document.getElementById('kpiCode').textContent  = worst.code;
+  document.getElementById('kpiName').textContent  = worst.name;
+  document.getElementById('kpiOtp').textContent   = worst.otp.toFixed(2) + '%';
+  document.getElementById('kpiOtpSub').textContent =
+    `~1 in ${delayFreq} departures delayed 15+ min`;
+  document.getElementById('kpiDelay').textContent  = maxDelay.avgDelay.toFixed(1) + ' min';
+  document.getElementById('kpiDelaySub').textContent = `${maxDelay.code} — avg departure delay`;
+  document.getElementById('kpiTotal').textContent  = total.toLocaleString();
+
+  // Narrative
+  buildNarrative(data, worst);
+
+  // Charts
+  drawRankChart(data);
+  drawScatterChart(data);
+
+  // Table
+  buildTable(data);
+
+  // Show content
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('mainContent').classList.add('visible');
+}
+
+// ── Narrative ─────────────────────────────────────────────────────────────────
+function buildNarrative(data, worst) {
+  const midRow    = spreadData.find(r => Number(r.rank_worst) !== 1);
+  const midOtp    = midRow ? Number(midRow.otp_pct) : null;
+  const midCode   = midRow?.OriginCode ?? '';
+  const midRank   = midRow ? Number(midRow.rank_worst) : null;
+  const spread    = midOtp ? (midOtp - worst.otp).toFixed(1) : null;
+
+  const hubs      = data.filter(r => r.tier?.startsWith('Major')).map(r => `${r.code} (#${r.rank})`);
+  const regionals = data.filter(r => r.tier?.startsWith('Regional')).map(r => r.code);
+
+  let txt = `The bottom 30 span the full size spectrum — poor departure OTP is not confined to major hubs. `;
+
+  if (regionals.length) {
+    txt += `Small regional airports dominate the very worst positions (${regionals.slice(0, 4).join(', ')}), `;
+  }
+  if (hubs.length) {
+    txt += `but major hubs also appear throughout: ${hubs.slice(0, 6).join(', ')}. `;
+  }
+
+  txt += `The single worst performer, ${worst.code} (${worst.name}), posts an OTP of ${worst.otp.toFixed(2)}%`;
+  if (spread && midCode && midOtp !== null) {
+    txt += ` — ${spread} percentage points below the median qualifier ${midCode} (rank ${midRank}, ${midOtp.toFixed(2)}% OTP). `;
+  } else {
+    txt += `. `;
+  }
+  txt += `With a P90 departure delay of ${worst.p90Delay} minutes, nearly 1 in ${Math.round(100/(100-worst.otp))} departures is delayed 15 minutes or more — a genuinely extreme outlier rather than marginal underperformance.`;
+
+  document.getElementById('narrativeText').textContent = txt;
+}
+
+// ── Rank chart (horizontal bars, lollipop style) ──────────────────────────────
+function drawRankChart(data) {
+  const top25 = data.slice(0, 25).slice().reverse(); // worst at top
+
+  const minOtp = Math.min(...top25.map(r => r.otp));
+  const maxOtp = Math.max(...top25.map(r => r.otp));
+  const xMin   = Math.max(0, Math.floor(minOtp) - 2);
+  const xMax   = Math.ceil(maxOtp) + 1;
+
+  if (rankChartObj) rankChartObj.destroy();
+
+  const ctx = document.getElementById('rankChart').getContext('2d');
+
+  // Custom plugin: annotate worst airport label on bar
+  const worstAnnotationPlugin = {
+    id: 'worstBarAnnotation',
+    afterDraw(chart) {
+      const worst = top25.find(r => r.rank === 1);
+      if (!worst) return;
+      const wIdx = top25.indexOf(worst);
+      const meta = chart.getDatasetMeta(0);
+      const el   = meta.data[wIdx];
+      if (!el) return;
+      const { ctx: c } = chart;
+      c.save();
+      c.fillStyle = '#8b2213';
+      c.font = 'bold 11px "Segoe UI", sans-serif';
+      c.fillText('worst', el.x + 6, el.y + 4);
+      c.restore();
+    }
+  };
+
+  rankChartObj = new Chart(ctx, {
+    type: 'bar',
+    plugins: [worstAnnotationPlugin],
+    data: {
+      labels: top25.map(r => `#${r.rank} ${r.code}`),
+      datasets: [{
+        label: 'Departure OTP %',
+        data: top25.map(r => r.otp),
+        backgroundColor: top25.map(r =>
+          r.rank === 1 ? '#8b2213' :
+          r.rank <= 5  ? '#c54f36' : '#3c88b5'
+        ),
+        borderRadius: 3,
+        barThickness: 13,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => {
+              const r = top25[items[0].dataIndex];
+              return `${r.code} — ${r.name}`;
+            },
+            label: (item) => {
+              const r = top25[item.dataIndex];
+              return [
+                `OTP: ${r.otp}%`,
+                `Avg delay: ${r.avgDelay} min`,
+                `P90 delay: ${r.p90Delay} min`,
+                `Departures: ${fmtNum(r.departures)}`,
+                `Tier: ${r.tier}`,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: xMin, max: xMax,
+          title: { display: true, text: 'Departure OTP (%)', color: '#5c7080', font: { size: 11 } },
+          grid:  { color: 'rgba(22,50,68,0.08)' },
+          ticks: { callback: v => v + '%', color: '#5c7080', font: { size: 11 } }
+        },
+        y: {
+          ticks: { color: '#163244', font: { size: 11 } },
+          grid:  { display: false }
+        }
+      }
+    }
+  });
+}
+
+// ── Scatter chart ─────────────────────────────────────────────────────────────
+function drawScatterChart(data) {
+  if (scatterChartObj) scatterChartObj.destroy();
+
+  // Build tier-grouped datasets
+  const tierOrder = [
+    'Major hub (2M+ dep)',
+    'Large airport (500k-2M dep)',
+    'Mid-size (100k-500k dep)',
+    'Regional/small (<100k dep)',
+    'Unknown',
+  ];
+  const tiers = tierOrder.filter(t => data.some(r => r.tier === t));
+
+  const datasets = tiers.map(tier => {
+    const pts = data.filter(r => r.tier === tier);
+    return {
+      label: tier,
+      data: pts.map(r => ({
+        x: r.departures, y: r.otp,
+        code: r.code, name: r.name,
+        rank: r.rank, avgDelay: r.avgDelay, tier: r.tier,
+      })),
+      backgroundColor: (TIER_COLOR[tier] ?? '#5c7080') + 'cc',
+      borderColor:     TIER_COLOR[tier] ?? '#5c7080',
+      pointRadius:     6,
+      pointHoverRadius: 9,
+    };
+  });
+
+  // Custom plugin: annotate worst airport
+  const worstAnnotationPlugin = {
+    id: 'worstScatterAnnotation',
+    afterDatasetsDraw(chart) {
+      chart.data.datasets.forEach((ds, di) => {
+        const meta = chart.getDatasetMeta(di);
+        ds.data.forEach((pt, pi) => {
+          if (pt.rank !== 1) return;
+          const el = meta.data[pi];
+          if (!el) return;
+          const { ctx: c } = chart;
+          c.save();
+          c.fillStyle    = '#8b2213';
+          c.font         = 'bold 11px "Segoe UI", sans-serif';
+          c.strokeStyle  = '#fff';
+          c.lineWidth    = 3;
+          const label    = `${pt.code} (worst)`;
+          c.strokeText(label, el.x + 10, el.y - 6);
+          c.fillText(label,   el.x + 10, el.y - 6);
+          // Draw emphasis ring
+          c.beginPath();
+          c.arc(el.x, el.y, 11, 0, Math.PI * 2);
+          c.strokeStyle = '#8b2213';
+          c.lineWidth   = 2;
+          c.stroke();
+          c.restore();
+        });
+      });
+    }
+  };
+
+  // Build legend HTML
+  const legendEl = document.getElementById('scatterLegend');
+  legendEl.innerHTML = tiers.map(t => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${TIER_COLOR[t] ?? '#5c7080'};"></div>
+      ${t}
+    </div>`).join('');
+
+  const ctx = document.getElementById('scatterChart').getContext('2d');
+  scatterChartObj = new Chart(ctx, {
+    type: 'scatter',
+    plugins: [worstAnnotationPlugin],
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (item) => {
+              const r = item.raw;
+              return [
+                `${r.code} — ${r.name}`,
+                `Rank: #${r.rank}`,
+                `OTP: ${r.y}%`,
+                `Departures: ${fmtNum(r.x)}`,
+                `Avg delay: ${r.avgDelay} min`,
+                `Tier: ${r.tier}`,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'logarithmic',
+          title: { display: true, text: 'Completed Departures (log scale)', color: '#5c7080', font: { size: 11 } },
+          grid:  { color: 'rgba(22,50,68,0.08)' },
+          ticks: {
+            color: '#5c7080', font: { size: 10 },
+            callback: v => {
+              if (v >= 1e6) return (v / 1e6).toFixed(0) + 'M';
+              if (v >= 1e3) return (v / 1e3).toFixed(0) + 'k';
+              return v;
+            }
+          }
+        },
+        y: {
+          title: { display: true, text: 'Departure OTP (%)', color: '#5c7080', font: { size: 11 } },
+          grid:  { color: 'rgba(22,50,68,0.08)' },
+          ticks: { callback: v => v + '%', color: '#5c7080', font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+function tierBadge(tier) {
+  const cls = tier?.startsWith('Major') ? 'tier-hub' :
+              tier?.startsWith('Large') ? 'tier-large' :
+              tier?.startsWith('Mid')   ? 'tier-mid'   : 'tier-regional';
+  return `<span class="tier-badge ${cls}">${tier ?? '—'}</span>`;
+}
+
+function buildTable(data) {
+  const body = document.getElementById('tableBody');
+  body.innerHTML = '';
+  data.forEach(r => {
+    const isTop5   = r.rank <= 5;
+    const rankCls  = r.rank === 1 ? 'rank-worst' : isTop5 ? 'rank-bad' : 'rank-normal';
+    const rowBg    = r.rank === 1 ? '#fdecea' : isTop5 ? '#fff8f0' : '';
+    const otpColor = isTop5 ? `color:var(--red);font-weight:700;` : '';
+
+    const tr = document.createElement('tr');
+    if (rowBg) tr.style.background = rowBg;
+    tr.innerHTML = `
+      <td><span class="rank-badge ${rankCls}">${r.rank}</span></td>
+      <td><span class="code-tag">${r.code}</span></td>
+      <td style="max-width:220px;">${r.name}</td>
+      <td class="num" style="${otpColor}">${r.otp.toFixed(2)}%</td>
+      <td class="num">${r.avgDelay.toFixed(1)} min</td>
+      <td class="num">${r.p90Delay} min</td>
+      <td class="num">${fmtNum(r.departures)}</td>
+      <td>${tierBadge(r.tier)}</td>
+      <td style="white-space:nowrap;font-size:11px;color:#5c7080;">${r.firstDate}&nbsp;&ndash;&nbsp;${r.lastDate}</td>`;
+    body.appendChild(tr);
+  });
+}
+
+// ── Export ────────────────────────────────────────────────────────────────────
+function exportCsv() {
+  if (!primaryData.length) return;
+  const tierMap = {};
+  mixData.forEach(r => { tierMap[r.OriginCode] = r.volume_tier; });
+
+  const cols = ['rank_worst','OriginCode','airport_name','otp_pct','avg_dep_delay_min',
+                'p90_dep_delay_min','completed_departures','volume_tier','first_date','last_date'];
+  const rows = primaryData.map(r => ({
+    ...r,
+    volume_tier: tierMap[r.OriginCode] ?? '',
+    first_date:  normalizeDate(r.first_date),
+    last_date:   normalizeDate(r.last_date),
+  }));
+  const csv = [
+    cols.join(','),
+    ...rows.map(r => cols.map(c => JSON.stringify(r[c] ?? '')).join(','))
+  ].join('\n');
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'worst_airports_otp.csv';
+  a.click();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sqlInput').value = SQL_PRIMARY;
+  const stored = localStorage.getItem(JWE_KEY);
+  if (stored) {
+    document.getElementById('jweInput').value = stored;
+    runAll();
+  }
+});
+</script>
+</body>
+</html>

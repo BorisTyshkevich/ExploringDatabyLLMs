@@ -1,0 +1,70 @@
+{
+  "columns": [
+    "subquestion_id",
+    "subquestion",
+    "row_count",
+    "columns_csv",
+    "answer_preview",
+    "first_row"
+  ],
+  "rows": [
+    {
+      "answer_preview": "Using December through February and excluding cancelled or diverted flights, the worst qualifying pair is `DH` departing `Chicago O'Hare International (ORD)`. With a minimum threshold of 1,000 winter departures across the full history, it has 19,929 winter flights, the lowest departure on-time rate at 56.53%, and an average departure delay of 27.06 minutes.",
+      "columns_csv": "Carrier, OriginCode, DisplayAirportName, winter_flights, dep_otp_pct, avg_dep_delay_min, flights_with_any_reported_cause, flights_without_reported_cause",
+      "first_row": {
+        "Carrier": "DH",
+        "DisplayAirportName": "Chicago O'Hare International",
+        "OriginCode": "ORD",
+        "avg_dep_delay_min": 27.06,
+        "dep_otp_pct": 56.53,
+        "flights_with_any_reported_cause": 5681,
+        "flights_without_reported_cause": 14248,
+        "winter_flights": 19929
+      },
+      "row_count": 25,
+      "subquestion": "Which winter carrier-airport pair ranks worst overall?",
+      "subquestion_id": "q1"
+    },
+    {
+      "answer_preview": "For the leading weak winter pairs that actually report delay causes, operational causes dominate reported delay minutes rather than weather. In the verified top-10 weak set, every pair with measured cause data is majority operational, with weather contributing only 1.5% to 26.8% of reported cause minutes. Cause reporting is incomplete, though: `PI-DFW`, `PI-LAX`, and `PI-DAY` show no reported cause minutes at all, so the weather-versus-operations conclusion applies only to the measured subset.",
+      "columns_csv": "Carrier, OriginCode, winter_flights, dep_otp_pct, avg_dep_delay_min, flights_with_any_reported_cause, flights_without_reported_cause, weather_delay_min, carrier_delay_min, nas_delay_min, security_delay_min, late_aircraft_delay_min, total_reported_cause_min, weather_share_pct, operational_share_pct",
+      "first_row": {
+        "Carrier": "DH",
+        "OriginCode": "ORD",
+        "avg_dep_delay_min": 27.06,
+        "carrier_delay_min": 123407,
+        "dep_otp_pct": 56.53,
+        "flights_with_any_reported_cause": 5681,
+        "flights_without_reported_cause": 14248,
+        "late_aircraft_delay_min": 133239,
+        "nas_delay_min": 41492,
+        "operational_share_pct": 84.4,
+        "security_delay_min": 116,
+        "total_reported_cause_min": 353430,
+        "weather_delay_min": 55176,
+        "weather_share_pct": 15.6,
+        "winter_flights": 19929
+      },
+      "row_count": 10,
+      "subquestion": "Are the worst pairs driven more by weather or by operational causes?",
+      "subquestion_id": "q2"
+    },
+    {
+      "answer_preview": "The weak set is only mildly concentrated in carriers and not very concentrated in airports. Looking at the top 10 qualifying weak winter pairs, `PI` accounts for 3 pairs (30%), while `ORD` is the only airport that appears more than once with 2 pairs (20%). Every other carrier and airport appears once, so the concentration is more noticeable by carrier than by origin airport.",
+      "columns_csv": "concentration_type, entity, weak_pair_count, weak_pair_share_pct",
+      "first_row": {
+        "concentration_type": "carrier",
+        "entity": "OH",
+        "weak_pair_count": 1,
+        "weak_pair_share_pct": 10
+      },
+      "row_count": 17,
+      "subquestion": "Are the weakest pairs concentrated in a small number of carriers or airports?",
+      "subquestion_id": "q3"
+    }
+  ],
+  "row_count": 3,
+  "generated_at": "2026-03-24T14:51:27.159108Z",
+  "source_query_sha256": "",
+  "log_comment": ""
+}

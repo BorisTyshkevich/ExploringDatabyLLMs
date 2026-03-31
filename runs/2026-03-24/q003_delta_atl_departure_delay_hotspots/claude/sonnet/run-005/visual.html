@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delta ATL Departure Delay Hotspots</title>
+<style>
+:root {
+  --bg-top: #eaf3f8;
+  --bg-bottom: #f6fafc;
+  --panel: #ffffff;
+  --panel-alt: #f3f7fa;
+  --ink: #163244;
+  --muted: #5d7485;
+  --navy: #0e3a52;
+  --slate: #5c7080;
+  --sky: #3c88b5;
+  --teal: #1f8a70;
+  --amber: #d48a1f;
+  --red: #c54f36;
+  --border: rgba(22,50,68,0.10);
+  --shadow: 0 18px 45px rgba(14,58,82,0.10);
+  --radius-xl: 22px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
+  background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  min-height: 100vh;
+  color: var(--ink);
+}
+
+/* ── Header ── */
+.page-header {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a5a7a 100%);
+  color: white;
+  padding: 32px 24px 28px;
+}
+.header-inner { max-width: 1280px; margin: 0 auto; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px; padding: 4px 14px;
+  font-size: .78rem; letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.header-title {
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(1.5rem,3vw,2.3rem);
+  font-weight: 700; line-height: 1.2; margin-bottom: 8px;
+}
+.header-subtitle { font-size: .93rem; opacity: .78; max-width: 640px; }
+
+/* ── Layout ── */
+.main-content { max-width: 1280px; margin: 0 auto; padding: 28px 20px 40px; }
+
+/* ── Empty state ── */
+#empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; min-height: 340px; gap: 16px; text-align: center; color: var(--muted);
+}
+#empty-state h3 { font-size: 1.1rem; color: var(--ink); }
+#empty-state p { font-size: .88rem; max-width: 460px; }
+
+#dashboard-content { display: none; }
+
+/* ── Hero card ── */
+.hero-card {
+  background: linear-gradient(135deg, #c54f36 0%, #a33626 100%);
+  color: white; border-radius: var(--radius-xl);
+  padding: 28px 32px; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.hero-card::before {
+  content: ''; position: absolute; top: -50px; right: -50px;
+  width: 200px; height: 200px; background: rgba(255,255,255,.06); border-radius: 50%;
+}
+.hero-card::after {
+  content: ''; position: absolute; bottom: -30px; right: 80px;
+  width: 120px; height: 120px; background: rgba(255,255,255,.04); border-radius: 50%;
+}
+.hero-label { font-size: .72rem; letter-spacing: .10em; text-transform: uppercase; opacity: .82; margin-bottom: 10px; }
+.hero-hotspot { font-family: Georgia,serif; font-size: clamp(1.35rem,2.5vw,1.9rem); font-weight: 700; margin-bottom: 8px; }
+.hero-narrative { font-size: .88rem; opacity: .88; max-width: 780px; line-height: 1.6; margin-bottom: 18px; }
+.hero-metrics { display: flex; flex-wrap: wrap; gap: 20px 36px; }
+.hero-metric-val { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.hero-metric-lbl { font-size: .73rem; opacity: .8; margin-top: 3px; }
+
+/* ── KPI strip ── */
+.kpi-strip {
+  display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+  gap: 16px; margin-bottom: 28px;
+}
+.kpi-card {
+  background: var(--panel); border-radius: var(--radius-lg);
+  padding: 20px 22px; box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+.kpi-label { font-size: .70rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+.kpi-value { font-size: 1.9rem; font-weight: 700; line-height: 1; color: var(--navy); }
+.kpi-sub { font-size: .76rem; color: var(--muted); margin-top: 4px; }
+
+/* ── Cards ── */
+.card {
+  background: var(--panel); border-radius: var(--radius-xl);
+  padding: 24px 28px; box-shadow: var(--shadow); border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.card-title { font-family: Georgia,serif; font-size: 1.08rem; font-weight: 700; color: var(--navy); }
+.card-subtitle { font-size: .80rem; color: var(--muted); margin-top: 3px; }
+
+/* ── Heatmap ── */
+.heatmap-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.heatmap-table { border-collapse: collapse; min-width: 100%; font-size: .80rem; }
+.heatmap-table th {
+  padding: 8px 10px; text-align: center;
+  font-weight: 600; font-size: .70rem; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--muted); background: var(--panel-alt);
+  border: 1px solid var(--border); white-space: nowrap;
+}
+.heatmap-table th.dest-head { text-align: left; min-width: 62px; }
+.heatmap-table td {
+  padding: 9px 10px; text-align: center;
+  border: 1px solid var(--border); cursor: default;
+  font-weight: 600; font-size: .78rem;
+}
+.heatmap-table td.dest-cell {
+  font-weight: 700; color: var(--navy); background: var(--panel-alt);
+  text-align: left; font-size: .84rem;
+}
+.heatmap-table td.data-cell:hover { outline: 2px solid var(--navy); outline-offset: -2px; z-index: 2; position: relative; }
+.heatmap-table td.worst-cell { outline: 3px solid white !important; outline-offset: -3px; z-index: 3; position: relative; }
+.heatmap-table td.empty-cell { background: #f0f4f7; color: #c8d4dd; }
+
+.heatmap-legend { display: flex; align-items: center; gap: 14px; margin-top: 14px; font-size: .73rem; color: var(--muted); }
+.legend-bar { width: 180px; height: 10px; border-radius: 5px; background: linear-gradient(90deg,#c8e6f7 0%,#f9d97e 50%,#c54f36 100%); flex-shrink: 0; }
+.legend-labels { display: flex; justify-content: space-between; width: 180px; flex-shrink: 0; font-size: .68rem; }
+
+/* ── Line chart ── */
+.chart-scroll { overflow-x: auto; }
+svg.line-chart { display: block; width: 100%; min-width: 500px; height: 230px; }
+
+/* ── Pattern table ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.data-table th {
+  padding: 10px 14px; text-align: left;
+  font-size: .70rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--muted); border-bottom: 2px solid var(--border); background: var(--panel-alt);
+}
+.data-table th.num { text-align: right; }
+.data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table tr:hover td { background: var(--panel-alt); }
+.data-table tr.top-row td { background: #fef3f1; }
+.data-table tr.top-row td:first-child { border-left: 3px solid var(--red); }
+
+/* ── Badges ── */
+.badge { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: .72rem; font-weight: 600; }
+.badge-red   { background: #fce8e4; color: var(--red); }
+.badge-amber { background: #fef3de; color: var(--amber); }
+.badge-teal  { background: #e4f3ef; color: var(--teal); }
+.badge-sky   { background: #e0f0fa; color: var(--sky); }
+
+/* ── Takeaway ── */
+.takeaway-card {
+  background: linear-gradient(135deg,#eaf3f8 0%,#f6fafc 100%);
+  border: 1px solid var(--border); border-left: 4px solid var(--sky);
+  border-radius: var(--radius-lg); padding: 22px 26px; margin-bottom: 24px;
+}
+.takeaway-title { font-family: Georgia,serif; font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+.takeaway-body { font-size: .87rem; color: var(--ink); line-height: 1.65; }
+
+/* ── Ledger ── */
+.ledger-card { background: var(--panel); border-radius: var(--radius-lg); border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+.ledger-head { padding: 13px 18px; background: var(--panel-alt); font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+.ledger-row {
+  display: grid; grid-template-columns: 1.4em 1fr 7em 5.5em 5em;
+  align-items: center; gap: 0 10px;
+  padding: 11px 16px; border-bottom: 1px solid var(--border);
+  cursor: pointer; font-size: .82rem; transition: background .12s;
+}
+.ledger-row:last-child { border-bottom: none; }
+.ledger-row:hover { background: var(--panel-alt); }
+.ledger-toggle { color: var(--muted); font-size: .68rem; }
+.ledger-label { font-weight: 600; color: var(--ink); }
+.ledger-role { color: var(--muted); font-size: .74rem; }
+.ledger-status { font-size: .74rem; font-weight: 600; }
+.ledger-rowcount { text-align: right; color: var(--muted); font-size: .74rem; }
+.ledger-sql-block { display: none; padding: 0 16px 14px; background: var(--panel-alt); border-bottom: 1px solid var(--border); }
+.ledger-sql-block pre {
+  background: #1e2d38; color: #b8d4e8; padding: 14px 16px;
+  border-radius: var(--radius-sm); font-size: .74rem; overflow-x: auto;
+  white-space: pre-wrap; word-break: break-word; line-height: 1.5;
+}
+.s-ok      { color: var(--teal); }
+.s-pending { color: var(--amber); }
+.s-failed  { color: var(--red); }
+
+/* ── Degraded banners ── */
+.degraded-banner { display: none; background: #fef3de; border: 1px solid #f9d97e; border-radius: var(--radius-sm); padding: 10px 14px; font-size: .82rem; color: var(--amber); margin-top: 10px; }
+
+/* ── Footer ── */
+footer { background: var(--panel); border-top: 1px solid var(--border); padding: 28px 24px; }
+.footer-inner { max-width: 1280px; margin: 0 auto; }
+.footer-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 14px; font-weight: 600; }
+.footer-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 620px) { .footer-form { grid-template-columns: 1fr; } }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: .73rem; color: var(--muted); font-weight: 500; }
+.form-input {
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 9px 12px; font-size: .84rem; font-family: inherit;
+  color: var(--ink); background: var(--panel-alt); outline: none; transition: border-color .15s;
+}
+.form-input:focus { border-color: var(--sky); }
+.form-textarea { min-height: 120px; resize: vertical; font-family: 'SFMono-Regular',Consolas,monospace; font-size: .73rem; line-height: 1.45; }
+.footer-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+.btn { padding: 9px 20px; border-radius: var(--radius-sm); font-size: .84rem; font-weight: 600; border: none; cursor: pointer; transition: opacity .15s, background .15s; }
+.btn:disabled { opacity: .48; cursor: not-allowed; }
+.btn-primary { background: var(--sky); color: white; }
+.btn-primary:hover:not(:disabled) { background: #2e6e99; }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--panel-alt); }
+.status-msg { font-size: .80rem; color: var(--muted); flex: 1; min-width: 120px; }
+.status-msg.err { color: var(--red); }
+.status-msg.ok  { color: var(--teal); }
+
+/* ── Tooltip ── */
+#tooltip {
+  position: fixed; display: none; pointer-events: none; z-index: 999;
+  background: var(--navy); color: white; padding: 8px 13px;
+  border-radius: var(--radius-sm); font-size: .78rem; line-height: 1.55;
+  max-width: 230px; box-shadow: 0 4px 18px rgba(0,0,0,.3);
+}
+
+/* ── Export btn ── */
+.export-btn { font-size: .73rem; padding: 5px 14px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header class="page-header">
+  <div class="header-inner">
+    <div class="header-badge">✈ Delta Air Lines · ATL Hub</div>
+    <h1 class="header-title">Delta ATL Departure Delay Hotspots<br>by Destination &amp; Time Block</h1>
+    <p class="header-subtitle">Top 15 destination / departure-hour combinations ranked by average delay — minimum 500 completed flights each.</p>
+  </div>
+</header>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="main-content">
+
+  <!-- Empty state -->
+  <div id="empty-state">
+    <svg width="54" height="54" viewBox="0 0 54 54" fill="none">
+      <circle cx="27" cy="27" r="26" stroke="#3c88b5" stroke-width="1.8" stroke-dasharray="5 4"/>
+      <path d="M27 16v12l8 5" stroke="#3c88b5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h3>Enter your token to load the dashboard</h3>
+    <p>Paste your JWE access token in the footer below, then click <strong>Run Query</strong>.</p>
+  </div>
+
+  <!-- Dashboard (hidden until data loaded) -->
+  <div id="dashboard-content">
+
+    <!-- Hero -->
+    <div class="hero-card">
+      <div class="hero-label">★ Single Worst Recurring Hotspot</div>
+      <div class="hero-hotspot" id="hero-hotspot">—</div>
+      <div class="hero-narrative" id="hero-narrative"></div>
+      <div class="hero-metrics" id="hero-metrics"></div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip" id="kpi-strip"></div>
+
+    <!-- Heatmap card -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Delay Heatmap — Destination × Time Block</div>
+          <div class="card-subtitle">Average departure delay (min) · cells with ≥ 500 flights only · hover for details</div>
+        </div>
+        <button class="btn btn-ghost export-btn" id="export-btn">⬇ Export CSV</button>
+      </div>
+      <div class="heatmap-scroll" id="heatmap-container"></div>
+      <div class="heatmap-legend">
+        <span>Avg Delay:</span>
+        <div>
+          <div class="legend-bar"></div>
+          <div class="legend-labels"><span>Low</span><span>Moderate</span><span>Severe</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Persistence chart -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title" id="persist-title">EWR · 1600–1659 — Monthly Delay History</div>
+          <div class="card-subtitle">Monthly avg departure delay (min) for the worst hotspot — months with ≥ 30 flights shown</div>
+        </div>
+      </div>
+      <div class="chart-scroll">
+        <svg id="persist-chart" class="line-chart" viewBox="0 0 900 230" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="degraded-banner" id="persist-degraded">Persistence data unavailable — time-series panel could not be loaded.</div>
+    </div>
+
+    <!-- Pattern summary -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Hotspot Concentration by Destination</div>
+          <div class="card-subtitle">Aggregated from the top-15 hotspot slots — which airports dominate the delay pressure</div>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Destination</th>
+              <th class="num">Hotspot Slots</th>
+              <th class="num">Total Flights</th>
+              <th class="num">Mean Avg Delay</th>
+              <th class="num">Mean Del15+</th>
+            </tr>
+          </thead>
+          <tbody id="pattern-tbody"></tbody>
+        </table>
+      </div>
+      <div class="degraded-banner" id="pattern-degraded">Pattern summary unavailable.</div>
+    </div>
+
+    <!-- Takeaway -->
+    <div class="takeaway-card">
+      <div class="takeaway-title">Operational Pattern: New York Metro Afternoon Cascade</div>
+      <div class="takeaway-body" id="takeaway-body"></div>
+    </div>
+
+    <!-- Query ledger -->
+    <div class="ledger-card">
+      <div class="ledger-head">Data Provenance — Query Ledger</div>
+      <div id="ledger-entries"></div>
+    </div>
+
+  </div><!-- /dashboard-content -->
+</div><!-- /main-content -->
+
+<!-- Tooltip -->
+<div id="tooltip"></div>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-title">Data Access Controls</div>
+    <div class="footer-form">
+      <div class="form-group">
+        <label class="form-label" for="jwe-input">JWE Access Token</label>
+        <input class="form-input" type="password" id="jwe-input" placeholder="Paste token…" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="sql-input">Primary SQL (worst_hotspot)</label>
+        <textarea class="form-input form-textarea" id="sql-input" spellcheck="false"></textarea>
+      </div>
+    </div>
+    <div class="footer-actions">
+      <button class="btn btn-primary" id="run-btn">▶ Run Query</button>
+      <button class="btn btn-ghost" id="forget-btn">Forget Token</button>
+      <span class="status-msg" id="status-msg">Enter token and click Run Query.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+'use strict';
+
+/* ── Constants ─────────────────────────────────────────── */
+const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+
+const SQL_PRIMARY = `SELECT
+    DestCode,
+    DepTimeBlk,
+    count() AS flight_count,
+    round(avg(DepDelay), 1) AS avg_dep_delay_min,
+    round(quantile(0.90)(DepDelay), 1) AS p90_dep_delay_min,
+    round(avg(DepDel15) * 100, 1) AS pct_dep_del15,
+    countDistinct(toStartOfMonth(FlightDate)) AS active_months
+FROM ontime.fact_ontime
+WHERE
+    IATA_CODE_Reporting_Airline = 'DL'
+    AND OriginCode = 'ATL'
+    AND Cancelled = 0
+    AND DepDelay IS NOT NULL
+GROUP BY DestCode, DepTimeBlk
+HAVING flight_count >= 500
+ORDER BY avg_dep_delay_min DESC
+LIMIT 15`.trim();
+
+const SQL_PERSISTENCE = `SELECT
+    DestCode,
+    DepTimeBlk,
+    toStartOfMonth(FlightDate) AS flight_month,
+    count() AS monthly_flights,
+    round(avg(DepDelay), 1) AS avg_dep_delay_min,
+    round(avg(DepDel15) * 100, 1) AS pct_dep_del15
+FROM ontime.fact_ontime
+WHERE
+    IATA_CODE_Reporting_Airline = 'DL'
+    AND OriginCode = 'ATL'
+    AND DestCode = 'EWR'
+    AND DepTimeBlk = '1600-1659'
+    AND Cancelled = 0
+    AND DepDelay IS NOT NULL
+GROUP BY DestCode, DepTimeBlk, flight_month
+HAVING monthly_flights >= 30
+ORDER BY flight_month`.trim();
+
+const SQL_PATTERN = `SELECT
+    DestCode,
+    count() AS hotspot_slots,
+    sum(flight_count) AS total_flights,
+    round(avg(avg_dep_delay_min), 1) AS mean_avg_delay,
+    round(avg(pct_dep_del15), 1) AS mean_pct_del15
+FROM (
+    SELECT
+        DestCode,
+        DepTimeBlk,
+        count() AS flight_count,
+        round(avg(DepDelay), 1) AS avg_dep_delay_min,
+        round(avg(DepDel15) * 100, 1) AS pct_dep_del15
+    FROM ontime.fact_ontime
+    WHERE
+        IATA_CODE_Reporting_Airline = 'DL'
+        AND OriginCode = 'ATL'
+        AND Cancelled = 0
+        AND DepDelay IS NOT NULL
+    GROUP BY DestCode, DepTimeBlk
+    HAVING flight_count >= 500
+    ORDER BY avg_dep_delay_min DESC
+    LIMIT 15
+)
+GROUP BY DestCode
+ORDER BY mean_avg_delay DESC`.trim();
+
+/* ── State ─────────────────────────────────────────────── */
+let isRunning = false;
+let currentRunId = 0;
+const ledger = {};
+
+/* ── DOM ────────────────────────────────────────────────── */
+const $jwe     = document.getElementById('jwe-input');
+const $sql     = document.getElementById('sql-input');
+const $runBtn  = document.getElementById('run-btn');
+const $forget  = document.getElementById('forget-btn');
+const $status  = document.getElementById('status-msg');
+const $empty   = document.getElementById('empty-state');
+const $dash    = document.getElementById('dashboard-content');
+const $tooltip = document.getElementById('tooltip');
+
+/* ── Boot ───────────────────────────────────────────────── */
+$sql.value = SQL_PRIMARY;
+const stored = localStorage.getItem(STORAGE_KEY);
+if (stored) { $jwe.value = stored; setTimeout(runAll, 200); }
+
+/* ── Helpers ────────────────────────────────────────────── */
+function setStatus(msg, type) {
+  $status.textContent = msg;
+  $status.className = 'status-msg' + (type === 'err' ? ' err' : type === 'ok' ? ' ok' : '');
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function normDate(v) { return String(v ?? '').slice(0, 10); }
+function fmt(n) { return n == null ? '—' : Number(n).toLocaleString(); }
+
+/* ── Ledger ─────────────────────────────────────────────── */
+function ledgerReg(id, label, role, sql) {
+  ledger[id] = { label, role, sql, status: 'Pending', rows: null, expanded: false };
+  renderLedger();
+}
+function ledgerUpd(id, status, rows) {
+  if (!ledger[id]) return;
+  ledger[id].status = status; ledger[id].rows = rows;
+  renderLedger();
+}
+function renderLedger() {
+  const el = document.getElementById('ledger-entries');
+  el.innerHTML = '';
+  for (const [id, e] of Object.entries(ledger)) {
+    const sCls = e.status === 'OK' ? 's-ok' : e.status === 'Pending' ? 's-pending' : 's-failed';
+    const row = document.createElement('div');
+    row.className = 'ledger-row'; row.dataset.id = id;
+    row.innerHTML = `
+      <span class="ledger-toggle">${e.expanded ? '▼' : '▶'}</span>
+      <span class="ledger-label">${esc(e.label)}</span>
+      <span class="ledger-role">${esc(e.role)}</span>
+      <span class="ledger-status ${sCls}">${e.status}</span>
+      <span class="ledger-rowcount">${e.rows != null ? e.rows + ' rows' : '—'}</span>`;
+    row.addEventListener('click', () => { ledger[id].expanded = !ledger[id].expanded; renderLedger(); });
+    el.appendChild(row);
+    if (e.expanded) {
+      const blk = document.createElement('div');
+      blk.className = 'ledger-sql-block'; blk.style.display = 'block';
+      blk.innerHTML = `<pre>${esc(e.sql || '')}</pre>`;
+      el.appendChild(blk);
+    }
+  }
+}
+
+/* ── Fetch ──────────────────────────────────────────────── */
+async function execQuery(jwe, sql) {
+  const url = `https://mcp.demo.altinity.cloud/${jwe}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+  const resp = await fetch(url);
+  if (!resp.ok) { const t = await resp.text(); throw new Error(`HTTP ${resp.status}: ${t.slice(0,200)}`); }
+  const data = await resp.json();
+  const cols = data.columns ?? [];
+  return (data.rows ?? []).map(r => { const o = {}; cols.forEach((c,i) => { o[c] = r[i]; }); return o; });
+}
+
+/* ── Main run ───────────────────────────────────────────── */
+async function runAll() {
+  if (isRunning) return;
+  const jwe = $jwe.value.trim();
+  const sql = $sql.value.trim();
+  if (!jwe || !sql) { setStatus('Enter a token and ensure SQL is present.', 'err'); return; }
+
+  isRunning = true;
+  currentRunId++;
+  const runId = currentRunId;
+  $runBtn.disabled = true; $runBtn.textContent = '⏳ Loading…';
+  setStatus('Running primary query…', '');
+
+  // Reset ledger
+  for (const k in ledger) delete ledger[k];
+  ledgerReg('primary',     'Hotspot Rankings',             'Primary',    sql);
+  ledgerReg('persistence', 'EWR / 1600-1659 Monthly History', 'Enrichment', SQL_PERSISTENCE);
+  ledgerReg('pattern',     'Hotspot by Destination',       'Enrichment', SQL_PATTERN);
+
+  localStorage.setItem(STORAGE_KEY, jwe);
+
+  let primaryRows;
+  try {
+    primaryRows = await execQuery(jwe, sql);
+    if (runId !== currentRunId) return;
+    ledgerUpd('primary', 'OK', primaryRows.length);
+  } catch (err) {
+    if (runId !== currentRunId) return;
+    ledgerUpd('primary', 'Failed', 0);
+    setStatus('Primary query failed: ' + err.message, 'err');
+    finishRun(); return;
+  }
+
+  if (!primaryRows.length) {
+    setStatus('Primary query returned no rows.', 'err');
+    finishRun(); return;
+  }
+
+  // Render primary visuals
+  try { renderDash(primaryRows); } catch(e) { console.error('Render error', e); }
+
+  // Persistence
+  try {
+    setStatus('Loading persistence data…', '');
+    const pRows = await execQuery(jwe, SQL_PERSISTENCE);
+    if (runId !== currentRunId) return;
+    ledgerUpd('persistence', 'OK', pRows.length);
+    renderPersist(pRows, primaryRows[0]);
+  } catch (err) {
+    if (runId !== currentRunId) return;
+    ledgerUpd('persistence', 'Failed', 0);
+    document.getElementById('persist-degraded').style.display = 'block';
+    document.getElementById('persist-chart').style.display = 'none';
+  }
+
+  // Pattern summary
+  try {
+    setStatus('Loading pattern summary…', '');
+    const ptRows = await execQuery(jwe, SQL_PATTERN);
+    if (runId !== currentRunId) return;
+    ledgerUpd('pattern', 'OK', ptRows.length);
+    renderPattern(ptRows);
+  } catch (err) {
+    if (runId !== currentRunId) return;
+    ledgerUpd('pattern', 'Failed', 0);
+    document.getElementById('pattern-degraded').style.display = 'block';
+  }
+
+  setStatus(`Loaded — ${primaryRows.length} hotspot slots.`, 'ok');
+  finishRun();
+}
+
+function finishRun() {
+  isRunning = false; $runBtn.disabled = false; $runBtn.textContent = '▶ Run Query';
+}
+
+/* ── Render: main dashboard ─────────────────────────────── */
+function renderDash(rows) {
+  $empty.style.display = 'none';
+  $dash.style.display = 'block';
+
+  const sorted = [...rows].sort((a,b) => (b.avg_dep_delay_min ?? 0) - (a.avg_dep_delay_min ?? 0));
+  const worst  = sorted[0];
+
+  renderHero(worst);
+  renderKPIs(sorted, worst);
+  renderHeatmap(sorted, worst);
+  renderTakeaway(sorted);
+}
+
+/* ── Hero ───────────────────────────────────────────────── */
+const DEST_NAMES = {
+  'EWR':'Newark Liberty (EWR)', 'JFK':'John F. Kennedy (JFK)',
+  'LGA':'LaGuardia (LGA)', 'OKC':'Oklahoma City (OKC)',
+  'IAH':'Houston Intercontinental (IAH)', 'SHV':'Shreveport (SHV)',
+  'TUL':'Tulsa (TUL)', 'EYW':'Key West (EYW)', 'PDX':'Portland (PDX)'
+};
+function renderHero(w) {
+  const blkFmt = w.DepTimeBlk ? w.DepTimeBlk.replace('-','–') : '—';
+  document.getElementById('hero-hotspot').textContent =
+    `${DEST_NAMES[w.DestCode] ?? w.DestCode}  ·  ${blkFmt} block`;
+  document.getElementById('hero-narrative').textContent =
+    `The ${blkFmt} departure block to ${w.DestCode} is the single worst recurring slot out of ATL for Delta. `
+    + `Across ${fmt(w.flight_count)} completed departures spanning ${fmt(w.active_months)} credible months, `
+    + `it averages ${w.avg_dep_delay_min} min of departure delay — with a 90th-percentile delay of `
+    + `${w.p90_dep_delay_min} min and ${w.pct_dep_del15}% of flights leaving 15+ minutes late.`;
+  document.getElementById('hero-metrics').innerHTML = [
+    { v: w.avg_dep_delay_min + ' min', l: 'Avg Dep Delay' },
+    { v: w.p90_dep_delay_min + ' min', l: 'P90 Delay' },
+    { v: w.pct_dep_del15 + '%',        l: 'Flights Del15+' },
+    { v: fmt(w.flight_count),          l: 'Total Flights' },
+  ].map(m => `<div class="hero-metric"><div class="hero-metric-val">${m.v}</div><div class="hero-metric-lbl">${m.l}</div></div>`).join('');
+}
+
+/* ── KPIs ───────────────────────────────────────────────── */
+function renderKPIs(sorted, worst) {
+  const nySlots   = sorted.filter(r => r.DestCode === 'EWR' || r.DestCode === 'JFK').length;
+  const totalFl   = sorted.reduce((s,r) => s + (r.flight_count ?? 0), 0);
+  const avgDel15  = (sorted.reduce((s,r) => s + (r.pct_dep_del15 ?? 0), 0) / sorted.length).toFixed(1);
+  document.getElementById('kpi-strip').innerHTML = [
+    { v: worst.avg_dep_delay_min + ' min', l: 'Worst Avg Dep Delay',     sub: `${worst.DestCode} · ${worst.DepTimeBlk?.replace('-','–')}` },
+    { v: nySlots + ' / 15',               l: 'NY Metro Slots (EWR+JFK)', sub: 'of top-15 hotspot combinations' },
+    { v: fmt(totalFl),                    l: 'Flights in Top-15 Slots',  sub: '≥ 500 flights per slot' },
+    { v: avgDel15 + '%',                  l: 'Mean Del15+ Rate',          sub: 'across all 15 hotspots' },
+  ].map(k => `<div class="kpi-card">
+    <div class="kpi-label">${k.l}</div>
+    <div class="kpi-value">${k.v}</div>
+    <div class="kpi-sub">${k.sub}</div>
+  </div>`).join('');
+}
+
+/* ── Heatmap ────────────────────────────────────────────── */
+function renderHeatmap(rows, worst) {
+  const dests  = [...new Set(rows.map(r => r.DestCode))];
+  const blocks = [...new Set(rows.map(r => r.DepTimeBlk))].sort();
+
+  const lkp = {};
+  rows.forEach(r => { (lkp[r.DestCode] ??= {})[r.DepTimeBlk] = r; });
+
+  dests.sort((a,b) => {
+    const mA = Math.max(...Object.values(lkp[a] ?? {}).map(r => r.avg_dep_delay_min ?? 0));
+    const mB = Math.max(...Object.values(lkp[b] ?? {}).map(r => r.avg_dep_delay_min ?? 0));
+    return mB - mA;
+  });
+
+  const delays  = rows.map(r => r.avg_dep_delay_min ?? 0);
+  const minDel  = Math.min(...delays);
+  const maxDel  = Math.max(...delays);
+
+  function cellColor(v) {
+    if (v == null) return null;
+    const t = Math.max(0, Math.min(1, (v - minDel) / (maxDel - minDel)));
+    return t < 0.5 ? lerpRGB('#c8e6f7','#f9d97e', t*2) : lerpRGB('#f9d97e','#c54f36', (t-.5)*2);
+  }
+  function lerpRGB(c1, c2, t) {
+    const h = s => [parseInt(s.slice(1,3),16), parseInt(s.slice(3,5),16), parseInt(s.slice(5,7),16)];
+    const [r1,g1,b1] = h(c1), [r2,g2,b2] = h(c2);
+    return `rgb(${Math.round(r1+(r2-r1)*t)},${Math.round(g1+(g2-g1)*t)},${Math.round(b1+(b2-b1)*t)})`;
+  }
+  function textFg(rgb) {
+    const m = rgb.match(/\d+/g).map(Number);
+    return (.299*m[0] + .587*m[1] + .114*m[2]) > 158 ? '#163244' : '#ffffff';
+  }
+
+  let html = `<table class="heatmap-table"><thead><tr><th class="dest-head">Dest</th>`;
+  blocks.forEach(b => { html += `<th>${esc(b.replace('-','–'))}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  dests.forEach(dest => {
+    html += `<tr><td class="dest-cell">${esc(dest)}</td>`;
+    blocks.forEach(blk => {
+      const row = lkp[dest]?.[blk];
+      if (!row) { html += `<td class="empty-cell">—</td>`; return; }
+      const bg  = cellColor(row.avg_dep_delay_min);
+      const fg  = textFg(bg);
+      const isW = row.DestCode === worst.DestCode && row.DepTimeBlk === worst.DepTimeBlk;
+      const tip = `${dest} · ${blk.replace('-','–')}: avg ${row.avg_dep_delay_min} min · p90 ${row.p90_dep_delay_min} min · ${row.pct_dep_del15}% del15 · ${fmt(row.flight_count)} flights`;
+      html += `<td class="data-cell${isW ? ' worst-cell' : ''}" style="background:${bg};color:${fg}" data-tip="${esc(tip)}">${row.avg_dep_delay_min}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('heatmap-container').innerHTML = html;
+
+  // Tooltip
+  document.querySelectorAll('[data-tip]').forEach(cell => {
+    cell.addEventListener('mousemove', e => {
+      $tooltip.textContent = cell.dataset.tip;
+      $tooltip.style.display = 'block';
+      $tooltip.style.left = (e.clientX + 15) + 'px';
+      $tooltip.style.top  = (e.clientY - 10) + 'px';
+    });
+    cell.addEventListener('mouseleave', () => { $tooltip.style.display = 'none'; });
+  });
+
+  // Export
+  document.getElementById('export-btn').onclick = () => {
+    const tbl = document.querySelector('#heatmap-container .heatmap-table');
+    if (!tbl) return;
+    const hdr = [...tbl.querySelectorAll('thead th')].map(th => `"${th.textContent.trim()}"`).join(',');
+    const bdy = [...tbl.querySelectorAll('tbody tr')].map(tr =>
+      [...tr.querySelectorAll('td')].map(td => `"${td.textContent.trim()}"`).join(',')
+    );
+    const csv = [hdr, ...bdy].join('\n');
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv],{type:'text/csv'})), download: 'delta_atl_hotspots.csv' });
+    a.click();
+  };
+}
+
+/* ── Persistence chart ──────────────────────────────────── */
+function renderPersist(rows, worst) {
+  const chart = document.getElementById('persist-chart');
+  if (!rows.length) {
+    document.getElementById('persist-degraded').style.display = 'block';
+    chart.style.display = 'none'; return;
+  }
+  if (worst) {
+    document.getElementById('persist-title').textContent =
+      `${worst.DestCode} · ${(worst.DepTimeBlk ?? '').replace('-','–')} — Monthly Delay History`;
+  }
+
+  const sorted = [...rows].sort((a,b) => normDate(a.flight_month) < normDate(b.flight_month) ? -1 : 1);
+  const vals   = sorted.map(r => r.avg_dep_delay_min ?? 0);
+  const W=900, H=230, P={t:18,r:22,b:42,l:54};
+  const pW = W-P.l-P.r, pH = H-P.t-P.b;
+  const n  = sorted.length;
+  const maxY = Math.ceil(Math.max(...vals) * 1.12);
+
+  chart.innerHTML = '';
+  const ns = 'http://www.w3.org/2000/svg';
+  function mk(tag, at, txt) {
+    const e = document.createElementNS(ns, tag);
+    for (const [k,v] of Object.entries(at)) e.setAttribute(k,v);
+    if (txt != null) e.textContent = txt;
+    return e;
+  }
+  const xp = i  => P.l + (i/(n-1)) * pW;
+  const yp = v  => P.t + pH - (v/maxY) * pH;
+
+  // Y-axis grid
+  const yTicks = Array.from({length:6}, (_,i) => Math.round(maxY/5*i));
+  yTicks.forEach(tick => {
+    const y = yp(tick);
+    chart.appendChild(mk('line',{x1:P.l,y1:y,x2:W-P.r,y2:y,stroke:'rgba(22,50,68,0.09)','stroke-width':'1'}));
+    chart.appendChild(mk('text',{x:P.l-6,y:y+4,'text-anchor':'end',fill:'#5d7485','font-size':'10'},tick+'m'));
+  });
+
+  // X-axis year labels
+  const seenYrs = new Set();
+  sorted.forEach((row,i) => {
+    const yr = normDate(row.flight_month).slice(0,4);
+    if (!seenYrs.has(yr)) {
+      seenYrs.add(yr);
+      chart.appendChild(mk('line',{x1:xp(i),y1:P.t,x2:xp(i),y2:P.t+pH,stroke:'rgba(22,50,68,0.07)','stroke-width':'1'}));
+      chart.appendChild(mk('text',{x:xp(i),y:H-P.b+15,'text-anchor':'middle',fill:'#5d7485','font-size':'10'},yr));
+    }
+  });
+
+  // Area
+  let area = `M ${xp(0)} ${yp(0)}`;
+  sorted.forEach((_,i) => { area += ` L ${xp(i)} ${yp(vals[i])}`; });
+  area += ` L ${xp(n-1)} ${yp(0)} Z`;
+  chart.appendChild(mk('path',{d:area,fill:'rgba(60,136,181,0.13)',stroke:'none'}));
+
+  // Line
+  const line = sorted.map((_,i) => `${i===0?'M':'L'} ${xp(i)} ${yp(vals[i])}`).join(' ');
+  chart.appendChild(mk('path',{d:line,fill:'none',stroke:'#3c88b5','stroke-width':'2.2','stroke-linejoin':'round'}));
+
+  // Spike dot + label
+  const mx = vals.indexOf(Math.max(...vals));
+  const sx = xp(mx), sy = yp(vals[mx]);
+  chart.appendChild(mk('circle',{cx:sx,cy:sy,r:'5',fill:'#c54f36',stroke:'white','stroke-width':'2'}));
+  const lblX = Math.min(sx+8, W-P.r-90);
+  chart.appendChild(mk('text',{x:lblX,y:sy-8,fill:'#c54f36','font-size':'10','font-weight':'600'},
+    `${normDate(sorted[mx].flight_month).slice(0,7)}: ${vals[mx]} min`));
+
+  // Y-axis label
+  chart.appendChild(mk('text',{
+    x: P.l-38, y: P.t+pH/2,
+    transform:`rotate(-90,${P.l-38},${P.t+pH/2})`,
+    'text-anchor':'middle', fill:'#5d7485', 'font-size':'10'
+  },'Avg Delay (min)'));
+}
+
+/* ── Pattern table ──────────────────────────────────────── */
+function renderPattern(rows) {
+  if (!rows.length) { document.getElementById('pattern-degraded').style.display = 'block'; return; }
+  const maxDel = Math.max(...rows.map(r => r.mean_avg_delay ?? 0));
+  document.getElementById('pattern-tbody').innerHTML = rows.map(r => {
+    const isTop = r.DestCode === 'EWR' || r.DestCode === 'JFK';
+    const bCls  = (r.mean_avg_delay ?? 0) >= 24 ? 'badge-red' : (r.mean_avg_delay ?? 0) >= 22 ? 'badge-amber' : 'badge-sky';
+    return `<tr class="${isTop ? 'top-row' : ''}">
+      <td><strong>${esc(r.DestCode)}</strong>${r.hotspot_slots > 1 ? ` <span class="badge badge-sky">${r.hotspot_slots} slots</span>` : ''}</td>
+      <td class="num">${r.hotspot_slots}</td>
+      <td class="num">${fmt(r.total_flights)}</td>
+      <td class="num"><span class="badge ${bCls}">${r.mean_avg_delay} min</span></td>
+      <td class="num">${r.mean_pct_del15}%</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Takeaway ───────────────────────────────────────────── */
+function renderTakeaway(sorted) {
+  const ewrN  = sorted.filter(r => r.DestCode === 'EWR').length;
+  const jfkN  = sorted.filter(r => r.DestCode === 'JFK').length;
+  const nyN   = ewrN + jfkN;
+  const total = sorted.reduce((s,r) => s + (r.flight_count ?? 0), 0);
+  const nyFl  = sorted.filter(r => r.DestCode === 'EWR' || r.DestCode === 'JFK').reduce((s,r) => s + (r.flight_count ?? 0), 0);
+  const nyPct = total > 0 ? Math.round(nyFl/total*100) : 0;
+  document.getElementById('takeaway-body').innerHTML =
+    `Of the top-15 departure delay hotspots from ATL, <strong>${nyN} slots (${ewrN} EWR + ${jfkN} JFK)</strong> serve New York metro airports — representing roughly <strong>${nyPct}% of all flights</strong> in the hotspot set. Delays build progressively through the afternoon 1500–1900 window and persist into the evening, driven by slot congestion at EWR and JFK compounding with late-arriving equipment. The structural worst is <strong>EWR / 1600–1659</strong>, persistently elevated across three+ decades of data — not a temporary anomaly. Outside the NY corridor, late-evening flights to OKC, IAH, and TUL carry distinct delay risk likely tied to equipment arrival cascades rather than destination slot pressure.`;
+}
+
+/* ── Events ─────────────────────────────────────────────── */
+$runBtn.addEventListener('click', runAll);
+$forget.addEventListener('click', () => {
+  localStorage.removeItem(STORAGE_KEY);
+  $jwe.value = '';
+  setStatus('Token forgotten.', '');
+});
+
+})();
+</script>
+</body>
+</html>

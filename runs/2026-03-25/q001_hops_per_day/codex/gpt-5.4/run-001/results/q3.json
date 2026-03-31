@@ -1,0 +1,22 @@
+{
+  "columns": [
+    "route_count",
+    "one_off_routes",
+    "recurring_routes",
+    "avg_occurrences",
+    "max_occurrences"
+  ],
+  "rows": [
+    {
+      "avg_occurrences": 14.1,
+      "max_occurrences": 46,
+      "one_off_routes": 1,
+      "recurring_routes": 9,
+      "route_count": 10
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-25T16:11:03.867701Z",
+  "source_query_sha256": "c13a13eb69d47be140c741b4139fb612c87cd87886edf91af93b9e0fb276b8a1",
+  "log_comment": "qforge|question=q001|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q3"
+}

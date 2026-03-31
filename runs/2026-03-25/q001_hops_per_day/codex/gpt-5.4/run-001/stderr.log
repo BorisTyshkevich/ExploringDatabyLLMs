@@ -1,0 +1,471 @@
+OpenAI Codex v0.116.0 (research preview)
+--------
+workdir: /Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001
+model: gpt-5.4
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR, /Users/bvt/.codex/memories] (network access enabled)
+reasoning effort: medium
+reasoning summaries: none
+session id: 019d25bf-5237-7ef3-bdfa-bfd9ac6fb0d2
+--------
+user
+- Connect to clickhouse server though MCP connection
+- Do not use direct HTTP by any tools like curl.
+- Use the `ontime` database to answer analytical questions
+- Use `ontime-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
+- write correct and efficient ClickHouse SQL 
+- Before finalizing your answer, self-verify the query with a quick debug execution, usually with a small `LIMIT` or `WHERE` filter in a data reading subquery or CTE. Fix any errors in a loop until done.
+
+- Do not emit result rows or any data output.
+- Write the primary dashboard SQL to `main.sql`.
+- Write one JSON object to `answer.raw.json`.
+
+Write exactly this SQL file to `main.sql`:
+
+`main.sql`
+
+```sql
+-- one SQL statement for the main question / primary dashboard query
+```
+
+Write exactly this JSON object shape to `answer.raw.json`:
+
+{
+  "subquestions": [
+    {
+      "subquestion": "Question text copied exactly from the required subquestion contract.",
+      "answer_markdown": "A concise prose answer to that subquestion.",
+      "sql": "-- one SQL statement that proves the answer"
+    }
+  ]
+}
+
+Rules:
+
+- Write the main question / primary dashboard SQL to `main.sql`.
+- Provide one proof query for each dashboard question.
+- `main.sql` must contain executable SQL only, not Markdown fences.
+- Write the artifact to `answer.raw.json`.
+- The `answer.raw.json` file must contain raw JSON, not fenced Markdown.
+- Read every bullet under `## Dashboard Questions` in the question-specific guidance below.
+- Return one object in `subquestions` for every listed dashboard question, in the same order.
+- Preserve the required `subquestion` text exactly.
+- Each `answer_markdown` must directly answer that subquestion in concise prose.
+- Each `sql` must be one executable SQL statement only and should serve as the proof query for that subquestion.
+- Use one proof query per dashboard question. Do not merge several dashboard questions into one unioned or row-typed SQL result unless the question-specific guidance explicitly requires that.
+- Derive SQL and answers only from the current question and the current query result shape.
+- Do not rely on prior qforge runs, prior question ids, or previously observed values.
+- Do not invent extra dashboard questions, custom scoring formulas, analysis windows, ranking rules, or business definitions unless the question-specific prompt explicitly asks for them.
+- Use the full available dataset history unless the question-specific prompt explicitly asks for a narrower time window.
+
+Question title: `Highest daily hops for one aircraft on one flight number`
+
+Question-specific guidance:
+
+Find the longest itineraries with the highest number of hops for a single aircraft using the same flight number.
+Define uniqueness by the full textual `Route` string and output the most recent top 10 unique routes by departure time.
+
+Return enough itinerary detail to support the dashboard, including:
+
+- aircraft id
+- flight number
+- carrier
+- flight date
+- hop count
+- textual `Route` in chronological order, including every origin and the final destination, using `-` as the delimiter throughout, for example `SMF-SAN-PHX-COS-DEN`
+
+
+## Dashboard Questions
+
+- Which itinerary is the highest-hop example, and what does it look like?
+- Which of the top-ranked itineraries is the most recent?
+- Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?
+mcp: chrome_dev_tools starting
+mcp: altinity_ontime_demo starting
+2026-03-25T16:06:30.107054Z ERROR codex_core::shell_snapshot: Shell snapshot validation failed: Snapshot command exited with status exit status: 2: /Users/bvt/.codex/shell_snapshots/019d25bf-5237-7ef3-bdfa-bfd9ac6fb0d2.tmp-1774454789454591000: line 9231: syntax error in conditional expression: unexpected token `('
+
+mcp: altinity_ontime_demo ready
+mcp: chrome_dev_tools ready
+mcp startup: ready: altinity_ontime_demo, chrome_dev_tools
+codex
+I’m connecting through the ClickHouse MCP path and inspecting the `ontime` schema first. The requested `ontime-semantic-layer` skill does not appear in the available skill list, so I’m falling back to direct schema inspection and will verify each query against the live database before writing `main.sql` and `answer.raw.json`.
+exec
+/bin/bash -lc 'pwd && rg --files .' in /Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001 succeeded in 127ms:
+./prompt.report.md
+tool altinity_ontime_demo.execute_query({"query":"SHOW TABLES FROM ontime","limit":200})
+altinity_ontime_demo.execute_query({"query":"SHOW TABLES FROM ontime","limit":200}) success in 145ms:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"name\"\n  ],\n  \"types\": [\n    \"String\"\n  ],\n  \"rows\": [\n    [\n      \"dim_airports\"\n    ],\n    [\n      \"dim_airports_bts_full\"\n    ],\n    [\n      \"fact_ontime\"\n    ],\n    [\n      \"stage_ontime\"\n    ]\n  ],\n  \"count\": 4\n}"
+    }
+  ]
+}
+tool altinity_ontime_demo.execute_query({"query":"SELECT table, name, type FROM system.columns WHERE database = 'ontime' ORDER BY table, position LIMIT 200","limit":500})
+altinity_ontime_demo.execute_query({"query":"SELECT table, name, type FROM system.columns WHERE database = 'ontime' ORDER BY table, position LIMIT 200","limit":500}) success in 249ms:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"table\",\n    \"name\",\n    \"type\"\n  ],\n  \"types\": [\n    \"String\",\n    \"String\",\n    \"String\"\n  ],\n  \"rows\": [\n    [\n      \"dim_airports\",\n      \"AirportCode\",\n      \"FixedString(3)\"\n    ],\n    [\n      \"dim_airports\",\n      \"AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"dim_airports\",\n      \"AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"dim_airports\",\n      \"DisplayAirportName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"CityName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"CityMarketID\",\n      \"UInt32\"\n    ],\n    [\n      \"dim_airports\",\n      \"CityMarketName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"WorldAreaCode\",\n      \"UInt16\"\n    ],\n    [\n      \"dim_airports\",\n      \"CountryName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"CountryCodeISO\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"StateName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"StateCode\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"StateFips\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"Latitude\",\n      \"Float64\"\n    ],\n    [\n      \"dim_airports\",\n      \"Longitude\",\n      \"Float64\"\n    ],\n    [\n      \"dim_airports\",\n      \"UtcLocalTimeVariation\",\n      \"String\"\n    ],\n    [\n      \"dim_airports\",\n      \"StartDate\",\n      \"Date\"\n    ],\n    [\n      \"dim_airports\",\n      \"ThruDate\",\n      \"Date\"\n    ],\n    [\n      \"dim_airports\",\n      \"IsClosed\",\n      \"UInt8\"\n    ],\n    [\n      \"dim_airports\",\n      \"IsLatest\",\n      \"UInt8\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"AirportCode\",\n      \"FixedString(3)\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"DisplayAirportName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"CityName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"CityMarketID\",\n      \"UInt32\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"CityMarketName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"WorldAreaCode\",\n      \"UInt16\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"CountryName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"CountryCodeISO\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"StateName\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"StateCode\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"StateFips\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"Latitude\",\n      \"Float64\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"Longitude\",\n      \"Float64\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"UtcLocalTimeVariation\",\n      \"String\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"StartDate\",\n      \"Date\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"ThruDate\",\n      \"Date\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"IsClosed\",\n      \"UInt8\"\n    ],\n    [\n      \"dim_airports_bts_full\",\n      \"IsLatest\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"FlightDate\",\n      \"Date\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Year\",\n      \"UInt16\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Quarter\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Month\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DayofMonth\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DayOfWeek\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Reporting_Airline\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DOT_ID_Reporting_Airline\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"IATA_CODE_Reporting_Airline\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Tail_Number\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Flight_Number_Reporting_Airline\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginAirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginAirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginCityMarketID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginCode\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginCityName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginState\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginStateFips\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginStateName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"OriginWorldAreaCode\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestAirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestAirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestCityMarketID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestCode\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestCityName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestState\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestStateFips\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestStateName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DestWorldAreaCode\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"CRSDepTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DepTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DepDelay\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DepDelayMinutes\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DepDel15\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DepartureDelayGroups\",\n      \"Nullable(Int8)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DepTimeBlk\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"TaxiOut\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"TaxiIn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"CRSArrTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ArrTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ArrDelay\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ArrDelayMinutes\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ArrDel15\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ArrivalDelayGroups\",\n      \"Nullable(Int8)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ArrTimeBlk\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Cancelled\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"CancellationCode\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Diverted\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"CRSElapsedTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"ActualElapsedTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"AirTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Flights\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Distance\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DistanceGroup\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"CarrierDelay\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"WeatherDelay\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"NASDelay\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"SecurityDelay\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"LateAircraftDelay\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"FirstDepTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"TotalAddGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"LongestAddGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DivAirportLandings\",\n      \"Nullable(UInt8)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DivReachedDest\",\n      \"UInt8\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DivActualElapsedTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DivArrDelay\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"DivDistance\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1Airport\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1TotalGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1LongestGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div1TailNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2Airport\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2TotalGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2LongestGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div2TailNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3Airport\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3TotalGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3LongestGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div3TailNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4Airport\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4TotalGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4LongestGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div4TailNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5Airport\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5AirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5AirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5TotalGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5LongestGTime\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Div5TailNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"UniqueCarrier\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"AirlineID\",\n      \"UInt32\"\n    ],\n    [\n      \"fact_ontime\",\n      \"Carrier\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"TailNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"fact_ontime\",\n      \"FlightNum\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"FlightDate\",\n      \"Date\"\n    ],\n    [\n      \"stage_ontime\",\n      \"Year\",\n      \"UInt16\"\n    ],\n    [\n      \"stage_ontime\",\n      \"Quarter\",\n      \"UInt8\"\n    ],\n    [\n      \"stage_ontime\",\n      \"Month\",\n      \"UInt8\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DayofMonth\",\n      \"UInt8\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DayOfWeek\",\n      \"UInt8\"\n    ],\n    [\n      \"stage_ontime\",\n      \"Reporting_Airline\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DOT_ID_Reporting_Airline\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"IATA_CODE_Reporting_Airline\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"Tail_Number\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"Flight_Number_Reporting_Airline\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginAirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginAirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginCityMarketID\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginCode\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginCityName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginState\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginStateFips\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginStateName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"OriginWorldAreaCode\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestAirportID\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestAirportSeqID\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestCityMarketID\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestCode\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestCityName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestState\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestStateFips\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestStateName\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DestWorldAreaCode\",\n      \"UInt32\"\n    ],\n    [\n      \"stage_ontime\",\n      \"CRSDepTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DepTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DepDelay\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DepDelayMinutes\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DepDel15\",\n      \"UInt8\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DepartureDelayGroups\",\n      \"Nullable(Int8)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"DepTimeBlk\",\n      \"LowCardinality(String)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"TaxiOut\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"WheelsOff\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"WheelsOn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"TaxiIn\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"CRSArrTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"ArrTime\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"ArrDelay\",\n      \"Nullable(Int32)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"ArrDelayMinutes\",\n      \"Nullable(UInt16)\"\n    ],\n    [\n      \"stage_ontime\",\n      \"ArrDel15\",\n      \"UInt8\"\n    ],\n    [\n      \"stage_ontime\",\n      \"ArrivalDelayGroups\",\n      \"Nullable(Int8)\"\n    ]\n  ],\n  \"count\": 200\n}"
+    }
+  ]
+}
+codex
+I have the usable fact table and flight-leg fields. Next I’m building the itinerary rollup by `FlightDate + TailNum + FlightNum + Carrier`, then deduplicating by full `Route` so the dashboard returns the 10 most recent unique highest-hop patterns.
+tool altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> x.1, groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n)\nSELECT\n    FlightDate,\n    aircraft_id,\n    flight_number,\n    carrier,\n    length(legs) AS hop_count,\n    arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\nFROM itineraries\nORDER BY hop_count DESC, FlightDate DESC\nLIMIT 10","limit":50})
+altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> x.1, groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n)\nSELECT\n    FlightDate,\n    aircraft_id,\n    flight_number,\n    carrier,\n    length(legs) AS hop_count,\n    arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\nFROM itineraries\nORDER BY hop_count DESC, FlightDate DESC\nLIMIT 10","limit":50}) success in 7.81s:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"FlightDate\",\n    \"aircraft_id\",\n    \"flight_number\",\n    \"carrier\",\n    \"hop_count\",\n    \"Route\"\n  ],\n  \"types\": [\n    \"Date\",\n    \"LowCardinality(String)\",\n    \"LowCardinality(String)\",\n    \"LowCardinality(String)\",\n    \"UInt64\",\n    \"String\"\n  ],\n  \"rows\": [\n    [\n      \"2024-12-01T00:00:00Z\",\n      \"N957WN\",\n      \"366\",\n      \"WN\",\n      8,\n      \"ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA\"\n    ],\n    [\n      \"2024-02-18T00:00:00Z\",\n      \"N7835A\",\n      \"3149\",\n      \"WN\",\n      8,\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\"\n    ],\n    [\n      \"2024-01-28T00:00:00Z\",\n      \"N429WN\",\n      \"3149\",\n      \"WN\",\n      8,\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\"\n    ],\n    [\n      \"2024-01-21T00:00:00Z\",\n      \"N228WN\",\n      \"3149\",\n      \"WN\",\n      8,\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\"\n    ],\n    [\n      \"2024-01-14T00:00:00Z\",\n      \"N569WN\",\n      \"3149\",\n      \"WN\",\n      8,\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\"\n    ],\n    [\n      \"2023-04-30T00:00:00Z\",\n      \"N7742B\",\n      \"154\",\n      \"WN\",\n      8,\n      \"ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN\"\n    ],\n    [\n      \"2023-04-16T00:00:00Z\",\n      \"N929WN\",\n      \"154\",\n      \"WN\",\n      8,\n      \"ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN\"\n    ],\n    [\n      \"2022-10-23T00:00:00Z\",\n      \"N8631A\",\n      \"2787\",\n      \"WN\",\n      8,\n      \"MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX\"\n    ],\n    [\n      \"2022-10-02T00:00:00Z\",\n      \"N8809L\",\n      \"2787\",\n      \"WN\",\n      8,\n      \"MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX\"\n    ],\n    [\n      \"2022-09-25T00:00:00Z\",\n      \"N8811L\",\n      \"2787\",\n      \"WN\",\n      8,\n      \"MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX\"\n    ]\n  ],\n  \"count\": 10\n}"
+    }
+  ]
+}
+tool altinity_ontime_demo.execute_query({"query":"SELECT min(FlightDate) AS min_date, max(FlightDate) AS max_date, count() AS rows FROM ontime.fact_ontime","limit":10})
+altinity_ontime_demo.execute_query({"query":"SELECT min(FlightDate) AS min_date, max(FlightDate) AS max_date, count() AS rows FROM ontime.fact_ontime","limit":10}) success in 142ms:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"min_date\",\n    \"max_date\",\n    \"rows\"\n  ],\n  \"types\": [\n    \"Date\",\n    \"Date\",\n    \"UInt64\"\n  ],\n  \"rows\": [\n    [\n      \"1987-10-01T00:00:00Z\",\n      \"2025-11-30T00:00:00Z\",\n      230307587\n    ]\n  ],\n  \"count\": 1\n}"
+    }
+  ]
+}
+codex
+The first debug rollup is working and shows repeated 8-hop patterns. I’m now collapsing those into unique `Route` strings, ranking by hop count and latest departure date, and using that same tested shape for the final SQL and proof queries.
+tool altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), deduped AS (\n    SELECT *, row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n)\nSELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\nFROM deduped\nWHERE route_rank = 1\nORDER BY hop_count DESC, FlightDate DESC, Route ASC\nLIMIT 15","limit":50})
+altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), deduped AS (\n    SELECT *, row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n)\nSELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\nFROM deduped\nWHERE route_rank = 1\nORDER BY hop_count DESC, FlightDate DESC, Route ASC\nLIMIT 15","limit":50}) success in 10.24s:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"FlightDate\",\n    \"aircraft_id\",\n    \"flight_number\",\n    \"carrier\",\n    \"hop_count\",\n    \"Route\"\n  ],\n  \"types\": [\n    \"Date\",\n    \"LowCardinality(String)\",\n    \"LowCardinality(String)\",\n    \"LowCardinality(String)\",\n    \"UInt64\",\n    \"String\"\n  ],\n  \"rows\": [\n    [\n      \"2024-12-01T00:00:00Z\",\n      \"N957WN\",\n      \"366\",\n      \"WN\",\n      8,\n      \"ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA\"\n    ],\n    [\n      \"2024-02-18T00:00:00Z\",\n      \"N7835A\",\n      \"3149\",\n      \"WN\",\n      8,\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\"\n    ],\n    [\n      \"2023-04-30T00:00:00Z\",\n      \"N7742B\",\n      \"154\",\n      \"WN\",\n      8,\n      \"ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN\"\n    ],\n    [\n      \"2022-10-23T00:00:00Z\",\n      \"N8631A\",\n      \"2787\",\n      \"WN\",\n      8,\n      \"MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX\"\n    ],\n    [\n      \"2022-09-01T00:00:00Z\",\n      \"N416WN\",\n      \"1956\",\n      \"WN\",\n      8,\n      \"MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC\"\n    ],\n    [\n      \"2022-08-31T00:00:00Z\",\n      \"N7713A\",\n      \"2884\",\n      \"WN\",\n      8,\n      \"LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN\"\n    ],\n    [\n      \"2021-10-31T00:00:00Z\",\n      \"N219WN\",\n      \"3378\",\n      \"WN\",\n      8,\n      \"SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS\"\n    ],\n    [\n      \"2021-08-27T00:00:00Z\",\n      \"N262WN\",\n      \"904\",\n      \"WN\",\n      8,\n      \"HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK\"\n    ],\n    [\n      \"2021-08-25T00:00:00Z\",\n      \"N484WN\",\n      \"2294\",\n      \"WN\",\n      8,\n      \"BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK\"\n    ],\n    [\n      \"2021-08-08T00:00:00Z\",\n      \"N225WN\",\n      \"3530\",\n      \"WN\",\n      8,\n      \"BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX\"\n    ],\n    [\n      \"2021-06-13T00:00:00Z\",\n      \"N762SW\",\n      \"3530\",\n      \"WN\",\n      8,\n      \"DAL-BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL\"\n    ],\n    [\n      \"2020-01-05T00:00:00Z\",\n      \"N228WN\",\n      \"6672\",\n      \"WN\",\n      8,\n      \"BOS-CMH-DCA-MDW-STL-DEN-SAT-LAX-LAS\"\n    ],\n    [\n      \"2020-01-05T00:00:00Z\",\n      \"N913WN\",\n      \"4731\",\n      \"WN\",\n      8,\n      \"MCO-PVD-BWI-BNA-ECP-DAL-SAT-LAS-GEG\"\n    ],\n    [\n      \"2020-01-05T00:00:00Z\",\n      \"N7730A\",\n      \"5429\",\n      \"WN\",\n      8,\n      \"MSY-ATL-PIT-MCO-HOU-AMA-DAL-SAT-ELP\"\n    ],\n    [\n      \"2020-01-03T00:00:00Z\",\n      \"N900WN\",\n      \"2152\",\n      \"WN\",\n      8,\n      \"DCA-ATL-SAT-HOU-PNS-BNA-CHS-BWI-ORF\"\n    ]\n  ],\n  \"count\": 15\n}"
+    }
+  ]
+}
+tool altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n)\nSELECT max(length(legs)) AS max_hop_count\nFROM itineraries","limit":10})
+altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n)\nSELECT max(length(legs)) AS max_hop_count\nFROM itineraries","limit":10}) success in 7.57s:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"max_hop_count\"\n  ],\n  \"types\": [\n    \"UInt64\"\n  ],\n  \"rows\": [\n    [\n      8\n    ]\n  ],\n  \"count\": 1\n}"
+    }
+  ]
+}
+codex
+The maximum itinerary length in this dataset is 8 hops. I’m checking recurrence now by counting how often each max-hop route appears across the full history, so the final prose on “scheduled pattern vs one-off” is based on actual route repetition rather than a guess.
+tool altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), max_hops AS (\n    SELECT max(hop_count) AS max_hop_count FROM ranked\n), unique_routes AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        hop_count,\n        Route,\n        row_number() OVER (PARTITION BY Route ORDER BY FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n    WHERE hop_count = (SELECT max_hop_count FROM max_hops)\n), top10 AS (\n    SELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\n    FROM unique_routes\n    WHERE route_rank = 1\n    ORDER BY FlightDate DESC, Route ASC\n    LIMIT 10\n)\nSELECT\n    t.Route,\n    count() AS occurrences,\n    min(r.FlightDate) AS first_seen,\n    max(r.FlightDate) AS last_seen,\n    uniqExact(r.FlightDate) AS distinct_dates,\n    uniqExact(r.flight_number) AS distinct_flight_numbers\nFROM top10 t\nINNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count\nGROUP BY t.Route\nORDER BY last_seen DESC, t.Route ASC","limit":50})
+altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), max_hops AS (\n    SELECT max(hop_count) AS max_hop_count FROM ranked\n), unique_routes AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        hop_count,\n        Route,\n        row_number() OVER (PARTITION BY Route ORDER BY FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n    WHERE hop_count = (SELECT max_hop_count FROM max_hops)\n), top10 AS (\n    SELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\n    FROM unique_routes\n    WHERE route_rank = 1\n    ORDER BY FlightDate DESC, Route ASC\n    LIMIT 10\n)\nSELECT\n    t.Route,\n    count() AS occurrences,\n    min(r.FlightDate) AS first_seen,\n    max(r.FlightDate) AS last_seen,\n    uniqExact(r.FlightDate) AS distinct_dates,\n    uniqExact(r.flight_number) AS distinct_flight_numbers\nFROM top10 t\nINNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count\nGROUP BY t.Route\nORDER BY last_seen DESC, t.Route ASC","limit":50}) success in 21.77s:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"Route\",\n    \"occurrences\",\n    \"first_seen\",\n    \"last_seen\",\n    \"distinct_dates\",\n    \"distinct_flight_numbers\"\n  ],\n  \"types\": [\n    \"String\",\n    \"UInt64\",\n    \"Date\",\n    \"Date\",\n    \"UInt64\",\n    \"UInt64\"\n  ],\n  \"rows\": [\n    [\n      \"ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA\",\n      1,\n      \"2024-12-01T00:00:00Z\",\n      \"2024-12-01T00:00:00Z\",\n      1,\n      1\n    ],\n    [\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\",\n      4,\n      \"2024-01-14T00:00:00Z\",\n      \"2024-02-18T00:00:00Z\",\n      4,\n      1\n    ],\n    [\n      \"ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN\",\n      2,\n      \"2023-04-16T00:00:00Z\",\n      \"2023-04-30T00:00:00Z\",\n      2,\n      1\n    ],\n    [\n      \"MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX\",\n      5,\n      \"2022-09-11T00:00:00Z\",\n      \"2022-10-23T00:00:00Z\",\n      5,\n      1\n    ],\n    [\n      \"MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC\",\n      40,\n      \"2022-06-07T00:00:00Z\",\n      \"2022-09-01T00:00:00Z\",\n      40,\n      1\n    ],\n    [\n      \"LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN\",\n      46,\n      \"2022-06-06T00:00:00Z\",\n      \"2022-08-31T00:00:00Z\",\n      46,\n      1\n    ],\n    [\n      \"SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS\",\n      7,\n      \"2021-09-12T00:00:00Z\",\n      \"2021-10-31T00:00:00Z\",\n      7,\n      2\n    ],\n    [\n      \"HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK\",\n      20,\n      \"2021-06-07T00:00:00Z\",\n      \"2021-08-27T00:00:00Z\",\n      20,\n      1\n    ],\n    [\n      \"BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK\",\n      12,\n      \"2021-06-22T00:00:00Z\",\n      \"2021-08-25T00:00:00Z\",\n      12,\n      1\n    ],\n    [\n      \"BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX\",\n      4,\n      \"2021-06-20T00:00:00Z\",\n      \"2021-08-08T00:00:00Z\",\n      4,\n      1\n    ]\n  ],\n  \"count\": 10\n}"
+    }
+  ]
+}
+tool altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), max_hops AS (\n    SELECT max(hop_count) AS max_hop_count FROM ranked\n), unique_routes AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        hop_count,\n        Route,\n        row_number() OVER (PARTITION BY Route ORDER BY FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n    WHERE hop_count = (SELECT max_hop_count FROM max_hops)\n)\nSELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\nFROM unique_routes\nWHERE route_rank = 1\nORDER BY FlightDate DESC, Route ASC\nLIMIT 10","limit":20})
+altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), max_hops AS (\n    SELECT max(hop_count) AS max_hop_count FROM ranked\n), unique_routes AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        hop_count,\n        Route,\n        row_number() OVER (PARTITION BY Route ORDER BY FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n    WHERE hop_count = (SELECT max_hop_count FROM max_hops)\n)\nSELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\nFROM unique_routes\nWHERE route_rank = 1\nORDER BY FlightDate DESC, Route ASC\nLIMIT 10","limit":20}) success in 13.99s:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"FlightDate\",\n    \"aircraft_id\",\n    \"flight_number\",\n    \"carrier\",\n    \"hop_count\",\n    \"Route\"\n  ],\n  \"types\": [\n    \"Date\",\n    \"LowCardinality(String)\",\n    \"LowCardinality(String)\",\n    \"LowCardinality(String)\",\n    \"UInt64\",\n    \"String\"\n  ],\n  \"rows\": [\n    [\n      \"2024-12-01T00:00:00Z\",\n      \"N957WN\",\n      \"366\",\n      \"WN\",\n      8,\n      \"ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA\"\n    ],\n    [\n      \"2024-02-18T00:00:00Z\",\n      \"N7835A\",\n      \"3149\",\n      \"WN\",\n      8,\n      \"CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN\"\n    ],\n    [\n      \"2023-04-30T00:00:00Z\",\n      \"N7742B\",\n      \"154\",\n      \"WN\",\n      8,\n      \"ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN\"\n    ],\n    [\n      \"2022-10-23T00:00:00Z\",\n      \"N8631A\",\n      \"2787\",\n      \"WN\",\n      8,\n      \"MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX\"\n    ],\n    [\n      \"2022-09-01T00:00:00Z\",\n      \"N416WN\",\n      \"1956\",\n      \"WN\",\n      8,\n      \"MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC\"\n    ],\n    [\n      \"2022-08-31T00:00:00Z\",\n      \"N7713A\",\n      \"2884\",\n      \"WN\",\n      8,\n      \"LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN\"\n    ],\n    [\n      \"2021-10-31T00:00:00Z\",\n      \"N219WN\",\n      \"3378\",\n      \"WN\",\n      8,\n      \"SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS\"\n    ],\n    [\n      \"2021-08-27T00:00:00Z\",\n      \"N262WN\",\n      \"904\",\n      \"WN\",\n      8,\n      \"HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK\"\n    ],\n    [\n      \"2021-08-25T00:00:00Z\",\n      \"N484WN\",\n      \"2294\",\n      \"WN\",\n      8,\n      \"BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK\"\n    ],\n    [\n      \"2021-08-08T00:00:00Z\",\n      \"N225WN\",\n      \"3530\",\n      \"WN\",\n      8,\n      \"BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX\"\n    ]\n  ],\n  \"count\": 10\n}"
+    }
+  ]
+}
+tool altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), max_hops AS (\n    SELECT max(hop_count) AS max_hop_count FROM ranked\n), unique_routes AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        hop_count,\n        Route,\n        row_number() OVER (PARTITION BY Route ORDER BY FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n    WHERE hop_count = (SELECT max_hop_count FROM max_hops)\n), top10 AS (\n    SELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\n    FROM unique_routes\n    WHERE route_rank = 1\n    ORDER BY FlightDate DESC, Route ASC\n    LIMIT 10\n), route_occurrences AS (\n    SELECT\n        t.Route,\n        count() AS occurrences\n    FROM top10 t\n    INNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count\n    GROUP BY t.Route\n)\nSELECT\n    count() AS route_count,\n    countIf(occurrences = 1) AS one_off_routes,\n    countIf(occurrences > 1) AS recurring_routes,\n    round(avg(occurrences), 2) AS avg_occurrences,\n    max(occurrences) AS max_occurrences\nFROM route_occurrences","limit":10})
+altinity_ontime_demo.execute_query({"query":"WITH itineraries AS (\n    SELECT\n        FlightDate,\n        TailNum AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND TailNum != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, aircraft_id, flight_number, carrier\n    HAVING count() > 1\n), ranked AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        length(legs) AS hop_count,\n        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route\n    FROM itineraries\n), max_hops AS (\n    SELECT max(hop_count) AS max_hop_count FROM ranked\n), unique_routes AS (\n    SELECT\n        FlightDate,\n        aircraft_id,\n        flight_number,\n        carrier,\n        hop_count,\n        Route,\n        row_number() OVER (PARTITION BY Route ORDER BY FlightDate DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank\n    FROM ranked\n    WHERE hop_count = (SELECT max_hop_count FROM max_hops)\n), top10 AS (\n    SELECT FlightDate, aircraft_id, flight_number, carrier, hop_count, Route\n    FROM unique_routes\n    WHERE route_rank = 1\n    ORDER BY FlightDate DESC, Route ASC\n    LIMIT 10\n), route_occurrences AS (\n    SELECT\n        t.Route,\n        count() AS occurrences\n    FROM top10 t\n    INNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count\n    GROUP BY t.Route\n)\nSELECT\n    count() AS route_count,\n    countIf(occurrences = 1) AS one_off_routes,\n    countIf(occurrences > 1) AS recurring_routes,\n    round(avg(occurrences), 2) AS avg_occurrences,\n    max(occurrences) AS max_occurrences\nFROM route_occurrences","limit":10}) success in 21.78s:
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"columns\": [\n    \"route_count\",\n    \"one_off_routes\",\n    \"recurring_routes\",\n    \"avg_occurrences\",\n    \"max_occurrences\"\n  ],\n  \"types\": [\n    \"UInt64\",\n    \"UInt64\",\n    \"UInt64\",\n    \"Float64\",\n    \"UInt64\"\n  ],\n  \"rows\": [\n    [\n      10,\n      1,\n      9,\n      14.1,\n      46\n    ]\n  ],\n  \"count\": 1\n}"
+    }
+  ]
+}
+codex
+I’ve got the verified shape and the recurrence counts. I’m writing the final dashboard query and the three proof queries now, then I’ll run one last execution pass against the saved SQL text to make sure the artifacts match what was tested.
+file update
+A /Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql
+WITH itineraries AS (
+    SELECT
+        FlightDate AS flight_date,
+        TailNum AS aircraft_id,
+        FlightNum AS flight_number,
+        Carrier AS carrier,
+        arraySort(
+            x -> (x.1, x.2, x.3),
+            groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))
+        ) AS legs
+    FROM ontime.fact_ontime
+    WHERE Cancelled = 0
+      AND TailNum != ''
+      AND FlightNum != ''
+    GROUP BY
+        flight_date,
+        aircraft_id,
+        flight_number,
+        carrier
+    HAVING count() > 1
+),
+ranked AS (
+    SELECT
+        flight_date,
+        aircraft_id,
+        flight_number,
+        carrier,
+        length(legs) AS hop_count,
+        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route
+    FROM itineraries
+),
+max_hops AS (
+    SELECT max(hop_count) AS max_hop_count
+    FROM ranked
+),
+unique_routes AS (
+    SELECT
+        flight_date,
+        aircraft_id,
+        flight_number,
+        carrier,
+        hop_count,
+        Route,
+        row_number() OVER (
+            PARTITION BY Route
+            ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC
+        ) AS route_rank
+    FROM ranked
+    WHERE hop_count = (SELECT max_hop_count FROM max_hops)
+)
+SELECT
+    aircraft_id,
+    flight_number,
+    carrier,
+    flight_date,
+    hop_count,
+    Route
+FROM unique_routes
+WHERE route_rank = 1
+ORDER BY flight_date DESC, Route ASC
+LIMIT 10
+A /Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json
+{
+  "subquestions": [
+    {
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "answer_markdown": "The highest-hop example is an 8-hop Southwest itinerary flown by aircraft N957WN as flight 366 on 2024-12-01, with route ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
+      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1"
+    },
+    {
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "answer_markdown": "The most recent top-ranked itinerary is also the latest 8-hop unique route: N957WN operating Southwest flight 366 on 2024-12-01 over ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
+      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1"
+    },
+    {
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "answer_markdown": "They look mostly like recurring patterns rather than one-offs. Among the 10 most recent unique 8-hop routes, 9 recur on multiple dates, averaging 14.1 occurrences each, although the single most recent example appears only once.",
+      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ), top10 AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 10 ), route_occurrences AS ( SELECT t.Route, count() AS occurrences FROM top10 t INNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count GROUP BY t.Route ) SELECT count() AS route_count, countIf(occurrences = 1) AS one_off_routes, countIf(occurrences > 1) AS recurring_routes, round(avg(occurrences), 2) AS avg_occurrences, max(occurrences) AS max_occurrences FROM route_occurrences"
+    }
+  ]
+}
+apply_patch(auto_approved=true) exited 0 in 62ms:
+Success. Updated the following files:
+A main.sql
+A answer.raw.json
+file update:
+diff --git a/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..c6ec732e584f693d002403b646d2826b186031c4
+--- /dev/null
++++ b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json
+@@ -0,0 +1,19 @@
++{
++  "subquestions": [
++    {
++      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
++      "answer_markdown": "The highest-hop example is an 8-hop Southwest itinerary flown by aircraft N957WN as flight 366 on 2024-12-01, with route ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
++      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1"
++    },
++    {
++      "subquestion": "Which of the top-ranked itineraries is the most recent?",
++      "answer_markdown": "The most recent top-ranked itinerary is also the latest 8-hop unique route: N957WN operating Southwest flight 366 on 2024-12-01 over ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
++      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1"
++    },
++    {
++      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
++      "answer_markdown": "They look mostly like recurring patterns rather than one-offs. Among the 10 most recent unique 8-hop routes, 9 recur on multiple dates, averaging 14.1 occurrences each, although the single most recent example appears only once.",
++      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ), top10 AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 10 ), route_occurrences AS ( SELECT t.Route, count() AS occurrences FROM top10 t INNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count GROUP BY t.Route ) SELECT count() AS route_count, countIf(occurrences = 1) AS one_off_routes, countIf(occurrences > 1) AS recurring_routes, round(avg(occurrences), 2) AS avg_occurrences, max(occurrences) AS max_occurrences FROM route_occurrences"
++    }
++  ]
++}
+diff --git a/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql
+new file mode 100644
+index 0000000000000000000000000000000000000000..46ec2e6c05a377bead8b1c162dd59ae263794409
+--- /dev/null
++++ b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql
+@@ -0,0 +1,61 @@
++WITH itineraries AS (
++    SELECT
++        FlightDate AS flight_date,
++        TailNum AS aircraft_id,
++        FlightNum AS flight_number,
++        Carrier AS carrier,
++        arraySort(
++            x -> (x.1, x.2, x.3),
++            groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))
++        ) AS legs
++    FROM ontime.fact_ontime
++    WHERE Cancelled = 0
++      AND TailNum != ''
++      AND FlightNum != ''
++    GROUP BY
++        flight_date,
++        aircraft_id,
++        flight_number,
++        carrier
++    HAVING count() > 1
++),
++ranked AS (
++    SELECT
++        flight_date,
++        aircraft_id,
++        flight_number,
++        carrier,
++        length(legs) AS hop_count,
++        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route
++    FROM itineraries
++),
++max_hops AS (
++    SELECT max(hop_count) AS max_hop_count
++    FROM ranked
++),
++unique_routes AS (
++    SELECT
++        flight_date,
++        aircraft_id,
++        flight_number,
++        carrier,
++        hop_count,
++        Route,
++        row_number() OVER (
++            PARTITION BY Route
++            ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC
++        ) AS route_rank
++    FROM ranked
++    WHERE hop_count = (SELECT max_hop_count FROM max_hops)
++)
++SELECT
++    aircraft_id,
++    flight_number,
++    carrier,
++    flight_date,
++    hop_count,
++    Route
++FROM unique_routes
++WHERE route_rank = 1
++ORDER BY flight_date DESC, Route ASC
++LIMIT 10
+
+file update:
+diff --git a/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..c6ec732e584f693d002403b646d2826b186031c4
+--- /dev/null
++++ b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/answer.raw.json
+@@ -0,0 +1,19 @@
++{
++  "subquestions": [
++    {
++      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
++      "answer_markdown": "The highest-hop example is an 8-hop Southwest itinerary flown by aircraft N957WN as flight 366 on 2024-12-01, with route ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
++      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1"
++    },
++    {
++      "subquestion": "Which of the top-ranked itineraries is the most recent?",
++      "answer_markdown": "The most recent top-ranked itinerary is also the latest 8-hop unique route: N957WN operating Southwest flight 366 on 2024-12-01 over ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA.",
++      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ) SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 1"
++    },
++    {
++      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
++      "answer_markdown": "They look mostly like recurring patterns rather than one-offs. Among the 10 most recent unique 8-hop routes, 9 recur on multiple dates, averaging 14.1 occurrences each, although the single most recent example appears only once.",
++      "sql": "WITH itineraries AS ( SELECT FlightDate AS flight_date, TailNum AS aircraft_id, FlightNum AS flight_number, Carrier AS carrier, arraySort(x -> (x.1, x.2, x.3), groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))) AS legs FROM ontime.fact_ontime WHERE Cancelled = 0 AND TailNum != '' AND FlightNum != '' GROUP BY flight_date, aircraft_id, flight_number, carrier HAVING count() > 1 ), ranked AS ( SELECT flight_date, aircraft_id, flight_number, carrier, length(legs) AS hop_count, arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route FROM itineraries ), max_hops AS ( SELECT max(hop_count) AS max_hop_count FROM ranked ), unique_routes AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route, row_number() OVER (PARTITION BY Route ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC) AS route_rank FROM ranked WHERE hop_count = (SELECT max_hop_count FROM max_hops) ), top10 AS ( SELECT flight_date, aircraft_id, flight_number, carrier, hop_count, Route FROM unique_routes WHERE route_rank = 1 ORDER BY flight_date DESC, Route ASC LIMIT 10 ), route_occurrences AS ( SELECT t.Route, count() AS occurrences FROM top10 t INNER JOIN ranked r ON r.Route = t.Route AND r.hop_count = t.hop_count GROUP BY t.Route ) SELECT count() AS route_count, countIf(occurrences = 1) AS one_off_routes, countIf(occurrences > 1) AS recurring_routes, round(avg(occurrences), 2) AS avg_occurrences, max(occurrences) AS max_occurrences FROM route_occurrences"
++    }
++  ]
++}
+diff --git a/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql
+new file mode 100644
+index 0000000000000000000000000000000000000000..46ec2e6c05a377bead8b1c162dd59ae263794409
+--- /dev/null
++++ b/2026-03-25/q001_hops_per_day/codex/gpt-5.4/run-001/main.sql
+@@ -0,0 +1,61 @@
++WITH itineraries AS (
++    SELECT
++        FlightDate AS flight_date,
++        TailNum AS aircraft_id,
++        FlightNum AS flight_number,
++        Carrier AS carrier,
++        arraySort(
++            x -> (x.1, x.2, x.3),
++            groupArray((coalesce(DepTime, CRSDepTime, toUInt16(0)), OriginCode, DestCode))
++        ) AS legs
++    FROM ontime.fact_ontime
++    WHERE Cancelled = 0
++      AND TailNum != ''
++      AND FlightNum != ''
++    GROUP BY
++        flight_date,
++        aircraft_id,
++        flight_number,
++        carrier
++    HAVING count() > 1
++),
++ranked AS (
++    SELECT
++        flight_date,
++        aircraft_id,
++        flight_number,
++        carrier,
++        length(legs) AS hop_count,
++        arrayStringConcat(arrayMap(x -> x.2, legs), '-') || '-' || arrayElement(legs, -1).3 AS Route
++    FROM itineraries
++),
++max_hops AS (
++    SELECT max(hop_count) AS max_hop_count
++    FROM ranked
++),
++unique_routes AS (
++    SELECT
++        flight_date,
++        aircraft_id,
++        flight_number,
++        carrier,
++        hop_count,
++        Route,
++        row_number() OVER (
++            PARTITION BY Route
++            ORDER BY flight_date DESC, aircraft_id DESC, flight_number DESC, carrier DESC
++        ) AS route_rank
++    FROM ranked
++    WHERE hop_count = (SELECT max_hop_count FROM max_hops)
++)
++SELECT
++    aircraft_id,
++    flight_number,
++    carrier,
++    flight_date,
++    hop_count,
++    Route
++FROM unique_routes
++WHERE route_rank = 1
++ORDER BY flight_date DESC, Route ASC
++LIMIT 10
+
+task interrupted
+tokens used
+28,963

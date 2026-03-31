@@ -1,0 +1,368 @@
+{
+  "columns": [
+    "Rank",
+    "FlightDate",
+    "Tail_Number",
+    "FlightNum",
+    "Carrier",
+    "HopCount",
+    "Route",
+    "LegSeq"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "FlightNum": "366",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "BWI"
+        },
+        {
+          "": "MYR"
+        },
+        {
+          "": "BNA"
+        },
+        {
+          "": "VPS"
+        },
+        {
+          "": "DAL"
+        },
+        {
+          "": "LAS"
+        },
+        {
+          "": "OAK"
+        },
+        {
+          "": "SEA"
+        }
+      ],
+      "Rank": 1,
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "FlightNum": "3149",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "BNA"
+        },
+        {
+          "": "PNS"
+        },
+        {
+          "": "HOU"
+        },
+        {
+          "": "MCI"
+        },
+        {
+          "": "PHX"
+        },
+        {
+          "": "BUR"
+        },
+        {
+          "": "OAK"
+        },
+        {
+          "": "DEN"
+        }
+      ],
+      "Rank": 2,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N7835A"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-01-28T00:00:00Z",
+      "FlightNum": "3149",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "BNA"
+        },
+        {
+          "": "PNS"
+        },
+        {
+          "": "HOU"
+        },
+        {
+          "": "MCI"
+        },
+        {
+          "": "PHX"
+        },
+        {
+          "": "BUR"
+        },
+        {
+          "": "OAK"
+        },
+        {
+          "": "DEN"
+        }
+      ],
+      "Rank": 3,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N429WN"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-01-21T00:00:00Z",
+      "FlightNum": "3149",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "BNA"
+        },
+        {
+          "": "PNS"
+        },
+        {
+          "": "HOU"
+        },
+        {
+          "": "MCI"
+        },
+        {
+          "": "PHX"
+        },
+        {
+          "": "BUR"
+        },
+        {
+          "": "OAK"
+        },
+        {
+          "": "DEN"
+        }
+      ],
+      "Rank": 4,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N228WN"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2024-01-14T00:00:00Z",
+      "FlightNum": "3149",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "BNA"
+        },
+        {
+          "": "PNS"
+        },
+        {
+          "": "HOU"
+        },
+        {
+          "": "MCI"
+        },
+        {
+          "": "PHX"
+        },
+        {
+          "": "BUR"
+        },
+        {
+          "": "OAK"
+        },
+        {
+          "": "DEN"
+        }
+      ],
+      "Rank": 5,
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "Tail_Number": "N569WN"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "FlightNum": "154",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "DAL"
+        },
+        {
+          "": "LIT"
+        },
+        {
+          "": "ATL"
+        },
+        {
+          "": "RIC"
+        },
+        {
+          "": "MDW"
+        },
+        {
+          "": "MCI"
+        },
+        {
+          "": "PHX"
+        },
+        {
+          "": "SAN"
+        }
+      ],
+      "Rank": 6,
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "Tail_Number": "N7742B"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2023-04-16T00:00:00Z",
+      "FlightNum": "154",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "DAL"
+        },
+        {
+          "": "LIT"
+        },
+        {
+          "": "ATL"
+        },
+        {
+          "": "RIC"
+        },
+        {
+          "": "MDW"
+        },
+        {
+          "": "MCI"
+        },
+        {
+          "": "PHX"
+        },
+        {
+          "": "SAN"
+        }
+      ],
+      "Rank": 7,
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "Tail_Number": "N929WN"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "FlightNum": "2787",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "ATL"
+        },
+        {
+          "": "CMH"
+        },
+        {
+          "": "BWI"
+        },
+        {
+          "": "RDU"
+        },
+        {
+          "": "BNA"
+        },
+        {
+          "": "DTW"
+        },
+        {
+          "": "MDW"
+        },
+        {
+          "": "LAX"
+        }
+      ],
+      "Rank": 8,
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8631A"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2022-10-02T00:00:00Z",
+      "FlightNum": "2787",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "ATL"
+        },
+        {
+          "": "CMH"
+        },
+        {
+          "": "BWI"
+        },
+        {
+          "": "RDU"
+        },
+        {
+          "": "BNA"
+        },
+        {
+          "": "DTW"
+        },
+        {
+          "": "MDW"
+        },
+        {
+          "": "LAX"
+        }
+      ],
+      "Rank": 9,
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8809L"
+    },
+    {
+      "Carrier": "WN",
+      "FlightDate": "2022-09-25T00:00:00Z",
+      "FlightNum": "2787",
+      "HopCount": 8,
+      "LegSeq": [
+        {
+          "": "ATL"
+        },
+        {
+          "": "CMH"
+        },
+        {
+          "": "BWI"
+        },
+        {
+          "": "RDU"
+        },
+        {
+          "": "BNA"
+        },
+        {
+          "": "DTW"
+        },
+        {
+          "": "MDW"
+        },
+        {
+          "": "LAX"
+        }
+      ],
+      "Rank": 10,
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "Tail_Number": "N8811L"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-24T08:51:52.129135Z",
+  "source_query_sha256": "776307d9427b037ddedeb1c2692ad7a47e4e2b1367c3d374a2d273c54275ad45",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=q1"
+}

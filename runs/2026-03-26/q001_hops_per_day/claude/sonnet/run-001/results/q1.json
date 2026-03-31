@@ -1,0 +1,63 @@
+{
+  "columns": [
+    "Route",
+    "recurrence_count",
+    "tier"
+  ],
+  "rows": [
+    {
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "recurrence_count": 1,
+      "tier": "one-off"
+    },
+    {
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "recurrence_count": 4,
+      "tier": "rare (2-7)"
+    },
+    {
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "recurrence_count": 2,
+      "tier": "rare (2-7)"
+    },
+    {
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "recurrence_count": 5,
+      "tier": "rare (2-7)"
+    },
+    {
+      "Route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "recurrence_count": 40,
+      "tier": "highly recurring (40+)"
+    },
+    {
+      "Route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "recurrence_count": 46,
+      "tier": "highly recurring (40+)"
+    },
+    {
+      "Route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "recurrence_count": 7,
+      "tier": "rare (2-7)"
+    },
+    {
+      "Route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "recurrence_count": 20,
+      "tier": "recurring (8-20)"
+    },
+    {
+      "Route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "recurrence_count": 12,
+      "tier": "recurring (8-20)"
+    },
+    {
+      "Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "recurrence_count": 5,
+      "tier": "rare (2-7)"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-26T13:15:34.204876Z",
+  "source_query_sha256": "03901a003bec28a2427773f3576b9089be0df2b52686dafdfced5f7403c7185a",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|section=q1"
+}

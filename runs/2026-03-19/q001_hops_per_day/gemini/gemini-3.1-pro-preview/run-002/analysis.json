@@ -1,0 +1,19 @@
+{
+  "sql": "SELECT Date, Carrier, AircraftID, FlightNumber, Hops, arrayStringConcat(arrayPushBack(arrayMap(x -\u003e x.2, sorted_legs), arrayMap(x -\u003e x.3, sorted_legs)[-1]), ' - ') AS Route, arrayStringConcat(arrayMap(x -\u003e toString(x.1), sorted_legs), ', ') AS DepartureTimes FROM ( SELECT FlightDate AS Date, Reporting_Airline AS Carrier, Tail_Number AS AircraftID, Flight_Number_Reporting_Airline AS FlightNumber, count() AS Hops, arraySort(x -\u003e x.1, groupArray((DepTime, Origin, Dest))) AS sorted_legs FROM ontime.ontime WHERE Cancelled = 0 AND Tail_Number != '' AND Flight_Number_Reporting_Airline != '' GROUP BY Date, Carrier, AircraftID, FlightNumber ) ORDER BY Hops DESC, Date DESC LIMIT 10",
+  "report_markdown": "# Highest daily hops for one aircraft on one flight number\n\n{{data_overview_md}}\n\n## Summary\n\nThe maximum observed daily hop count for a single aircraft on the same flight number is **{{metric.primary_value}}**. This does not appear to be a one-off anomaly but rather a deliberate and repeated operating pattern, exclusively operated by carrier **{{metric.top_carrier}}** (Southwest Airlines) among the top 10 longest itineraries.\n\n## Most Recent Longest Itinerary\n\nThe most recent {{metric.primary_value}}-hop itinerary was flown by **{{metric.top_carrier}}** on flight **{{metric.top_flight}}** using aircraft **{{metric.top_aircraft}}** on **{{metric.top_date}}**. \n\nThe full 8-leg route traversed: **{{metric.top_route}}**.\n\n## Route Repetition and Clustering\n\nLooking at the top 10 longest itineraries, there is a clear pattern of route repetition and clustering:\n- **Consistent Carrier**: All top 10 records belong to Southwest Airlines (WN).\n- **Identical Repeated Routes**: Southwest repeatedly flies the exact same 8-hop route using the same flight number on different dates. For example, flight 3149 flew the exact same 8-leg cross-country route (CLE - BNA - PNS - HOU - MCI - PHX - BUR - OAK - DEN) on at least four separate dates in early 2024.\n- **Transcontinental Sweeps**: These high-hop flights generally sweep across the country, serving as a \"milk run\" connecting multiple regional airports and major hubs from the East Coast/Midwest to the West Coast.\n\n{{result_table_md}}",
+  "metrics": {
+    "summary_facts": [
+      "The highest number of daily hops for a single aircraft on one flight number is 8.",
+      "Southwest Airlines (WN) accounts for all of the top 10 highest-hop daily itineraries.",
+      "These 8-hop itineraries are often repeated identical routes flown on different dates under the same flight number."
+    ],
+    "named_values": {
+      "primary_value": "8",
+      "top_aircraft": "N957WN",
+      "top_carrier": "WN",
+      "top_date": "2024-12-01",
+      "top_flight": "366",
+      "top_route": "ISP - BWI - MYR - BNA - VPS - DAL - LAS - OAK - SEA"
+    }
+  }
+}

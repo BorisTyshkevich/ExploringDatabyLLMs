@@ -1,0 +1,23 @@
+WITH top_routes AS (
+    SELECT arrayJoin(splitByChar('-', Route)) AS airport_code
+    FROM (
+        SELECT 'ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA' AS Route
+        UNION ALL SELECT 'CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN'
+        UNION ALL SELECT 'ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN'
+        UNION ALL SELECT 'MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX'
+        UNION ALL SELECT 'MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC'
+        UNION ALL SELECT 'LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN'
+        UNION ALL SELECT 'SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS'
+        UNION ALL SELECT 'HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK'
+        UNION ALL SELECT 'BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK'
+        UNION ALL SELECT 'BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX'
+    )
+)
+SELECT DISTINCT
+    tr.airport_code,
+    d.DisplayAirportName,
+    d.Latitude,
+    d.Longitude
+FROM top_routes tr
+LEFT JOIN ontime.dim_airports d ON tr.airport_code = d.AirportCode
+ORDER BY d.Longitude

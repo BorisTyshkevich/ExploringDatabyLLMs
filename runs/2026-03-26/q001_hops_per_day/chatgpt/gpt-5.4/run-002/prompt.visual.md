@@ -1,0 +1,456 @@
+- Connect to clickhouse server though MCP connection
+- Do not use direct HTTP by any tools like curl.
+- Use the `ontime` database to answer analytical questions
+- Use `ontime-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
+- write correct and efficient ClickHouse SQL 
+- Before writing any SQL artifact, self-verify every SQL statement you intend to save.
+- Run a cheap debug execution for each query first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both applied inside the main data-reading subquery or CTE.
+- Treat successful execution as mandatory. Fix any syntax, type, aggregate, window, join, or unknown-column errors in a loop until every saved query runs successfully.
+- Do not write unchecked SQL.
+
+Create the presentation artifact using the proper `*-analyst-dashboard` skill.
+
+### Rules
+
+- Question title: `Highest daily hops for one aircraft on one flight number`
+- Visual mode: `dynamic`
+- Presentation target: `html`
+- Visual type: `html_map`
+- Derive KPIs, chart values, table rows, filters, and highlights from the actual analytical data. Do not invent or hardcode them.
+- Respect the declared visual mode and visual type shown below.
+- Follow question-specific visual guidance after the shared contract. Put reusable runtime behavior in shared page code, not in prose comments.
+
+- use main proof query as the primary saved SQL already provided in the prompt
+- use the other section proof queries as supporting queries when they materially improve the narrative or supporting panels
+- anchor the hero narrative to the top-ranked itinerary even when another itinerary is selected in the table
+- show a lead-itinerary map that remains present even before airport-coordinate enrichment succeeds
+- treat the first row returned by the primary query as the default selected itinerary on initial load
+- derive hop count, stop sequence, and repeated-route comparisons from the result set
+- include a narrative hero about the lead itinerary and the broader geographic pattern of the top itineraries
+- label the map as airport-coordinate enrichment in the query ledger
+- reuse the enrichment results for any itinerary selected from the primary result set without issuing a new per-click enrichment query
+- include KPI cards for tail number, flight number, date, hop count, and route repetition context, with the date shown as its own visible KPI value
+- keep the KPI strip synced to the currently selected itinerary
+- include a legend plus both a route sequence/detail panel and an itinerary table below the map
+- make itinerary table rows clickable so selecting a row redraws the map and refreshes the route sequence/detail panel for that itinerary
+- make the selected-row map behavior explicit: when the selected itinerary differs from Rank 1, the map title, plotted route, markers, bounds, and route detail panel must visibly update to that selected itinerary rather than leaving the lead route drawn
+- keep the map/detail/KPI selection state separate from the anchored hero state
+- show a clear active-row state for the selected itinerary that is distinct from simple hover styling
+- prefer the `Route` value from the primary query as the per-row itinerary representation for redraws
+- if enrichment fails or the selected itinerary lacks enough coordinates, keep the map card visible with degraded-state messaging for that selected itinerary, report the degraded map in the ledger, and continue rendering the non-map analysis
+- derive the ordered itinerary sequence for map redraws and the route detail panel by splitting `Route` on `-`
+
+### Data Source
+
+SQL query for primary data source:
+
+```sql
+WITH recent_legs AS (
+    SELECT
+        FlightDate,
+        Carrier,
+        FlightNum,
+        Tail_Number AS aircraft_id,
+        OriginCode,
+        DestCode,
+        coalesce(DepTime, CRSDepTime) AS dep_hhmm,
+        coalesce(ArrTime, CRSArrTime) AS arr_hhmm
+    FROM ontime.fact_ontime
+    WHERE FlightDate >= addYears(today(), -5)
+      AND Cancelled = 0
+      AND Carrier != ''
+      AND FlightNum != ''
+    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm
+),
+recent_itineraries AS (
+    SELECT
+        FlightDate,
+        Carrier,
+        FlightNum,
+        aircraft_id,
+        count() AS hop_count,
+        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted
+    FROM recent_legs
+    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id
+),
+recent_routes AS (
+    SELECT
+        FlightDate,
+        Carrier,
+        FlightNum,
+        aircraft_id,
+        hop_count,
+        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -> tupleElement(x, 4), legs_sorted)), '-') AS Route
+    FROM recent_itineraries
+    WHERE hop_count >= 2
+),
+top_routes AS (
+    SELECT
+        if(aircraft_id = '', 'unknown', aircraft_id) AS aircraft_id,
+        FlightNum AS flight_number,
+        Carrier AS carrier,
+        FlightDate AS flight_date,
+        hop_count,
+        Route,
+        max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,
+        row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn
+    FROM recent_routes
+),
+top10 AS (
+    SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route, most_recent_flight_date
+    FROM top_routes
+    WHERE rn = 1
+    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route
+    LIMIT 10
+),
+history_legs AS (
+    SELECT
+        FlightDate,
+        Carrier,
+        FlightNum,
+        Tail_Number AS aircraft_id,
+        OriginCode,
+        DestCode,
+        coalesce(DepTime, CRSDepTime) AS dep_hhmm,
+        coalesce(ArrTime, CRSArrTime) AS arr_hhmm
+    FROM ontime.fact_ontime
+    WHERE Cancelled = 0
+      AND Carrier != ''
+      AND FlightNum != ''
+    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm
+),
+history_routes AS (
+    SELECT
+        FlightDate,
+        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -> tupleElement(x, 4), legs_sorted)), '-') AS Route
+    FROM (
+        SELECT
+            FlightDate,
+            Carrier,
+            FlightNum,
+            aircraft_id,
+            count() AS hop_count,
+            arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted
+        FROM history_legs
+        GROUP BY FlightDate, Carrier, FlightNum, aircraft_id
+        HAVING hop_count >= 2
+    )
+    WHERE Route IN (SELECT Route FROM top10)
+),
+recurrence AS (
+    SELECT Route, countDistinct(FlightDate) AS route_recurrence_count
+    FROM history_routes
+    GROUP BY Route
+)
+SELECT
+    t.aircraft_id,
+    t.flight_number,
+    t.carrier,
+    t.flight_date,
+    t.hop_count,
+    r.route_recurrence_count,
+    t.Route
+FROM top10 t
+LEFT JOIN recurrence r USING (Route)
+ORDER BY t.hop_count DESC, t.most_recent_flight_date DESC, t.Route
+```
+
+Data example/snippet:
+
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": null,
+  "row_count": 4,
+  "mode_hint": "This visual pass receives only verified section answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "main",
+      "subquestion": "Find the longest itineraries with the highest number of hops for a single aircraft using the same flight number.\nDefine uniqueness by the full textual `Route` string and output the most recent top 10 unique routes by departure time.\nDo not exclude rows solely because `Tail_Number` is empty. If an itinerary qualifies but the aircraft id is missing in the source data, keep it in the result and surface the aircraft id as empty / unknown rather than filtering it out.\nCount hops from distinct same-day legs, not raw source rows; do not let duplicate or conflicting same-time rows inflate hop count or create artifact routes.\n\nReturn:\n\n- aircraft id\n- flight number\n- carrier\n- flight date\n- hop count\n- route recurrence count: total number of days across all history on which this exact Route string was flown by any aircraft\n- textual `Route` in chronological order, including every origin and the final destination, using `-` as the delimiter throughout, for example `SMF-SAN-PHX-COS-DEN`",
+      "answer_markdown": "Within the last five years of OnTime data, the highest observed same-aircraft, same-flight-number itineraries reached 8 hops. The most recent unique 8-hop route was ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA on 2024-12-01 by WN flight 366 with aircraft N957WN. Among the top 10 unique routes, recurrence ranges from 1 day to 46 days, led by LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN at 46 days and MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC at 40 days.",
+      "sql": "WITH recent_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0\n      AND Carrier != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        aircraft_id,\n        count() AS hop_count,\n        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        aircraft_id,\n        hop_count,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT\n        if(aircraft_id = '', 'unknown', aircraft_id) AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        FlightDate AS flight_date,\n        hop_count,\n        Route,\n        max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n        row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route, most_recent_flight_date\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nhistory_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND Carrier != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nhistory_routes AS (\n    SELECT\n        FlightDate,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM (\n        SELECT\n            FlightDate,\n            Carrier,\n            FlightNum,\n            aircraft_id,\n            count() AS hop_count,\n            arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted\n        FROM history_legs\n        GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n        HAVING hop_count \u003e= 2\n    )\n    WHERE Route IN (SELECT Route FROM top10)\n),\nrecurrence AS (\n    SELECT Route, countDistinct(FlightDate) AS route_recurrence_count\n    FROM history_routes\n    GROUP BY Route\n)\nSELECT\n    t.aircraft_id,\n    t.flight_number,\n    t.carrier,\n    t.flight_date,\n    t.hop_count,\n    r.route_recurrence_count,\n    t.Route\nFROM top10 t\nLEFT JOIN recurrence r USING (Route)\nORDER BY t.hop_count DESC, t.most_recent_flight_date DESC, t.Route",
+      "is_primary": true,
+      "date_field_hint": "flight_date",
+      "row_count": 10,
+      "result_columns": [
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "route_recurrence_count",
+        "Route"
+      ],
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8,
+        "route_recurrence_count": 1
+      }
+    },
+    {
+      "id": "q1",
+      "subquestion": "Which airports act as the key connectors, origins, and termini within the top 10 unique maximum-hop itineraries?\nClassify airport appearances by route position and return airport code, airport name, city/state, total appearances, origin appearances, intermediate-stop appearances, final-destination appearances, and share of itineraries containing that airport.",
+      "answer_markdown": "The key connector airports in the top 10 routes are DAL, DEN, LAS, BWI, MSY, and OAK, each appearing in 5 of 10 itineraries. DAL is entirely an intermediate connector with 5 intermediate appearances, while DEN and LAS split between connector and terminal roles. The most common final destinations are OAK and LAX, with 2 terminal appearances each.",
+      "sql": "WITH recent_legs AS (\n    SELECT FlightDate, Carrier, FlightNum, Tail_Number AS aircraft_id, OriginCode, DestCode,\n           coalesce(DepTime, CRSDepTime) AS dep_hhmm, coalesce(ArrTime, CRSArrTime) AS arr_hhmm\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0 AND Carrier != '' AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT FlightDate, Carrier, FlightNum, aircraft_id, count() AS hop_count,\n           arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT FlightDate, Carrier, FlightNum, aircraft_id, hop_count,\n           arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT *, max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n           row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT Route\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nairports AS (\n    SELECT\n        Route,\n        airport_code,\n        pos,\n        length(airport_list) AS route_len\n    FROM (\n        SELECT Route, splitByChar('-', Route) AS airport_list\n        FROM top10\n    )\n    ARRAY JOIN airport_list AS airport_code, arrayEnumerate(airport_list) AS pos\n)\nSELECT\n    a.airport_code,\n    any(d.DisplayAirportName) AS airport_name,\n    any(d.CityName) AS city_name,\n    any(d.StateCode) AS state_code,\n    count() AS total_appearances,\n    countIf(pos = 1) AS origin_appearances,\n    countIf(pos \u003e 1 AND pos \u003c route_len) AS intermediate_stop_appearances,\n    countIf(pos = route_len) AS final_destination_appearances,\n    round(countDistinct(Route) / 10.0, 3) AS share_of_itineraries\nFROM airports a\nLEFT JOIN ontime.dim_airports d\n    ON a.airport_code = d.AirportCode AND d.IsLatest = 1\nGROUP BY a.airport_code\nORDER BY total_appearances DESC, intermediate_stop_appearances DESC, a.airport_code",
+      "date_field_hint": "airport_name",
+      "row_count": 45,
+      "result_columns": [
+        "airport_code",
+        "airport_name",
+        "city_name",
+        "state_code",
+        "total_appearances",
+        "origin_appearances",
+        "intermediate_stop_appearances",
+        "final_destination_appearances",
+        "share_of_itineraries"
+      ],
+      "first_row": {
+        "airport_code": "DAL",
+        "airport_name": "Dallas Love Field",
+        "city_name": "Dallas, TX",
+        "final_destination_appearances": 0,
+        "intermediate_stop_appearances": 5,
+        "origin_appearances": 0,
+        "share_of_itineraries": 0.5,
+        "state_code": "TX",
+        "total_appearances": 5
+      }
+    },
+    {
+      "id": "q2",
+      "subquestion": "How geographically extreme is each of the top 10 unique maximum-hop itineraries?\nReturn total flown distance, unique airports, unique city markets, unique states, unique local-time offsets, and whether the route is entirely domestic, then summarize which routes are the most geographically expansive.",
+      "answer_markdown": "The most geographically expansive route by flown distance is BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX at 5,169 miles, spanning 9 airports, 8 city markets, 9 states, and 3 local-time offsets. The widest time-zone spread is 4 offsets, reached by CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN, ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN, HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK, MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC, and BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK. All top 10 routes are entirely domestic.",
+      "sql": "WITH recent_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginAirportID,\n        DestAirportID,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm,\n        min(Distance) AS Distance\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0 AND Carrier != '' AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginAirportID, DestAirportID, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id,\n        count() AS hop_count,\n        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode, OriginAirportID, DestAirportID, ifNull(Distance, 0)))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id, hop_count, legs_sorted,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT *, max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n           row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT aircraft_id, FlightDate, Carrier, FlightNum, hop_count, Route, legs_sorted, most_recent_flight_date\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nroute_airports AS (\n    SELECT\n        Route,\n        arrayJoin(arrayConcat([tupleElement(legs_sorted[1], 5)], arrayMap(x -\u003e tupleElement(x, 6), legs_sorted))) AS airport_id\n    FROM top10\n)\nSELECT\n    t.Route,\n    if(t.aircraft_id = '', 'unknown', t.aircraft_id) AS aircraft_id,\n    t.FlightNum AS flight_number,\n    t.Carrier AS carrier,\n    t.FlightDate AS flight_date,\n    t.hop_count,\n    arraySum(arrayMap(x -\u003e toUInt64(tupleElement(x, 7)), t.legs_sorted)) AS total_flown_distance,\n    uniqExact(ra.airport_id) AS unique_airports,\n    uniqExact(d.CityMarketID) AS unique_city_markets,\n    uniqExact(d.StateCode) AS unique_states,\n    uniqExact(d.UtcLocalTimeVariation) AS unique_local_time_offsets,\n    min(d.CountryCodeISO = 'US') AS entirely_domestic\nFROM top10 t\nLEFT JOIN route_airports ra ON t.Route = ra.Route\nLEFT JOIN ontime.dim_airports d ON ra.airport_id = d.AirportID AND d.IsLatest = 1\nGROUP BY t.Route, aircraft_id, flight_number, carrier, flight_date, t.hop_count, t.legs_sorted\nORDER BY total_flown_distance DESC, unique_states DESC, t.Route",
+      "date_field_hint": "flight_date",
+      "row_count": 10,
+      "result_columns": [
+        "t.Route",
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "total_flown_distance",
+        "unique_airports",
+        "unique_city_markets",
+        "unique_states",
+        "unique_local_time_offsets",
+        "entirely_domestic"
+      ],
+      "first_row": {
+        "aircraft_id": "N225WN",
+        "carrier": "WN",
+        "entirely_domestic": 1,
+        "flight_date": "2021-08-08T00:00:00Z",
+        "flight_number": "3530",
+        "hop_count": 8,
+        "t.Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+        "total_flown_distance": 5169,
+        "unique_airports": 9,
+        "unique_city_markets": 8,
+        "unique_local_time_offsets": 3,
+        "unique_states": 9
+      }
+    },
+    {
+      "id": "q3",
+      "subquestion": "Which airports or legs are the main operational stress points within the top 10 unique maximum-hop itineraries?\nReturn per-airport and per-leg average departure delay, average arrival delay, rate of 15-plus-minute delays, and diversion incidence, and identify the stop positions most associated with disruption.",
+      "answer_markdown": "The main operational stress points are late-route segments, especially leg 8, which averages 11.7 minutes of departure delay, 5.8 minutes of arrival delay, and a 50% 15-plus-minute delay rate. At the airport level, RNO, OAK, COS, and DAL show the highest outbound stress in this top-10 set, while legs MDW-LAX, OAK-RNO, DAL-LAX, MSY-ATL, PHX-SAN, RNO-LAS, COS-DEN, and BNA-DTW each show a 100% 15-plus-minute delay rate. No diversions appear in these representative itineraries.",
+      "sql": "WITH recent_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginAirportID,\n        DestAirportID,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm,\n        min(DepDelay) AS DepDelay,\n        min(ArrDelay) AS ArrDelay,\n        max(DepDel15) AS DepDel15,\n        max(ArrDel15) AS ArrDel15,\n        max(Diverted) AS Diverted\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0 AND Carrier != '' AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginAirportID, DestAirportID, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id,\n        count() AS hop_count,\n        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode, OriginAirportID, DestAirportID, DepDelay, ArrDelay, DepDel15, ArrDel15, Diverted))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id, hop_count, legs_sorted,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT *, max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n           row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT Route, legs_sorted\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nleg_rows AS (\n    SELECT\n        Route,\n        pos AS leg_position,\n        tupleElement(leg, 3) AS origin_code,\n        tupleElement(leg, 4) AS dest_code,\n        tupleElement(leg, 7) AS dep_delay,\n        tupleElement(leg, 8) AS arr_delay,\n        tupleElement(leg, 9) AS dep_del15,\n        tupleElement(leg, 10) AS arr_del15,\n        tupleElement(leg, 11) AS diverted\n    FROM top10\n    ARRAY JOIN legs_sorted AS leg, arrayEnumerate(legs_sorted) AS pos\n)\nSELECT *\nFROM (\n    SELECT\n        'airport' AS entity_type,\n        origin_code AS entity_key,\n        concat('departures from ', origin_code) AS entity_label,\n        CAST(NULL AS Nullable(UInt64)) AS stop_position,\n        round(avg(toFloat64(dep_delay)), 2) AS avg_departure_delay,\n        round(avg(toFloat64(arr_delay)), 2) AS avg_arrival_delay,\n        round(avg(greatest(toUInt8(dep_del15), toUInt8(arr_del15))), 3) AS delay_15_plus_rate,\n        round(avg(toFloat64(diverted)), 3) AS diversion_incidence\n    FROM leg_rows\n    GROUP BY origin_code\n\n    UNION ALL\n\n    SELECT\n        'leg' AS entity_type,\n        concat(origin_code, '-', dest_code) AS entity_key,\n        concat(origin_code, ' to ', dest_code) AS entity_label,\n        CAST(NULL AS Nullable(UInt64)) AS stop_position,\n        round(avg(toFloat64(dep_delay)), 2) AS avg_departure_delay,\n        round(avg(toFloat64(arr_delay)), 2) AS avg_arrival_delay,\n        round(avg(greatest(toUInt8(dep_del15), toUInt8(arr_del15))), 3) AS delay_15_plus_rate,\n        round(avg(toFloat64(diverted)), 3) AS diversion_incidence\n    FROM leg_rows\n    GROUP BY origin_code, dest_code\n\n    UNION ALL\n\n    SELECT\n        'stop_position' AS entity_type,\n        toString(leg_position) AS entity_key,\n        concat('leg ', toString(leg_position)) AS entity_label,\n        toUInt64(leg_position) AS stop_position,\n        round(avg(toFloat64(dep_delay)), 2) AS avg_departure_delay,\n        round(avg(toFloat64(arr_delay)), 2) AS avg_arrival_delay,\n        round(avg(greatest(toUInt8(dep_del15), toUInt8(arr_del15))), 3) AS delay_15_plus_rate,\n        round(avg(toFloat64(diverted)), 3) AS diversion_incidence\n    FROM leg_rows\n    GROUP BY leg_position\n)\nORDER BY entity_type, delay_15_plus_rate DESC, avg_arrival_delay DESC, entity_key",
+      "date_field_hint": "entity_key",
+      "row_count": 124,
+      "result_columns": [
+        "entity_type",
+        "entity_key",
+        "entity_label",
+        "stop_position",
+        "avg_departure_delay",
+        "avg_arrival_delay",
+        "delay_15_plus_rate",
+        "diversion_incidence"
+      ],
+      "first_row": {
+        "avg_arrival_delay": 20,
+        "avg_departure_delay": 30,
+        "delay_15_plus_rate": 1,
+        "diversion_incidence": 0,
+        "entity_key": "RNO",
+        "entity_label": "departures from RNO",
+        "entity_type": "airport",
+        "stop_position": null
+      }
+    }
+  ]
+}
+
+### Multi-query additions
+
+- The saved SQL shown below is the primary section query for this page.
+- The verified analysis package includes named supporting section queries that may be used for enrichment, drill-down, or secondary visuals when the question-specific prompt calls for them.
+- Treat the supporting queries in the verified analysis package as first-class runtime queries, not just narrative context.
+- Prefill editable SQL panels for the primary query and each supporting query from the verified package.
+- Use section answers as narrative framing, but derive displayed KPIs, charts, tables, and interactions from live browser execution of the primary saved SQL and any supporting queries you actually run.
+- Do not assume auxiliary lookup or enrichment schema details from memory. Use only columns you have checked against the live endpoint or semantic-layer guidance.
+- If you run supporting queries, record them in the same visible query ledger as the primary query.
+- When the date selector changes, rerun the primary query and every supporting query that supports the active date range.
+- The dashboard does not need to mirror `report.md`; it should combine narrative and interactive analysis.
+
+### Verified Analysis Package
+
+Use this JSON package as the supporting context for the visual:
+
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": null,
+  "row_count": 4,
+  "mode_hint": "This visual pass receives only verified section answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "main",
+      "subquestion": "Find the longest itineraries with the highest number of hops for a single aircraft using the same flight number.\nDefine uniqueness by the full textual `Route` string and output the most recent top 10 unique routes by departure time.\nDo not exclude rows solely because `Tail_Number` is empty. If an itinerary qualifies but the aircraft id is missing in the source data, keep it in the result and surface the aircraft id as empty / unknown rather than filtering it out.\nCount hops from distinct same-day legs, not raw source rows; do not let duplicate or conflicting same-time rows inflate hop count or create artifact routes.\n\nReturn:\n\n- aircraft id\n- flight number\n- carrier\n- flight date\n- hop count\n- route recurrence count: total number of days across all history on which this exact Route string was flown by any aircraft\n- textual `Route` in chronological order, including every origin and the final destination, using `-` as the delimiter throughout, for example `SMF-SAN-PHX-COS-DEN`",
+      "answer_markdown": "Within the last five years of OnTime data, the highest observed same-aircraft, same-flight-number itineraries reached 8 hops. The most recent unique 8-hop route was ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA on 2024-12-01 by WN flight 366 with aircraft N957WN. Among the top 10 unique routes, recurrence ranges from 1 day to 46 days, led by LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN at 46 days and MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC at 40 days.",
+      "sql": "WITH recent_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0\n      AND Carrier != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        aircraft_id,\n        count() AS hop_count,\n        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        aircraft_id,\n        hop_count,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT\n        if(aircraft_id = '', 'unknown', aircraft_id) AS aircraft_id,\n        FlightNum AS flight_number,\n        Carrier AS carrier,\n        FlightDate AS flight_date,\n        hop_count,\n        Route,\n        max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n        row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT aircraft_id, flight_number, carrier, flight_date, hop_count, Route, most_recent_flight_date\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nhistory_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm\n    FROM ontime.fact_ontime\n    WHERE Cancelled = 0\n      AND Carrier != ''\n      AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nhistory_routes AS (\n    SELECT\n        FlightDate,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM (\n        SELECT\n            FlightDate,\n            Carrier,\n            FlightNum,\n            aircraft_id,\n            count() AS hop_count,\n            arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted\n        FROM history_legs\n        GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n        HAVING hop_count \u003e= 2\n    )\n    WHERE Route IN (SELECT Route FROM top10)\n),\nrecurrence AS (\n    SELECT Route, countDistinct(FlightDate) AS route_recurrence_count\n    FROM history_routes\n    GROUP BY Route\n)\nSELECT\n    t.aircraft_id,\n    t.flight_number,\n    t.carrier,\n    t.flight_date,\n    t.hop_count,\n    r.route_recurrence_count,\n    t.Route\nFROM top10 t\nLEFT JOIN recurrence r USING (Route)\nORDER BY t.hop_count DESC, t.most_recent_flight_date DESC, t.Route",
+      "is_primary": true,
+      "date_field_hint": "flight_date",
+      "row_count": 10,
+      "result_columns": [
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "route_recurrence_count",
+        "Route"
+      ],
+      "first_row": {
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "aircraft_id": "N957WN",
+        "carrier": "WN",
+        "flight_date": "2024-12-01T00:00:00Z",
+        "flight_number": "366",
+        "hop_count": 8,
+        "route_recurrence_count": 1
+      }
+    },
+    {
+      "id": "q1",
+      "subquestion": "Which airports act as the key connectors, origins, and termini within the top 10 unique maximum-hop itineraries?\nClassify airport appearances by route position and return airport code, airport name, city/state, total appearances, origin appearances, intermediate-stop appearances, final-destination appearances, and share of itineraries containing that airport.",
+      "answer_markdown": "The key connector airports in the top 10 routes are DAL, DEN, LAS, BWI, MSY, and OAK, each appearing in 5 of 10 itineraries. DAL is entirely an intermediate connector with 5 intermediate appearances, while DEN and LAS split between connector and terminal roles. The most common final destinations are OAK and LAX, with 2 terminal appearances each.",
+      "sql": "WITH recent_legs AS (\n    SELECT FlightDate, Carrier, FlightNum, Tail_Number AS aircraft_id, OriginCode, DestCode,\n           coalesce(DepTime, CRSDepTime) AS dep_hhmm, coalesce(ArrTime, CRSArrTime) AS arr_hhmm\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0 AND Carrier != '' AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT FlightDate, Carrier, FlightNum, aircraft_id, count() AS hop_count,\n           arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT FlightDate, Carrier, FlightNum, aircraft_id, hop_count,\n           arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT *, max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n           row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT Route\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nairports AS (\n    SELECT\n        Route,\n        airport_code,\n        pos,\n        length(airport_list) AS route_len\n    FROM (\n        SELECT Route, splitByChar('-', Route) AS airport_list\n        FROM top10\n    )\n    ARRAY JOIN airport_list AS airport_code, arrayEnumerate(airport_list) AS pos\n)\nSELECT\n    a.airport_code,\n    any(d.DisplayAirportName) AS airport_name,\n    any(d.CityName) AS city_name,\n    any(d.StateCode) AS state_code,\n    count() AS total_appearances,\n    countIf(pos = 1) AS origin_appearances,\n    countIf(pos \u003e 1 AND pos \u003c route_len) AS intermediate_stop_appearances,\n    countIf(pos = route_len) AS final_destination_appearances,\n    round(countDistinct(Route) / 10.0, 3) AS share_of_itineraries\nFROM airports a\nLEFT JOIN ontime.dim_airports d\n    ON a.airport_code = d.AirportCode AND d.IsLatest = 1\nGROUP BY a.airport_code\nORDER BY total_appearances DESC, intermediate_stop_appearances DESC, a.airport_code",
+      "date_field_hint": "airport_name",
+      "row_count": 45,
+      "result_columns": [
+        "airport_code",
+        "airport_name",
+        "city_name",
+        "state_code",
+        "total_appearances",
+        "origin_appearances",
+        "intermediate_stop_appearances",
+        "final_destination_appearances",
+        "share_of_itineraries"
+      ],
+      "first_row": {
+        "airport_code": "DAL",
+        "airport_name": "Dallas Love Field",
+        "city_name": "Dallas, TX",
+        "final_destination_appearances": 0,
+        "intermediate_stop_appearances": 5,
+        "origin_appearances": 0,
+        "share_of_itineraries": 0.5,
+        "state_code": "TX",
+        "total_appearances": 5
+      }
+    },
+    {
+      "id": "q2",
+      "subquestion": "How geographically extreme is each of the top 10 unique maximum-hop itineraries?\nReturn total flown distance, unique airports, unique city markets, unique states, unique local-time offsets, and whether the route is entirely domestic, then summarize which routes are the most geographically expansive.",
+      "answer_markdown": "The most geographically expansive route by flown distance is BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX at 5,169 miles, spanning 9 airports, 8 city markets, 9 states, and 3 local-time offsets. The widest time-zone spread is 4 offsets, reached by CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN, ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN, HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK, MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC, and BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK. All top 10 routes are entirely domestic.",
+      "sql": "WITH recent_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginAirportID,\n        DestAirportID,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm,\n        min(Distance) AS Distance\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0 AND Carrier != '' AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginAirportID, DestAirportID, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id,\n        count() AS hop_count,\n        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode, OriginAirportID, DestAirportID, ifNull(Distance, 0)))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id, hop_count, legs_sorted,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT *, max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n           row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT aircraft_id, FlightDate, Carrier, FlightNum, hop_count, Route, legs_sorted, most_recent_flight_date\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nroute_airports AS (\n    SELECT\n        Route,\n        arrayJoin(arrayConcat([tupleElement(legs_sorted[1], 5)], arrayMap(x -\u003e tupleElement(x, 6), legs_sorted))) AS airport_id\n    FROM top10\n)\nSELECT\n    t.Route,\n    if(t.aircraft_id = '', 'unknown', t.aircraft_id) AS aircraft_id,\n    t.FlightNum AS flight_number,\n    t.Carrier AS carrier,\n    t.FlightDate AS flight_date,\n    t.hop_count,\n    arraySum(arrayMap(x -\u003e toUInt64(tupleElement(x, 7)), t.legs_sorted)) AS total_flown_distance,\n    uniqExact(ra.airport_id) AS unique_airports,\n    uniqExact(d.CityMarketID) AS unique_city_markets,\n    uniqExact(d.StateCode) AS unique_states,\n    uniqExact(d.UtcLocalTimeVariation) AS unique_local_time_offsets,\n    min(d.CountryCodeISO = 'US') AS entirely_domestic\nFROM top10 t\nLEFT JOIN route_airports ra ON t.Route = ra.Route\nLEFT JOIN ontime.dim_airports d ON ra.airport_id = d.AirportID AND d.IsLatest = 1\nGROUP BY t.Route, aircraft_id, flight_number, carrier, flight_date, t.hop_count, t.legs_sorted\nORDER BY total_flown_distance DESC, unique_states DESC, t.Route",
+      "date_field_hint": "flight_date",
+      "row_count": 10,
+      "result_columns": [
+        "t.Route",
+        "aircraft_id",
+        "flight_number",
+        "carrier",
+        "flight_date",
+        "hop_count",
+        "total_flown_distance",
+        "unique_airports",
+        "unique_city_markets",
+        "unique_states",
+        "unique_local_time_offsets",
+        "entirely_domestic"
+      ],
+      "first_row": {
+        "aircraft_id": "N225WN",
+        "carrier": "WN",
+        "entirely_domestic": 1,
+        "flight_date": "2021-08-08T00:00:00Z",
+        "flight_number": "3530",
+        "hop_count": 8,
+        "t.Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+        "total_flown_distance": 5169,
+        "unique_airports": 9,
+        "unique_city_markets": 8,
+        "unique_local_time_offsets": 3,
+        "unique_states": 9
+      }
+    },
+    {
+      "id": "q3",
+      "subquestion": "Which airports or legs are the main operational stress points within the top 10 unique maximum-hop itineraries?\nReturn per-airport and per-leg average departure delay, average arrival delay, rate of 15-plus-minute delays, and diversion incidence, and identify the stop positions most associated with disruption.",
+      "answer_markdown": "The main operational stress points are late-route segments, especially leg 8, which averages 11.7 minutes of departure delay, 5.8 minutes of arrival delay, and a 50% 15-plus-minute delay rate. At the airport level, RNO, OAK, COS, and DAL show the highest outbound stress in this top-10 set, while legs MDW-LAX, OAK-RNO, DAL-LAX, MSY-ATL, PHX-SAN, RNO-LAS, COS-DEN, and BNA-DTW each show a 100% 15-plus-minute delay rate. No diversions appear in these representative itineraries.",
+      "sql": "WITH recent_legs AS (\n    SELECT\n        FlightDate,\n        Carrier,\n        FlightNum,\n        Tail_Number AS aircraft_id,\n        OriginAirportID,\n        DestAirportID,\n        OriginCode,\n        DestCode,\n        coalesce(DepTime, CRSDepTime) AS dep_hhmm,\n        coalesce(ArrTime, CRSArrTime) AS arr_hhmm,\n        min(DepDelay) AS DepDelay,\n        min(ArrDelay) AS ArrDelay,\n        max(DepDel15) AS DepDel15,\n        max(ArrDel15) AS ArrDel15,\n        max(Diverted) AS Diverted\n    FROM ontime.fact_ontime\n    WHERE FlightDate \u003e= addYears(today(), -5)\n      AND Cancelled = 0 AND Carrier != '' AND FlightNum != ''\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id, OriginAirportID, DestAirportID, OriginCode, DestCode, dep_hhmm, arr_hhmm\n),\nrecent_itineraries AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id,\n        count() AS hop_count,\n        arraySort(groupArray((ifNull(dep_hhmm, 9999), ifNull(arr_hhmm, 9999), OriginCode, DestCode, OriginAirportID, DestAirportID, DepDelay, ArrDelay, DepDel15, ArrDel15, Diverted))) AS legs_sorted\n    FROM recent_legs\n    GROUP BY FlightDate, Carrier, FlightNum, aircraft_id\n),\nrecent_routes AS (\n    SELECT\n        FlightDate, Carrier, FlightNum, aircraft_id, hop_count, legs_sorted,\n        arrayStringConcat(arrayConcat([tupleElement(legs_sorted[1], 3)], arrayMap(x -\u003e tupleElement(x, 4), legs_sorted)), '-') AS Route\n    FROM recent_itineraries\n    WHERE hop_count \u003e= 2\n),\ntop_routes AS (\n    SELECT *, max(FlightDate) OVER (PARTITION BY Route) AS most_recent_flight_date,\n           row_number() OVER (PARTITION BY Route ORDER BY hop_count DESC, FlightDate DESC, Carrier, FlightNum, aircraft_id) AS rn\n    FROM recent_routes\n),\ntop10 AS (\n    SELECT Route, legs_sorted\n    FROM top_routes\n    WHERE rn = 1\n    ORDER BY hop_count DESC, most_recent_flight_date DESC, Route\n    LIMIT 10\n),\nleg_rows AS (\n    SELECT\n        Route,\n        pos AS leg_position,\n        tupleElement(leg, 3) AS origin_code,\n        tupleElement(leg, 4) AS dest_code,\n        tupleElement(leg, 7) AS dep_delay,\n        tupleElement(leg, 8) AS arr_delay,\n        tupleElement(leg, 9) AS dep_del15,\n        tupleElement(leg, 10) AS arr_del15,\n        tupleElement(leg, 11) AS diverted\n    FROM top10\n    ARRAY JOIN legs_sorted AS leg, arrayEnumerate(legs_sorted) AS pos\n)\nSELECT *\nFROM (\n    SELECT\n        'airport' AS entity_type,\n        origin_code AS entity_key,\n        concat('departures from ', origin_code) AS entity_label,\n        CAST(NULL AS Nullable(UInt64)) AS stop_position,\n        round(avg(toFloat64(dep_delay)), 2) AS avg_departure_delay,\n        round(avg(toFloat64(arr_delay)), 2) AS avg_arrival_delay,\n        round(avg(greatest(toUInt8(dep_del15), toUInt8(arr_del15))), 3) AS delay_15_plus_rate,\n        round(avg(toFloat64(diverted)), 3) AS diversion_incidence\n    FROM leg_rows\n    GROUP BY origin_code\n\n    UNION ALL\n\n    SELECT\n        'leg' AS entity_type,\n        concat(origin_code, '-', dest_code) AS entity_key,\n        concat(origin_code, ' to ', dest_code) AS entity_label,\n        CAST(NULL AS Nullable(UInt64)) AS stop_position,\n        round(avg(toFloat64(dep_delay)), 2) AS avg_departure_delay,\n        round(avg(toFloat64(arr_delay)), 2) AS avg_arrival_delay,\n        round(avg(greatest(toUInt8(dep_del15), toUInt8(arr_del15))), 3) AS delay_15_plus_rate,\n        round(avg(toFloat64(diverted)), 3) AS diversion_incidence\n    FROM leg_rows\n    GROUP BY origin_code, dest_code\n\n    UNION ALL\n\n    SELECT\n        'stop_position' AS entity_type,\n        toString(leg_position) AS entity_key,\n        concat('leg ', toString(leg_position)) AS entity_label,\n        toUInt64(leg_position) AS stop_position,\n        round(avg(toFloat64(dep_delay)), 2) AS avg_departure_delay,\n        round(avg(toFloat64(arr_delay)), 2) AS avg_arrival_delay,\n        round(avg(greatest(toUInt8(dep_del15), toUInt8(arr_del15))), 3) AS delay_15_plus_rate,\n        round(avg(toFloat64(diverted)), 3) AS diversion_incidence\n    FROM leg_rows\n    GROUP BY leg_position\n)\nORDER BY entity_type, delay_15_plus_rate DESC, avg_arrival_delay DESC, entity_key",
+      "date_field_hint": "entity_key",
+      "row_count": 124,
+      "result_columns": [
+        "entity_type",
+        "entity_key",
+        "entity_label",
+        "stop_position",
+        "avg_departure_delay",
+        "avg_arrival_delay",
+        "delay_15_plus_rate",
+        "diversion_incidence"
+      ],
+      "first_row": {
+        "avg_arrival_delay": 20,
+        "avg_departure_delay": 30,
+        "delay_15_plus_rate": 1,
+        "diversion_incidence": 0,
+        "entity_key": "RNO",
+        "entity_label": "departures from RNO",
+        "entity_type": "airport",
+        "stop_position": null
+      }
+    }
+  ]
+}
+
+### Dynamic-mode additions
+
+- Use this endpoint template for every browser query: `https://mcp.demo.altinity.cloud/{JWE}/openapi/execute_query?query=...`
+- Keep JWE in `localStorage['OnTimeAnalystDashboard::auth::jwe']`.
+- Do not embed the primary analytical dataset as `result.json` payloads or CSV snapshots.
+- Provide a visible start/end date selector for the analytical range.
+- Drive the date selector through SQL reruns, not client-side filtering alone.
+- Default the visual to the most recent 5 years relative to the latest available analytical date when a usable date field exists.
+- If no safe date field can be detected for a query, keep the selector visible but disable it with a clear note for that query or view.
+- Expose editable SQL controls for the primary query and every supporting query the page uses.
+- Provide individual run buttons for editable queries and a `Run all` path when the page uses multiple queries.
+- Keep one unified query ledger that records each execution with query id, role, effective date range, status, rows, and expandable SQL text.
+- Prefer an explicit SQL wrapping or parameter-insertion strategy for date predicates instead of brittle string replacement.
+- If a supporting query cannot be safely date-parameterized, keep it editable and manually runnable, and surface that limitation in the UI.
+- Before writing `visual.html`, self-verify every browser-side SQL statement you intend to ship, including primary, supporting, enrichment, drill-down, and lookup queries.
+- For each query, run a cheap live check against the real endpoint and schema first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both when that preserves the query shape.
+- Treat successful execution as mandatory. Fix any syntax, type, aggregate, join, or unknown-column errors in a loop until every shipped browser query runs successfully.
+
+Create browser-ready HTML `visual.html`.
+
+Write the file or provide a download link. Do not include the HTML source in the response. Do not open the artifact view frame.

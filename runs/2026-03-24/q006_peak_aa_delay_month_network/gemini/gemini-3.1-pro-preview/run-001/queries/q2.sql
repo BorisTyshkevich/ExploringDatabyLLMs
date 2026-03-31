@@ -1,0 +1,1 @@
+SELECT OriginCode, count() as FlightVolume, round(avg(DepDelay), 2) AS AvgDepDelay, round(sum(DepDel15) / count(), 4) AS PctDel15, sum(DepDelay) as TotalDelayMinutes, sum(DepDel15) as DelayedFlights FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND Year = 2024 AND Month = 7 GROUP BY OriginCode HAVING FlightVolume >= 100 ORDER BY TotalDelayMinutes DESC;

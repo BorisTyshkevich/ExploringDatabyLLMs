@@ -1,0 +1,284 @@
+{
+  "columns": [
+    "airport_code",
+    "city",
+    "state",
+    "state_code"
+  ],
+  "rows": [
+    {
+      "airport_code": "LIT",
+      "city": "Little Rock, AR",
+      "state": "Arkansas",
+      "state_code": "AR"
+    },
+    {
+      "airport_code": "PHX",
+      "city": "Phoenix, AZ",
+      "state": "Arizona",
+      "state_code": "AZ"
+    },
+    {
+      "airport_code": "BUR",
+      "city": "Burbank, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "LAX",
+      "city": "Los Angeles, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "OAK",
+      "city": "Oakland, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "PSP",
+      "city": "Palm Springs, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "SAN",
+      "city": "San Diego, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "SJC",
+      "city": "San Jose, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "SMF",
+      "city": "Sacramento, CA",
+      "state": "California",
+      "state_code": "CA"
+    },
+    {
+      "airport_code": "COS",
+      "city": "Colorado Springs, CO",
+      "state": "Colorado",
+      "state_code": "CO"
+    },
+    {
+      "airport_code": "DEN",
+      "city": "Denver, CO",
+      "state": "Colorado",
+      "state_code": "CO"
+    },
+    {
+      "airport_code": "FLL",
+      "city": "Fort Lauderdale, FL",
+      "state": "Florida",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "MCO",
+      "city": "Orlando, FL",
+      "state": "Florida",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "PNS",
+      "city": "Pensacola, FL",
+      "state": "Florida",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "TPA",
+      "city": "Tampa, FL",
+      "state": "Florida",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "VPS",
+      "city": "Valparaiso, FL",
+      "state": "Florida",
+      "state_code": "FL"
+    },
+    {
+      "airport_code": "ATL",
+      "city": "Atlanta, GA",
+      "state": "Georgia",
+      "state_code": "GA"
+    },
+    {
+      "airport_code": "MDW",
+      "city": "Chicago, IL",
+      "state": "Illinois",
+      "state_code": "IL"
+    },
+    {
+      "airport_code": "ORD",
+      "city": "Chicago, IL",
+      "state": "Illinois",
+      "state_code": "IL"
+    },
+    {
+      "airport_code": "ICT",
+      "city": "Wichita, KS",
+      "state": "Kansas",
+      "state_code": "KS"
+    },
+    {
+      "airport_code": "MSY",
+      "city": "New Orleans, LA",
+      "state": "Louisiana",
+      "state_code": "LA"
+    },
+    {
+      "airport_code": "BWI",
+      "city": "Baltimore, MD",
+      "state": "Maryland",
+      "state_code": "MD"
+    },
+    {
+      "airport_code": "DTW",
+      "city": "Detroit, MI",
+      "state": "Michigan",
+      "state_code": "MI"
+    },
+    {
+      "airport_code": "MCI",
+      "city": "Kansas City, MO",
+      "state": "Missouri",
+      "state_code": "MO"
+    },
+    {
+      "airport_code": "STL",
+      "city": "St. Louis, MO",
+      "state": "Missouri",
+      "state_code": "MO"
+    },
+    {
+      "airport_code": "JAN",
+      "city": "Jackson/Vicksburg, MS",
+      "state": "Mississippi",
+      "state_code": "MS"
+    },
+    {
+      "airport_code": "RDU",
+      "city": "Raleigh/Durham, NC",
+      "state": "North Carolina",
+      "state_code": "NC"
+    },
+    {
+      "airport_code": "ABQ",
+      "city": "Albuquerque, NM",
+      "state": "New Mexico",
+      "state_code": "NM"
+    },
+    {
+      "airport_code": "LAS",
+      "city": "Las Vegas, NV",
+      "state": "Nevada",
+      "state_code": "NV"
+    },
+    {
+      "airport_code": "RNO",
+      "city": "Reno, NV",
+      "state": "Nevada",
+      "state_code": "NV"
+    },
+    {
+      "airport_code": "ISP",
+      "city": "Islip, NY",
+      "state": "New York",
+      "state_code": "NY"
+    },
+    {
+      "airport_code": "LGA",
+      "city": "New York, NY",
+      "state": "New York",
+      "state_code": "NY"
+    },
+    {
+      "airport_code": "CLE",
+      "city": "Cleveland, OH",
+      "state": "Ohio",
+      "state_code": "OH"
+    },
+    {
+      "airport_code": "CMH",
+      "city": "Columbus, OH",
+      "state": "Ohio",
+      "state_code": "OH"
+    },
+    {
+      "airport_code": "MYR",
+      "city": "Myrtle Beach, SC",
+      "state": "South Carolina",
+      "state_code": "SC"
+    },
+    {
+      "airport_code": "BNA",
+      "city": "Nashville, TN",
+      "state": "Tennessee",
+      "state_code": "TN"
+    },
+    {
+      "airport_code": "MEM",
+      "city": "Memphis, TN",
+      "state": "Tennessee",
+      "state_code": "TN"
+    },
+    {
+      "airport_code": "DAL",
+      "city": "Dallas, TX",
+      "state": "Texas",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "ELP",
+      "city": "El Paso, TX",
+      "state": "Texas",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "HOU",
+      "city": "Houston, TX",
+      "state": "Texas",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "MAF",
+      "city": "Midland/Odessa, TX",
+      "state": "Texas",
+      "state_code": "TX"
+    },
+    {
+      "airport_code": "SLC",
+      "city": "Salt Lake City, UT",
+      "state": "Utah",
+      "state_code": "UT"
+    },
+    {
+      "airport_code": "IAD",
+      "city": "Washington, DC",
+      "state": "Virginia",
+      "state_code": "VA"
+    },
+    {
+      "airport_code": "RIC",
+      "city": "Richmond, VA",
+      "state": "Virginia",
+      "state_code": "VA"
+    },
+    {
+      "airport_code": "SEA",
+      "city": "Seattle, WA",
+      "state": "Washington",
+      "state_code": "WA"
+    }
+  ],
+  "row_count": 45,
+  "generated_at": "2026-03-26T13:16:13.216643Z",
+  "source_query_sha256": "0099e6cd1a116f46afecdd8017a0ab1e57b0bf3a49c3e6873429bb6e454e6572",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|section=q2"
+}

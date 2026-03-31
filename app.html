@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClickHouse Query - Altinity MCP</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; padding: 20px; }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 1.4em; margin-bottom: 16px; color: #1a1a1a; }
+  .status { padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; font-size: 0.9em; }
+  .status.ok { background: #d4edda; color: #155724; }
+  .status.warn { background: #fff3cd; color: #856404; }
+  .status.err { background: #f8d7da; color: #721c24; }
+  button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em; }
+  .btn-login { background: #4285f4; color: #fff; }
+  .btn-login:hover { background: #3367d6; }
+  .btn-run { background: #28a745; color: #fff; }
+  .btn-run:hover { background: #218838; }
+  .btn-logout { background: #dc3545; color: #fff; font-size: 0.8em; padding: 4px 10px; }
+  .query-box { width: 100%; padding: 10px; font-family: 'SF Mono', Monaco, monospace; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; min-height: 80px; resize: vertical; margin-bottom: 8px; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+  .toolbar .hint { font-size: 0.8em; color: #888; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  th { background: #f8f9fa; text-align: left; padding: 8px 12px; border-bottom: 2px solid #dee2e6; font-size: 0.85em; color: #555; }
+  td { padding: 6px 12px; border-bottom: 1px solid #eee; font-size: 0.9em; font-family: 'SF Mono', Monaco, monospace; }
+  tr:hover td { background: #f8f9fa; }
+  .error-msg { background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; white-space: pre-wrap; font-family: monospace; font-size: 0.85em; }
+  .timing { font-size: 0.8em; color: #888; margin-top: 8px; }
+  #results { margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>ClickHouse Query <span style="font-weight:normal;color:#888">via Altinity MCP</span></h1>
+
+  <div id="status" class="status warn">Initializing...</div>
+
+  <div id="login-section" style="display:none">
+    <button class="btn-login" onclick="startLogin()">Login with Google</button>
+  </div>
+
+  <div id="query-section" style="display:none">
+    <textarea id="query" class="query-box" placeholder="SELECT 1">SELECT currentUser() AS user, version() AS version</textarea>
+    <div class="toolbar">
+      <button class="btn-run" onclick="runQuery()">Run Query</button>
+      <span class="hint">Ctrl+Enter to run</span>
+      <span style="flex:1"></span>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+    <div id="results"></div>
+  </div>
+</div>
+
+<script>
+const MCP_BASE = 'https://mcp.demo.altinity.cloud';
+const STORAGE_KEY = 'mcp_oauth';
+
+let oauthState = {};
+
+function loadState() {
+  try { oauthState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { oauthState = {}; }
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(oauthState));
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+
+function showSection(id) {
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('query-section').style.display = 'none';
+  if (id) document.getElementById(id).style.display = 'block';
+}
+
+// PKCE helpers
+function randomString(len) {
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function sha256(plain) {
+  const data = new TextEncoder().encode(plain);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+// OAuth flow
+async function register() {
+  const resp = await fetch(MCP_BASE + '/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_name: 'ClickHouse Browser App',
+      redirect_uris: [window.location.origin + window.location.pathname],
+      grant_types: ['authorization_code'],
+      response_types: ['code'],
+      token_endpoint_auth_method: 'none'
+    })
+  });
+  if (!resp.ok) throw new Error('Registration failed: ' + await resp.text());
+  return await resp.json();
+}
+
+async function startLogin() {
+  try {
+    setStatus('Registering OAuth client...', 'warn');
+    const reg = await register();
+    oauthState.client_id = reg.client_id;
+
+    const codeVerifier = randomString(32);
+    const codeChallenge = await sha256(codeVerifier);
+    const state = randomString(16);
+
+    oauthState.code_verifier = codeVerifier;
+    oauthState.state = state;
+    saveState();
+
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: reg.client_id,
+      redirect_uri: window.location.origin + window.location.pathname,
+      scope: 'openid email',
+      state: state,
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256'
+    });
+
+    window.location.href = MCP_BASE + '/authorize?' + params.toString();
+  } catch (e) {
+    setStatus('Login failed: ' + e.message, 'err');
+  }
+}
+
+async function exchangeCode(code) {
+  const resp = await fetch(MCP_BASE + '/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: window.location.origin + window.location.pathname,
+      client_id: oauthState.client_id,
+      code_verifier: oauthState.code_verifier
+    })
+  });
+  if (!resp.ok) throw new Error('Token exchange failed: ' + await resp.text());
+  return await resp.json();
+}
+
+async function runQuery() {
+  const query = document.getElementById('query').value.trim();
+  if (!query) return;
+
+  const results = document.getElementById('results');
+  results.innerHTML = '<div class="status warn">Running...</div>';
+  const t0 = performance.now();
+
+  try {
+    const resp = await fetch(MCP_BASE + '/openapi/execute_query?query=' + encodeURIComponent(query), {
+      headers: { 'Authorization': 'Bearer ' + oauthState.access_token }
+    });
+
+    const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+
+    if (!resp.ok) {
+      const body = await resp.text();
+      if (resp.status === 401 || resp.status === 403) {
+        results.innerHTML = '<div class="error-msg">Authentication expired. Please login again.</div>';
+        delete oauthState.access_token;
+        saveState();
+        return;
+      }
+      results.innerHTML = '<div class="error-msg">' + escapeHtml(body) + '</div>';
+      return;
+    }
+
+    const data = await resp.json();
+    if (data.error) {
+      results.innerHTML = '<div class="error-msg">' + escapeHtml(data.error) + '</div>';
+      return;
+    }
+
+    const rows = data.rows || [];
+    const columns = data.columns || [];
+
+    if (rows.length === 0) {
+      results.innerHTML = '<div class="status ok">OK, 0 rows</div><div class="timing">' + elapsed + 's</div>';
+      return;
+    }
+
+    let html = '<table><thead><tr>';
+    columns.forEach(c => { html += '<th>' + escapeHtml(c) + '</th>'; });
+    html += '</tr></thead><tbody>';
+    rows.forEach(row => {
+      html += '<tr>';
+      // rows are arrays matching columns order
+      const vals = Array.isArray(row) ? row : columns.map(c => row[c]);
+      vals.forEach(v => {
+        html += '<td>' + escapeHtml(v === null || v === undefined ? 'NULL' : String(v)) + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    html += '<div class="timing">' + (data.count || rows.length) + ' rows, ' + elapsed + 's</div>';
+    results.innerHTML = html;
+  } catch (e) {
+    results.innerHTML = '<div class="error-msg">Request failed: ' + escapeHtml(e.message) + '</div>';
+  }
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function logout() {
+  localStorage.removeItem(STORAGE_KEY);
+  oauthState = {};
+  showSection('login-section');
+  setStatus('Logged out', 'warn');
+  document.getElementById('results').innerHTML = '';
+}
+
+// Keyboard shortcut
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    runQuery();
+  }
+});
+
+// Init
+async function init() {
+  loadState();
+
+  // Check for OAuth callback
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
+
+  if (code && state) {
+    // Clear URL
+    window.history.replaceState({}, '', window.location.pathname);
+
+    if (state !== oauthState.state) {
+      setStatus('OAuth state mismatch', 'err');
+      showSection('login-section');
+      return;
+    }
+
+    try {
+      setStatus('Exchanging authorization code...', 'warn');
+      const token = await exchangeCode(code);
+      oauthState.access_token = token.access_token;
+      oauthState.token_type = token.token_type;
+      if (token.expires_in) {
+        oauthState.expires_at = Date.now() + token.expires_in * 1000;
+      }
+      delete oauthState.code_verifier;
+      delete oauthState.state;
+      saveState();
+    } catch (e) {
+      setStatus('Token exchange failed: ' + e.message, 'err');
+      showSection('login-section');
+      return;
+    }
+  }
+
+  // Check if we have a valid token
+  if (oauthState.access_token) {
+    if (oauthState.expires_at && Date.now() > oauthState.expires_at) {
+      setStatus('Token expired. Please login again.', 'warn');
+      showSection('login-section');
+      return;
+    }
+    setStatus('Authenticated', 'ok');
+    showSection('query-section');
+  } else {
+    setStatus('Not authenticated', 'warn');
+    showSection('login-section');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

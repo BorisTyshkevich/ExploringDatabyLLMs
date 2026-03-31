@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Date",
+    "Carrier",
+    "AircraftID",
+    "FlightNumber",
+    "Hops",
+    "Route",
+    "DepartureTimes"
+  ],
+  "rows": [
+    {
+      "AircraftID": "N957WN",
+      "Carrier": "WN",
+      "Date": "2024-12-01T00:00:00Z",
+      "DepartureTimes": "543, 810, 1020, 1142, 1401, 1643, 1828, 2041",
+      "FlightNumber": "366",
+      "Hops": 8,
+      "Route": "ISP - BWI - MYR - BNA - VPS - DAL - LAS - OAK - SEA"
+    },
+    {
+      "AircraftID": "N7835A",
+      "Carrier": "WN",
+      "Date": "2024-02-18T00:00:00Z",
+      "DepartureTimes": "621, 801, 1007, 1234, 1514, 1747, 1902, 2117",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE - BNA - PNS - HOU - MCI - PHX - BUR - OAK - DEN"
+    },
+    {
+      "AircraftID": "N429WN",
+      "Carrier": "WN",
+      "Date": "2024-01-28T00:00:00Z",
+      "DepartureTimes": "618, 800, 1012, 1239, 1515, 1756, 1859, 2059",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE - BNA - PNS - HOU - MCI - PHX - BUR - OAK - DEN"
+    },
+    {
+      "AircraftID": "N228WN",
+      "Carrier": "WN",
+      "Date": "2024-01-21T00:00:00Z",
+      "DepartureTimes": "620, 810, 1017, 1237, 1510, 1800, 1903, 2102",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE - BNA - PNS - HOU - MCI - PHX - BUR - OAK - DEN"
+    },
+    {
+      "AircraftID": "N569WN",
+      "Carrier": "WN",
+      "Date": "2024-01-14T00:00:00Z",
+      "DepartureTimes": "625, 805, 1011, 1241, 1607, 1909, 2006, 2156",
+      "FlightNumber": "3149",
+      "Hops": 8,
+      "Route": "CLE - BNA - PNS - HOU - MCI - PHX - BUR - OAK - DEN"
+    },
+    {
+      "AircraftID": "N7742B",
+      "Carrier": "WN",
+      "Date": "2023-04-30T00:00:00Z",
+      "DepartureTimes": "627, 939, 1124, 1434, 1656, 1831, 2040, 2246",
+      "FlightNumber": "154",
+      "Hops": 8,
+      "Route": "ELP - DAL - LIT - ATL - RIC - MDW - MCI - PHX - SAN"
+    },
+    {
+      "AircraftID": "N929WN",
+      "Carrier": "WN",
+      "Date": "2023-04-16T00:00:00Z",
+      "DepartureTimes": "622, 941, 1122, 1433, 1659, 1832, 2041, 2226",
+      "FlightNumber": "154",
+      "Hops": 8,
+      "Route": "ELP - DAL - LIT - ATL - RIC - MDW - MCI - PHX - SAN"
+    },
+    {
+      "AircraftID": "N8631A",
+      "Carrier": "WN",
+      "Date": "2022-10-23T00:00:00Z",
+      "DepartureTimes": "608, 944, 1156, 1354, 1553, 1729, 2045, 2149",
+      "FlightNumber": "2787",
+      "Hops": 8,
+      "Route": "MSY - ATL - CMH - BWI - RDU - BNA - DTW - MDW - LAX"
+    },
+    {
+      "AircraftID": "N8809L",
+      "Carrier": "WN",
+      "Date": "2022-10-02T00:00:00Z",
+      "DepartureTimes": "610, 917, 1142, 1355, 1536, 1716, 2040, 2147",
+      "FlightNumber": "2787",
+      "Hops": 8,
+      "Route": "MSY - ATL - CMH - BWI - RDU - BNA - DTW - MDW - LAX"
+    },
+    {
+      "AircraftID": "N8811L",
+      "Carrier": "WN",
+      "Date": "2022-09-25T00:00:00Z",
+      "DepartureTimes": "601, 918, 1141, 1347, 1539, 1724, 2112, 2242",
+      "FlightNumber": "2787",
+      "Hops": 8,
+      "Route": "MSY - ATL - CMH - BWI - RDU - BNA - DTW - MDW - LAX"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-19T22:38:47.30207Z",
+  "source_query_sha256": "c0f09824eed1dea22626eea2cf8b673de21fa5c7b0faa143260f5cbf75c97afe",
+  "log_comment": "qforge|question=q001|run=run-002|runner=gemini|model=gemini-3.1-pro-preview|phase=full"
+}

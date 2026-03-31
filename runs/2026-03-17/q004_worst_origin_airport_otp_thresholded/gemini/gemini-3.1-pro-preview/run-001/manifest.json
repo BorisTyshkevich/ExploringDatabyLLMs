@@ -1,0 +1,45 @@
+{
+  "schema_version": "2",
+  "status": "partial",
+  "question_id": "q004",
+  "question_slug": "q004_worst_origin_airport_otp_thresholded",
+  "question_title": "Worst origin airports by departure on-time performance",
+  "dataset": "ontime_v2",
+  "runner": "gemini",
+  "model": "gemini-3.1-pro-preview",
+  "cli_bin": "gemini",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime_v2/mcp.yaml",
+  "started_at": "2026-03-17T21:37:45.685592Z",
+  "finished_at": "2026-03-17T21:41:48.783256Z",
+  "duration_sec": 243,
+  "log_comment": "qforge|question=q004|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full",
+  "query_sha256": "40b7bf7d794f3320a4675db7d3f752d8ae78917d1a3f2c2bba54df96ba51c166",
+  "result_row_count": 25,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "failed",
+    "presentation_render": "failed"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/answer.sql.raw.md",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-17/q004_worst_origin_airport_otp_thresholded/gemini/gemini-3.1-pro-preview/run-001/visual.html"
+  },
+  "metadata": {
+    "execution_response_bytes": "3427",
+    "presentation_generation_warning": "exit status 1",
+    "visual_validation_errors": "missing footer control block"
+  }
+}

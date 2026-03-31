@@ -1,0 +1,152 @@
+{
+  "columns": [
+    "DestCode",
+    "DepTimeBlk",
+    "flight_count",
+    "avg_dep_delay_min",
+    "p90_dep_delay_min",
+    "pct_dep_del15",
+    "active_months"
+  ],
+  "rows": [
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "active_months": 263,
+      "avg_dep_delay_min": 27.1,
+      "flight_count": 6472,
+      "p90_dep_delay_min": 82.9,
+      "pct_dep_del15": 39.3
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "EWR",
+      "active_months": 381,
+      "avg_dep_delay_min": 25.1,
+      "flight_count": 9488,
+      "p90_dep_delay_min": 77,
+      "pct_dep_del15": 37.4
+    },
+    {
+      "DepTimeBlk": "1800-1859",
+      "DestCode": "EWR",
+      "active_months": 269,
+      "avg_dep_delay_min": 25,
+      "flight_count": 6848,
+      "p90_dep_delay_min": 77,
+      "pct_dep_del15": 36.7
+    },
+    {
+      "DepTimeBlk": "1900-1959",
+      "DestCode": "JFK",
+      "active_months": 124,
+      "avg_dep_delay_min": 24.7,
+      "flight_count": 2052,
+      "p90_dep_delay_min": 64.9,
+      "pct_dep_del15": 35.3
+    },
+    {
+      "DepTimeBlk": "2000-2059",
+      "DestCode": "OKC",
+      "active_months": 175,
+      "avg_dep_delay_min": 24.7,
+      "flight_count": 4143,
+      "p90_dep_delay_min": 44.8,
+      "pct_dep_del15": 21.9
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "JFK",
+      "active_months": 186,
+      "avg_dep_delay_min": 23.9,
+      "flight_count": 4620,
+      "p90_dep_delay_min": 70,
+      "pct_dep_del15": 36.7
+    },
+    {
+      "DepTimeBlk": "2000-2059",
+      "DestCode": "SHV",
+      "active_months": 24,
+      "avg_dep_delay_min": 23.2,
+      "flight_count": 712,
+      "p90_dep_delay_min": 47.8,
+      "pct_dep_del15": 23.6
+    },
+    {
+      "DepTimeBlk": "1500-1559",
+      "DestCode": "EWR",
+      "active_months": 300,
+      "avg_dep_delay_min": 23,
+      "flight_count": 7532,
+      "p90_dep_delay_min": 69,
+      "pct_dep_del15": 34.1
+    },
+    {
+      "DepTimeBlk": "1900-1959",
+      "DestCode": "EWR",
+      "active_months": 283,
+      "avg_dep_delay_min": 22.9,
+      "flight_count": 7019,
+      "p90_dep_delay_min": 72,
+      "pct_dep_del15": 36.2
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "JFK",
+      "active_months": 99,
+      "avg_dep_delay_min": 22.5,
+      "flight_count": 1427,
+      "p90_dep_delay_min": 65,
+      "pct_dep_del15": 29.2
+    },
+    {
+      "DepTimeBlk": "2000-2059",
+      "DestCode": "IAH",
+      "active_months": 156,
+      "avg_dep_delay_min": 22.4,
+      "flight_count": 3384,
+      "p90_dep_delay_min": 51,
+      "pct_dep_del15": 26.2
+    },
+    {
+      "DepTimeBlk": "1900-1959",
+      "DestCode": "TUL",
+      "active_months": 54,
+      "avg_dep_delay_min": 22.1,
+      "flight_count": 1307,
+      "p90_dep_delay_min": 25,
+      "pct_dep_del15": 17.1
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "EYW",
+      "active_months": 47,
+      "avg_dep_delay_min": 22,
+      "flight_count": 1085,
+      "p90_dep_delay_min": 34,
+      "pct_dep_del15": 18.2
+    },
+    {
+      "DepTimeBlk": "2100-2159",
+      "DestCode": "PDX",
+      "active_months": 46,
+      "avg_dep_delay_min": 21.6,
+      "flight_count": 798,
+      "p90_dep_delay_min": 71,
+      "pct_dep_del15": 36.3
+    },
+    {
+      "DepTimeBlk": "1800-1859",
+      "DestCode": "LGA",
+      "active_months": 380,
+      "avg_dep_delay_min": 21.6,
+      "flight_count": 9998,
+      "p90_dep_delay_min": 65,
+      "pct_dep_del15": 34.7
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T11:57:06.147069Z",
+  "source_query_sha256": "59f8ef0e36ea77e72bc7b4c32ec8f9912a0ca50d50afe1b90ba045e721907ee4",
+  "log_comment": "qforge|question=q003|run=run-005|runner=claude|model=sonnet|phase=full|subquestion=q1"
+}

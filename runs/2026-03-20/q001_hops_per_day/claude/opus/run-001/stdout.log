@@ -1,0 +1,1 @@
+`answer.raw.json` written. The query finds the top 10 highest-hop itineraries (all 8 hops, all Southwest Airlines) with full routes and departure times, ordered by hop count descending then date descending.

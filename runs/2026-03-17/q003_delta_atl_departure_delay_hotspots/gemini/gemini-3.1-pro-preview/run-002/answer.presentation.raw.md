@@ -1,0 +1,991 @@
+```report
+# {{question_title}}
+
+{{data_overview_md}}
+
+## Executive Summary
+
+Based on the departure delay statistics, the worst hotspot for Delta departures from ATL is **LGA at 1900-1959**. This time block experiences the highest average departure delay (~24.8 minutes) and 90th percentile departure delay (~66.1 minutes), indicating severe late-evening congestion. 
+
+This hotspot appears significantly concentrated in a narrower era, primarily showing qualifying flights in the late 1990s through 2001, which suggests historical structural challenges on the ATL-LGA route during evening peak hours rather than a currently persistent issue across all decades.
+
+Analyzing the top 5 hotspot cells reveals a strong concentration of pressure during the **1500-1959 (afternoon to evening) window** to major hub destinations:
+1. **LGA (1900-1959)**
+2. **LGA (1500-1559)**
+3. **MCO (1700-1759)**
+4. **DFW (1700-1759)**
+5. **ORD (1500-1559)**
+
+This pattern indicates that Delta's ATL departure pressure is heavily driven by connecting bank structures feeding into East Coast and Central business hubs (New York, Orlando, Dallas, Chicago) during the late afternoon and evening periods, where cascading network delays are most likely to accumulate.
+
+## Hotspot Rankings
+
+{{result_table_md}}
+```
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delta ATL Departure Delay Hotspots</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-top: #eaf3f8;
+            --bg-bottom: #f6fafc;
+            --panel: #ffffff;
+            --panel-alt: #f3f7fa;
+            --ink: #163244;
+            --muted: #5d7485;
+            --navy: #0e3a52;
+            --slate: #5c7080;
+            --sky: #3c88b5;
+            --teal: #1f8a70;
+            --amber: #d48a1f;
+            --red: #c54f36;
+            --grid: rgba(22, 50, 68, 0.12);
+            --border: rgba(22, 50, 68, 0.10);
+            --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+            --radius-xl: 22px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: Georgia, ui-serif, serif;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--ink) 100%);
+            color: white;
+            padding: 2rem 5%;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--sky);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+            box-sizing: border-box;
+            flex-grow: 1;
+            display: none; /* Hidden until fetch */
+        }
+
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--panel);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .kpi-label {
+            color: var(--slate);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--navy);
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-subtext {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .primary-visual {
+            background: var(--panel);
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .visual-header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Heatmap Grid */
+        .heatmap-container {
+            display: grid;
+            gap: 2px;
+            background-color: var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            width: max-content;
+        }
+        
+        .heatmap-cell {
+            background-color: var(--panel);
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            min-width: 60px;
+            min-height: 40px;
+            position: relative;
+            transition: transform 0.1s;
+        }
+
+        .heatmap-cell.header-cell {
+            background-color: var(--panel-alt);
+            font-weight: bold;
+            color: var(--navy);
+            text-align: center;
+        }
+
+        .heatmap-cell.y-axis {
+            justify-content: flex-end;
+            padding-right: 1rem;
+        }
+
+        .heatmap-cell.data-cell {
+            cursor: pointer;
+        }
+        
+        .heatmap-cell.data-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: var(--shadow);
+            border-radius: 4px;
+        }
+
+        .worst-hotspot-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--ink);
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        .legend {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .legend-bar {
+            width: 200px;
+            height: 12px;
+            background: linear-gradient(to right, var(--panel-alt), var(--sky), var(--amber), var(--red));
+            border-radius: 6px;
+        }
+
+        .secondary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .secondary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .secondary-card {
+            background: var(--panel);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            flex-grow: 1;
+            position: relative;
+            min-height: 300px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--slate);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            background: var(--panel);
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--ink);
+        }
+
+        tr:hover td {
+            background-color: var(--panel-alt);
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            background: var(--navy);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .rank-1 { background: var(--red); }
+        .rank-2 { background: var(--amber); }
+        .rank-3 { background: var(--amber); }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Controls Block */
+        .controls-block {
+            background: var(--panel-alt);
+            padding: 2rem 5%;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .controls-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        input[type="password"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: monospace;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            background: var(--panel);
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--slate);
+            color: white;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: var(--slate);
+            font-weight: 500;
+        }
+
+        /* Query Ledger */
+        .query-ledger {
+            margin-top: 2rem;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .ledger-header {
+            background: var(--navy);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .ledger-row {
+            display: grid;
+            grid-template-columns: 2rem 1fr 6rem 6rem 5rem;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .ledger-row:hover {
+            background: var(--panel-alt);
+        }
+
+        .ledger-row:last-child {
+            border-bottom: none;
+        }
+
+        .ledger-status.ok { color: var(--teal); font-weight: bold; }
+        .ledger-status.pending { color: var(--amber); font-weight: bold; }
+        .ledger-status.failed { color: var(--red); font-weight: bold; }
+
+        .ledger-sql {
+            display: none;
+            padding: 1rem;
+            background: var(--panel-alt);
+            border-bottom: 1px solid var(--border);
+            margin: 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            color: var(--ink);
+        }
+
+        .ledger-sql.expanded {
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--panel);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            border: 1px dashed var(--amber);
+            margin: 2rem auto;
+            max-width: 600px;
+            display: none;
+        }
+
+        .empty-state h3 {
+            color: var(--amber);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Delta ATL Departure Delay Hotspots</h1>
+        <p>Analyzing departure congestion pressure by destination and time block for Delta Air Lines out of Atlanta</p>
+    </div>
+
+    <div id="empty-state" class="empty-state">
+        <h3>No Data Found</h3>
+        <p>The query returned an empty result set. Please verify the time ranges and constraints.</p>
+    </div>
+
+    <div class="container" id="dashboard-content">
+        <div class="kpi-strip" id="kpi-strip">
+            <!-- Rendered dynamically -->
+        </div>
+
+        <div class="primary-visual">
+            <div class="visual-header">
+                <h2>Departure Delay Heatmap</h2>
+                <div class="legend">
+                    <span>Low Delay</span>
+                    <div class="legend-bar"></div>
+                    <span>Severe Delay</span>
+                </div>
+            </div>
+            <div class="heatmap-container" id="heatmap">
+                <!-- Rendered dynamically -->
+            </div>
+        </div>
+
+        <div class="secondary-grid">
+            <div class="secondary-card">
+                <div class="visual-header">
+                    <h3>Top 3 Hotspots Monthly Trend</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+            <div class="secondary-card">
+                <div class="visual-header">
+                    <h3>Top 20 Hotspots</h3>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Dest</th>
+                                <th>Time Block</th>
+                                <th>Avg Delay (min)</th>
+                                <th>P90 Delay</th>
+                                <th>Del >15%</th>
+                                <th>Months</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top-table-body">
+                            <!-- Rendered dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-block">
+        <div class="controls-inner">
+            <div class="control-group">
+                <label for="jwe-token">Authentication Token (JWE)</label>
+                <input type="password" id="jwe-token" placeholder="Enter JWE token to connect to MCP OpenAPI">
+            </div>
+            <div class="control-group">
+                <label for="sql-query">Primary Analytical Query</label>
+                <textarea id="sql-query" spellcheck="false">WITH
+raw_flights AS (
+    SELECT
+        toStartOfMonth(FlightDate) AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        DepDelayMinutes,
+        DepDel15
+    FROM default.ontime_v2
+    WHERE IATA_CODE_Reporting_Airline = 'DL'
+      AND Origin = 'ATL'
+      AND Cancelled = 0
+),
+qualifying_months AS (
+    SELECT
+        MonthStart,
+        Dest,
+        DepTimeBlk
+    FROM raw_flights
+    GROUP BY
+        MonthStart,
+        Dest,
+        DepTimeBlk
+    HAVING count() >= 40
+),
+qualifying_raw_flights AS (
+    SELECT
+        r.MonthStart,
+        r.Dest,
+        r.DepTimeBlk,
+        r.DepDelayMinutes,
+        r.DepDel15
+    FROM raw_flights r
+    INNER JOIN qualifying_months q
+        ON r.MonthStart = q.MonthStart
+       AND r.Dest = q.Dest
+       AND r.DepTimeBlk = q.DepTimeBlk
+),
+hotspot_stats AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        count(DISTINCT MonthStart) AS QualifyingMonths,
+        count() AS CompletedFlights,
+        round(avg(DepDelayMinutes), 2) AS AvgDepDelayMinutes,
+        round(quantile(0.9)(DepDelayMinutes), 2) AS P90DepDelayMinutes,
+        round(avg(DepDel15) * 100, 2) AS DepDel15Pct,
+        min(MonthStart) AS FirstQualifyingMonth,
+        max(MonthStart) AS LastQualifyingMonth
+    FROM qualifying_raw_flights
+    GROUP BY
+        Dest,
+        DepTimeBlk
+    HAVING count() >= 1000
+),
+top_hotspots AS (
+    SELECT
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        row_number() OVER (ORDER BY AvgDepDelayMinutes DESC, P90DepDelayMinutes DESC, DepDel15Pct DESC, CompletedFlights DESC) AS HotspotRank
+    FROM hotspot_stats
+    ORDER BY HotspotRank
+    LIMIT 20
+),
+combined_results AS (
+    SELECT
+        'hotspot_summary' AS RowType,
+        CAST(NULL AS Nullable(Date)) AS MonthStart,
+        Dest,
+        DepTimeBlk,
+        QualifyingMonths,
+        CompletedFlights,
+        AvgDepDelayMinutes,
+        P90DepDelayMinutes,
+        DepDel15Pct,
+        FirstQualifyingMonth,
+        LastQualifyingMonth,
+        HotspotRank
+    FROM top_hotspots
+
+    UNION ALL
+
+    SELECT
+        'monthly_trend' AS RowType,
+        CAST(q.MonthStart AS Nullable(Date)) AS MonthStart,
+        t.Dest,
+        t.DepTimeBlk,
+        t.QualifyingMonths,
+        count() AS CompletedFlights,
+        round(avg(q.DepDelayMinutes), 2) AS AvgDepDelayMinutes,
+        round(quantile(0.9)(q.DepDelayMinutes), 2) AS P90DepDelayMinutes,
+        round(avg(q.DepDel15) * 100, 2) AS DepDel15Pct,
+        t.FirstQualifyingMonth,
+        t.LastQualifyingMonth,
+        t.HotspotRank
+    FROM qualifying_raw_flights q
+    INNER JOIN top_hotspots t
+        ON q.Dest = t.Dest
+       AND q.DepTimeBlk = t.DepTimeBlk
+    GROUP BY
+        q.MonthStart,
+        t.Dest,
+        t.DepTimeBlk,
+        t.QualifyingMonths,
+        t.FirstQualifyingMonth,
+        t.LastQualifyingMonth,
+        t.HotspotRank
+)
+SELECT
+    RowType,
+    MonthStart,
+    Dest,
+    DepTimeBlk,
+    QualifyingMonths,
+    CompletedFlights,
+    AvgDepDelayMinutes,
+    P90DepDelayMinutes,
+    DepDel15Pct,
+    FirstQualifyingMonth,
+    LastQualifyingMonth,
+    HotspotRank
+FROM combined_results
+ORDER BY
+    RowType ASC,
+    HotspotRank ASC,
+    MonthStart ASC,
+    Dest ASC,
+    DepTimeBlk ASC</textarea>
+            </div>
+            <div class="button-group">
+                <button class="btn-primary" id="btn-fetch">Fetch Data</button>
+                <button class="btn-secondary" id="btn-forget">Forget Token</button>
+                <span class="status-text" id="status-message">Ready</span>
+            </div>
+
+            <div class="query-ledger">
+                <div class="ledger-header">Query Ledger</div>
+                <div id="ledger-entries"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const AUTH_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+        let trendChartInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tokenInput = document.getElementById('jwe-token');
+            const storedToken = localStorage.getItem(AUTH_KEY);
+            if (storedToken) {
+                tokenInput.value = storedToken;
+            }
+
+            document.getElementById('btn-fetch').addEventListener('click', executeFetch);
+            document.getElementById('btn-forget').addEventListener('click', () => {
+                localStorage.removeItem(AUTH_KEY);
+                tokenInput.value = '';
+                updateStatus('Token forgotten.');
+            });
+        });
+
+        function updateStatus(msg) {
+            document.getElementById('status-message').textContent = msg;
+        }
+
+        function addLedgerEntry(id, label, role, sql) {
+            const container = document.getElementById('ledger-entries');
+            const row = document.createElement('div');
+            row.className = 'ledger-row';
+            row.id = `ledger-row-${id}`;
+            row.innerHTML = `
+                <div class="ledger-toggle">▶</div>
+                <div class="ledger-label">${label}</div>
+                <div class="ledger-role">${role}</div>
+                <div class="ledger-status pending" id="ledger-status-${id}">Pending</div>
+                <div class="ledger-rows" id="ledger-rows-${id}">-</div>
+            `;
+            
+            const sqlBlock = document.createElement('pre');
+            sqlBlock.className = 'ledger-sql';
+            sqlBlock.id = `ledger-sql-${id}`;
+            sqlBlock.textContent = sql;
+
+            row.addEventListener('click', () => {
+                const toggle = row.querySelector('.ledger-toggle');
+                if (sqlBlock.classList.contains('expanded')) {
+                    sqlBlock.classList.remove('expanded');
+                    toggle.textContent = '▶';
+                } else {
+                    sqlBlock.classList.add('expanded');
+                    toggle.textContent = '▼';
+                }
+            });
+
+            container.appendChild(row);
+            container.appendChild(sqlBlock);
+        }
+
+        function updateLedgerEntry(id, status, rowCount, sql = null) {
+            const statusEl = document.getElementById(`ledger-status-${id}`);
+            const rowsEl = document.getElementById(`ledger-rows-${id}`);
+            
+            statusEl.textContent = status;
+            statusEl.className = `ledger-status ${status.toLowerCase()}`;
+            rowsEl.textContent = rowCount !== null ? rowCount : '-';
+
+            if (sql) {
+                document.getElementById(`ledger-sql-${id}`).textContent = sql;
+            }
+        }
+
+        async function executeFetch() {
+            const token = document.getElementById('jwe-token').value.trim();
+            const sql = document.getElementById('sql-query').value.trim();
+
+            if (!token || !sql) {
+                updateStatus('Please provide both token and query.');
+                return;
+            }
+
+            localStorage.setItem(AUTH_KEY, token);
+            updateStatus('Fetching data...');
+            document.getElementById('ledger-entries').innerHTML = '';
+            
+            const queryId = 'primary';
+            addLedgerEntry(queryId, 'Saved Hotspot SQL', 'Primary', sql);
+
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('empty-state').style.display = 'none';
+
+            try {
+                const endpoint = `https://mcp.demo.altinity.cloud/${token}/openapi/execute_query`;
+                const url = new URL(endpoint);
+                url.searchParams.append('query', sql);
+
+                const response = await fetch(url.toString());
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const payload = await response.json();
+                
+                if (!payload.columns) {
+                    throw new Error('Malformed payload: missing columns');
+                }
+
+                const rowCount = payload.count || 0;
+                updateLedgerEntry(queryId, 'OK', rowCount);
+
+                if (rowCount === 0 || !payload.rows || payload.rows.length === 0) {
+                    document.getElementById('empty-state').style.display = 'block';
+                    updateStatus('Query successful, but no rows returned.');
+                    return;
+                }
+
+                const data = payload.rows.map(rowArray => {
+                    const obj = {};
+                    payload.columns.forEach((col, idx) => {
+                        obj[col] = rowArray[idx];
+                    });
+                    return obj;
+                });
+
+                renderDashboard(data);
+                updateStatus('Dashboard updated successfully.');
+
+            } catch (err) {
+                updateLedgerEntry(queryId, 'Failed', null);
+                updateStatus(`Error: ${err.message}`);
+                console.error(err);
+            }
+        }
+
+        function renderDashboard(data) {
+            document.getElementById('dashboard-content').style.display = 'flex';
+
+            const hotspotData = data.filter(d => d.RowType === 'hotspot_summary');
+            const trendData = data.filter(d => d.RowType === 'monthly_trend');
+
+            hotspotData.sort((a, b) => a.HotspotRank - b.HotspotRank);
+
+            // KPIs
+            if (hotspotData.length > 0) {
+                const worst = hotspotData[0];
+                const html = `
+                    <div class="kpi-card">
+                        <div class="kpi-label">Worst Hotspot</div>
+                        <div class="kpi-value" style="color: var(--red)">${worst.Dest}</div>
+                        <div class="kpi-subtext">Time Block: ${worst.DepTimeBlk}</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Highest Avg Delay</div>
+                        <div class="kpi-value">${worst.AvgDepDelayMinutes.toFixed(1)}m</div>
+                        <div class="kpi-subtext">Rank 1 Hotspot Average</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Severe Wait (P90)</div>
+                        <div class="kpi-value">${worst.P90DepDelayMinutes.toFixed(1)}m</div>
+                        <div class="kpi-subtext">90% of flights delayed less than this</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Qualifying Months</div>
+                        <div class="kpi-value">${worst.QualifyingMonths}</div>
+                        <div class="kpi-subtext">For Top Hotspot</div>
+                    </div>
+                `;
+                document.getElementById('kpi-strip').innerHTML = html;
+            }
+
+            // Heatmap Setup
+            const timeBlocks = [...new Set(hotspotData.map(d => d.DepTimeBlk))].sort();
+            const dests = [...new Set(hotspotData.map(d => d.Dest))].sort();
+            
+            const delays = hotspotData.map(d => parseFloat(d.AvgDepDelayMinutes));
+            const minDelay = Math.min(...delays);
+            const maxDelay = Math.max(...delays);
+
+            // simple color scale (sky to amber to red)
+            function getColor(val) {
+                if (isNaN(val)) return 'var(--panel-alt)';
+                const pct = (val - minDelay) / (maxDelay - minDelay || 1);
+                
+                // Color stops: 0: sky (#3c88b5), 0.5: amber (#d48a1f), 1: red (#c54f36)
+                // Linear interpolation approx.
+                let r, g, b;
+                if (pct < 0.5) {
+                    const p = pct * 2;
+                    r = Math.round(60 + p * (212 - 60));
+                    g = Math.round(136 + p * (138 - 136));
+                    b = Math.round(181 + p * (31 - 181));
+                } else {
+                    const p = (pct - 0.5) * 2;
+                    r = Math.round(212 + p * (197 - 212));
+                    g = Math.round(138 + p * (79 - 138));
+                    b = Math.round(31 + p * (54 - 31));
+                }
+                return `rgb(${r},${g},${b})`;
+            }
+
+            const heatmapContainer = document.getElementById('heatmap');
+            heatmapContainer.style.gridTemplateColumns = `auto repeat(${timeBlocks.length}, minmax(60px, 1fr))`;
+            heatmapContainer.innerHTML = '';
+
+            // Top left empty
+            heatmapContainer.innerHTML += `<div class="heatmap-cell header-cell"></div>`;
+            // Time headers
+            timeBlocks.forEach(tb => {
+                heatmapContainer.innerHTML += `<div class="heatmap-cell header-cell">${tb.substring(0,2)}:${tb.substring(2,4)}</div>`;
+            });
+
+            dests.forEach(dest => {
+                heatmapContainer.innerHTML += `<div class="heatmap-cell header-cell y-axis">${dest}</div>`;
+                timeBlocks.forEach(tb => {
+                    const cellData = hotspotData.find(d => d.Dest === dest && d.DepTimeBlk === tb);
+                    if (cellData) {
+                        const isWorst = cellData.HotspotRank === 1;
+                        const bgColor = getColor(cellData.AvgDepDelayMinutes);
+                        const textColor = cellData.AvgDepDelayMinutes > (minDelay + maxDelay)/2 ? 'white' : 'var(--ink)';
+                        
+                        let cellHtml = `<div class="heatmap-cell data-cell" style="background-color: ${bgColor}; color: ${textColor};" title="Dest: ${dest}&#10;Time: ${tb}&#10;Avg Delay: ${cellData.AvgDepDelayMinutes}m">`;
+                        cellHtml += `${cellData.AvgDepDelayMinutes.toFixed(1)}`;
+                        if (isWorst) {
+                            cellHtml += `<div class="worst-hotspot-indicator"></div>`;
+                        }
+                        cellHtml += `</div>`;
+                        heatmapContainer.innerHTML += cellHtml;
+                    } else {
+                        heatmapContainer.innerHTML += `<div class="heatmap-cell" style="background-color: var(--panel-alt)"></div>`;
+                    }
+                });
+            });
+
+            // Trend Chart
+            const top3Ranks = hotspotData.slice(0, 3).map(d => d.HotspotRank);
+            const chartData = trendData.filter(d => top3Ranks.includes(d.HotspotRank));
+            
+            // Normalize dates
+            chartData.forEach(d => {
+                d.parsedDate = new Date(d.MonthStart);
+            });
+            chartData.sort((a,b) => a.parsedDate - b.parsedDate);
+
+            const datasets = [];
+            const colors = ['#c54f36', '#d48a1f', '#3c88b5'];
+            
+            top3Ranks.forEach((rank, idx) => {
+                const meta = hotspotData.find(h => h.HotspotRank === rank);
+                if (!meta) return;
+                const seriesLabel = `${meta.Dest} (${meta.DepTimeBlk})`;
+                const seriesData = chartData.filter(d => d.HotspotRank === rank).map(d => ({
+                    x: d.parsedDate,
+                    y: parseFloat(d.AvgDepDelayMinutes)
+                }));
+
+                datasets.push({
+                    label: seriesLabel,
+                    data: seriesData,
+                    borderColor: colors[idx % colors.length],
+                    backgroundColor: colors[idx % colors.length],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHitRadius: 5,
+                    fill: false,
+                    tension: 0.2
+                });
+            });
+
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            if (trendChartInstance) {
+                trendChartInstance.destroy();
+            }
+            
+            trendChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'year' },
+                            title: { display: true, text: 'Month' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Avg Delay (mins)' },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Table
+            const tbody = document.getElementById('top-table-body');
+            tbody.innerHTML = '';
+            hotspotData.slice(0, 20).forEach((row, i) => {
+                const rankClass = i < 3 ? `rank-${i+1}` : '';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><span class="rank-badge ${rankClass}">${row.HotspotRank}</span></td>
+                        <td><strong>${row.Dest}</strong></td>
+                        <td>${row.DepTimeBlk}</td>
+                        <td>${row.AvgDepDelayMinutes.toFixed(2)}</td>
+                        <td>${row.P90DepDelayMinutes.toFixed(2)}</td>
+                        <td>${row.DepDel15Pct.toFixed(1)}%</td>
+                        <td>${row.QualifyingMonths}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
+```

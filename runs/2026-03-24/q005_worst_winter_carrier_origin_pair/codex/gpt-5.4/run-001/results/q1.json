@@ -1,0 +1,268 @@
+{
+  "columns": [
+    "Carrier",
+    "OriginCode",
+    "DisplayAirportName",
+    "winter_flights",
+    "dep_otp_pct",
+    "avg_dep_delay_min",
+    "flights_with_any_reported_cause",
+    "flights_without_reported_cause"
+  ],
+  "rows": [
+    {
+      "Carrier": "DH",
+      "DisplayAirportName": "Chicago O'Hare International",
+      "OriginCode": "ORD",
+      "avg_dep_delay_min": 27.06,
+      "dep_otp_pct": 56.53,
+      "flights_with_any_reported_cause": 5681,
+      "flights_without_reported_cause": 14248,
+      "winter_flights": 19929
+    },
+    {
+      "Carrier": "PI",
+      "DisplayAirportName": "Dallas/Fort Worth International",
+      "OriginCode": "DFW",
+      "avg_dep_delay_min": 15.99,
+      "dep_otp_pct": 61.43,
+      "flights_with_any_reported_cause": 0,
+      "flights_without_reported_cause": 1185,
+      "winter_flights": 1185
+    },
+    {
+      "Carrier": "PI",
+      "DisplayAirportName": "Los Angeles International",
+      "OriginCode": "LAX",
+      "avg_dep_delay_min": 19.89,
+      "dep_otp_pct": 63.03,
+      "flights_with_any_reported_cause": 0,
+      "flights_without_reported_cause": 1128,
+      "winter_flights": 1128
+    },
+    {
+      "Carrier": "PI",
+      "DisplayAirportName": "James M Cox/Dayton International",
+      "OriginCode": "DAY",
+      "avg_dep_delay_min": 15.27,
+      "dep_otp_pct": 63.27,
+      "flights_with_any_reported_cause": 0,
+      "flights_without_reported_cause": 12373,
+      "winter_flights": 12373
+    },
+    {
+      "Carrier": "AS",
+      "DisplayAirportName": "Unalaska Airport",
+      "OriginCode": "DUT",
+      "avg_dep_delay_min": 18.14,
+      "dep_otp_pct": 63.37,
+      "flights_with_any_reported_cause": 42,
+      "flights_without_reported_cause": 1069,
+      "winter_flights": 1111
+    },
+    {
+      "Carrier": "YV",
+      "DisplayAirportName": "Chicago O'Hare International",
+      "OriginCode": "ORD",
+      "avg_dep_delay_min": 27.17,
+      "dep_otp_pct": 63.58,
+      "flights_with_any_reported_cause": 13322,
+      "flights_without_reported_cause": 22546,
+      "winter_flights": 35868
+    },
+    {
+      "Carrier": "OO",
+      "DisplayAirportName": "Southwest Oregon Regional",
+      "OriginCode": "OTH",
+      "avg_dep_delay_min": 28,
+      "dep_otp_pct": 63.7,
+      "flights_with_any_reported_cause": 659,
+      "flights_without_reported_cause": 1173,
+      "winter_flights": 1832
+    },
+    {
+      "Carrier": "AA",
+      "DisplayAirportName": "Key West International",
+      "OriginCode": "EYW",
+      "avg_dep_delay_min": 29.67,
+      "dep_otp_pct": 64.2,
+      "flights_with_any_reported_cause": 797,
+      "flights_without_reported_cause": 1745,
+      "winter_flights": 2542
+    },
+    {
+      "Carrier": "F9",
+      "DisplayAirportName": "Palm Beach International",
+      "OriginCode": "PBI",
+      "avg_dep_delay_min": 23.48,
+      "dep_otp_pct": 65.73,
+      "flights_with_any_reported_cause": 1078,
+      "flights_without_reported_cause": 2216,
+      "winter_flights": 3294
+    },
+    {
+      "Carrier": "OH",
+      "DisplayAirportName": "Southwest Florida International",
+      "OriginCode": "RSW",
+      "avg_dep_delay_min": 19.57,
+      "dep_otp_pct": 66.42,
+      "flights_with_any_reported_cause": 406,
+      "flights_without_reported_cause": 940,
+      "winter_flights": 1346
+    },
+    {
+      "Carrier": "B6",
+      "DisplayAirportName": "Miami International",
+      "OriginCode": "MIA",
+      "avg_dep_delay_min": 24.9,
+      "dep_otp_pct": 66.97,
+      "flights_with_any_reported_cause": 1063,
+      "flights_without_reported_cause": 2055,
+      "winter_flights": 3118
+    },
+    {
+      "Carrier": "OO",
+      "DisplayAirportName": "Aspen Pitkin County Sardy Field",
+      "OriginCode": "ASE",
+      "avg_dep_delay_min": 25.39,
+      "dep_otp_pct": 67.23,
+      "flights_with_any_reported_cause": 11274,
+      "flights_without_reported_cause": 22161,
+      "winter_flights": 33435
+    },
+    {
+      "Carrier": "EV",
+      "DisplayAirportName": "Salt Lake City International",
+      "OriginCode": "SLC",
+      "avg_dep_delay_min": 17.68,
+      "dep_otp_pct": 67.46,
+      "flights_with_any_reported_cause": 2044,
+      "flights_without_reported_cause": 3187,
+      "winter_flights": 5231
+    },
+    {
+      "Carrier": "NW",
+      "DisplayAirportName": "Luis Munoz Marin International",
+      "OriginCode": "SJU",
+      "avg_dep_delay_min": 22.36,
+      "dep_otp_pct": 67.67,
+      "flights_with_any_reported_cause": 261,
+      "flights_without_reported_cause": 1790,
+      "winter_flights": 2051
+    },
+    {
+      "Carrier": "EV",
+      "DisplayAirportName": "Denver International",
+      "OriginCode": "DEN",
+      "avg_dep_delay_min": 20.19,
+      "dep_otp_pct": 67.7,
+      "flights_with_any_reported_cause": 5300,
+      "flights_without_reported_cause": 10404,
+      "winter_flights": 15704
+    },
+    {
+      "Carrier": "B6",
+      "DisplayAirportName": "Reno/Tahoe International",
+      "OriginCode": "RNO",
+      "avg_dep_delay_min": 27.71,
+      "dep_otp_pct": 68.03,
+      "flights_with_any_reported_cause": 341,
+      "flights_without_reported_cause": 763,
+      "winter_flights": 1104
+    },
+    {
+      "Carrier": "OH",
+      "DisplayAirportName": "Newark Liberty International",
+      "OriginCode": "EWR",
+      "avg_dep_delay_min": 21.48,
+      "dep_otp_pct": 68.14,
+      "flights_with_any_reported_cause": 529,
+      "flights_without_reported_cause": 1037,
+      "winter_flights": 1566
+    },
+    {
+      "Carrier": "G4",
+      "DisplayAirportName": "Stockton Metro",
+      "OriginCode": "SCK",
+      "avg_dep_delay_min": 20.1,
+      "dep_otp_pct": 68.15,
+      "flights_with_any_reported_cause": 349,
+      "flights_without_reported_cause": 728,
+      "winter_flights": 1077
+    },
+    {
+      "Carrier": "FL",
+      "DisplayAirportName": "San Francisco International",
+      "OriginCode": "SFO",
+      "avg_dep_delay_min": 17.79,
+      "dep_otp_pct": 68.27,
+      "flights_with_any_reported_cause": 466,
+      "flights_without_reported_cause": 1094,
+      "winter_flights": 1560
+    },
+    {
+      "Carrier": "B6",
+      "DisplayAirportName": "Sarasota/Bradenton International",
+      "OriginCode": "SRQ",
+      "avg_dep_delay_min": 20.91,
+      "dep_otp_pct": 68.39,
+      "flights_with_any_reported_cause": 1255,
+      "flights_without_reported_cause": 3012,
+      "winter_flights": 4267
+    },
+    {
+      "Carrier": "OH",
+      "DisplayAirportName": "Hartsfield-Jackson Atlanta International",
+      "OriginCode": "ATL",
+      "avg_dep_delay_min": 19.08,
+      "dep_otp_pct": 68.74,
+      "flights_with_any_reported_cause": 5923,
+      "flights_without_reported_cause": 12054,
+      "winter_flights": 17977
+    },
+    {
+      "Carrier": "FL",
+      "DisplayAirportName": "Newark Liberty International",
+      "OriginCode": "EWR",
+      "avg_dep_delay_min": 21.41,
+      "dep_otp_pct": 68.83,
+      "flights_with_any_reported_cause": 1012,
+      "flights_without_reported_cause": 1811,
+      "winter_flights": 2823
+    },
+    {
+      "Carrier": "XE",
+      "DisplayAirportName": "Newark Liberty International",
+      "OriginCode": "EWR",
+      "avg_dep_delay_min": 19.39,
+      "dep_otp_pct": 68.91,
+      "flights_with_any_reported_cause": 19631,
+      "flights_without_reported_cause": 36842,
+      "winter_flights": 56473
+    },
+    {
+      "Carrier": "B6",
+      "DisplayAirportName": "Fort Lauderdale-Hollywood International",
+      "OriginCode": "FLL",
+      "avg_dep_delay_min": 18.49,
+      "dep_otp_pct": 69.02,
+      "flights_with_any_reported_cause": 28468,
+      "flights_without_reported_cause": 65981,
+      "winter_flights": 94449
+    },
+    {
+      "Carrier": "OH",
+      "DisplayAirportName": "Austin - Bergstrom International",
+      "OriginCode": "AUS",
+      "avg_dep_delay_min": 14.45,
+      "dep_otp_pct": 69.09,
+      "flights_with_any_reported_cause": 640,
+      "flights_without_reported_cause": 1262,
+      "winter_flights": 1902
+    }
+  ],
+  "row_count": 25,
+  "generated_at": "2026-03-24T14:51:26.200258Z",
+  "source_query_sha256": "804b85acf6e1ba7f8c39da94554afb3dd76721480caa92c3505299e9c61fafaf",
+  "log_comment": "qforge|question=q005|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q1"
+}

@@ -1,0 +1,152 @@
+{
+  "columns": [
+    "DestCode",
+    "DepTimeBlk",
+    "total_flights",
+    "avg_dep_delay",
+    "p90_dep_delay",
+    "pct_del15",
+    "credible_months"
+  ],
+  "rows": [
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "EWR",
+      "avg_dep_delay": 27.1,
+      "credible_months": 228,
+      "p90_dep_delay": 82.9,
+      "pct_del15": 39.3,
+      "total_flights": 6472
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "EWR",
+      "avg_dep_delay": 25.1,
+      "credible_months": 316,
+      "p90_dep_delay": 77,
+      "pct_del15": 37.4,
+      "total_flights": 9488
+    },
+    {
+      "DepTimeBlk": "1800-1859",
+      "DestCode": "EWR",
+      "avg_dep_delay": 25,
+      "credible_months": 230,
+      "p90_dep_delay": 77,
+      "pct_del15": 36.7,
+      "total_flights": 6848
+    },
+    {
+      "DepTimeBlk": "1900-1959",
+      "DestCode": "JFK",
+      "avg_dep_delay": 24.7,
+      "credible_months": 65,
+      "p90_dep_delay": 64.9,
+      "pct_del15": 35.3,
+      "total_flights": 2052
+    },
+    {
+      "DepTimeBlk": "2000-2059",
+      "DestCode": "OKC",
+      "avg_dep_delay": 24.7,
+      "credible_months": 132,
+      "p90_dep_delay": 44.8,
+      "pct_del15": 21.9,
+      "total_flights": 4143
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "JFK",
+      "avg_dep_delay": 23.9,
+      "credible_months": 153,
+      "p90_dep_delay": 70,
+      "pct_del15": 36.7,
+      "total_flights": 4620
+    },
+    {
+      "DepTimeBlk": "2000-2059",
+      "DestCode": "SHV",
+      "avg_dep_delay": 23.2,
+      "credible_months": 24,
+      "p90_dep_delay": 47.8,
+      "pct_del15": 23.6,
+      "total_flights": 712
+    },
+    {
+      "DepTimeBlk": "1500-1559",
+      "DestCode": "EWR",
+      "avg_dep_delay": 23,
+      "credible_months": 256,
+      "p90_dep_delay": 69,
+      "pct_del15": 34.1,
+      "total_flights": 7532
+    },
+    {
+      "DepTimeBlk": "1900-1959",
+      "DestCode": "EWR",
+      "avg_dep_delay": 22.9,
+      "credible_months": 234,
+      "p90_dep_delay": 72,
+      "pct_del15": 36.2,
+      "total_flights": 7019
+    },
+    {
+      "DepTimeBlk": "1600-1659",
+      "DestCode": "JFK",
+      "avg_dep_delay": 22.5,
+      "credible_months": 44,
+      "p90_dep_delay": 65,
+      "pct_del15": 29.2,
+      "total_flights": 1427
+    },
+    {
+      "DepTimeBlk": "2000-2059",
+      "DestCode": "IAH",
+      "avg_dep_delay": 22.4,
+      "credible_months": 109,
+      "p90_dep_delay": 51,
+      "pct_del15": 26.2,
+      "total_flights": 3384
+    },
+    {
+      "DepTimeBlk": "1900-1959",
+      "DestCode": "TUL",
+      "avg_dep_delay": 22.1,
+      "credible_months": 42,
+      "p90_dep_delay": 25,
+      "pct_del15": 17.1,
+      "total_flights": 1307
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "EYW",
+      "avg_dep_delay": 22,
+      "credible_months": 34,
+      "p90_dep_delay": 34,
+      "pct_del15": 18.2,
+      "total_flights": 1085
+    },
+    {
+      "DepTimeBlk": "1800-1859",
+      "DestCode": "LGA",
+      "avg_dep_delay": 21.6,
+      "credible_months": 358,
+      "p90_dep_delay": 65,
+      "pct_del15": 34.7,
+      "total_flights": 9998
+    },
+    {
+      "DepTimeBlk": "1700-1759",
+      "DestCode": "LGA",
+      "avg_dep_delay": 21.1,
+      "credible_months": 397,
+      "p90_dep_delay": 61,
+      "pct_del15": 33.3,
+      "total_flights": 11491
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-23T22:23:31.527473Z",
+  "source_query_sha256": "5c0afecdbf2d7d66b4f2dbfa3ccd454a7abe120e898f603a01efd967ff13a38e",
+  "log_comment": "qforge|question=q003|run=run-004|runner=claude|model=sonnet|phase=full|subquestion=pattern_summary"
+}

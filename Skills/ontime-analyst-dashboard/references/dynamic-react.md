@@ -23,7 +23,13 @@ Use this when the presentation target is React and the visual mode is `dynamic`.
 
 - Use client-only React
 - Do not use Next.js, routing, SSR, or any backend server
-- Keep token, query text, run status, and fetched rows in explicit component state
-- The footer token/query controls still need to render in the final page
+- Keep auth state, query text, run status, and fetched rows in explicit component state
+- Support both dynamic auth variants from HTML dynamic mode:
+  - `OAuth2` by default
+  - `JWE` when the prompt explicitly asks for token-entry footer controls
+- The footer SQL/query controls still need to render in the final page
 - The query ledger still needs to render in the final page
-- Keep the same dynamic fetch contract, endpoint template, localStorage key, and degradation behavior as HTML dynamic mode
+- Keep the same auth-mode contract, query execution contract, endpoint template, and degradation behavior as HTML dynamic mode
+- For `JWE`, keep token field state, masked stored-token behavior, and `Forget` behavior explicit in component state and storage helpers
+- For `OAuth2`, keep callback parsing, redirect-state recovery, login/logout state, and token-expiry handling explicit in component state and effects
+- If using React effects for OAuth2 callback handling, ensure the callback is consumed once and the cleaned URL state does not trigger duplicate exchanges

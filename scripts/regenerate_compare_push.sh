@@ -6,8 +6,8 @@ usage() {
   cat <<'EOF'
 Usage: scripts/regenerate_compare_push.sh QUESTION [DATE]
 
-Regenerate compare artifacts for one question and push them to the
-ExploringDatabyLLMs-runs repo.
+Regenerate compare artifacts for one question and push them from this
+repo, using the tracked runs/ directory.
 
 Arguments:
   QUESTION   Question id like q002 or q003
@@ -32,18 +32,19 @@ model="${QFORGE_MODEL:-}"
 verbose="${QFORGE_VERBOSE:-0}"
 
 code_repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-runs_repo="$(cd "$code_repo/../ExploringDatabyLLMs-runs" && pwd)"
+runs_root="${QFORGE_RUN_ROOT:-$code_repo/runs}"
+runs_repo="$code_repo"
 
 if [[ ! -x "$code_repo/scripts/qforge" ]]; then
   echo "qforge script not found at $code_repo/scripts/qforge" >&2
   exit 1
 fi
 
-question_dir_glob="$runs_repo/$day/${question}"_*
-question_dir="$(find "$runs_repo/$day" -maxdepth 1 -type d -name "${question}_*" | sort | head -n 1 || true)"
+question_dir_glob="$runs_root/$day/${question}"_*
+question_dir="$(find "$runs_root/$day" -maxdepth 1 -type d -name "${question}_*" | sort | head -n 1 || true)"
 
 if [[ -z "$question_dir" ]]; then
-  echo "No question directory found for $question on $day under $runs_repo/$day" >&2
+  echo "No question directory found for $question on $day under $runs_root/$day" >&2
   echo "Looked for: $question_dir_glob" >&2
   exit 1
 fi
@@ -65,6 +66,7 @@ if [[ "$verbose" == "1" ]]; then
 fi
 
 echo "[compare-push] code_repo=$code_repo"
+echo "[compare-push] runs_root=$runs_root"
 echo "[compare-push] runs_repo=$runs_repo"
 echo "[compare-push] question=$question day=$day runner=$runner"
 if [[ -n "$model" ]]; then

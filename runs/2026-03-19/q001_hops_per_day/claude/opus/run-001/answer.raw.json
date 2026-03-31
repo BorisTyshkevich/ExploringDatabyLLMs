@@ -1,0 +1,35 @@
+```json
+{
+  "sql": "WITH legs AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        Origin,\n        Dest,\n        DepTime\n    FROM ontime.ontime\n    WHERE Tail_Number != '' AND Cancelled = 0 AND DepTime IS NOT NULL\n),\ntrip_summary AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        count() AS Hops,\n        arrayStringConcat(\n            arrayConcat(\n                arrayMap(x -> x.2, arraySort(x -> x.1, groupArray(tuple(DepTime, Origin)))),\n                [argMax(Dest, DepTime)]\n            ),\n            ' -> '\n        ) AS Route,\n        arrayStringConcat(\n            arrayMap(\n                x -> concat(x.2, ' ', lpad(toString(x.1), 4, '0')),\n                arraySort(x -> x.1, groupArray(tuple(DepTime, Origin)))\n            ),\n            ', '\n        ) AS DepTimes\n    FROM legs\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate\n    ORDER BY Hops DESC, FlightDate DESC\n    LIMIT 10\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    IATA_CODE_Reporting_Airline,\n    FlightDate,\n    Hops,\n    Route,\n    DepTimes\nFROM trip_summary\nORDER BY Hops DESC, FlightDate DESC",
+  "report_markdown": "# {{question_title}}\n\n{{data_overview_md}}\n\n## Key findings\n\nThe maximum hop count observed in the dataset is **{{metric.max_hops}}** legs in a single day for one aircraft operating under one flight number. This is not a one-off anomaly — it is a **repeated operating pattern** used exclusively by Southwest Airlines (WN), which routinely chains many short-haul segments under a single flight number.\n\n## Most recent maximum-hop itinerary\n\nThe most recent 8-hop itinerary is **{{metric.most_recent_carrier}} {{metric.most_recent_flight}}**, operated by tail **{{metric.most_recent_tail}}** on **{{metric.most_recent_date}}**:\n\n> {{metric.most_recent_route}}\n\nDeparture times from each origin: {{metric.most_recent_dep_times}}\n\nThe aircraft departed ISP at 05:43 and completed its final leg departing OAK at 20:41, spanning roughly 15 hours of flying across 8 segments coast-to-coast.\n\n## Route repetition and clustering\n\nAmong the top 10 longest itineraries, strong clustering is evident:\n\n- **WN 3149** flew the identical route {{metric.wn3149_route}} on four consecutive Sundays in January–February 2024.\n- **WN 2787** repeated {{metric.wn2787_route}} across multiple Sundays in September–October 2022.\n- **WN 154** used the same {{metric.wn154_route}} pattern on two Sundays in April 2023.\n\nAll {{metric.max_hops}}-hop itineraries belong to Southwest Airlines, reflecting its point-to-point network where a single flight number can thread through many cities in one day. The routes tend to fall on **Sundays**, likely corresponding to specific weekly schedule rotations.\n\n## Top 10 itineraries\n\n{{result_table_md}}",
+  "metrics": {
+    "summary_facts": [
+      "The maximum hop count is 8 legs per day for one aircraft on one flight number.",
+      "All top-10 eight-hop itineraries are operated by Southwest Airlines (WN).",
+      "The most recent eight-hop itinerary was WN 366 on 2024-12-01.",
+      "Flight WN 3149 repeated the same 8-hop route on four Sundays in Jan–Feb 2024.",
+      "Flight WN 2787 repeated the same 8-hop route on multiple Sundays in Sep–Oct 2022."
+    ],
+    "named_values": {
+      "max_hops": "8",
+      "most_recent_carrier": "WN",
+      "most_recent_flight": "366",
+      "most_recent_tail": "N957WN",
+      "most_recent_date": "2024-12-01",
+      "most_recent_route": "ISP -> BWI -> MYR -> BNA -> VPS -> DAL -> LAS -> OAK -> SEA",
+      "most_recent_dep_times": "ISP 0543, BWI 0810, MYR 1020, BNA 1142, VPS 1401, DAL 1643, LAS 1828, OAK 2041",
+      "wn3149_route": "CLE -> BNA -> PNS -> HOU -> MCI -> PHX -> BUR -> OAK -> DEN",
+      "wn2787_route": "MSY -> ATL -> CMH -> BWI -> RDU -> BNA -> DTW -> MDW -> LAX",
+      "wn154_route": "ELP -> DAL -> LIT -> ATL -> RIC -> MDW -> MCI -> PHX -> SAN"
+    },
+    "named_lists": {
+      "repeated_flight_numbers": [
+        "WN 3149: CLE -> BNA -> PNS -> HOU -> MCI -> PHX -> BUR -> OAK -> DEN (4 occurrences)",
+        "WN 2787: MSY -> ATL -> CMH -> BWI -> RDU -> BNA -> DTW -> MDW -> LAX (3 occurrences)",
+        "WN 154: ELP -> DAL -> LIT -> ATL -> RIC -> MDW -> MCI -> PHX -> SAN (2 occurrences)",
+        "WN 366: ISP -> BWI -> MYR -> BNA -> VPS -> DAL -> LAS -> OAK -> SEA (1 occurrence)"
+      ]
+    }
+  }
+}
+```

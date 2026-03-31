@@ -1,0 +1,5 @@
+{
+  "sql": "SELECT\n    Tail_Number AS `Aircraft ID`,\n    Flight_Number_Reporting_Airline AS `Flight Number`,\n    Reporting_Airline AS `Carrier`,\n    FlightDate AS `Date`,\n    arrayStringConcat(\n        arrayPushBack(\n            arrayMap(x -\u003e x.2, arraySort(groupArray((DepTime, OriginCode)))),\n            argMax(DestCode, DepTime)\n        ),\n        '-'\n    ) AS Route,\n    count() AS hop_count\nFROM ontime.fact_ontime\nWHERE Cancelled = 0 \n  AND Tail_Number != ''\nGROUP BY\n    `Aircraft ID`,\n    `Flight Number`,\n    `Carrier`,\n    `Date`\nORDER BY\n    hop_count DESC,\n    `Date` DESC\nLIMIT 10",
+  "report_markdown": "# Highest daily hops for one aircraft on one flight number\n\n{{data_overview_md}}\n\n{{result_table_md}}\n\nThe analysis reveals that the most extensive daily itineraries for a single aircraft under one flight number can consist of up to 8 consecutive hops in a single day. These longest routes are exclusively operated by Southwest Airlines (WN), reflecting their unique point-to-point network model that heavily utilizes multi-leg \"through-flights\" spanning multiple regions across the country.",
+  "metrics": {}
+}

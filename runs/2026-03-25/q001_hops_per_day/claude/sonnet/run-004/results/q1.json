@@ -1,0 +1,2888 @@
+{
+  "columns": [
+    "Route",
+    "recurrence_count"
+  ],
+  "rows": [
+    {
+      "Route": "EWR-MDW-ABQ-DEN-SMF-LAS-TUS-OAK-SLC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "RDU-ATL-STL-ICT-PHX-LAX-SJC-LAS-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCO-CMH-STL-DAL-BWI-PIT-MDW-ABQ-OAK",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "IND-TPA-ROC-BWI-OKC-LAS-SAN-SMF-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCO-DEN-SLC-PHX-SNA-OAK-RNO-LAS-TUS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BOS-BWI-SAT-DAL-TUL-DEN-PHX-OAK-GEG",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BOS-BWI-GSP-MCO-MCI-OKC-PHX-LAX-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DAL-HOU-OKC-DEN-TUS-SAN-OAK-LAS-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ABQ-OAK-SAN-DEN-AMA-DAL-AUS-PHX-SNA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCI-LAS-RNO-PHX-OKC-STL-SDF-MDW-DSM",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MHT-BWI-CHS-HOU-ELP-AUS-LAX-LAS-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "FLL-JAX-BNA-CLE-MDW-CMH-LAS-BUR-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ECP-BWI-ORF-MCO-RSW-MDW-DEN-SFO-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BUR-SJC-AUS-DAL-SAN-TUS-LAS-ONT-SMF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "FLL-TPA-PHL-BNA-BHM-DAL-ELP-LAX-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BHM-DAL-HOU-MSY-SAN-LAS-RNO-OAK-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DTW-BNA-MSY-DAL-HOU-TPA-ATL-STL-AUS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "FLL-MDW-MCI-DAL-ELP-PHX-RNO-SJC-SNA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MHT-BWI-SDF-MDW-MCI-DAL-AUS-ELP-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MEM-MCO-ORF-BWI-ATL-DAL-ELP-LAS-OAK",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCI-BNA-MDW-OMA-STL-MCO-DAL-LAS-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "PVD-BWI-JAX-BNA-MCI-DEN-SLC-LAX-OAK",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "OKC-MCI-BNA-BHM-DAL-ELP-PHX-LAX-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SAT-ATL-JAX-FLL-MSY-HOU-ECP-BNA-MDW",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SEA-OAK-BUR-PHX-ABQ-DAL-SAT-LAS-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCO-SAT-DAL-OKC-DEN-SJC-SAN-LAS-GEG",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DTW-STL-TUL-HOU-SAT-ELP-ABQ-DEN-BNA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CVG-BWI-MEM-DEN-SNA-PHX-LAS-OAK-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "FLL-TPA-MDW-OMA-PHX-ABQ-LBB-DAL-AUS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ORF-MDW-BUF-BWI-CLT-HOU-DAL-MSY-TPA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCI-IND-LAS-RNO-BOI-GEG-PDX-SMF-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SDF-MCO-BWI-OKC-DAL-SAN-SMF-LAS-DEN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ABQ-DAL-MSY-MCI-MDW-CMH-DEN-OAK-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "AMA-DAL-MAF-ABQ-LAX-SLC-GEG-PDX-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DAL-AMA-DEN-BOI-PDX-GEG-SEA-SMF-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-DTW-MDW-DEN-ABQ-PHX-LAX-OAK-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-GSP-MCO-SAT-DAL-OKC-PHX-SAN-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BDL-TPA-ATL-JAX-FLL-MSY-STL-LAS-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-PHX-LAS-BUR-SJC-RNO-BOI-GEG-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "OKC-STL-SDF-TPA-RDU-HOU-MSY-BNA-PHL",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ISP-BWI-JAX-FLL-MCO-DEN-PHX-ONT-SMF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BNA-JAX-ORF-BWI-CLE-MDW-SDF-STL-MCI",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MSP-MDW-BOS-BWI-CHS-HOU-LAX-SJC-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DSM-MDW-MHT-BWI-SDF-DEN-LAS-SFO-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BNA-SAT-DAL-OKC-DEN-SEA-OAK-ONT-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SLC-LAX-PHX-ABQ-PDX-SJC-SAN-LAS-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-ATL-AUS-ELP-PHX-GEG-BOI-OAK-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCO-RDU-STL-LIT-DAL-TUL-DEN-SLC-LAX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BHM-MDW-PVD-BWI-CMH-LAS-PHX-SNA-SMF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "HOU-MSY-BNA-CLE-STL-MCI-SAT-PHX-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ORF-BWI-BUF-MDW-MCI-DAL-HOU-ECP-MCO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MSP-STL-MDW-ORF-BWI-TPA-AUS-LAS-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "FLL-MCO-ECP-BNA-MDW-MSP-DEN-ABQ-DAL",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-CMH-STL-ICT-PHX-SFO-BUR-LAS-BHM",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CLE-MDW-AUS-DAL-LBB-LAS-BUR-OAK-GEG",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "PVD-BWI-FLL-TPA-HOU-DAL-OKC-DEN-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ELP-SAT-DAL-TPA-MDW-BNA-PNS-HOU-CRP",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "LIT-DAL-AUS-LAX-OAK-PDX-SLC-LAS-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-MCO-HOU-HRL-AUS-DAL-TUL-STL-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "AMA-DAL-STL-OMA-LAS-PHX-ONT-SMF-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "PBI-BWI-MDW-AUS-DAL-ABQ-PHX-ONT-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCO-BWI-MSY-HOU-DAL-TUL-DEN-LAS-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SJC-SNA-PHX-SAT-DAL-LIT-STL-MDW-OMA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "GSP-BWI-ORF-TPA-HOU-DAL-MCI-MDW-MSP",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CMH-BNA-MCI-MDW-DAL-HOU-TUL-PHX-RNO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DTW-MDW-STL-DAL-AUS-PHX-SFO-LAX-ABQ",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "EWR-MDW-STL-MSY-FLL-JAX-BNA-HOU-ABQ",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "PDX-RNO-SAN-ABQ-DAL-SAT-ELP-LAX-OAK",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BDL-BWI-MCO-MSY-DAL-TUL-DEN-PHX-SNA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "PVD-BWI-IND-MDW-PHX-SNA-OAK-RNO-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ATL-HOU-DAL-OKC-DEN-MCI-OAK-ONT-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ELP-HOU-BNA-MCI-DAL-SAT-PHX-SNA-OAK",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "HOU-JAN-MDW-STL-SEA-SMF-SNA-LAS-RNO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ICT-STL-ATL-MSY-FLL-MCO-BHM-MDW-MSP",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BNA-MCI-ABQ-TUS-LAX-OAK-SEA-GEG-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-DTW-MDW-MCI-DAL-ABQ-SAN-SMF-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CRP-HOU-OKC-MCI-BWI-BUF-PHX-BUR-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DAL-ABQ-DEN-BNA-JAX-TPA-MSY-HOU-TUL",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DCA-ATL-RDU-BWI-BHM-DAL-SAT-LAS-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "RIC-ATL-STL-DAL-AMA-LAS-BOI-OAK-LAX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BNA-FLL-JAX-MDW-MSP-DEN-PDX-SMF-LAX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "PVD-BWI-BHM-HOU-AUS-LBB-ABQ-TUS-LAX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "GSP-BWI-ALB-MDW-STL-HOU-LAS-OAK-LAX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "HOU-MSY-TPA-PBI-BWI-STL-PHX-SAN-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MCI-BWI-CLE-MDW-MSP-DEN-AMA-DAL-HOU",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SDF-STL-HOU-HRL-SAT-DAL-ABQ-SAN-SMF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CMH-BWI-MSY-MCO-RIC-ATL-AUS-LAS-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MKE-MCI-ABQ-ELP-AUS-HOU-JAN-MDW-CMH",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "RDU-BNA-AUS-MSY-STL-DEN-SLC-LAS-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DAL-MCI-MDW-CHS-HOU-PHX-SFO-SNA-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ORF-JAX-DEN-SLC-SEA-SMF-BUR-LAS-GEG",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "HRL-HOU-JAN-MCO-STL-MDW-MSP-DEN-TUS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MAF-HOU-BNA-TPA-SAT-PHX-SLC-OAK-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-CMH-MDW-MCI-DAL-HOU-MSY-BNA-DTW",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-JAX-FLL-HOU-DAL-LIT-LAS-SJC-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "CLE-BNA-MSY-DAL-STL-MDW-RDU-BWI-SAT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ISP-BWI-MSY-HOU-AUS-DEN-LAS-LAX-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-BNA-ECP-HOU-DAL-AMA-DEN-LAS-SAN",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ISP-BWI-MSY-ATL-JAX-BNA-MDW-LAS-SMF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MHT-PHL-JAX-TPA-MSY-DAL-SAT-LAX-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SDF-BWI-PIT-TPA-MCI-DEN-SLC-BOI-GEG",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ISP-BWI-BNA-HOU-HRL-SAT-DAL-MCI-TPA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-RDU-STL-LIT-DAL-HOU-BNA-MDW-CLE",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SAT-ELP-PHX-LAS-SJC-SAN-HOU-MSY-MCO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MSY-HOU-DAL-LIT-MDW-BUF-BWI-ORF-MCO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "SLC-PHX-AUS-DAL-BHM-BNA-MCI-SMF-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "ELP-DAL-OKC-HOU-STL-MSP-MCI-PHX-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MSY-TPA-CMH-MDW-MSP-PHX-BUR-OAK-BOI",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "FLL-MCO-MSY-BHM-TPA-ORF-BWI-OKC-DAL",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "AUS-MDW-DTW-BWI-MCO-STL-OMA-DEN-ABQ",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "STL-BNA-AUS-DAL-LIT-BWI-ORF-ATL-SDF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "GSP-BWI-ISP-MDW-LAS-RNO-SJC-ONT-PHX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-CMH-BWI-LIT-DAL-ABQ-SAN-OAK-SEA",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BDL-BWI-STL-DAL-LIT-MDW-MSP-PHX-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "AUS-BNA-PIT-MDW-CVG-MCO-MSY-DAL-LBB",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-BNA-ECP-HOU-DAL-AMA-DEN-LAS-ONT",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "IAD-MDW-MCI-OKC-HOU-AUS-ELP-ABQ-DAL",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "RDU-MCO-STL-MSP-DAL-LBB-LAS-LAX-AUS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MHT-BWI-JAX-TPA-STL-OKC-DEN-LAS-BUR",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-CMH-BWI-RDU-BNA-HOU-ELP-PHX-SJC",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-LIT-DAL-ABQ-DEN-SLC-PHX-SAN-SMF",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BOS-BWI-CHS-BNA-MSY-DAL-MCI-PDX-LAS",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "DAL-OKC-DEN-LAS-SEA-SMF-ONT-PHX-ABQ",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "OMA-DEN-BOI-LAS-ABQ-DAL-AUS-PHX-PDX",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "RDU-BWI-DTW-MDW-MCI-DAL-ELP-LAS-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "BWI-PBI-TPA-BNA-HOU-ELP-LAS-SAN-SFO",
+      "recurrence_count": 1
+    },
+    {
+      "Route": "MDW-CLE-BNA-JAX-HOU-OKC-DAL-LAX-PHX",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "STL-DAL-ABQ-PHX-BUR-OAK-LAS-DEN-OKC",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "MCO-ATL-CLE-BWI-RDU-TPA-FLL-DAL-HOU",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "HRL-HOU-BWI-RDU-TPA-ATL-DAL-ABQ-OAK",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "SAT-ATL-JAX-DAL-MAF-LAS-RNO-LAX-OAK",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "DAL-MSY-TPA-RDU-BNA-MDW-MCI-OAK-LAS",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "MCO-PHL-STL-LIT-PHX-SMF-PDX-LAS-OAK",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "BWI-BOS-STL-DAL-MCI-PDX-RNO-OAK-BUR",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "TPA-JAX-ORF-BNA-DTW-STL-DEN-SLC-OAK",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "PVD-BWI-FLL-JAX-HOU-ABQ-TUS-LAX-SFO",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "STL-MCO-RDU-MDW-MCI-OKC-PHX-LAS-PDX",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "LAS-RNO-BOI-GEG-SEA-DEN-AMA-DAL-HOU",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "LGA-BWI-BNA-LAX-OAK-SEA-GEG-PDX-LAS",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "ISP-BWI-ECP-HOU-DAL-OKC-DEN-LAS-RNO",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "PWM-BWI-MSP-MDW-STL-PHX-SLC-LAS-SAT",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "DEN-LAS-LAX-ELP-AUS-SJC-ONT-PHX-SEA",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "BDL-TPA-SDF-BWI-ECP-DAL-ELP-LAS-LAX",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "DAY-DEN-SJC-ONT-PHX-TUL-DAL-LAS-SMF",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "CMH-TPA-ISP-BWI-CLT-DAL-MSY-DEN-GEG",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "DCA-IND-MCI-STL-DAL-HOU-MSY-MCO-PVD",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "MHT-PHL-TPA-MSY-DAL-TUL-PHX-SAN-OAK",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "BOS-BWI-CHS-BNA-STL-DEN-SNA-LAS-PDX",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "STL-BWI-CMH-MDW-BNA-HOU-ELP-LAX-PHX",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "SDF-MDW-MCI-DAL-AUS-SJC-SNA-LAS-ABQ",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "CRP-HOU-DAL-OKC-BWI-CLE-ATL-LAS-SMF",
+      "recurrence_count": 2
+    },
+    {
+      "Route": "SJC-SAN-ABQ-DAL-TUL-DEN-SLC-LAX-OAK",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "FLL-MCO-ECP-HOU-DAL-ELP-PHX-SLC-OAK",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "DEN-SFO-LAS-PHX-SAN-BOI-GEG-SJC-ONT",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BWI-FLL-BNA-DCA-MDW-OMA-DAL-LAS-LAX",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PIT-BWI-RDU-FLL-TPA-CMH-MDW-STL-DAL",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BDL-BWI-BNA-BHM-DAL-AUS-PHX-ONT-OAK",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "SAT-MDW-ABQ-HOU-OKC-DAL-AUS-DEN-BOI",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "TUL-HOU-MSY-DAL-ABQ-DEN-MCI-ATL-RIC",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "SDF-BWI-ALB-TPA-BHM-DAL-ABQ-LAS-TUS",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "MDW-BWI-LIT-DAL-TUL-DEN-SLC-OAK-SNA",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BDL-BWI-RDU-MCO-MKE-MSP-MCI-DAL-MSY",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PDX-SJC-LAS-BOI-GEG-SMF-ONT-PHX-SLC",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PHL-MCO-SAT-SAN-OAK-SLC-LAS-LAX-ABQ",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "TUS-SAN-SMF-PDX-PHX-SNA-OAK-RNO-LAS",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "MCO-SAT-DAL-OKC-DEN-SEA-OAK-ONT-PHX",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "GRR-BWI-ORF-MCO-SAT-DAL-MCI-BNA-EWR",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "RDU-BWI-CLE-MDW-STL-DAL-SAT-ELP-PHX",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "MKE-BNA-ECP-HOU-MSY-STL-DEN-SAN-SJC",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "TPA-BNA-CLE-BWI-LIT-DAL-ABQ-LAS-SEA",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "SDF-MDW-MCI-PHX-SAN-SMF-PDX-LAS-ONT",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BWI-ATL-MSP-STL-DAL-SLC-SJC-SNA-PDX",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "CLE-MDW-RDU-BWI-RSW-STL-OMA-LAS-RNO",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "CLE-MDW-BNA-STL-BHM-TPA-JAX-BWI-SDF",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PIT-TPA-BNA-STL-DSM-PHX-LAS-DAL-MAF",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BOS-CMH-STL-SAT-HOU-PHX-ONT-OAK-GEG",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PVD-BWI-MCO-MSY-HOU-ELP-LAS-RNO-SEA",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "OKC-STL-DTW-DAL-TUL-HOU-PNS-BNA-MDW",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "FLL-ALB-BWI-STL-PDX-OAK-LAX-LAS-RNO",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PWM-BWI-CHS-HOU-MSY-CMH-PHX-LAX-SMF",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BWI-MDW-TPA-MSY-DAL-LBB-LAS-SAN-SFO",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "PHX-SLC-DEN-SAT-DAL-MSY-LAS-SAN-SMF",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "DTW-MDW-SDF-TPA-MSY-SAT-ELP-PHX-SJC",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "BWI-PVD-PHL-HOU-DAL-LBB-LAS-SAN-TUS",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "IND-RSW-BWI-RDU-MSY-AUS-DAL-OAK-LAS",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "FLL-JAX-BNA-MDW-DTW-PHX-OAK-LAS-DEN",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "ATL-BWI-CHS-BNA-TPA-DAL-MCI-DEN-ONT",
+      "recurrence_count": 3
+    },
+    {
+      "Route": "FLL-MCO-PHL-MDW-DEN-LAX-TUS-LAS-OAK",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "PVD-MCO-STL-OMA-DAL-SJC-SAN-LAS-SFO",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MCO-RDU-BWI-PIT-STL-SAN-ELP-PHX-LAS",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MSY-DAL-OKC-DEN-SEA-SMF-LAX-LAS-TUS",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ISP-BWI-BUF-MCO-RSW-STL-MCI-LAX-OAK",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MDW-BNA-ECP-HOU-DAL-SAT-SAN-OAK-SEA",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "OMA-MDW-BNA-MSY-HOU-SAT-SAN-SMF-PDX",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ORF-MDW-MCI-MSP-OAK-SNA-PHX-LAS-BOI",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "PBI-BWI-MDW-AUS-HRL-HOU-DEN-PHX-LAS",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "BHM-DAL-MAF-LAS-SLC-DEN-MCI-MDW-SDF",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MHT-BWI-RDU-MCO-CMH-DEN-LAS-RNO-PDX",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "RDU-BNA-MCI-IND-DEN-SLC-LAS-SMF-SAN",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "CLE-FLL-HOU-DAL-ELP-PHX-SNA-LAS-MCI",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MDW-CMH-STL-TUL-DAL-HOU-ATL-BWI-CLE",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "HOU-DAL-SAT-LAX-PHX-SLC-PDX-SMF-SAN",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ALB-BWI-TPA-SDF-STL-OKC-DEN-SAN-SJC",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ELP-HOU-DAL-LBB-LAS-SNA-SFO-PHX-DEN",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "FLL-MCO-ECP-HOU-DAL-ELP-SAN-SJC-PDX",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ISP-BWI-JAX-BHM-MSY-HOU-LAS-BUR-SJC",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MCO-MDW-MSP-DEN-OKC-DAL-AUS-SAN-SJC",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "CMH-BNA-JAX-BWI-BHM-DAL-OKC-LAS-SMF",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "BHM-DAL-STL-BNA-MCO-AUS-DEN-SMF-LAS",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MEM-MCO-RDU-MSY-SAT-DAL-ABQ-LAS-BOI",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MAF-DAL-TUL-DEN-ABQ-ELP-HOU-MSY-TPA",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MSY-ATL-PIT-MCO-HOU-AMA-DAL-SAT-ELP",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MCI-BNA-RDU-BWI-DTW-MDW-DAL-HOU-CRP",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "RDU-BNA-AUS-DEN-SLC-PHX-SJC-LAX-ELP",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "DTW-BNA-HOU-DAL-MCI-PDX-GEG-OAK-BUR",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ALB-BWI-RDU-MDW-BHM-STL-LAX-SJC-RNO",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "CMH-MDW-MCI-TUL-HOU-MSY-TPA-JAX-ORF",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "HOU-ATL-RDU-DAL-BUR-LAS-RNO-OAK-PDX",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "MSY-HOU-ELP-LAS-ONT-OAK-ABQ-PHX-SJC",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "LBB-DAL-HOU-MSY-MDW-SAN-SFO-LAS-PHX",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "BWI-BOS-MDW-STL-DAL-AUS-LAS-BUR-SJC",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "TPA-HOU-ATL-RDU-BNA-LAX-SMF-LAS-ELP",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "PDX-RNO-SAN-PHX-BOI-GEG-OAK-BUR-LAS",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "BNA-MSY-AUS-ELP-PHX-SAN-SMF-SEA-LAS",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "PHL-CMH-BNA-HOU-MSY-TPA-JAX-ORF-BWI",
+      "recurrence_count": 4
+    },
+    {
+      "Route": "ISP-TPA-MSY-DAL-AUS-ATL-MDW-SJC-PHX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "PBI-TPA-RDU-MDW-ALB-BWI-DEN-LAX-SFO",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "BOS-CMH-ATL-JAX-HOU-AUS-DAL-MSY-DCA",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "AMA-DAL-AUS-ELP-LAS-SMF-BUR-PHX-BWI",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "DTW-STL-HOU-DAL-TUL-DEN-LAS-OAK-SEA",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "BDL-BWI-SDF-MDW-PHL-DEN-PHX-LAS-ABQ",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MCI-DAL-OKC-PHX-SAN-OAK-SLC-DEN-MKE",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MHT-MCO-MSY-HOU-DAL-TUL-DEN-LAS-PHX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "DAL-AMA-DEN-BOI-PDX-GEG-SEA-SMF-LAX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "JAX-BNA-MCI-DEN-LAX-LAS-RNO-OAK-SNA",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "AUS-LBB-ELP-PHX-ONT-OAK-RNO-BOI-GEG",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "PVD-BWI-SDF-DEN-SAT-HOU-MSY-STL-MDW",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "BWI-CHS-BNA-TPA-MSY-DAL-ELP-LAS-LAX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "DTW-BWI-MCO-STL-MCI-DEN-SLC-LAS-LAX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "HOU-ABQ-PHX-SAN-LAS-GEG-BOI-OAK-ONT",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MSP-MDW-CMH-BWI-BDL-LAS-SNA-SFO-PHX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "ORF-MCO-MSY-HOU-SAN-SJC-SNA-LAS-DEN",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MCI-MSP-MDW-LIT-DAL-ELP-PHX-LAS-RNO",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MCO-PVD-BWI-BNA-ECP-DAL-SAT-LAS-GEG",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "PVD-PHL-JAX-TPA-MSY-DAL-ABQ-SAN-SJC",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "AUS-DEN-PHX-OKC-DAL-LBB-LAS-SJC-SAN",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "PBI-ISP-BWI-JAX-ATL-MCI-PHX-BUR-OAK",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "CMH-BWI-CLT-DAL-ABQ-PHX-PDX-SMF-ONT",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "BUF-BWI-ATL-STL-LIT-DAL-MSY-TPA-BHM",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "TUL-STL-MSY-HOU-DAL-ABQ-TUS-SAN-SJC",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MEM-TPA-PHL-BNA-MSY-SAT-ELP-PHX-ABQ",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "ISP-BWI-RDU-DEN-OAK-LAS-PHX-BUR-SJC",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "CMH-MCO-ALB-BWI-STL-MDW-RDU-BNA-MSP",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "MCO-BHM-DAL-TUL-DEN-TUS-SAN-RNO-PDX",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "DAL-ELP-LAS-BOI-DEN-ABQ-TUS-LAX-OAK",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "PVD-BWI-RDU-BNA-MSY-HOU-SAT-PHX-SLC",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "FNT-MDW-BNA-CHS-BWI-MCI-MSP-MKE-BOS",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "DAL-MSY-TPA-RDU-BNA-MDW-MCI-OAK-SEA",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "PVD-BWI-CMH-MDW-BUF-FLL-TPA-MSY-DAL",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "DTW-MCO-BHM-DAL-MSY-TPA-STL-PHX-DEN",
+      "recurrence_count": 5
+    },
+    {
+      "Route": "BWI-BOS-ATL-HOU-DAL-MAF-LAS-SAN-RNO",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "FLL-MCO-DAL-LIT-PHX-SNA-SJC-DEN-OMA",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "DTW-MDW-STL-OKC-DAL-ELP-PHX-ONT-OAK",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "TPA-CMH-MDW-ATL-AUS-DAL-ABQ-PHX-OAK",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "LAX-OAK-PDX-GEG-BOI-RNO-LAS-ONT-SMF",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "ORF-BWI-STL-SAT-DEN-SEA-OAK-PHX-SLC",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "FLL-MCO-ECP-HOU-DAL-STL-MSP-DEN-SAN",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "MCO-MDW-LIT-DAL-ABQ-OAK-SLC-LAS-LAX",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "BOS-CMH-DCA-MDW-STL-DEN-SAT-LAX-LAS",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "AUS-DEN-SJC-ONT-PHX-BOI-GEG-OAK-BUR",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "MHT-BWI-ORF-MCO-STL-DEN-SLC-LAS-ONT",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "MHT-BWI-IND-MCO-ATL-MCI-SAT-BNA-MKE",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "MCO-MDW-BNA-ECP-HOU-DAL-TUL-DEN-GEG",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "BHM-HOU-MAF-LAS-BUR-SMF-BOI-DEN-TPA",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "MCI-STL-SDF-TPA-FLL-MSY-HOU-PHX-SMF",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "BOS-BWI-GSP-MCO-SAT-DAL-OKC-PHX-ABQ",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "MSY-TPA-IAD-MDW-SDF-BHM-HOU-ABQ-PHX",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "PIT-MCO-STL-TUL-MDW-DTW-BWI-FLL-IND",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "TPA-BWI-DTW-MDW-MCI-DAL-HOU-ATL-ORF",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "BUF-BWI-RSW-STL-MCI-OKC-HOU-DAL-ABQ",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "JAN-HOU-SAN-SJC-PHX-BOI-GEG-OAK-SNA",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "DAL-TPA-SDF-PHX-LAX-SMF-LAS-BUR-OAK",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "BUF-BWI-BOS-ATL-DAL-LAS-SAN-SMF-BOI",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "DAL-STL-MDW-DTW-BWI-MCO-ABQ-LAS-SFO",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "FLL-ATL-MDW-BDL-BWI-CLE-BNA-HOU-ELP",
+      "recurrence_count": 6
+    },
+    {
+      "Route": "BOS-BWI-DTW-MDW-BNA-DAL-SAT-ATL-IAD",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "GEG-SEA-SMF-ONT-PHX-SLC-BOI-LAS-TUS",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "BWI-BNA-STL-DEN-ABQ-ELP-AUS-SAN-SJC",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "FLL-MCO-ECP-HOU-DAL-LIT-BWI-LAS-SAN",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "LAX-ABQ-DAL-MSY-BNA-SAT-PHX-ONT-SMF",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "CMH-BNA-PNS-HOU-DAL-DEN-SNA-SMF-PDX",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "AUS-BNA-TPA-SAT-DAL-ABQ-SAN-OAK-SEA",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "PVD-BWI-MSY-HOU-AUS-DEN-LAS-SAN-SFO",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "ELP-SAT-DAL-AMA-DEN-SAN-OAK-SLC-PHX",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "ROC-BWI-DTW-DAL-ABQ-DEN-SLC-PHX-SFO",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "TUL-HOU-AUS-DAL-STL-BWI-TPA-FLL-MDW",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "DTW-MDW-GSP-BNA-DEN-OAK-RNO-LAS-PHX",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "MSY-DAL-MCO-FLL-BNA-CLE-MKE-DEN-LAX",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "AMA-DAL-MSY-MCI-DEN-PDX-SMF-LAS-AUS",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "MKE-BWI-PIT-HOU-DAL-AUS-MSY-FLL-ISP",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "ATL-TPA-BUF-BWI-DAL-SNA-LAS-PHX-OAK",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "MCI-DAL-AUS-PHX-BUR-SMF-SEA-LAS-SFO",
+      "recurrence_count": 7
+    },
+    {
+      "Route": "BUF-MCO-ECP-BNA-MDW-PDX-GEG-SEA-SMF",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "AUS-HOU-JAN-MDW-PIT-PHX-SAN-SMF-PDX",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "SAT-STL-CLE-BWI-OKC-PHX-LAS-SFO-SNA",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "RNO-LAS-SFO-DEN-DAL-HOU-ELP-LAX-SMF",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "DAL-MSY-FLL-JAX-ORF-BNA-LAS-SAN-OAK",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "CRP-HOU-DAL-ABQ-SEA-SLC-LAS-PHX-AUS",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "MDW-BHM-MSY-HOU-AUS-LBB-ABQ-TUS-LAX",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "RSW-MCO-RDU-BWI-SDF-MDW-STL-HOU-MSY",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "ONT-DEN-MCI-BNA-HOU-DAL-SAT-LAS-SFO",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "PNS-BNA-STL-LIT-DAL-MCI-IND-MCO-BWI",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "ATL-DCA-STL-DAL-TUL-PHX-SNA-SJC-LAS",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "DTW-BNA-MSY-DAL-HOU-TPA-ATL-STL-ICT",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "OKC-HOU-DAL-STL-MSP-MDW-ABQ-OAK-GEG",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "MSY-MCO-PIT-MDW-STL-DAL-ELP-PHX-SEA",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "BWI-FLL-TPA-ATL-MSP-MDW-DTW-STL-MCI",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "ISP-BWI-CHS-BNA-MSY-DAL-MCI-PDX-LAS",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "MCO-HOU-MSY-FLL-TPA-IND-MDW-MCI-DAL",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "FLL-BWI-CLE-MDW-SLC-GEG-SEA-SJC-LAS",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "FLL-BNA-CMH-MDW-STL-DAL-ELP-LAX-OAK",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "CLE-BNA-MDW-MSP-PHX-BUR-SMF-LAS-STL",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "STL-DEN-MSP-MDW-GRR-BWI-RDU-ATL-DCA",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "MKE-ATL-BNA-MSY-STL-DEN-SLC-LAX-PHX",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "STL-MSP-DEN-TUL-LAS-RNO-SJC-SAN-PHX",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "IND-ATL-DEN-STL-OMA-PHX-OAK-LAX-TUS",
+      "recurrence_count": 8
+    },
+    {
+      "Route": "MHT-TPA-FLL-MSY-DAL-AUS-OAK-BUR-LAS",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "BWI-CMH-MDW-MCI-DEN-AUS-DAL-ABQ-SAN",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "CLE-STL-PHX-SAN-RNO-LAS-BUR-SMF-SEA",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "FLL-TPA-MCI-LAX-TUS-ABQ-LAS-ONT-OAK",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "MCO-BNA-STL-DAL-AMA-LAS-SAN-SMF-SEA",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "HOU-ABQ-LAX-OAK-BOI-GEG-SEA-SMF-ONT",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "PBI-TPA-JAX-BHM-DAL-ELP-SAN-OAK-PDX",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "PHL-PVD-MCO-JAN-HOU-PHX-BUR-OAK-BOI",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "DTW-BNA-PNS-HOU-BWI-GRR-MDW-DEN-PHX",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "TUS-DEN-MCI-DAL-ABQ-OAK-BUR-PHX-SEA",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "JAX-TPA-PIT-BWI-ORF-MDW-OMA-DEN-SMF",
+      "recurrence_count": 9
+    },
+    {
+      "Route": "MDW-STL-TUL-DAL-ABQ-LAS-ONT-SMF-PDX",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "PHL-BNA-MCI-DEN-OAK-LAS-TUS-SAN-RNO",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "MCI-DEN-SLC-BOI-RNO-LAS-PHX-ABQ-DAL",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "FLL-JAX-DEN-PDX-OAK-BUR-LAS-RNO-SAN",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "HOU-DAL-BHM-BNA-PHL-PIT-LAS-BUR-OAK",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "DTW-BWI-TPA-HOU-DAL-ELP-PHX-LAX-OAK",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "MSY-ATL-MSP-DEN-MCI-MDW-CLE-STL-BWI",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "BOI-GEG-LAS-DEN-OMA-PHX-LAX-SJC-SEA",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "MCO-BWI-RDU-DAL-MCI-MSP-PHX-LAS-SAN",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "MHT-BWI-SDF-MDW-DEN-SEA-SMF-SNA-SJC",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "RNO-LAX-SAT-DAL-TUL-DEN-ABQ-PHX-SMF",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "OKC-STL-ATL-TPA-FLL-BNA-CLT-BWI-PVD",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "MDW-BNA-MSY-DAL-AUS-PDX-OAK-LAX-SLC",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "MDW-MCI-DAL-ABQ-SEA-GEG-LAS-SAN-SFO",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "DTW-DEN-SNA-SJC-LAS-ICT-STL-MDW-BDL",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "PHL-RDU-BNA-BHM-DAL-ABQ-SLC-BOI-GEG",
+      "recurrence_count": 10
+    },
+    {
+      "Route": "PIT-BWI-TPA-HOU-DAL-AMA-DEN-LAS-ONT",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "DCA-MCO-MSY-HOU-DAL-ABQ-DEN-LAS-RNO",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "BHM-DAL-SAT-PHX-SMF-LAS-LAX-OAK-DEN",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "GSP-MDW-OKC-DAL-MSY-MCO-MKE-PHX-LAS",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "CVG-BWI-DTW-MDW-OMA-STL-MCO-ATL-IAD",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "MCO-BWI-DTW-MDW-SLC-GEG-SEA-SJC-LAX",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "LBB-ABQ-PHX-SAT-DAL-TUL-DEN-MDW-BUF",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "ISP-BWI-ORF-JAX-TPA-HOU-DAL-MCI-PDX",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "MAF-DAL-AUS-BNA-PHL-DEN-ABQ-LAS-OAK",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "PNS-BNA-CMH-BWI-RDU-TPA-BHM-DAL-LIT",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "ISP-BWI-ORF-TPA-MSY-LAS-LAX-PHX-SEA",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "LIT-STL-MDW-BWI-MCI-PDX-SJC-PHX-DEN",
+      "recurrence_count": 11
+    },
+    {
+      "Route": "JAX-ATL-MCI-IND-TPA-BWI-CMH-STL-HOU",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "JAX-TPA-PBI-ISP-BWI-CLE-BNA-PHX-SJC",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "AMA-DAL-AUS-DEN-ONT-OAK-SLC-LAS-LAX",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "HOU-STL-RDU-ATL-JAX-BWI-MSY-BNA-CLE",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "DTW-MDW-BHM-MSY-HOU-AUS-LBB-ABQ-PHX",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "MCO-HOU-SAT-SAN-TUS-LAS-OKC-DEN-PHX",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "MSY-HOU-TUL-DAL-MCI-STL-TPA-ATL-BWI",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "LIT-DAL-HOU-MCI-MDW-PHL-PHX-LAS-SJC",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "DTW-BWI-SDF-BHM-MCO-MDW-MSP-STL-DAL",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "TPA-RDU-BWI-BDL-RSW-CMH-BNA-MCI-MDW",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "FLL-TPA-STL-BOS-BWI-RDU-MCO-MSY-HOU",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "ISP-BWI-MDW-BNA-MSY-MCI-PHX-LAS-HOU",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "DCA-BNA-MSY-MDW-SDF-BWI-FLL-TPA-BHM",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "BWI-MKE-MSP-DEN-SAT-SAN-SMF-LAS-TUS",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "SMF-ONT-DAL-MCI-DEN-LAS-SJC-SAN-TUS",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "ATL-MDW-MSP-STL-DAL-SAT-BNA-DEN-ONT",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "SNA-DEN-TUL-DAL-ABQ-PHX-BUR-OAK-BOI",
+      "recurrence_count": 12
+    },
+    {
+      "Route": "CLE-BNA-MSY-DAL-AUS-PDX-OAK-LAX-SLC",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "RDU-BNA-AUS-DAL-LIT-BWI-ORF-ATL-SDF",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "BOS-BWI-AUS-PHX-LAS-BUR-SMF-SAN-DEN",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "IND-MCI-MSP-MCO-RDU-BWI-BHM-DAL-STL",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "EWR-BWI-MCI-DAL-ABQ-SEA-OAK-BUR-LAS",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "SAT-STL-CMH-ATL-JAX-BNA-MSY-LAS-GEG",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "OAK-LAS-DEN-AMA-DAL-ABQ-PHX-SAN-SMF",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "SAT-DAL-LIT-PHX-ABQ-DEN-SNA-SJC-PDX",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "MCO-ATL-CLE-MDW-STL-PDX-OAK-LAX-TUS",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "DEN-TUL-DAL-AUS-PHX-SAN-SMF-SEA-LAS",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "BWI-SDF-STL-MCI-DAL-ELP-PHX-RNO-PDX",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "TPA-CMH-STL-OMA-LAS-SFO-SNA-PHX-DEN",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "CLE-STL-MCI-DEN-LAS-SMF-LAX-PHX-HOU",
+      "recurrence_count": 13
+    },
+    {
+      "Route": "PHL-STL-DAL-ABQ-PHX-LAX-SMF-SEA-GEG",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "FLL-TPA-PHL-RDU-MCO-BHM-SDF-STL-TUL",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "BWI-BOS-MDW-MCI-PDX-SJC-RNO-LAX-OAK",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "MCO-BUF-MDW-MCI-DAL-HOU-MSY-BNA-DTW",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "ONT-OAK-BOI-PDX-SJC-SAN-TUS-ABQ-LAX",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "PVD-BWI-RDU-BNA-HOU-DAL-ELP-PHX-SFO",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "TUL-STL-MDW-PIT-PHL-BOS-DEN-LAS-PHX",
+      "recurrence_count": 14
+    },
+    {
+      "Route": "MEM-TPA-MHT-BWI-DTW-MDW-MCI-PHX-BUR",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "BUF-BWI-RDU-BNA-HOU-DAL-ELP-PHX-SFO",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "IND-BWI-PVD-FLL-AUS-PHX-LAS-BUR-SMF",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MDW-CMH-BWI-LIT-DAL-ELP-PHX-SAN-SFO",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "BWI-BOS-MDW-BHM-JAX-HOU-AUS-SJC-SNA",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "GRR-MDW-MCI-AUS-HOU-DAL-RDU-STL-DSM",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "PIT-MDW-MCI-OKC-HOU-BWI-DTW-DEN-ONT",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "LIT-HOU-BHM-BWI-RDU-DEN-PHX-LAX-SMF",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "SAT-DAL-LIT-STL-ABQ-SLC-LAS-PHX-OAK",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MDW-CLE-BWI-OKC-DAL-SAT-HOU-ABQ-PHX",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "HOU-DAL-MCI-MSP-STL-OMA-LAS-OAK-SAN",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "DAL-MCI-MDW-RNO-LAS-BOI-GEG-OAK-BUR",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "PVD-BWI-PIT-MDW-TPA-RDU-STL-DEN-BOI",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MDW-BNA-ECP-HOU-DAL-LBB-LAS-SMF-PDX",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "BWI-MCO-STL-DAL-AMA-DEN-LAX-SJC-SEA",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MCI-DAL-ELP-LAS-SEA-RNO-PHX-DEN-MSP",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MDW-DTW-STL-LIT-DAL-HOU-ECP-BWI-BOS",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MDW-DTW-STL-TUL-LAS-PHX-OAK-PDX-LAX",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "PIT-TPA-AUS-DAL-BHM-STL-PHX-SLC-OAK",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "PBI-ISP-BWI-JAX-TPA-CMH-MDW-STL-DAL",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "DTW-MDW-CMH-BWI-LIT-DAL-ABQ-LAS-SJC",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "MCO-BNA-MCI-DEN-BOI-GEG-LAS-ONT-PHX",
+      "recurrence_count": 15
+    },
+    {
+      "Route": "JAX-FLL-TPA-PIT-BWI-RDU-BNA-BHM-DAL",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "CLT-BWI-ROC-MCO-HOU-SAT-DEN-BUR-LAS",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "BDL-BWI-IND-MCI-LAX-OAK-SEA-GEG-PDX",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "PDX-SJC-SAN-DEN-TUL-DAL-SAT-LAS-OAK",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "MAF-DAL-AUS-HRL-HOU-LAS-SNA-SFO-MDW",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "CRP-HOU-OKC-MCI-IND-DEN-ABQ-LAS-RNO",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "GSP-BWI-BOS-MDW-BNA-HOU-PHX-LAX-SMF",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "TPA-FLL-BNA-DTW-MDW-JAN-HOU-OAK-PDX",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "IND-BWI-MSY-HOU-AUS-DEN-LAS-SAN-OAK",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "MCO-FLL-PVD-BWI-RDU-BNA-BHM-DAL-OKC",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "CVG-BWI-CLT-MDW-MCI-HOU-JAX-BNA-CMH",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "OMA-STL-DAL-BHM-BNA-MDW-LAX-OAK-LAS",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "SLC-DEN-ABQ-LAS-SAN-ELP-DAL-MSY-TPA",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "DAL-HOU-JAN-MCO-STL-MDW-MSP-DEN-TUS",
+      "recurrence_count": 16
+    },
+    {
+      "Route": "TPA-FLL-PHL-RDU-BWI-PIT-MDW-MCI-SAN",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "MSP-STL-DAL-ELP-SAN-LAS-RNO-SJC-ONT",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "BOI-SLC-PHX-AUS-DAL-AMA-DEN-SAN-LAS",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "TPA-JAX-BNA-MDW-DTW-PHX-OAK-LAS-DEN",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "BWI-BNA-MSY-DAL-OKC-LAS-SMF-ONT-PHX",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "LAX-DEN-OKC-DAL-SAT-LAS-SMF-BUR-PHX",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "ELP-SAT-DAL-BKG-MDW-ATL-LAS-SAN-PHX",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "MSP-STL-DAL-SAT-LAS-BUR-SMF-PDX-DEN",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "JAX-BNA-MDW-SLC-GEG-SEA-SMF-PHX-AUS",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "MSP-MCI-DAL-HOU-TUL-LAS-BOI-OAK-ONT",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "BUF-FLL-MSY-DAL-ABQ-OAK-ONT-LAS-SEA",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "ALB-MDW-DEN-PHX-BUR-OAK-RNO-BOI-GEG",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "BUF-BWI-MSY-DAL-ELP-PHX-SAN-SJC-PDX",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "SAT-DAL-STL-MSP-MDW-IND-LAS-SJC-ONT",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "AUS-HOU-BNA-STL-DEN-SEA-BOI-RNO-SJC",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "PBI-TPA-MDW-MCI-DAL-SAT-ELP-PHX-LAS",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "HOU-MCO-RDU-MDW-MCI-OKC-PHX-LAS-PDX",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "DAL-MSY-MCO-MDW-MSP-PHX-SAN-SJC-PDX",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "IND-BWI-ECP-HOU-DAL-ABQ-LAX-OAK-DEN",
+      "recurrence_count": 17
+    },
+    {
+      "Route": "AUS-ELP-ABQ-DEN-OKC-DAL-MSY-MCO-MCI",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "OMA-STL-DTW-BWI-BUF-TPA-BHM-HOU-SAT",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "DAL-STL-MSP-DEN-PHX-PDX-GEG-OAK-ONT",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "OAK-LAX-SAT-ELP-PHX-SAN-RNO-BOI-GEG",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "SLC-DEN-AUS-HOU-ELP-ABQ-PHX-LAS-SNA",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "CMH-MCO-BHM-DAL-LBB-LAS-ONT-OAK-GEG",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "TUS-ABQ-LAS-SMF-PDX-GEG-BOI-DEN-MCI",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "LAS-RNO-OAK-SNA-DEN-SLC-PHX-SAN-SFO",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "BOI-SEA-SJC-LAX-LAS-RNO-OAK-PHX-AUS",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "SDF-MDW-MCI-DAL-AMA-DEN-SLC-PHX-SFO",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "FLL-MCO-ECP-BNA-MDW-BUF-BWI-ISP-TPA",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "DCA-BNA-AUS-DEN-BOI-LAS-LAX-RNO-OAK",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "BWI-BOS-BNA-SAT-DAL-OKC-LAS-SMF-ONT",
+      "recurrence_count": 18
+    },
+    {
+      "Route": "JAX-TPA-AUS-DAL-ABQ-SLC-OAK-LAS-DEN",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "RDU-ATL-MSP-MKE-STL-SFO-PHX-SAN-OAK",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "MDW-LAS-PHX-AUS-DAL-OKC-DEN-LAX-SFO",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "MCO-RDU-BWI-CLE-MDW-MCI-DAL-MSY-TPA",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "STL-DEN-SLC-LAS-SJC-SNA-PHX-AUS-DAL",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "ALB-BWI-ORF-TPA-MDW-MCI-DAL-AUS-ELP",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "CLE-BNA-MSY-STL-MSP-MDW-JAN-HOU-DAL",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "TPA-FLL-PHL-RDU-MCO-HOU-ELP-PHX-RNO",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "CLE-BWI-CLT-BNA-MSY-STL-ATL-TPA-BUF",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "PIT-BWI-PBI-TPA-SDF-BHM-MCO-HOU-CRP",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "MCO-HOU-DAL-MCI-DEN-AUS-ELP-LAS-PHX",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "OKC-DAL-BHM-TPA-CMH-BWI-BOS-MKE-MSP",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "EWR-HOU-DAL-LBB-LAS-SNA-SFO-PHX-DEN",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "BOS-BWI-SDF-TPA-SAT-DAL-ABQ-SAN-SJC",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "ELP-AUS-HOU-JAX-BNA-MCI-SAN-PHX-ABQ",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "DAL-TUL-DEN-TUS-LAS-SLC-PDX-SJC-AUS",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "CLE-MDW-STL-PHX-LAX-ABQ-TUS-LAS-RNO",
+      "recurrence_count": 19
+    },
+    {
+      "Route": "PVD-BWI-IND-ATL-DCA-DAL-ABQ-LAS-DEN",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "TPA-HOU-ELP-AUS-LAS-BOI-SEA-SMF-SAN",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "TPA-BWI-GRR-MCO-MSY-DAL-AUS-LAS-SFO",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "RDU-BWI-PVD-PHL-HOU-DAL-LBB-LAS-SAN",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "MCI-DAL-SAT-SAN-PHX-GEG-BOI-OAK-ONT",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "RDU-TPA-CMH-MDW-HOU-SAT-STL-MCO-FLL",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "IAD-MDW-STL-BNA-HOU-HRL-SAT-DAL-LBB",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "DTW-MDW-MCI-STL-MSY-MCO-SAT-SAN-PHX",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "BNA-MDW-ISP-MCO-MSY-DAL-SAT-LAS-SJC",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "PDX-GEG-SEA-SLC-LAX-OAK-ABQ-PHX-SJC",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "OAK-SNA-PHX-ELP-DAL-SAT-LAX-LAS-TUS",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "TPA-JAX-ORF-BWI-STL-MCI-LAS-BUR-OAK",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "HRL-SAT-DAL-MSY-TPA-JAX-ORF-BWI-CLE",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "FLL-TPA-BNA-CLE-MDW-JAN-HOU-PHX-ONT",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "AUS-ATL-CAK-MCO-MSY-HOU-MCI-DEN-PDX",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "SLC-PHX-SAN-SMF-LAS-DEN-AMA-DAL-SAT",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "PHL-BNA-SAT-PHX-SEA-SMF-SAN-LAS-TUS",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "EWR-IND-TPA-DCA-BNA-MCI-ABQ-LAS-SAT",
+      "recurrence_count": 20
+    },
+    {
+      "Route": "SMF-BUR-LAS-DEN-OKC-DAL-AUS-LAX-OAK",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "BNA-STL-MSP-DEN-LAS-BOI-GEG-OAK-SAN",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "MCO-RDU-MDW-MCI-DEN-GEG-BOI-OAK-ONT",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "PVD-BWI-ORF-ATL-AUS-DAL-AMA-DEN-SLC",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "ROC-BWI-RSW-STL-MCI-MDW-DTW-DEN-GEG",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "DTW-STL-TUL-HOU-SAT-ELP-ABQ-DEN-BWI",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "PIT-BWI-JAX-FLL-PHL-MDW-SDF-STL-MCI",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "TPA-BNA-BWI-DEN-TUL-DAL-SAT-LAS-ONT",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "EWR-FLL-STL-DEN-OMA-DAL-ABQ-LAS-SMF",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "PHL-FLL-TPA-CMH-MDW-STL-OMA-DEN-ONT",
+      "recurrence_count": 21
+    },
+    {
+      "Route": "HRL-SAT-DAL-STL-MDW-BNA-RDU-BWI-PVD",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "MDW-BNA-ECP-HOU-DAL-ABQ-PDX-LAS-SNA",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "BOI-LAS-DEN-AMA-DAL-ABQ-OAK-SLC-PHX",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "MAF-DAL-AUS-LBB-ABQ-PHX-RNO-BOI-GEG",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "FLL-TPA-PVD-BWI-STL-DAL-ABQ-SAN-SMF",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "ORF-BWI-BNA-DEN-AMA-DAL-SAT-LAS-SNA",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "RDU-BWI-DTW-MDW-MCI-DAL-AUS-SAN-OAK",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "SAT-BNA-STL-ICT-PHX-ABQ-SAN-SJC-SEA",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "PHX-LAS-OAK-ABQ-DAL-AUS-DEN-SNA-SJC",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "BUF-BWI-BNA-BHM-DAL-AUS-PHX-ONT-OAK",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "DCA-ATL-CMH-LAS-PHX-BOI-OAK-LAX-ELP",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "FLL-JAX-ORF-ATL-HOU-DAL-TUL-STL-CMH",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "SJC-SAN-SAT-DAL-HOU-DEN-RNO-LAS-TUS",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "STL-BWI-PIT-MDW-MSY-HOU-SAN-LAS-AUS",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "HRL-HOU-DAL-ELP-PHX-LAS-RNO-OAK-LAX",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "FLL-TPA-PIT-MDW-STL-DAL-ELP-LAX-LAS",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "ELP-SAT-DAL-MCI-MDW-DTW-PHX-LAX-SFO",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "TPA-FLL-PHL-PVD-MCO-AUS-LAX-LAS-SEA",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "BWI-FLL-MCO-BNA-DAL-HOU-MSY-DEN-BOI",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "BOI-SEA-GEG-PDX-SMF-SAN-TUS-ABQ-HOU",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "BOS-BNA-ECP-STL-BWI-CVG-MDW-SLC-LAX",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "PHL-BNA-JAX-MDW-MCI-STL-ECP-HOU-PIT",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "CHS-BNA-RDU-PHL-TPA-FLL-JAX-BWI-ISP",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "PVD-FLL-MCO-ECP-HOU-DAL-STL-MDW-MHT",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "DTW-BNA-JAX-PHL-HOU-DAL-ELP-LAX-LAS",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "AUS-DAL-LIT-BWI-IND-MCI-PHX-LAS-OAK",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "TPA-FLL-BNA-DTW-BWI-RDU-LAS-BUR-SJC",
+      "recurrence_count": 22
+    },
+    {
+      "Route": "FLL-JAX-TPA-DEN-LAS-SJC-BUR-PHX-MDW",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "BOS-ATL-MSY-AUS-STL-MSP-MKE-BWI-PIT",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "TPA-RDU-BNA-SAT-HOU-DAL-MCI-MDW-SDF",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "AUS-LBB-ABQ-PHX-LAS-BOI-PDX-SMF-SAN",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "RDU-BWI-BUF-MDW-MCI-LAX-SMF-PHX-ABQ",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "SAT-DAL-TUL-MDW-BNA-GSP-BWI-AUS-LAS",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "ABQ-LAS-SNA-OAK-BOI-DEN-MCI-HOU-ELP",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "MDW-PHX-LAS-ABQ-DAL-HOU-PNS-BNA-RDU",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "ABQ-MDW-GSP-BNA-DEN-OAK-RNO-LAS-PHX",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "HRL-HOU-DAL-LIT-STL-MSP-DEN-LAX-OAK",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "ORF-BWI-DTW-MDW-ATL-MCO-CMH-BNA-JAX",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "BNA-MCO-BWI-CMH-MDW-MCI-PDX-SMF-PHX",
+      "recurrence_count": 23
+    },
+    {
+      "Route": "BWI-BOS-MDW-OMA-STL-MSP-MCI-DAL-LAS",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "MCO-MSY-HOU-DAL-LBB-LAS-ONT-SMF-PDX",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "OMA-STL-DEN-AMA-DAL-SAT-LAS-SNA-SJC",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "CLE-MDW-MCI-OKC-HOU-AUS-ELP-ABQ-DAL",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "PIT-PHL-DEN-SAT-DAL-AUS-OAK-BUR-LAS",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "PIT-MCO-MSY-DAL-MCI-PDX-SLC-LAS-SAN",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "BWI-CMH-STL-HOU-HRL-SAT-DAL-ABQ-SAN",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "MDW-BNA-HOU-DAL-MCI-PDX-GEG-OAK-BUR",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "BDL-FLL-TPA-BHM-DAL-ABQ-OAK-LAX-TUS",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "ELP-HOU-BNA-MSY-DAL-OKC-DEN-LAS-ONT",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "TPA-BHM-STL-MCI-DEN-PHX-SAN-OAK-SLC",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "MCI-STL-SDF-ATL-HOU-DAL-TUL-PHX-RNO",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "MDW-MCI-OKC-DAL-ABQ-DEN-LAS-ELP-AUS",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "BWI-MCO-MDW-MSP-STL-DAL-SAT-LAS-OAK",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "PVD-PHL-SAT-DAL-OKC-DEN-LAS-BUR-OAK",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "DAL-OKC-MCI-TPA-SAT-HOU-ABQ-PHX-OAK",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "BNA-MDW-OMA-STL-DEN-OAK-SAN-LAS-OKC",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "ATL-MSY-HOU-DAL-BNA-TPA-MHT-BWI-CLE",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "AMA-DAL-BHM-BNA-DEN-SEA-BOI-OAK-BUR",
+      "recurrence_count": 24
+    },
+    {
+      "Route": "BNA-RDU-BWI-ALB-MCO-BHM-MSY-DEN-OAK",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "FLL-TPA-BNA-RDU-BWI-PDX-SMF-LAX-DEN",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "PVD-TPA-MSY-DAL-LIT-LAS-BUR-OAK-PDX",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "DEN-BWI-BNA-MSY-DAL-OKC-PHX-LAX-SJC",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "MHT-BWI-CMH-MDW-TUL-DEN-SAT-LAS-OAK",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "STL-MDW-BWI-ECP-HOU-DAL-AUS-SJC-PDX",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "JAX-BNA-DTW-MDW-MCI-ABQ-PHX-SNA-SMF",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "DTW-STL-DAL-ELP-PHX-LAS-RNO-SJC-SAN",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "SAT-BNA-JAX-FLL-AUS-LBB-DAL-HOU-HRL",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "HOU-DAL-LIT-MDW-MSP-STL-BHM-TPA-FLL",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "SMF-SAN-ABQ-DEN-TUS-LAS-OAK-PDX-PHX",
+      "recurrence_count": 25
+    },
+    {
+      "Route": "BUF-BWI-MKE-MCO-FLL-MDW-OMA-DEN-SEA",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "MSP-MDW-IND-DEN-SLC-PHX-SAN-SMF-PDX",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "PIT-BWI-RDU-TPA-HOU-HRL-SAT-LAS-SLC",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "OAK-SEA-GEG-BOI-RNO-LAS-ELP-DAL-HOU",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "BDL-MCO-HOU-OKC-DEN-SEA-GEG-OAK-BUR",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "RDU-PHL-MCO-MSY-DAL-ABQ-LAS-SJC-AUS",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "SAT-DAL-MSY-MCO-RDU-BWI-DTW-DEN-GEG",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "MCI-MDW-PIT-BWI-CHS-BNA-SAT-DEN-PDX",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "CLE-BWI-IND-MCI-DAL-HOU-ECP-BNA-MDW",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "MDW-DTW-STL-LIT-DAL-MSY-FLL-BWI-IND",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "BWI-MDW-MSP-PHX-ABQ-OAK-ONT-LAS-SLC",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "BDL-BWI-SDF-MDW-PIT-HOU-SEA-SJC-LAX",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "ORF-BWI-CMH-STL-TUL-LAS-SNA-OAK-SLC",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "SNA-LAS-ELP-AUS-HOU-TUL-DAL-DEN-ONT",
+      "recurrence_count": 26
+    },
+    {
+      "Route": "PIT-PHL-RDU-BNA-HOU-ELP-LAS-SAN-SFO",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "FLL-ATL-RDU-BWI-CMH-PHX-LAS-ONT-OAK",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "PIT-MDW-IND-ATL-AUS-HOU-LAS-ONT-SMF",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "ATL-DAL-OKC-HOU-STL-MSP-MCI-PHX-SJC",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "DTW-BNA-MCI-MSP-MDW-MEM-DAL-HOU-CRP",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "STL-BWI-ISP-MDW-LAS-RNO-SJC-ONT-PHX",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "BWI-MCO-SDF-MDW-MCI-DEN-PHX-OAK-BOI",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "DTW-BWI-JAX-BNA-SAN-SJC-LAS-ELP-AUS",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "BWI-BOS-STL-DAL-ABQ-PDX-RNO-SJC-BUR",
+      "recurrence_count": 27
+    },
+    {
+      "Route": "SDF-BHM-DAL-MCI-IND-LAS-BOI-SEA-OAK",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "ICT-DAL-HOU-MDW-OMA-DEN-ABQ-LAS-BDL",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "OKC-DAL-BHM-MDW-OMA-LAS-SJC-LAX-SLC",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "FLL-MDW-PDX-SJC-BUR-LAS-ABQ-DEN-SLC",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "CLE-MDW-MCI-TUL-DAL-HOU-MCO-BWI-PIT",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "MHT-FLL-JAX-HOU-MSY-MCI-MSP-MKE-PHX",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "SEA-LAS-RNO-PHX-OKC-STL-SDF-MDW-DSM",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "ROC-BWI-RDU-DEN-OAK-LAS-PHX-BUR-SJC",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "MKE-PHX-SAT-DAL-AMA-DEN-SLC-LAS-LAX",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "HOU-BNA-MDW-DSM-LAS-PHX-ELP-DAL-MSY",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "SJU-FLL-MSY-DAL-AMA-LAS-SLC-DEN-SNA",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "ORF-BWI-MCO-GRR-MDW-MSP-STL-DAL-SAT",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "BWI-CMH-STL-HOU-JAN-MCO-ECP-BNA-MDW",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "MCO-HOU-TUL-PHX-OAK-RNO-LAS-SAN-SJC",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "MCO-BHM-SDF-MDW-MCI-OKC-PHX-LAS-SMF",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "MCO-MSY-BNA-DTW-MDW-MCI-DEN-LAS-ELP",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "SLC-DEN-OKC-DAL-AUS-LAX-RNO-BOI-GEG",
+      "recurrence_count": 28
+    },
+    {
+      "Route": "DAL-TUL-DEN-AUS-ELP-LAX-LAS-SEA-OAK",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "DAL-HOU-ATL-MDW-IND-DEN-ABQ-ELP-AUS",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "OKC-DAL-ICT-MDW-PHX-SMF-PDX-LAS-ABQ",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "DEN-MCI-OKC-DAL-BHM-MCO-SDF-MDW-OMA",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "MDW-CLE-BWI-MCO-MSY-DAL-AUS-SAN-SJC",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "DAL-AUS-HOU-JAX-FLL-TPA-MSY-BNA-BWI",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "PVD-PHL-BNA-MSY-STL-DEN-RNO-LAX-OAK",
+      "recurrence_count": 29
+    },
+    {
+      "Route": "GSP-BWI-CLE-MDW-STL-DAL-SAT-LAS-SJC",
+      "recurrence_count": 30
+    },
+    {
+      "Route": "ALB-BWI-GSP-MCO-MDW-DTW-BNA-MSY-FLL",
+      "recurrence_count": 30
+    },
+    {
+      "Route": "TUL-DAL-STL-MSP-MKE-MCO-SAT-PHX-ONT",
+      "recurrence_count": 30
+    },
+    {
+      "Route": "PHX-DEN-MCI-BNA-HOU-DAL-SAT-LAS-SFO",
+      "recurrence_count": 30
+    },
+    {
+      "Route": "SAT-STL-CMH-BWI-MCO-GSP-MDW-LAS-SMF",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "TUL-STL-DTW-BWI-MSY-LAX-OAK-RNO-PDX",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "ATL-HOU-DAL-STL-MSP-MDW-BNA-MCO-BUF",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "MAF-DAL-AUS-SAN-SJC-SEA-SLC-LAX-LAS",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "DCA-ATL-SAT-HOU-PNS-BNA-CHS-BWI-ORF",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "RDU-BNA-MCI-STL-MDW-PHL-DEN-LAS-ONT",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "BWI-MEM-DAL-ELP-LAX-OAK-SLC-LAS-ABQ",
+      "recurrence_count": 31
+    },
+    {
+      "Route": "BWI-CMH-MDW-BDL-TPA-FLL-MSY-DEN-OAK",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "RIC-ATL-MSP-DEN-OKC-DAL-ICT-MDW-SDF",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "MDW-DTW-STL-TUL-PHX-GEG-BOI-RNO-SAN",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "GRR-MDW-BNA-CHS-BWI-MCI-MSP-MKE-BOS",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "DTW-STL-TUL-DAL-PHX-ABQ-DEN-LAX-OAK",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "TPA-MDW-AUS-DAL-LBB-LAS-BUR-OAK-GEG",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "SJU-MCO-MSY-STL-PDX-SJC-SAN-PHX-SMF",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "BOS-IND-HOU-OKC-DAL-SNA-PHX-SMF-PDX",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "HRL-HOU-DAL-ELP-PHX-ONT-OAK-RNO-LAS",
+      "recurrence_count": 32
+    },
+    {
+      "Route": "MCO-BWI-GRR-STL-PHX-BOI-GEG-OAK-SNA",
+      "recurrence_count": 33
+    },
+    {
+      "Route": "CMH-BNA-MCI-OKC-DAL-SAT-SAN-OAK-SEA",
+      "recurrence_count": 33
+    },
+    {
+      "Route": "BUF-MDW-MCI-DEN-SAT-ELP-LAX-LAS-TUS",
+      "recurrence_count": 33
+    },
+    {
+      "Route": "PIT-MDW-MSP-STL-DAL-SAT-BNA-LAS-SAN",
+      "recurrence_count": 33
+    },
+    {
+      "Route": "DAL-HOU-ATL-ORF-JAX-BNA-RDU-BWI-PIT",
+      "recurrence_count": 33
+    },
+    {
+      "Route": "OKC-HOU-MSY-TPA-AUS-LAS-SFO-SAN-PHX",
+      "recurrence_count": 34
+    },
+    {
+      "Route": "PBI-TPA-MDW-MCI-OKC-PHX-SAN-OAK-SEA",
+      "recurrence_count": 34
+    },
+    {
+      "Route": "DEN-PHX-SAT-DAL-ABQ-LAX-RNO-BOI-GEG",
+      "recurrence_count": 34
+    },
+    {
+      "Route": "PHL-RDU-MDW-MCI-DAL-ELP-PHX-SLC-DEN",
+      "recurrence_count": 34
+    },
+    {
+      "Route": "OKC-DEN-SAT-DAL-BHM-BWI-CMH-STL-HOU",
+      "recurrence_count": 35
+    },
+    {
+      "Route": "LIT-STL-DTW-MDW-SEA-RNO-LAS-SNA-SJC",
+      "recurrence_count": 35
+    },
+    {
+      "Route": "HOU-DAL-OKC-DEN-BOI-LAS-TUS-SAN-SMF",
+      "recurrence_count": 36
+    },
+    {
+      "Route": "TPA-CMH-STL-DSM-LAS-BUR-SLC-DEN-CLE",
+      "recurrence_count": 36
+    },
+    {
+      "Route": "BWI-HOU-DAL-TUL-LAS-SFO-SNA-DEN-PDX",
+      "recurrence_count": 36
+    },
+    {
+      "Route": "JAX-TPA-BNA-CLE-MDW-MSP-DEN-AMA-DAL",
+      "recurrence_count": 36
+    },
+    {
+      "Route": "ICT-DAL-SJC-SAN-LAS-PDX-SMF-LAX-DEN",
+      "recurrence_count": 36
+    },
+    {
+      "Route": "SAN-DEN-AMA-DAL-MAF-LAS-PDX-SJC-ONT",
+      "recurrence_count": 37
+    },
+    {
+      "Route": "BWI-SDF-MDW-OMA-LAS-PDX-SLC-PHX-ONT",
+      "recurrence_count": 38
+    },
+    {
+      "Route": "RDU-BWI-BUF-MDW-BNA-MSY-PHX-LAS-BOI",
+      "recurrence_count": 38
+    },
+    {
+      "Route": "TPA-JAX-ORF-MDW-STL-ABQ-PHX-LAS-RNO",
+      "recurrence_count": 38
+    },
+    {
+      "Route": "DEN-MDW-PIT-TPA-MSY-PHX-SAN-SJC-PDX",
+      "recurrence_count": 39
+    },
+    {
+      "Route": "BNA-STL-OMA-MDW-CAK-DEN-SMF-PDX-LAS",
+      "recurrence_count": 39
+    },
+    {
+      "Route": "DAL-ELP-PHX-SAN-MCI-STL-MKE-LAS-RNO",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "MCO-BHM-MDW-STL-ECP-DAL-LAS-SFO-SNA",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "MSP-MDW-BWI-MCO-MSY-HOU-AUS-LAS-SFO",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "PHL-TPA-FLL-MSY-DAL-AUS-OAK-BUR-LAS",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "MCO-FLL-BNA-DTW-MDW-LIT-DAL-HOU-BWI",
+      "recurrence_count": 40
+    },
+    {
+      "Route": "ABQ-DAL-MEM-HOU-PDX-SMF-BOI-LAS-ONT",
+      "recurrence_count": 41
+    },
+    {
+      "Route": "FLL-JAX-IND-MDW-MCI-DAL-AUS-PHX-SJC",
+      "recurrence_count": 41
+    },
+    {
+      "Route": "TUL-DEN-AMA-DAL-STL-MDW-BUF-BWI-RDU",
+      "recurrence_count": 41
+    },
+    {
+      "Route": "IND-PHX-OAK-SEA-GEG-BOI-RNO-LAS-SAN",
+      "recurrence_count": 41
+    },
+    {
+      "Route": "PVD-BWI-TPA-MSY-DAL-TUL-PHX-LAS-OAK",
+      "recurrence_count": 42
+    },
+    {
+      "Route": "FLL-BNA-BWI-ORF-TPA-HOU-DAL-MCI-MDW",
+      "recurrence_count": 42
+    },
+    {
+      "Route": "SFO-LAX-ELP-DAL-OKC-DEN-LAS-BUR-SMF",
+      "recurrence_count": 43
+    },
+    {
+      "Route": "MDW-MCO-PVD-BWI-SLC-LAS-ONT-SJC-DEN",
+      "recurrence_count": 43
+    },
+    {
+      "Route": "LIT-STL-MDW-PIT-BWI-MCO-HOU-LAX-SJC",
+      "recurrence_count": 43
+    },
+    {
+      "Route": "OAK-LAX-SAT-DAL-TUL-DEN-ABQ-PHX-SMF",
+      "recurrence_count": 43
+    },
+    {
+      "Route": "SAT-ELP-LAX-SJC-RNO-SLC-ABQ-DAL-AUS",
+      "recurrence_count": 43
+    },
+    {
+      "Route": "BWI-ECP-HOU-DAL-AMA-DEN-SLC-LAS-SMF",
+      "recurrence_count": 44
+    },
+    {
+      "Route": "BDL-BNA-MSY-DAL-TUL-DEN-SAN-OAK-PDX",
+      "recurrence_count": 44
+    },
+    {
+      "Route": "LAS-BUR-OAK-DEN-OKC-DAL-AUS-PHX-SEA",
+      "recurrence_count": 44
+    },
+    {
+      "Route": "BWI-BHM-DAL-MSY-STL-DEN-SLC-SEA-PHX",
+      "recurrence_count": 45
+    },
+    {
+      "Route": "BWI-BOS-DEN-RNO-PDX-BOI-SLC-LAX-PHX",
+      "recurrence_count": 45
+    },
+    {
+      "Route": "MDW-PIT-BWI-RDU-MCO-SAT-ELP-LAX-OAK",
+      "recurrence_count": 46
+    },
+    {
+      "Route": "STL-DAL-ABQ-LAX-SJC-LAS-MAF-HOU-DEN",
+      "recurrence_count": 46
+    },
+    {
+      "Route": "ELP-SAT-DAL-OKC-DEN-SEA-SMF-ONT-PHX",
+      "recurrence_count": 46
+    },
+    {
+      "Route": "PIT-MCO-HOU-DEN-OKC-DAL-AUS-SJC-LAS",
+      "recurrence_count": 47
+    },
+    {
+      "Route": "LAS-PHX-OKC-DAL-BHM-BNA-MCI-SMF-PDX",
+      "recurrence_count": 47
+    },
+    {
+      "Route": "JAX-BNA-MDW-SLC-GEG-SEA-SMF-SAN-MCI",
+      "recurrence_count": 47
+    },
+    {
+      "Route": "MCO-AUS-ELP-LAS-SFO-SAN-TUS-ABQ-HOU",
+      "recurrence_count": 47
+    },
+    {
+      "Route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "recurrence_count": 47
+    },
+    {
+      "Route": "PHL-MDW-JAN-HOU-DAL-TUL-PHX-BUR-OAK",
+      "recurrence_count": 49
+    },
+    {
+      "Route": "RIC-ATL-OKC-DEN-PHX-LAS-BOI-OAK-ONT",
+      "recurrence_count": 50
+    },
+    {
+      "Route": "FLL-MCO-ECP-BNA-MDW-PDX-OAK-LAS-AUS",
+      "recurrence_count": 52
+    },
+    {
+      "Route": "BDL-BWI-PBI-TPA-STL-DEN-GEG-SEA-OAK",
+      "recurrence_count": 54
+    },
+    {
+      "Route": "HOU-STL-CMH-BWI-LIT-DAL-AUS-SJC-ONT",
+      "recurrence_count": 55
+    },
+    {
+      "Route": "PIT-TPA-MSY-DEN-SFO-SNA-LAS-SMF-PDX",
+      "recurrence_count": 56
+    },
+    {
+      "Route": "CMH-MDW-MCI-DAL-ELP-PHX-SNA-SJC-RNO",
+      "recurrence_count": 61
+    },
+    {
+      "Route": "FLL-JAX-IND-MDW-MCI-DAL-ABQ-LAX-SJC",
+      "recurrence_count": 99
+    }
+  ],
+  "row_count": 719,
+  "generated_at": "2026-03-25T21:17:52.363758Z",
+  "source_query_sha256": "4b3094e0331aa74902488f7b629b30be500e75437035f5e1e277578c02a7a944",
+  "log_comment": "qforge|question=q001|run=run-004|runner=claude|model=sonnet|phase=full|section=q1"
+}

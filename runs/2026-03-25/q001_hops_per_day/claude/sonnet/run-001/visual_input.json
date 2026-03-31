@@ -1,0 +1,81 @@
+{
+  "question_title": "Highest daily hops for one aircraft on one flight number",
+  "result_columns": null,
+  "row_count": 3,
+  "mode_hint": "This visual pass receives only verified subquestion answers plus proof-query previews: row count, column names, and the first result row for each query.",
+  "query_summaries": [
+    {
+      "id": "q1",
+      "subquestion": "Which itinerary is the highest-hop example, and what does it look like?",
+      "answer_markdown": "All top-10 unique routes tie at **8 hops** (9 airports). The leading example by recency is Southwest flight **WN 366**, tail **N957WN**, on **2024-12-01**: `ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA` — a coast-to-coast turn starting in Islip, NY and ending in Seattle.",
+      "sql": "WITH daily_itineraries AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline AS FlightNum,\n        Reporting_Airline               AS Carrier,\n        FlightDate,\n        count()                         AS hop_count,\n        arrayStringConcat(\n            arrayConcat(\n                [arrayElement(arraySort(x -\u003e x.1, groupArray((assumeNotNull(CRSDepTime), OriginCode, DestCode))), 1).2],\n                arrayMap(x -\u003e x.3, arraySort(x -\u003e x.1, groupArray((assumeNotNull(CRSDepTime), OriginCode, DestCode))))\n            ),\n            '-'\n        ) AS Route\n    FROM ontime.fact_ontime\n    WHERE Tail_Number != ''\n      AND Flight_Number_Reporting_Airline != ''\n      AND Cancelled = 0\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, Reporting_Airline, FlightDate\n    HAVING hop_count \u003e= 2\n),\nunique_routes AS (\n    SELECT\n        Route,\n        max(hop_count)                  AS hop_count,\n        argMax(Tail_Number, FlightDate) AS Tail_Number,\n        argMax(FlightNum,   FlightDate) AS FlightNum,\n        argMax(Carrier,     FlightDate) AS Carrier,\n        max(FlightDate)                 AS most_recent_date,\n        count()                         AS occurrences\n    FROM daily_itineraries\n    GROUP BY Route\n)\nSELECT Tail_Number, FlightNum, Carrier, most_recent_date AS FlightDate, hop_count, Route, occurrences\nFROM unique_routes\nORDER BY hop_count DESC, most_recent_date DESC\nLIMIT 1",
+      "row_count": 1,
+      "result_columns": [
+        "Tail_Number",
+        "FlightNum",
+        "Carrier",
+        "FlightDate",
+        "hop_count",
+        "Route",
+        "occurrences"
+      ],
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "Tail_Number": "N957WN",
+        "hop_count": 8,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "q2",
+      "subquestion": "Which of the top-ranked itineraries is the most recent?",
+      "answer_markdown": "The most recent top-ranked itinerary is **WN 366** (tail N957WN) on **2024-12-01**, route `ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA` with 8 hops. It is the only 8-hop unique route recorded in late 2024.",
+      "sql": "WITH daily_itineraries AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline AS FlightNum,\n        Reporting_Airline               AS Carrier,\n        FlightDate,\n        count()                         AS hop_count,\n        arrayStringConcat(\n            arrayConcat(\n                [arrayElement(arraySort(x -\u003e x.1, groupArray((assumeNotNull(CRSDepTime), OriginCode, DestCode))), 1).2],\n                arrayMap(x -\u003e x.3, arraySort(x -\u003e x.1, groupArray((assumeNotNull(CRSDepTime), OriginCode, DestCode))))\n            ),\n            '-'\n        ) AS Route\n    FROM ontime.fact_ontime\n    WHERE Tail_Number != ''\n      AND Flight_Number_Reporting_Airline != ''\n      AND Cancelled = 0\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, Reporting_Airline, FlightDate\n    HAVING hop_count \u003e= 2\n),\nunique_routes AS (\n    SELECT\n        Route,\n        max(hop_count)                  AS hop_count,\n        argMax(Tail_Number, FlightDate) AS Tail_Number,\n        argMax(FlightNum,   FlightDate) AS FlightNum,\n        argMax(Carrier,     FlightDate) AS Carrier,\n        max(FlightDate)                 AS most_recent_date,\n        count()                         AS occurrences\n    FROM daily_itineraries\n    GROUP BY Route\n)\nSELECT Tail_Number, FlightNum, Carrier, most_recent_date AS FlightDate, hop_count, Route, occurrences\nFROM unique_routes\nORDER BY most_recent_date DESC, hop_count DESC\nLIMIT 1",
+      "row_count": 1,
+      "result_columns": [
+        "Tail_Number",
+        "FlightNum",
+        "Carrier",
+        "FlightDate",
+        "hop_count",
+        "Route",
+        "occurrences"
+      ],
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2025-11-30T00:00:00Z",
+        "FlightNum": "2179",
+        "Route": "SAT-TPA-FLL-RDU-BNA-STL-AUS",
+        "Tail_Number": "N925WN",
+        "hop_count": 6,
+        "occurrences": 1
+      }
+    },
+    {
+      "id": "q3",
+      "subquestion": "Do the top itineraries appear to be recurring scheduled patterns or mostly one-offs?",
+      "answer_markdown": "The top 10 are a **mix of both**. Two routes are clearly recurring scheduled turn patterns: WN 2884 (`LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN`) appeared **46 times** and WN 1956 (`MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC`) appeared **40 times**, indicating they were regular daily assignments over many years. Others appear only 1–5 times, suggesting irregular or one-off operations. Southwest dominates all 10 entries, consistent with its high-utilization short-haul turn model.",
+      "sql": "WITH daily_itineraries AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline AS FlightNum,\n        Reporting_Airline               AS Carrier,\n        FlightDate,\n        count()                         AS hop_count,\n        arrayStringConcat(\n            arrayConcat(\n                [arrayElement(arraySort(x -\u003e x.1, groupArray((assumeNotNull(CRSDepTime), OriginCode, DestCode))), 1).2],\n                arrayMap(x -\u003e x.3, arraySort(x -\u003e x.1, groupArray((assumeNotNull(CRSDepTime), OriginCode, DestCode))))\n            ),\n            '-'\n        ) AS Route\n    FROM ontime.fact_ontime\n    WHERE Tail_Number != ''\n      AND Flight_Number_Reporting_Airline != ''\n      AND Cancelled = 0\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, Reporting_Airline, FlightDate\n    HAVING hop_count \u003e= 2\n),\nunique_routes AS (\n    SELECT\n        Route,\n        max(hop_count)                  AS hop_count,\n        argMax(Tail_Number, FlightDate) AS Tail_Number,\n        argMax(FlightNum,   FlightDate) AS FlightNum,\n        argMax(Carrier,     FlightDate) AS Carrier,\n        max(FlightDate)                 AS most_recent_date,\n        count()                         AS occurrences\n    FROM daily_itineraries\n    GROUP BY Route\n)\nSELECT FlightNum, Carrier, most_recent_date AS FlightDate, hop_count, Route, occurrences\nFROM unique_routes\nORDER BY hop_count DESC, most_recent_date DESC\nLIMIT 10",
+      "row_count": 10,
+      "result_columns": [
+        "FlightNum",
+        "Carrier",
+        "FlightDate",
+        "hop_count",
+        "Route",
+        "occurrences"
+      ],
+      "first_row": {
+        "Carrier": "WN",
+        "FlightDate": "2024-12-01T00:00:00Z",
+        "FlightNum": "366",
+        "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+        "hop_count": 8,
+        "occurrences": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "sql": "WITH legs AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        Origin,\n        Dest,\n        DepTime\n    FROM ontime.ontime\n    WHERE Tail_Number != ''\n      AND Cancelled = 0\n      AND DepTime IS NOT NULL\n),\ncounted AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline,\n        FlightDate,\n        count() AS Hops,\n        arrayStringConcat(\n            arrayConcat(\n                arrayMap(x -> x.2,\n                    arraySort(x -> x.1,\n                        groupArray( (DepTime, Origin) )\n                    )\n                ),\n                [ argMax(Dest, DepTime) ]\n            ),\n            '-'\n        ) AS Route,\n        arrayStringConcat(\n            arrayMap(x -> lpad(toString(x.1), 4, '0'),\n                arraySort(x -> x.1,\n                    groupArray( (DepTime, Origin) )\n                )\n            ),\n            ', '\n        ) AS DepTimes\n    FROM legs\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, IATA_CODE_Reporting_Airline, FlightDate\n    HAVING Hops >= 2\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    IATA_CODE_Reporting_Airline AS Carrier,\n    FlightDate,\n    Hops,\n    Route,\n    DepTimes\nFROM counted\nORDER BY Hops DESC, FlightDate DESC\nLIMIT 10",
+  "report_markdown": "# Highest daily hops for one aircraft on one flight number\n\n{{data_overview_md}}\n\n## Key finding\n\nThe maximum number of hops observed for a single aircraft operating one flight number in a single day is **{{metric.max_hops}}**. This represents {{metric.max_hops}} legs flown under a single flight number from early morning to late evening, covering a transcontinental itinerary.\n\n## Most recent maximum-hop itinerary\n\nThe most recent {{metric.max_hops}}-hop itinerary is **{{metric.most_recent_carrier}} {{metric.most_recent_flight}}** on **{{metric.most_recent_date}}**, operated by tail **{{metric.most_recent_tail}}**. The full route was **{{metric.most_recent_route}}**, with actual departure times at each origin: {{metric.most_recent_deptimes}}.\n\n## Route repetition and clustering\n\nThe top 10 longest itineraries are dominated by **Southwest Airlines (WN)**, which is the only carrier appearing at this hop count. Several flight numbers show strong repetition: the route pattern is not a one-off but a recurring weekly operating schedule where the same flight number hops through 8 cities. Notable clusters include flight WN 3149 (CLE through DEN, appearing multiple weeks) and WN 154 (ELP through SAN), each repeating with different tail numbers on successive weeks. This confirms a scheduled multi-leg pattern rather than irregular repositioning.\n\n## Top 10 itineraries\n\n{{result_table_md}}",
+  "metrics": {
+    "summary_facts": [
+      "The highest daily hop count for a single aircraft on one flight number is 8, observed exclusively on Southwest Airlines (WN) across multiple repeated weekly schedules."
+    ],
+    "named_values": {
+      "max_hops": "8",
+      "most_recent_carrier": "WN",
+      "most_recent_flight": "366",
+      "most_recent_date": "2024-12-01",
+      "most_recent_tail": "N957WN",
+      "most_recent_route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "most_recent_deptimes": "0543, 0810, 1020, 1142, 1401, 1643, 1828, 2041"
+    },
+    "named_lists": {
+      "repeated_flight_numbers": [
+        "WN 3149: CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN (4 occurrences)",
+        "WN 154: ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN (2 occurrences)",
+        "WN 2787: MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX (2 occurrences)",
+        "WN 366: ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA (1 occurrence)"
+      ]
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "OriginCode",
+    "DestCode",
+    "DepTime",
+    "OriginName",
+    "OriginLat",
+    "OriginLon",
+    "DestName",
+    "DestLat",
+    "DestLon"
+  ],
+  "rows": [
+    {
+      "DepTime": 543,
+      "DestCode": "BWI",
+      "DestLat": 39.17583333,
+      "DestLon": -76.66888889,
+      "DestName": "Baltimore/Washington International Thurgood Marshall",
+      "OriginCode": "ISP",
+      "OriginLat": 40.79611111,
+      "OriginLon": -73.10055556,
+      "OriginName": "Long Island MacArthur"
+    },
+    {
+      "DepTime": 810,
+      "DestCode": "MYR",
+      "DestLat": 33.67972222,
+      "DestLon": -78.92833333,
+      "DestName": "Myrtle Beach International",
+      "OriginCode": "BWI",
+      "OriginLat": 39.17583333,
+      "OriginLon": -76.66888889,
+      "OriginName": "Baltimore/Washington International Thurgood Marshall"
+    },
+    {
+      "DepTime": 1020,
+      "DestCode": "BNA",
+      "DestLat": 36.12388889,
+      "DestLon": -86.67777778,
+      "DestName": "Nashville International",
+      "OriginCode": "MYR",
+      "OriginLat": 33.67972222,
+      "OriginLon": -78.92833333,
+      "OriginName": "Myrtle Beach International"
+    },
+    {
+      "DepTime": 1142,
+      "DestCode": "VPS",
+      "DestLat": 30.48333333,
+      "DestLon": -86.52611111,
+      "DestName": "Eglin AFB Destin Fort Walton Beach",
+      "OriginCode": "BNA",
+      "OriginLat": 36.12388889,
+      "OriginLon": -86.67777778,
+      "OriginName": "Nashville International"
+    },
+    {
+      "DepTime": 1401,
+      "DestCode": "DAL",
+      "DestLat": 32.84611111,
+      "DestLon": -96.85083333,
+      "DestName": "Dallas Love Field",
+      "OriginCode": "VPS",
+      "OriginLat": 30.48333333,
+      "OriginLon": -86.52611111,
+      "OriginName": "Eglin AFB Destin Fort Walton Beach"
+    },
+    {
+      "DepTime": 1643,
+      "DestCode": "LAS",
+      "DestLat": 36.08,
+      "DestLon": -115.15222222,
+      "DestName": "Harry Reid International",
+      "OriginCode": "DAL",
+      "OriginLat": 32.84611111,
+      "OriginLon": -96.85083333,
+      "OriginName": "Dallas Love Field"
+    },
+    {
+      "DepTime": 1828,
+      "DestCode": "OAK",
+      "DestLat": 37.72138889,
+      "DestLon": -122.22111111,
+      "DestName": "Oakland International",
+      "OriginCode": "LAS",
+      "OriginLat": 36.08,
+      "OriginLon": -115.15222222,
+      "OriginName": "Harry Reid International"
+    },
+    {
+      "DepTime": 2041,
+      "DestCode": "SEA",
+      "DestLat": 47.45,
+      "DestLon": -122.31166667,
+      "DestName": "Seattle/Tacoma International",
+      "OriginCode": "OAK",
+      "OriginLat": 37.72138889,
+      "OriginLon": -122.22111111,
+      "OriginName": "Oakland International"
+    }
+  ],
+  "row_count": 8,
+  "generated_at": "2026-03-24T09:58:54.471307Z",
+  "source_query_sha256": "13d3cee9493edb91812aa5f0873d46db02ef75ab211b63c433f83642eecd9ef1",
+  "log_comment": "qforge|question=q001|run=run-002|runner=claude|model=sonnet|phase=full|subquestion=q4"
+}

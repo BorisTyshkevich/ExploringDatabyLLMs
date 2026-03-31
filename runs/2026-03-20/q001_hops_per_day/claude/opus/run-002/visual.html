@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Highest Daily Hops – OnTime Analyst</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+    --bg-top: #eaf3f8;
+    --bg-bottom: #f6fafc;
+    --panel: #ffffff;
+    --panel-alt: #f3f7fa;
+    --ink: #163244;
+    --muted: #5d7485;
+    --navy: #0e3a52;
+    --slate: #5c7080;
+    --sky: #3c88b5;
+    --teal: #1f8a70;
+    --amber: #d48a1f;
+    --red: #c54f36;
+    --grid: rgba(22, 50, 68, 0.12);
+    --border: rgba(22, 50, 68, 0.10);
+    --shadow: 0 18px 45px rgba(14, 58, 82, 0.10);
+    --radius-xl: 22px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    min-height: 100vh;
+}
+h1, h2, h3 { font-family: Georgia, "Times New Roman", ui-serif, serif; }
+.container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1a5c7e 100%);
+    color: #fff;
+    padding: 28px 0 22px;
+    margin-bottom: 24px;
+}
+.header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+.header .subtitle { font-family: "Segoe UI", sans-serif; font-size: 0.88rem; opacity: 0.78; }
+
+/* KPI strip */
+.kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+.kpi-card {
+    background: var(--panel);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
+    padding: 16px 18px;
+    text-align: center;
+}
+.kpi-card .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 4px; }
+.kpi-card .value { font-family: Georgia, ui-serif, serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); word-break: break-all; }
+.kpi-card .value.small { font-size: 1rem; }
+
+/* Cards */
+.card {
+    background: var(--panel);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+    overflow: hidden;
+}
+.card-head {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.card-head h2 { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+.card-body { padding: 0; }
+
+/* Map */
+#map-container { height: 420px; width: 100%; position: relative; }
+#map-degraded {
+    position: absolute; inset: 0; z-index: 500;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--panel-alt);
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Legend */
+.legend-bar {
+    display: flex; flex-wrap: wrap; gap: 16px; padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem; color: var(--muted);
+}
+.legend-bar .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+
+/* Route detail panel */
+.route-detail { padding: 16px 20px; }
+.route-detail h3 { font-size: 0.92rem; color: var(--navy); margin-bottom: 10px; }
+.leg-list { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.leg-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--panel-alt); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 10px;
+    font-size: 0.78rem; font-family: "Segoe UI", sans-serif; color: var(--ink);
+}
+.leg-pill .arrow { color: var(--sky); font-weight: 700; }
+.leg-pill .time { color: var(--muted); font-size: 0.72rem; }
+
+/* Table */
+.itinerary-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.itinerary-table thead { background: var(--panel-alt); position: sticky; top: 0; z-index: 2; }
+.itinerary-table th {
+    text-align: left; padding: 10px 12px; font-weight: 600;
+    color: var(--navy); border-bottom: 2px solid var(--border);
+    font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+.itinerary-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+.itinerary-table tr.data-row { cursor: pointer; transition: background 0.12s; }
+.itinerary-table tr.data-row:hover { background: #edf5fa; }
+.itinerary-table tr.data-row.active { background: #d5eaf5; outline: 2px solid var(--sky); outline-offset: -2px; }
+.itinerary-table .route-cell { max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.table-scroll { max-height: 380px; overflow-y: auto; }
+
+/* Ledger */
+.ledger-row { display: grid; grid-template-columns: 2em 1fr 6em 5em 4em; align-items: center; padding: 6px 12px; cursor: pointer; font-size: 0.78rem; border-bottom: 1px solid var(--border); }
+.ledger-row:hover { background: var(--panel-alt); }
+.ledger-toggle { font-family: monospace; color: var(--muted); }
+.ledger-label { font-weight: 600; color: var(--ink); }
+.ledger-role { color: var(--muted); }
+.ledger-status { font-weight: 600; }
+.ledger-status.ok { color: var(--teal); }
+.ledger-status.pending { color: var(--amber); }
+.ledger-status.failed { color: var(--red); }
+.ledger-rows { color: var(--muted); text-align: right; }
+.ledger-sql { display: none; padding: 8px 12px 12px 2em; }
+.ledger-sql pre { background: var(--panel-alt); border-radius: var(--radius-sm); padding: 10px; font-size: 0.72rem; white-space: pre-wrap; word-break: break-all; max-height: 260px; overflow: auto; }
+
+/* Status & empty state */
+.status-bar { padding: 10px 20px; font-size: 0.82rem; color: var(--muted); }
+.empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 20px; text-align: center; color: var(--muted);
+}
+.empty-state h2 { color: var(--navy); margin-bottom: 8px; }
+.warning-banner {
+    background: #fff7e6; border: 1px solid var(--amber); border-radius: var(--radius-sm);
+    padding: 10px 16px; margin: 12px 20px; font-size: 0.82rem; color: #7a5a14;
+}
+
+/* Footer controls */
+footer.controls {
+    background: var(--panel);
+    border-top: 2px solid var(--border);
+    padding: 20px 0;
+    margin-top: 32px;
+}
+footer.controls .container { display: flex; flex-direction: column; gap: 10px; }
+footer.controls label { font-size: 0.78rem; font-weight: 600; color: var(--navy); }
+footer.controls input[type="password"],
+footer.controls textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 8px 10px; font-family: monospace; font-size: 0.78rem;
+    background: var(--panel-alt); color: var(--ink);
+}
+footer.controls textarea { min-height: 100px; resize: vertical; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+    padding: 8px 18px; border: none; border-radius: var(--radius-sm);
+    font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: var(--sky); color: #fff; }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--ink); }
+#ctrl-status { font-size: 0.8rem; color: var(--muted); min-height: 1.2em; }
+
+/* Hidden until data */
+#dashboard-content { display: none; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <h1>Highest Daily Hops for One Aircraft on One Flight Number</h1>
+    <div class="subtitle">Top 10 longest same-flight-number itineraries by a single aircraft in one day — live from ClickHouse</div>
+  </div>
+</header>
+
+<main class="container">
+  <div id="empty-state" class="empty-state">
+    <h2>Awaiting Data</h2>
+    <p>Enter your JWE token below and click <strong>Fetch</strong> to load live results.</p>
+  </div>
+
+  <div id="dashboard-content">
+    <!-- KPI Strip -->
+    <div class="kpi-strip" id="kpi-strip">
+      <div class="kpi-card"><div class="label">Aircraft</div><div class="value" data-kpi="tail">—</div></div>
+      <div class="kpi-card"><div class="label">Flight Number</div><div class="value" data-kpi="flight">—</div></div>
+      <div class="kpi-card"><div class="label">Date</div><div class="value small" data-kpi="date">—</div></div>
+      <div class="kpi-card"><div class="label">Max Hops</div><div class="value" data-kpi="hops">—</div></div>
+      <div class="kpi-card"><div class="label">Carrier</div><div class="value" data-kpi="carrier">—</div></div>
+      <div class="kpi-card"><div class="label">Max-Hop Itineraries</div><div class="value" data-kpi="maxcount">—</div></div>
+    </div>
+
+    <!-- Map card -->
+    <div class="card" id="map-card">
+      <div class="card-head">
+        <h2>Itinerary Map</h2>
+        <span id="map-subtitle" style="font-size:0.78rem;color:var(--muted);margin-left:auto;"></span>
+      </div>
+      <div class="card-body" style="position:relative;">
+        <div id="map-container">
+          <div id="map-degraded">Loading map…</div>
+        </div>
+      </div>
+      <div class="legend-bar">
+        <span><span class="dot" style="background:var(--red);"></span> Selected route</span>
+        <span><span class="dot" style="background:var(--navy);"></span> Airport stop</span>
+        <span><span class="dot" style="background:var(--sky);"></span> Leg direction</span>
+      </div>
+    </div>
+
+    <!-- Route detail -->
+    <div class="card" id="route-card">
+      <div class="card-head"><h2>Route Sequence</h2></div>
+      <div class="card-body route-detail" id="route-detail">
+        <p style="color:var(--muted);">Select an itinerary to view its leg-by-leg sequence.</p>
+      </div>
+    </div>
+
+    <!-- Itinerary table -->
+    <div class="card">
+      <div class="card-head"><h2>Top 10 Itineraries</h2></div>
+      <div class="card-body">
+        <div class="table-scroll">
+          <table class="itinerary-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Aircraft</th>
+                <th>Flight</th>
+                <th>Carrier</th>
+                <th>Date</th>
+                <th>Hops</th>
+                <th>Route</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Query Ledger -->
+    <div class="card">
+      <div class="card-head"><h2>Query Ledger</h2></div>
+      <div class="card-body" id="query-ledger"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="controls">
+  <div class="container">
+    <label for="jwe-input">JWE Token</label>
+    <div class="btn-row">
+      <input type="password" id="jwe-input" placeholder="Paste JWE token…" style="flex:1;">
+      <button class="btn btn-danger" id="btn-forget" type="button">Forget</button>
+    </div>
+    <label for="sql-input">Primary SQL</label>
+    <textarea id="sql-input" spellcheck="false"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-fetch" type="button">Fetch</button>
+      <span id="ctrl-status"></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── State ──
+const JWE_KEY = 'OnTimeAnalystDashboard::auth::jwe';
+let isRunning = false;
+let allRows = [];
+let selectedIdx = 0;
+let airportCoords = {};  // code -> { lat, lon, name }
+let leafletMap = null;
+let mapLayers = null;
+
+// ── Saved SQL ──
+const SAVED_SQL = `WITH airport_offsets AS
+(
+    SELECT
+        airport_id,
+        any(utc_local_time_variation) AS utc_local_time_variation
+    FROM ontime.airports_latest
+    GROUP BY airport_id
+),
+legs AS
+(
+    SELECT
+        o.FlightDate,
+        o.TailNum,
+        o.FlightNum,
+        o.Carrier,
+        o.OriginAirportID,
+        o.DestAirportID,
+        o.Origin,
+        o.Dest,
+        o.DepTime,
+        toDateTime(o.FlightDate)
+            + toIntervalDay(if(o.DepTime = 2400, 1, 0))
+            + toIntervalMinute(intDiv(if(o.DepTime = 2400, 0, o.DepTime), 100) * 60 + modulo(if(o.DepTime = 2400, 0, o.DepTime), 100)) AS dep_local_ts,
+        (
+            if(length(a1o.utc_local_time_variation) = 5,
+                if(substring(a1o.utc_local_time_variation, 1, 1) = '-', -1, 1)
+                * (toInt32(substring(a1o.utc_local_time_variation, 2, 2)) * 60 + toInt32(substring(a1o.utc_local_time_variation, 4, 2))),
+                0
+            )
+        ) AS origin_offset_minutes
+    FROM ontime.ontime AS o
+    LEFT JOIN airport_offsets AS a1o ON o.OriginAirportID = a1o.airport_id
+    WHERE o.Cancelled = 0
+      AND o.Diverted = 0
+      AND o.DepTime IS NOT NULL
+      AND o.TailNum != ''
+      AND o.FlightNum != ''
+),
+itineraries AS
+(
+    SELECT
+        FlightDate,
+        TailNum,
+        FlightNum,
+        Carrier,
+        length(ordered_legs) AS Hops,
+        arrayStringConcat(
+            arrayMap(x -> concat(formatDateTime(x.2, '%H:%i'), ' ', x.3, '->', x.4), ordered_legs),
+            ' | '
+        ) AS Route
+    FROM
+    (
+        SELECT
+            FlightDate,
+            TailNum,
+            FlightNum,
+            Carrier,
+            arraySort(x -> x.1, groupArray((
+                dep_local_ts - toIntervalMinute(origin_offset_minutes),
+                dep_local_ts,
+                Origin,
+                Dest
+            ))) AS ordered_legs
+        FROM legs
+        GROUP BY
+            FlightDate,
+            TailNum,
+            FlightNum,
+            Carrier
+    )
+),
+max_hops AS
+(
+    SELECT max(Hops) AS max_hops_observed FROM itineraries
+),
+max_hops_counts AS
+(
+    SELECT count() AS max_hop_itinerary_count
+    FROM itineraries
+    CROSS JOIN max_hops
+    WHERE Hops = max_hops_observed
+)
+SELECT
+    TailNum AS \`Aircraft ID\`,
+    FlightNum AS \`Flight Number\`,
+    Carrier,
+    FlightDate AS Date,
+    Hops,
+    Route,
+    max_hops_observed AS \`Maximum Hops Observed\`,
+    max_hop_itinerary_count AS \`Maximum-Hop Itinerary Count\`
+FROM itineraries
+CROSS JOIN max_hops
+CROSS JOIN max_hops_counts
+ORDER BY
+    Hops DESC,
+    Date DESC,
+    Carrier,
+    \`Flight Number\`,
+    \`Aircraft ID\`
+LIMIT 10`;
+
+const ENRICH_SQL = `SELECT code, latitude, longitude, name FROM ontime.airports_latest WHERE code != ''`;
+
+// ── DOM refs ──
+const $jwe = document.getElementById('jwe-input');
+const $sql = document.getElementById('sql-input');
+const $fetch = document.getElementById('btn-fetch');
+const $forget = document.getElementById('btn-forget');
+const $status = document.getElementById('ctrl-status');
+const $empty = document.getElementById('empty-state');
+const $dash = document.getElementById('dashboard-content');
+const $tbody = document.getElementById('table-body');
+const $routeDetail = document.getElementById('route-detail');
+const $mapDegraded = document.getElementById('map-degraded');
+const $mapSubtitle = document.getElementById('map-subtitle');
+const $ledger = document.getElementById('query-ledger');
+
+// ── Ledger ──
+const ledgerEntries = [];
+function addLedger(label, role, sql) {
+    const idx = ledgerEntries.length;
+    ledgerEntries.push({ label, role, status: 'Pending', rows: '—', sql: sql || '—', expanded: false });
+    renderLedger();
+    return idx;
+}
+function updateLedger(idx, status, rows, sql) {
+    const e = ledgerEntries[idx];
+    if (!e) return;
+    e.status = status;
+    if (rows !== undefined) e.rows = rows;
+    if (sql) e.sql = sql;
+    renderLedger();
+}
+function renderLedger() {
+    $ledger.innerHTML = '';
+    ledgerEntries.forEach((e, i) => {
+        const statusCls = e.status === 'OK' ? 'ok' : e.status === 'Pending' ? 'pending' : 'failed';
+        const row = document.createElement('div');
+        row.className = 'ledger-row';
+        row.innerHTML = `<span class="ledger-toggle">${e.expanded ? '▼' : '▶'}</span>` +
+            `<span class="ledger-label">${esc(e.label)}</span>` +
+            `<span class="ledger-role">${esc(e.role)}</span>` +
+            `<span class="ledger-status ${statusCls}">${esc(e.status)}</span>` +
+            `<span class="ledger-rows">${esc(String(e.rows))}</span>`;
+        row.onclick = () => { ledgerEntries[i].expanded = !ledgerEntries[i].expanded; renderLedger(); };
+        $ledger.appendChild(row);
+        if (e.expanded) {
+            const sqlDiv = document.createElement('div');
+            sqlDiv.className = 'ledger-sql';
+            sqlDiv.style.display = 'block';
+            sqlDiv.innerHTML = `<pre>${esc(e.sql)}</pre>`;
+            $ledger.appendChild(sqlDiv);
+        }
+    });
+}
+
+// ── Helpers ──
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function normDate(v) { return String(v ?? '').slice(0, 10); }
+
+function parseRoute(routeStr) {
+    // "05:43 ISP->BWI | 08:10 BWI->MYR | ..."
+    const legs = [];
+    if (!routeStr) return legs;
+    const parts = routeStr.split('|').map(s => s.trim());
+    parts.forEach(p => {
+        const m = p.match(/^(\d{2}:\d{2})\s+([A-Z]{3})->([A-Z]{3})$/);
+        if (m) legs.push({ time: m[1], origin: m[2], dest: m[3] });
+    });
+    return legs;
+}
+
+function allAirportCodes(rows) {
+    const codes = new Set();
+    rows.forEach(r => {
+        parseRoute(r.Route).forEach(l => { codes.add(l.origin); codes.add(l.dest); });
+    });
+    return [...codes];
+}
+
+// ── Query execution ──
+async function runQuery(sql) {
+    const jwe = $jwe.value.trim();
+    if (!jwe) throw new Error('JWE token is required.');
+    const url = `https://mcp.demo.altinity.cloud/${jwe}/openapi/execute_query?query=${encodeURIComponent(sql)}`;
+    const resp = await fetch(url);
+    if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(`HTTP ${resp.status}: ${txt.slice(0, 300)}`);
+    }
+    const data = await resp.json();
+    const cols = data.columns || [];
+    const rawRows = data.rows || [];
+    return rawRows.map(r => {
+        const obj = {};
+        cols.forEach((c, i) => { obj[c] = r[i]; });
+        return obj;
+    });
+}
+
+// ── KPI rendering ──
+function renderKPIs(topRow) {
+    const kv = (sel, val) => { const el = document.querySelector(`[data-kpi="${sel}"]`); if (el) el.textContent = val ?? '—'; };
+    kv('tail', topRow['Aircraft ID']);
+    kv('flight', topRow.Carrier + ' ' + topRow['Flight Number']);
+    kv('date', normDate(topRow.Date));
+    kv('hops', topRow['Maximum Hops Observed'] ?? topRow.Hops);
+    kv('carrier', topRow.Carrier);
+    kv('maxcount', topRow['Maximum-Hop Itinerary Count'] != null ? Number(topRow['Maximum-Hop Itinerary Count']).toLocaleString() : '—');
+}
+
+// ── Table rendering ──
+function renderTable(rows) {
+    $tbody.innerHTML = '';
+    rows.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.className = 'data-row' + (i === selectedIdx ? ' active' : '');
+        tr.innerHTML =
+            `<td>${i + 1}</td>` +
+            `<td>${esc(r['Aircraft ID'] || '')}</td>` +
+            `<td>${esc(r['Flight Number'] || '')}</td>` +
+            `<td>${esc(r.Carrier || '')}</td>` +
+            `<td>${normDate(r.Date)}</td>` +
+            `<td style="font-weight:700;color:var(--navy);">${r.Hops}</td>` +
+            `<td class="route-cell" title="${esc(r.Route || '')}">${esc(r.Route || '')}</td>`;
+        tr.onclick = () => selectRow(i);
+        $tbody.appendChild(tr);
+    });
+}
+
+// ── Route detail ──
+function renderRouteDetail(row) {
+    const legs = parseRoute(row?.Route);
+    if (!legs.length) {
+        $routeDetail.innerHTML = '<p style="color:var(--muted);">No leg data available.</p>';
+        return;
+    }
+    let html = `<h3>${esc(row.Carrier)} ${esc(row['Flight Number'])} — ${normDate(row.Date)} — ${esc(row['Aircraft ID'])}</h3><div class="leg-list">`;
+    legs.forEach((l, i) => {
+        if (i > 0) html += '<span style="color:var(--sky);font-weight:700;font-size:1rem;">→</span>';
+        html += `<div class="leg-pill"><span class="time">${esc(l.time)}</span> <strong>${esc(l.origin)}</strong> <span class="arrow">→</span> <strong>${esc(l.dest)}</strong></div>`;
+    });
+    html += '</div>';
+    $routeDetail.innerHTML = html;
+}
+
+// ── Map ──
+function initMap() {
+    if (leafletMap) return;
+    $mapDegraded.style.display = 'none';
+    leafletMap = L.map('map-container', { zoomControl: true, scrollWheelZoom: true }).setView([39, -98], 4);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        maxZoom: 18
+    }).addTo(leafletMap);
+    mapLayers = L.layerGroup().addTo(leafletMap);
+    setTimeout(() => leafletMap.invalidateSize(), 200);
+}
+
+function drawRoute(row) {
+    if (!leafletMap || !mapLayers) return;
+    mapLayers.clearLayers();
+    const legs = parseRoute(row?.Route);
+    if (!legs.length) {
+        $mapSubtitle.textContent = 'No legs to display';
+        return;
+    }
+    const codes = [];
+    legs.forEach(l => { if (!codes.includes(l.origin)) codes.push(l.origin); if (!codes.includes(l.dest)) codes.push(l.dest); });
+    const pts = codes.map(c => airportCoords[c]).filter(Boolean);
+    if (pts.length < 2) {
+        $mapSubtitle.textContent = 'Coordinates unavailable for this route';
+        $mapDegraded.textContent = 'Airport coordinates not available for this itinerary.';
+        $mapDegraded.style.display = 'flex';
+        return;
+    }
+    $mapDegraded.style.display = 'none';
+    $mapSubtitle.textContent = `${row.Carrier} ${row['Flight Number']} — ${normDate(row.Date)}`;
+
+    // Draw polylines
+    const latLngs = [];
+    legs.forEach(l => {
+        const o = airportCoords[l.origin];
+        const d = airportCoords[l.dest];
+        if (o && d) {
+            L.polyline([[o.lat, o.lon], [d.lat, d.lon]], { color: '#c54f36', weight: 3, opacity: 0.8 }).addTo(mapLayers);
+            if (!latLngs.find(p => p[0] === o.lat && p[1] === o.lon)) latLngs.push([o.lat, o.lon]);
+            if (!latLngs.find(p => p[0] === d.lat && p[1] === d.lon)) latLngs.push([d.lat, d.lon]);
+        }
+    });
+
+    // Draw markers
+    codes.forEach((c, i) => {
+        const a = airportCoords[c];
+        if (!a) return;
+        const marker = L.circleMarker([a.lat, a.lon], {
+            radius: 7, fillColor: '#0e3a52', color: '#fff', weight: 2, fillOpacity: 0.95
+        }).addTo(mapLayers);
+        const label = `<strong>${c}</strong>${a.name ? '<br>' + a.name : ''}<br>Stop #${i + 1}`;
+        marker.bindPopup(label);
+    });
+
+    // Arrow decorations: add small directional triangles at midpoints
+    legs.forEach(l => {
+        const o = airportCoords[l.origin];
+        const d = airportCoords[l.dest];
+        if (o && d) {
+            const midLat = (o.lat + d.lat) / 2;
+            const midLon = (o.lon + d.lon) / 2;
+            L.circleMarker([midLat, midLon], {
+                radius: 3, fillColor: '#3c88b5', color: '#3c88b5', weight: 1, fillOpacity: 0.9
+            }).addTo(mapLayers);
+        }
+    });
+
+    if (latLngs.length >= 2) {
+        leafletMap.fitBounds(latLngs, { padding: [40, 40] });
+    }
+}
+
+// ── Selection ──
+function selectRow(idx) {
+    selectedIdx = idx;
+    renderTable(allRows);
+    renderRouteDetail(allRows[idx]);
+    drawRoute(allRows[idx]);
+}
+
+// ── Main fetch flow ──
+async function doFetch() {
+    if (isRunning) return;
+    isRunning = true;
+    $fetch.disabled = true;
+    $status.textContent = 'Fetching…';
+    ledgerEntries.length = 0;
+    renderLedger();
+
+    const primaryLedgerIdx = addLedger('Primary query', 'primary', $sql.value);
+    const enrichLedgerIdx = addLedger('Airport coordinate enrichment', 'enrich', ENRICH_SQL);
+
+    try {
+        // Primary query
+        const rows = await runQuery($sql.value);
+        allRows = rows;
+        updateLedger(primaryLedgerIdx, 'OK', rows.length, $sql.value);
+
+        if (!rows.length) {
+            $status.textContent = 'Query returned 0 rows.';
+            $empty.innerHTML = '<h2>No Results</h2><p>The primary query returned an empty result set.</p>';
+            $empty.style.display = 'flex';
+            $dash.style.display = 'none';
+            updateLedger(enrichLedgerIdx, 'Skipped', 0);
+            isRunning = false;
+            $fetch.disabled = false;
+            return;
+        }
+
+        // Persist token on success
+        localStorage.setItem(JWE_KEY, $jwe.value.trim());
+
+        // Show dashboard
+        $empty.style.display = 'none';
+        $dash.style.display = 'block';
+
+        // Render data-driven components
+        renderKPIs(rows[0]);
+        selectedIdx = 0;
+        renderTable(rows);
+        renderRouteDetail(rows[0]);
+
+        $status.textContent = `Loaded ${rows.length} rows. Enriching coordinates…`;
+
+        // Enrichment query
+        try {
+            const airports = await runQuery(ENRICH_SQL);
+            airportCoords = {};
+            airports.forEach(a => {
+                const code = (a.code || '').trim();
+                if (code && a.latitude && a.longitude) {
+                    airportCoords[code] = { lat: Number(a.latitude), lon: Number(a.longitude), name: a.name || '' };
+                }
+            });
+            updateLedger(enrichLedgerIdx, 'OK', airports.length, ENRICH_SQL);
+            initMap();
+            drawRoute(rows[0]);
+            $status.textContent = `Dashboard ready. ${rows.length} itineraries, ${Object.keys(airportCoords).length} airports enriched.`;
+        } catch (err) {
+            updateLedger(enrichLedgerIdx, 'Failed', 0, ENRICH_SQL);
+            $mapDegraded.textContent = 'Airport enrichment failed: ' + err.message;
+            $mapDegraded.style.display = 'flex';
+            $status.textContent = `Data loaded. Map degraded: ${err.message}`;
+        }
+
+    } catch (err) {
+        updateLedger(primaryLedgerIdx, 'Failed', 0);
+        $status.textContent = `Error: ${err.message}`;
+        $empty.innerHTML = `<h2>Query Failed</h2><p>${esc(err.message)}</p>`;
+        $empty.style.display = 'flex';
+        $dash.style.display = 'none';
+    }
+
+    isRunning = false;
+    $fetch.disabled = false;
+}
+
+// ── Init ──
+$sql.value = SAVED_SQL;
+const storedJwe = localStorage.getItem(JWE_KEY);
+if (storedJwe) $jwe.value = storedJwe;
+
+$fetch.onclick = doFetch;
+$forget.onclick = () => { localStorage.removeItem(JWE_KEY); $jwe.value = ''; $status.textContent = 'Token cleared.'; };
+
+// Auto-run if token is present
+if (storedJwe) doFetch();
+</script>
+</body>
+</html>

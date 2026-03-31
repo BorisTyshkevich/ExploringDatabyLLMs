@@ -1,0 +1,28 @@
+{
+  "sql": "WITH itineraries AS (\n    SELECT\n        FlightDate,\n        Tail_Number,\n        IATA_CODE_Reporting_Airline AS Carrier,\n        Flight_Number_Reporting_Airline AS FlightNum,\n        count() AS Hops,\n        arrayStringConcat(\n            arrayConcat(\n                arrayMap(\n                    x -\u003e x.2,\n                    arraySort(x -\u003e x.1, groupArray((assumeNotNull(DepTime), Origin)))\n                ),\n                [arrayElement(\n                    arrayMap(x -\u003e x.2, arraySort(x -\u003e x.1, groupArray((assumeNotNull(DepTime), Dest)))),\n                    -1\n                )]\n            ),\n            ' -\u003e '\n        ) AS Route,\n        arrayStringConcat(\n            arrayMap(\n                x -\u003e x.2 || '@' || toString(x.1),\n                arraySort(x -\u003e x.1, groupArray((assumeNotNull(DepTime), Origin)))\n            ),\n            ', '\n        ) AS DepartureTimes\n    FROM ontime.ontime\n    WHERE Cancelled = 0\n      AND Tail_Number != ''\n      AND DepTime IS NOT NULL\n    GROUP BY FlightDate, Tail_Number, Carrier, FlightNum\n)\nSELECT\n    FlightDate,\n    Tail_Number,\n    Carrier,\n    FlightNum,\n    Hops,\n    Route,\n    DepartureTimes\nFROM itineraries\nORDER BY Hops DESC, FlightDate DESC\nLIMIT 10",
+  "report_markdown": "# Highest Daily Hops for One Aircraft on One Flight Number\n\n{{data_overview_md}}\n\n## Maximum Hop Count\n\nThe highest recorded hop count is **{{metric.max_hops}}** legs flown by a single aircraft under a single flight number in one day. All top-10 entries belong to {{metric.dominant_carrier}}. This is not a one-off anomaly: the same 8-hop routing patterns recur across multiple weeks on the same flight numbers, indicating deliberate scheduled network itineraries.\n\n## Most Recent Maximum-Hop Itinerary\n\n| Field | Value |\n|---|---|\n| Date | {{metric.most_recent_date}} |\n| Carrier | {{metric.most_recent_carrier}} |\n| Flight Number | {{metric.most_recent_flight_num}} |\n| Aircraft (Tail) | {{metric.most_recent_aircraft}} |\n| Route | {{metric.most_recent_route}} |\n\n## Top 10 Longest and Most Recent Itineraries\n\n{{result_table_md}}\n\n*DepartureTimes column shows `AIRPORT@HHMM` for each origin leg in chronological order.*\n\n## Route Repetition and Clustering\n\nThree distinct 8-hop route patterns recur across different aircraft on the same flight number, confirming them as recurring scheduled itineraries. WN 3149 (CLE → DEN corridor) is the most frequently repeated, appearing on consecutive Sundays in early 2024 with consistent city pairs from the Midwest through the South and out to the West Coast. WN 2787 (MSY → LAX corridor) and WN 154 (ELP → SAN corridor) each recur across separate weeks as well. This tight clustering by flight number and consistent routing is characteristic of deliberate point-to-point network scheduling.",
+  "metrics": {
+    "summary_facts": [
+      "The maximum hop count is 8, observed across multiple Southwest Airlines itineraries.",
+      "WN flight 3149 operated the same 8-hop CLE-\u003eDEN route on 4 separate Sundays in Jan-Feb 2024.",
+      "All top-10 maximum-hop itineraries are operated by Southwest Airlines (WN).",
+      "Three distinct 8-hop routes recur: WN 3149, WN 2787, and WN 154."
+    ],
+    "named_values": {
+      "dominant_carrier": "Southwest Airlines (WN)",
+      "max_hops": "8",
+      "most_recent_aircraft": "N957WN",
+      "most_recent_carrier": "WN",
+      "most_recent_date": "2024-12-01",
+      "most_recent_flight_num": "366",
+      "most_recent_route": "ISP -\u003e BWI -\u003e MYR -\u003e BNA -\u003e VPS -\u003e DAL -\u003e LAS -\u003e OAK -\u003e SEA"
+    },
+    "named_lists": {
+      "repeated_routes": [
+        "WN 3149: CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN (4 occurrences, Jan-Feb 2024)",
+        "WN 2787: MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX (3 occurrences, Sep-Oct 2022)",
+        "WN 154: ELP -\u003e DAL -\u003e LIT -\u003e ATL -\u003e RIC -\u003e MDW -\u003e MCI -\u003e PHX -\u003e SAN (2 occurrences, Apr 2023)"
+      ]
+    }
+  }
+}

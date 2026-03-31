@@ -1,0 +1,24 @@
+{
+  "subquestions": [
+    {
+      "subquestion": "Which month is the single worst American Airlines month for departure delays?",
+      "answer_markdown": "July 2024 is the single worst month for American Airlines departure delays. During this month, average departure delays reached a peak of 36.33 minutes, and 38.04% of the 86,083 completed flights departed 15 or more minutes late.",
+      "sql": "SELECT Year, Month, count() AS FlightVolume, round(avg(DepDelay), 2) AS AvgDepDelay, round(sum(DepDel15) / count(), 4) AS PctDel15 FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 GROUP BY Year, Month ORDER BY AvgDepDelay DESC;"
+    },
+    {
+      "subquestion": "Which origins contribute most to that peak month?",
+      "answer_markdown": "The delays in July 2024 were driven primarily by Dallas/Fort Worth (DFW) and Charlotte (CLT). DFW generated over 576,000 delay minutes (averaging 38.5 minutes per flight), while CLT was responsible for roughly 549,000 delay minutes with severe average delays reaching 52 minutes.",
+      "sql": "SELECT OriginCode, count() as FlightVolume, round(avg(DepDelay), 2) AS AvgDepDelay, round(sum(DepDel15) / count(), 4) AS PctDel15, sum(DepDelay) as TotalDelayMinutes, sum(DepDel15) as DelayedFlights FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND Year = 2024 AND Month = 7 GROUP BY OriginCode HAVING FlightVolume >= 100 ORDER BY TotalDelayMinutes DESC;"
+    },
+    {
+      "subquestion": "Which routes contribute most to that peak month?",
+      "answer_markdown": "The most severely impacted routes were hub-to-hub and hub-to-spoke connections from DFW and CLT. The top route contributor was DFW to Los Angeles (LAX) with over 18,000 delay minutes, closely followed by CLT to Orlando (MCO) and DFW to San Antonio (SAT).",
+      "sql": "SELECT OriginCode, DestCode, concat(OriginCode, '-', DestCode) as Route, count() as FlightVolume, round(avg(DepDelay), 2) AS AvgDepDelay, round(sum(DepDel15) / count(), 4) AS PctDel15, sum(DepDelay) as TotalDelayMinutes, sum(DepDel15) as DelayedFlights FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND Year = 2024 AND Month = 7 GROUP BY OriginCode, DestCode HAVING FlightVolume >= 30 ORDER BY TotalDelayMinutes DESC;"
+    },
+    {
+      "subquestion": "Does the peak look broad across the network, or concentrated in a smaller set of origins and routes?",
+      "answer_markdown": "The peak is highly concentrated at the origin level but broadly distributed across routes. In July 2024, the top 5 origins (led overwhelmingly by DFW and CLT) accounted for nearly 52% of the total network departure delay minutes. In contrast, the network's delays were widely spread across individual routes, with the top 10 worst routes representing only 5% of all network delay minutes.",
+      "sql": "WITH network_total AS (SELECT sum(DepDelay) as network_delay FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND Year = 2024 AND Month = 7), top_origins AS (SELECT sum(DepDelay) as origin_delay FROM (SELECT sum(DepDelay) as DepDelay FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND Year = 2024 AND Month = 7 GROUP BY OriginCode ORDER BY DepDelay DESC LIMIT 5)), top_routes AS (SELECT sum(DepDelay) as route_delay FROM (SELECT sum(DepDelay) as DepDelay FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 AND Year = 2024 AND Month = 7 GROUP BY OriginCode, DestCode ORDER BY DepDelay DESC LIMIT 10)) SELECT n.network_delay, o.origin_delay as top_5_origins_delay, r.route_delay as top_10_routes_delay, round(o.origin_delay / n.network_delay * 100, 2) as top_5_origins_pct, round(r.route_delay / n.network_delay * 100, 2) as top_10_routes_pct FROM network_total n, top_origins o, top_routes r;"
+    }
+  ]
+}

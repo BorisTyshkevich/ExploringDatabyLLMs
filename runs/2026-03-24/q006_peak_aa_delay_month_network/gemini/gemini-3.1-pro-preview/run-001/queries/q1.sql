@@ -1,0 +1,1 @@
+SELECT Year, Month, count() AS FlightVolume, round(avg(DepDelay), 2) AS AvgDepDelay, round(sum(DepDel15) / count(), 4) AS PctDel15 FROM ontime.fact_ontime WHERE Carrier = 'AA' AND Cancelled = 0 GROUP BY Year, Month ORDER BY AvgDepDelay DESC;

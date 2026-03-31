@@ -1,0 +1,8008 @@
+{
+  "columns": [
+    "OriginCode",
+    "DestCode",
+    "Route",
+    "FlightVolume",
+    "AvgDepDelay",
+    "PctDel15",
+    "TotalDelayMinutes",
+    "DelayedFlights"
+  ],
+  "rows": [
+    {
+      "AvgDepDelay": 40.89,
+      "DelayedFlights": 206,
+      "DestCode": "LAX",
+      "FlightVolume": 443,
+      "OriginCode": "DFW",
+      "PctDel15": 0.465,
+      "Route": "DFW-LAX",
+      "TotalDelayMinutes": 18114
+    },
+    {
+      "AvgDepDelay": 56.12,
+      "DelayedFlights": 177,
+      "DestCode": "MCO",
+      "FlightVolume": 322,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5497,
+      "Route": "CLT-MCO",
+      "TotalDelayMinutes": 18070
+    },
+    {
+      "AvgDepDelay": 49.86,
+      "DelayedFlights": 188,
+      "DestCode": "SAT",
+      "FlightVolume": 355,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5296,
+      "Route": "DFW-SAT",
+      "TotalDelayMinutes": 17701
+    },
+    {
+      "AvgDepDelay": 52.7,
+      "DelayedFlights": 162,
+      "DestCode": "RDU",
+      "FlightVolume": 311,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5209,
+      "Route": "CLT-RDU",
+      "TotalDelayMinutes": 16389
+    },
+    {
+      "AvgDepDelay": 50.23,
+      "DelayedFlights": 136,
+      "DestCode": "CLT",
+      "FlightVolume": 311,
+      "OriginCode": "RDU",
+      "PctDel15": 0.4373,
+      "Route": "RDU-CLT",
+      "TotalDelayMinutes": 15620
+    },
+    {
+      "AvgDepDelay": 39.56,
+      "DelayedFlights": 173,
+      "DestCode": "PHX",
+      "FlightVolume": 374,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4626,
+      "Route": "DFW-PHX",
+      "TotalDelayMinutes": 14796
+    },
+    {
+      "AvgDepDelay": 44.73,
+      "DelayedFlights": 172,
+      "DestCode": "LAS",
+      "FlightVolume": 319,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5392,
+      "Route": "DFW-LAS",
+      "TotalDelayMinutes": 14270
+    },
+    {
+      "AvgDepDelay": 54.59,
+      "DelayedFlights": 122,
+      "DestCode": "LGA",
+      "FlightVolume": 258,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4729,
+      "Route": "CLT-LGA",
+      "TotalDelayMinutes": 14085
+    },
+    {
+      "AvgDepDelay": 44.08,
+      "DelayedFlights": 144,
+      "DestCode": "DFW",
+      "FlightVolume": 317,
+      "OriginCode": "LAS",
+      "PctDel15": 0.4543,
+      "Route": "LAS-DFW",
+      "TotalDelayMinutes": 13973
+    },
+    {
+      "AvgDepDelay": 42.12,
+      "DelayedFlights": 101,
+      "DestCode": "DFW",
+      "FlightVolume": 330,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3061,
+      "Route": "ORD-DFW",
+      "TotalDelayMinutes": 13901
+    },
+    {
+      "AvgDepDelay": 53.53,
+      "DelayedFlights": 134,
+      "DestCode": "TPA",
+      "FlightVolume": 254,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5276,
+      "Route": "CLT-TPA",
+      "TotalDelayMinutes": 13596
+    },
+    {
+      "AvgDepDelay": 45.52,
+      "DelayedFlights": 134,
+      "DestCode": "DFW",
+      "FlightVolume": 297,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4512,
+      "Route": "CLT-DFW",
+      "TotalDelayMinutes": 13518
+    },
+    {
+      "AvgDepDelay": 49.07,
+      "DelayedFlights": 128,
+      "DestCode": "ORD",
+      "FlightVolume": 273,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4689,
+      "Route": "CLT-ORD",
+      "TotalDelayMinutes": 13395
+    },
+    {
+      "AvgDepDelay": 52.56,
+      "DelayedFlights": 107,
+      "DestCode": "CLT",
+      "FlightVolume": 254,
+      "OriginCode": "TPA",
+      "PctDel15": 0.4213,
+      "Route": "TPA-CLT",
+      "TotalDelayMinutes": 13349
+    },
+    {
+      "AvgDepDelay": 80.29,
+      "DelayedFlights": 93,
+      "DestCode": "MFE",
+      "FlightVolume": 156,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5962,
+      "Route": "DFW-MFE",
+      "TotalDelayMinutes": 12526
+    },
+    {
+      "AvgDepDelay": 35.27,
+      "DelayedFlights": 118,
+      "DestCode": "DFW",
+      "FlightVolume": 354,
+      "OriginCode": "SAT",
+      "PctDel15": 0.3333,
+      "Route": "SAT-DFW",
+      "TotalDelayMinutes": 12487
+    },
+    {
+      "AvgDepDelay": 39.55,
+      "DelayedFlights": 144,
+      "DestCode": "AUS",
+      "FlightVolume": 309,
+      "OriginCode": "DFW",
+      "PctDel15": 0.466,
+      "Route": "DFW-AUS",
+      "TotalDelayMinutes": 12221
+    },
+    {
+      "AvgDepDelay": 33.26,
+      "DelayedFlights": 133,
+      "DestCode": "MIA",
+      "FlightVolume": 365,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3644,
+      "Route": "DFW-MIA",
+      "TotalDelayMinutes": 12139
+    },
+    {
+      "AvgDepDelay": 37.6,
+      "DelayedFlights": 124,
+      "DestCode": "CLT",
+      "FlightVolume": 322,
+      "OriginCode": "MCO",
+      "PctDel15": 0.3851,
+      "Route": "MCO-CLT",
+      "TotalDelayMinutes": 12107
+    },
+    {
+      "AvgDepDelay": 26.57,
+      "DelayedFlights": 144,
+      "DestCode": "DFW",
+      "FlightVolume": 443,
+      "OriginCode": "LAX",
+      "PctDel15": 0.3251,
+      "Route": "LAX-DFW",
+      "TotalDelayMinutes": 11772
+    },
+    {
+      "AvgDepDelay": 44.5,
+      "DelayedFlights": 123,
+      "DestCode": "PHL",
+      "FlightVolume": 264,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4659,
+      "Route": "CLT-PHL",
+      "TotalDelayMinutes": 11749
+    },
+    {
+      "AvgDepDelay": 51.47,
+      "DelayedFlights": 91,
+      "DestCode": "DFW",
+      "FlightVolume": 228,
+      "OriginCode": "ATL",
+      "PctDel15": 0.3991,
+      "Route": "ATL-DFW",
+      "TotalDelayMinutes": 11736
+    },
+    {
+      "AvgDepDelay": 39.94,
+      "DelayedFlights": 157,
+      "DestCode": "SFO",
+      "FlightVolume": 291,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5395,
+      "Route": "DFW-SFO",
+      "TotalDelayMinutes": 11622
+    },
+    {
+      "AvgDepDelay": 42.31,
+      "DelayedFlights": 121,
+      "DestCode": "PHL",
+      "FlightVolume": 267,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4532,
+      "Route": "DFW-PHL",
+      "TotalDelayMinutes": 11297
+    },
+    {
+      "AvgDepDelay": 40.61,
+      "DelayedFlights": 56,
+      "DestCode": "JFK",
+      "FlightVolume": 275,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2036,
+      "Route": "LAX-JFK",
+      "TotalDelayMinutes": 11167
+    },
+    {
+      "AvgDepDelay": 39.24,
+      "DelayedFlights": 133,
+      "DestCode": "BNA",
+      "FlightVolume": 279,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4767,
+      "Route": "DFW-BNA",
+      "TotalDelayMinutes": 10947
+    },
+    {
+      "AvgDepDelay": 63.27,
+      "DelayedFlights": 101,
+      "DestCode": "ABQ",
+      "FlightVolume": 172,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5872,
+      "Route": "DFW-ABQ",
+      "TotalDelayMinutes": 10882
+    },
+    {
+      "AvgDepDelay": 62.74,
+      "DelayedFlights": 99,
+      "DestCode": "RIC",
+      "FlightVolume": 172,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5756,
+      "Route": "CLT-RIC",
+      "TotalDelayMinutes": 10792
+    },
+    {
+      "AvgDepDelay": 28.75,
+      "DelayedFlights": 124,
+      "DestCode": "DFW",
+      "FlightVolume": 373,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3324,
+      "Route": "PHX-DFW",
+      "TotalDelayMinutes": 10722
+    },
+    {
+      "AvgDepDelay": 62.98,
+      "DelayedFlights": 96,
+      "DestCode": "JAX",
+      "FlightVolume": 168,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5714,
+      "Route": "CLT-JAX",
+      "TotalDelayMinutes": 10581
+    },
+    {
+      "AvgDepDelay": 34.1,
+      "DelayedFlights": 104,
+      "DestCode": "DFW",
+      "FlightVolume": 309,
+      "OriginCode": "AUS",
+      "PctDel15": 0.3366,
+      "Route": "AUS-DFW",
+      "TotalDelayMinutes": 10536
+    },
+    {
+      "AvgDepDelay": 39.16,
+      "DelayedFlights": 130,
+      "DestCode": "PHX",
+      "FlightVolume": 269,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4833,
+      "Route": "CLT-PHX",
+      "TotalDelayMinutes": 10533
+    },
+    {
+      "AvgDepDelay": 39.43,
+      "DelayedFlights": 134,
+      "DestCode": "SAN",
+      "FlightVolume": 265,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5057,
+      "Route": "DFW-SAN",
+      "TotalDelayMinutes": 10450
+    },
+    {
+      "AvgDepDelay": 47.01,
+      "DelayedFlights": 111,
+      "DestCode": "IAH",
+      "FlightVolume": 221,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5023,
+      "Route": "DFW-IAH",
+      "TotalDelayMinutes": 10390
+    },
+    {
+      "AvgDepDelay": 31.07,
+      "DelayedFlights": 122,
+      "DestCode": "ORD",
+      "FlightVolume": 333,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3664,
+      "Route": "DFW-ORD",
+      "TotalDelayMinutes": 10345
+    },
+    {
+      "AvgDepDelay": 45.04,
+      "DelayedFlights": 108,
+      "DestCode": "CHS",
+      "FlightVolume": 229,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4716,
+      "Route": "CLT-CHS",
+      "TotalDelayMinutes": 10315
+    },
+    {
+      "AvgDepDelay": 34.02,
+      "DelayedFlights": 110,
+      "DestCode": "DFW",
+      "FlightVolume": 303,
+      "OriginCode": "MCO",
+      "PctDel15": 0.363,
+      "Route": "MCO-DFW",
+      "TotalDelayMinutes": 10309
+    },
+    {
+      "AvgDepDelay": 33.86,
+      "DelayedFlights": 160,
+      "DestCode": "MCO",
+      "FlightVolume": 303,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5281,
+      "Route": "DFW-MCO",
+      "TotalDelayMinutes": 10260
+    },
+    {
+      "AvgDepDelay": 38.12,
+      "DelayedFlights": 97,
+      "DestCode": "DFW",
+      "FlightVolume": 265,
+      "OriginCode": "PHL",
+      "PctDel15": 0.366,
+      "Route": "PHL-DFW",
+      "TotalDelayMinutes": 10102
+    },
+    {
+      "AvgDepDelay": 42.91,
+      "DelayedFlights": 108,
+      "DestCode": "BOS",
+      "FlightVolume": 234,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4615,
+      "Route": "CLT-BOS",
+      "TotalDelayMinutes": 10041
+    },
+    {
+      "AvgDepDelay": 27.35,
+      "DelayedFlights": 122,
+      "DestCode": "DFW",
+      "FlightVolume": 366,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3333,
+      "Route": "MIA-DFW",
+      "TotalDelayMinutes": 10009
+    },
+    {
+      "AvgDepDelay": 57.84,
+      "DelayedFlights": 74,
+      "DestCode": "CLT",
+      "FlightVolume": 173,
+      "OriginCode": "AUS",
+      "PctDel15": 0.4277,
+      "Route": "AUS-CLT",
+      "TotalDelayMinutes": 10006
+    },
+    {
+      "AvgDepDelay": 38.03,
+      "DelayedFlights": 104,
+      "DestCode": "CLT",
+      "FlightVolume": 262,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3969,
+      "Route": "PHL-CLT",
+      "TotalDelayMinutes": 9963
+    },
+    {
+      "AvgDepDelay": 37.81,
+      "DelayedFlights": 114,
+      "DestCode": "BOS",
+      "FlightVolume": 263,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4335,
+      "Route": "PHL-BOS",
+      "TotalDelayMinutes": 9943
+    },
+    {
+      "AvgDepDelay": 73.64,
+      "DelayedFlights": 76,
+      "DestCode": "IAH",
+      "FlightVolume": 135,
+      "OriginCode": "CLT",
+      "PctDel15": 0.563,
+      "Route": "CLT-IAH",
+      "TotalDelayMinutes": 9941
+    },
+    {
+      "AvgDepDelay": 35.24,
+      "DelayedFlights": 74,
+      "DestCode": "MIA",
+      "FlightVolume": 278,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2662,
+      "Route": "DCA-MIA",
+      "TotalDelayMinutes": 9796
+    },
+    {
+      "AvgDepDelay": 59.27,
+      "DelayedFlights": 94,
+      "DestCode": "EWR",
+      "FlightVolume": 165,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5697,
+      "Route": "CLT-EWR",
+      "TotalDelayMinutes": 9779
+    },
+    {
+      "AvgDepDelay": 35.62,
+      "DelayedFlights": 99,
+      "DestCode": "CLT",
+      "FlightVolume": 273,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3626,
+      "Route": "ORD-CLT",
+      "TotalDelayMinutes": 9723
+    },
+    {
+      "AvgDepDelay": 63.97,
+      "DelayedFlights": 83,
+      "DestCode": "PVD",
+      "FlightVolume": 150,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5533,
+      "Route": "CLT-PVD",
+      "TotalDelayMinutes": 9596
+    },
+    {
+      "AvgDepDelay": 38.92,
+      "DelayedFlights": 110,
+      "DestCode": "MIA",
+      "FlightVolume": 245,
+      "OriginCode": "CLT",
+      "PctDel15": 0.449,
+      "Route": "CLT-MIA",
+      "TotalDelayMinutes": 9536
+    },
+    {
+      "AvgDepDelay": 41.98,
+      "DelayedFlights": 80,
+      "DestCode": "DCA",
+      "FlightVolume": 227,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3524,
+      "Route": "ORD-DCA",
+      "TotalDelayMinutes": 9530
+    },
+    {
+      "AvgDepDelay": 40.26,
+      "DelayedFlights": 99,
+      "DestCode": "LAX",
+      "FlightVolume": 235,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4213,
+      "Route": "CLT-LAX",
+      "TotalDelayMinutes": 9461
+    },
+    {
+      "AvgDepDelay": 33.72,
+      "DelayedFlights": 105,
+      "DestCode": "DFW",
+      "FlightVolume": 279,
+      "OriginCode": "BNA",
+      "PctDel15": 0.3763,
+      "Route": "BNA-DFW",
+      "TotalDelayMinutes": 9408
+    },
+    {
+      "AvgDepDelay": 54,
+      "DelayedFlights": 100,
+      "DestCode": "AUS",
+      "FlightVolume": 174,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5747,
+      "Route": "CLT-AUS",
+      "TotalDelayMinutes": 9396
+    },
+    {
+      "AvgDepDelay": 49.39,
+      "DelayedFlights": 88,
+      "DestCode": "LAS",
+      "FlightVolume": 190,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4632,
+      "Route": "CLT-LAS",
+      "TotalDelayMinutes": 9384
+    },
+    {
+      "AvgDepDelay": 52.9,
+      "DelayedFlights": 100,
+      "DestCode": "FLL",
+      "FlightVolume": 175,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5714,
+      "Route": "CLT-FLL",
+      "TotalDelayMinutes": 9257
+    },
+    {
+      "AvgDepDelay": 34.41,
+      "DelayedFlights": 100,
+      "DestCode": "ORD",
+      "FlightVolume": 268,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3731,
+      "Route": "PHL-ORD",
+      "TotalDelayMinutes": 9222
+    },
+    {
+      "AvgDepDelay": 52.4,
+      "DelayedFlights": 107,
+      "DestCode": "MCI",
+      "FlightVolume": 176,
+      "OriginCode": "DFW",
+      "PctDel15": 0.608,
+      "Route": "DFW-MCI",
+      "TotalDelayMinutes": 9222
+    },
+    {
+      "AvgDepDelay": 30.81,
+      "DelayedFlights": 141,
+      "DestCode": "CLT",
+      "FlightVolume": 296,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4764,
+      "Route": "DFW-CLT",
+      "TotalDelayMinutes": 9120
+    },
+    {
+      "AvgDepDelay": 33.97,
+      "DelayedFlights": 97,
+      "DestCode": "LAX",
+      "FlightVolume": 268,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3619,
+      "Route": "ORD-LAX",
+      "TotalDelayMinutes": 9103
+    },
+    {
+      "AvgDepDelay": 34.9,
+      "DelayedFlights": 71,
+      "DestCode": "PHL",
+      "FlightVolume": 260,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2731,
+      "Route": "BOS-PHL",
+      "TotalDelayMinutes": 9073
+    },
+    {
+      "AvgDepDelay": 43.97,
+      "DelayedFlights": 96,
+      "DestCode": "TUL",
+      "FlightVolume": 206,
+      "OriginCode": "DFW",
+      "PctDel15": 0.466,
+      "Route": "DFW-TUL",
+      "TotalDelayMinutes": 9057
+    },
+    {
+      "AvgDepDelay": 44.94,
+      "DelayedFlights": 110,
+      "DestCode": "BWI",
+      "FlightVolume": 200,
+      "OriginCode": "CLT",
+      "PctDel15": 0.55,
+      "Route": "CLT-BWI",
+      "TotalDelayMinutes": 8989
+    },
+    {
+      "AvgDepDelay": 59.71,
+      "DelayedFlights": 83,
+      "DestCode": "ILM",
+      "FlightVolume": 150,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5533,
+      "Route": "CLT-ILM",
+      "TotalDelayMinutes": 8956
+    },
+    {
+      "AvgDepDelay": 36.64,
+      "DelayedFlights": 72,
+      "DestCode": "MIA",
+      "FlightVolume": 244,
+      "OriginCode": "JFK",
+      "PctDel15": 0.2951,
+      "Route": "JFK-MIA",
+      "TotalDelayMinutes": 8941
+    },
+    {
+      "AvgDepDelay": 62.08,
+      "DelayedFlights": 92,
+      "DestCode": "IND",
+      "FlightVolume": 144,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6389,
+      "Route": "CLT-IND",
+      "TotalDelayMinutes": 8939
+    },
+    {
+      "AvgDepDelay": 48.75,
+      "DelayedFlights": 101,
+      "DestCode": "SLC",
+      "FlightVolume": 181,
+      "OriginCode": "DFW",
+      "PctDel15": 0.558,
+      "Route": "DFW-SLC",
+      "TotalDelayMinutes": 8824
+    },
+    {
+      "AvgDepDelay": 60.25,
+      "DelayedFlights": 92,
+      "DestCode": "SEA",
+      "FlightVolume": 146,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6301,
+      "Route": "CLT-SEA",
+      "TotalDelayMinutes": 8796
+    },
+    {
+      "AvgDepDelay": 71.61,
+      "DelayedFlights": 32,
+      "DestCode": "MIA",
+      "FlightVolume": 122,
+      "OriginCode": "AUS",
+      "PctDel15": 0.2623,
+      "Route": "AUS-MIA",
+      "TotalDelayMinutes": 8737
+    },
+    {
+      "AvgDepDelay": 35.91,
+      "DelayedFlights": 81,
+      "DestCode": "PHX",
+      "FlightVolume": 243,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3333,
+      "Route": "ORD-PHX",
+      "TotalDelayMinutes": 8725
+    },
+    {
+      "AvgDepDelay": 62.41,
+      "DelayedFlights": 59,
+      "DestCode": "CLT",
+      "FlightVolume": 139,
+      "OriginCode": "MSY",
+      "PctDel15": 0.4245,
+      "Route": "MSY-CLT",
+      "TotalDelayMinutes": 8675
+    },
+    {
+      "AvgDepDelay": 50.36,
+      "DelayedFlights": 68,
+      "DestCode": "CLT",
+      "FlightVolume": 171,
+      "OriginCode": "RIC",
+      "PctDel15": 0.3977,
+      "Route": "RIC-CLT",
+      "TotalDelayMinutes": 8612
+    },
+    {
+      "AvgDepDelay": 49.11,
+      "DelayedFlights": 82,
+      "DestCode": "CLT",
+      "FlightVolume": 175,
+      "OriginCode": "FLL",
+      "PctDel15": 0.4686,
+      "Route": "FLL-CLT",
+      "TotalDelayMinutes": 8595
+    },
+    {
+      "AvgDepDelay": 42.32,
+      "DelayedFlights": 75,
+      "DestCode": "PHL",
+      "FlightVolume": 203,
+      "OriginCode": "MCO",
+      "PctDel15": 0.3695,
+      "Route": "MCO-PHL",
+      "TotalDelayMinutes": 8590
+    },
+    {
+      "AvgDepDelay": 102.73,
+      "DelayedFlights": 58,
+      "DestCode": "SDF",
+      "FlightVolume": 83,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6988,
+      "Route": "CLT-SDF",
+      "TotalDelayMinutes": 8527
+    },
+    {
+      "AvgDepDelay": 32.09,
+      "DelayedFlights": 98,
+      "DestCode": "DFW",
+      "FlightVolume": 265,
+      "OriginCode": "SAN",
+      "PctDel15": 0.3698,
+      "Route": "SAN-DFW",
+      "TotalDelayMinutes": 8505
+    },
+    {
+      "AvgDepDelay": 49.73,
+      "DelayedFlights": 59,
+      "DestCode": "DFW",
+      "FlightVolume": 171,
+      "OriginCode": "ABQ",
+      "PctDel15": 0.345,
+      "Route": "ABQ-DFW",
+      "TotalDelayMinutes": 8504
+    },
+    {
+      "AvgDepDelay": 34.92,
+      "DelayedFlights": 99,
+      "DestCode": "MCO",
+      "FlightVolume": 243,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4074,
+      "Route": "MIA-MCO",
+      "TotalDelayMinutes": 8485
+    },
+    {
+      "AvgDepDelay": 68.37,
+      "DelayedFlights": 68,
+      "DestCode": "DFW",
+      "FlightVolume": 123,
+      "OriginCode": "PNS",
+      "PctDel15": 0.5528,
+      "Route": "PNS-DFW",
+      "TotalDelayMinutes": 8409
+    },
+    {
+      "AvgDepDelay": 31.29,
+      "DelayedFlights": 99,
+      "DestCode": "PHL",
+      "FlightVolume": 268,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3694,
+      "Route": "ORD-PHL",
+      "TotalDelayMinutes": 8385
+    },
+    {
+      "AvgDepDelay": 50.82,
+      "DelayedFlights": 74,
+      "DestCode": "DCA",
+      "FlightVolume": 165,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4485,
+      "Route": "CLT-DCA",
+      "TotalDelayMinutes": 8385
+    },
+    {
+      "AvgDepDelay": 38.37,
+      "DelayedFlights": 81,
+      "DestCode": "DFW",
+      "FlightVolume": 218,
+      "OriginCode": "IAH",
+      "PctDel15": 0.3716,
+      "Route": "IAH-DFW",
+      "TotalDelayMinutes": 8365
+    },
+    {
+      "AvgDepDelay": 33.78,
+      "DelayedFlights": 99,
+      "DestCode": "CLT",
+      "FlightVolume": 245,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4041,
+      "Route": "MIA-CLT",
+      "TotalDelayMinutes": 8277
+    },
+    {
+      "AvgDepDelay": 41.08,
+      "DelayedFlights": 99,
+      "DestCode": "DTW",
+      "FlightVolume": 200,
+      "OriginCode": "CLT",
+      "PctDel15": 0.495,
+      "Route": "CLT-DTW",
+      "TotalDelayMinutes": 8216
+    },
+    {
+      "AvgDepDelay": 29.39,
+      "DelayedFlights": 100,
+      "DestCode": "DCA",
+      "FlightVolume": 279,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3584,
+      "Route": "MIA-DCA",
+      "TotalDelayMinutes": 8201
+    },
+    {
+      "AvgDepDelay": 49.65,
+      "DelayedFlights": 71,
+      "DestCode": "CLT",
+      "FlightVolume": 165,
+      "OriginCode": "EWR",
+      "PctDel15": 0.4303,
+      "Route": "EWR-CLT",
+      "TotalDelayMinutes": 8193
+    },
+    {
+      "AvgDepDelay": 33.9,
+      "DelayedFlights": 103,
+      "DestCode": "DFW",
+      "FlightVolume": 240,
+      "OriginCode": "MSY",
+      "PctDel15": 0.4292,
+      "Route": "MSY-DFW",
+      "TotalDelayMinutes": 8136
+    },
+    {
+      "AvgDepDelay": 45.21,
+      "DelayedFlights": 83,
+      "DestCode": "RDU",
+      "FlightVolume": 178,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4663,
+      "Route": "DFW-RDU",
+      "TotalDelayMinutes": 8047
+    },
+    {
+      "AvgDepDelay": 54.06,
+      "DelayedFlights": 87,
+      "DestCode": "CLE",
+      "FlightVolume": 148,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5878,
+      "Route": "CLT-CLE",
+      "TotalDelayMinutes": 8001
+    },
+    {
+      "AvgDepDelay": 36.17,
+      "DelayedFlights": 82,
+      "DestCode": "LGA",
+      "FlightVolume": 220,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3727,
+      "Route": "ORD-LGA",
+      "TotalDelayMinutes": 7957
+    },
+    {
+      "AvgDepDelay": 32.08,
+      "DelayedFlights": 105,
+      "DestCode": "BOS",
+      "FlightVolume": 245,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4286,
+      "Route": "DFW-BOS",
+      "TotalDelayMinutes": 7860
+    },
+    {
+      "AvgDepDelay": 45.48,
+      "DelayedFlights": 86,
+      "DestCode": "MEM",
+      "FlightVolume": 172,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5,
+      "Route": "CLT-MEM",
+      "TotalDelayMinutes": 7823
+    },
+    {
+      "AvgDepDelay": 66.45,
+      "DelayedFlights": 68,
+      "DestCode": "RSW",
+      "FlightVolume": 117,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5812,
+      "Route": "CLT-RSW",
+      "TotalDelayMinutes": 7775
+    },
+    {
+      "AvgDepDelay": 55.88,
+      "DelayedFlights": 83,
+      "DestCode": "SFO",
+      "FlightVolume": 139,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5971,
+      "Route": "CLT-SFO",
+      "TotalDelayMinutes": 7767
+    },
+    {
+      "AvgDepDelay": 64.34,
+      "DelayedFlights": 82,
+      "DestCode": "BNA",
+      "FlightVolume": 119,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6891,
+      "Route": "CLT-BNA",
+      "TotalDelayMinutes": 7657
+    },
+    {
+      "AvgDepDelay": 28.59,
+      "DelayedFlights": 98,
+      "DestCode": "LGA",
+      "FlightVolume": 267,
+      "OriginCode": "MIA",
+      "PctDel15": 0.367,
+      "Route": "MIA-LGA",
+      "TotalDelayMinutes": 7633
+    },
+    {
+      "AvgDepDelay": 41.15,
+      "DelayedFlights": 79,
+      "DestCode": "PHL",
+      "FlightVolume": 184,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4293,
+      "Route": "MIA-PHL",
+      "TotalDelayMinutes": 7571
+    },
+    {
+      "AvgDepDelay": 43.8,
+      "DelayedFlights": 80,
+      "DestCode": "TUS",
+      "FlightVolume": 172,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4651,
+      "Route": "DFW-TUS",
+      "TotalDelayMinutes": 7533
+    },
+    {
+      "AvgDepDelay": 63.83,
+      "DelayedFlights": 42,
+      "DestCode": "PHX",
+      "FlightVolume": 118,
+      "OriginCode": "SFO",
+      "PctDel15": 0.3559,
+      "Route": "SFO-PHX",
+      "TotalDelayMinutes": 7532
+    },
+    {
+      "AvgDepDelay": 48.22,
+      "DelayedFlights": 62,
+      "DestCode": "DFW",
+      "FlightVolume": 156,
+      "OriginCode": "MFE",
+      "PctDel15": 0.3974,
+      "Route": "MFE-DFW",
+      "TotalDelayMinutes": 7523
+    },
+    {
+      "AvgDepDelay": 35.75,
+      "DelayedFlights": 68,
+      "DestCode": "DFW",
+      "FlightVolume": 210,
+      "OriginCode": "TPA",
+      "PctDel15": 0.3238,
+      "Route": "TPA-DFW",
+      "TotalDelayMinutes": 7508
+    },
+    {
+      "AvgDepDelay": 64.14,
+      "DelayedFlights": 58,
+      "DestCode": "CLT",
+      "FlightVolume": 117,
+      "OriginCode": "RSW",
+      "PctDel15": 0.4957,
+      "Route": "RSW-CLT",
+      "TotalDelayMinutes": 7504
+    },
+    {
+      "AvgDepDelay": 31.23,
+      "DelayedFlights": 123,
+      "DestCode": "MSY",
+      "FlightVolume": 239,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5146,
+      "Route": "DFW-MSY",
+      "TotalDelayMinutes": 7463
+    },
+    {
+      "AvgDepDelay": 55.13,
+      "DelayedFlights": 62,
+      "DestCode": "CLT",
+      "FlightVolume": 135,
+      "OriginCode": "IAH",
+      "PctDel15": 0.4593,
+      "Route": "IAH-CLT",
+      "TotalDelayMinutes": 7442
+    },
+    {
+      "AvgDepDelay": 27.47,
+      "DelayedFlights": 106,
+      "DestCode": "SEA",
+      "FlightVolume": 269,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3941,
+      "Route": "DFW-SEA",
+      "TotalDelayMinutes": 7389
+    },
+    {
+      "AvgDepDelay": 49.8,
+      "DelayedFlights": 81,
+      "DestCode": "DEN",
+      "FlightVolume": 148,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5473,
+      "Route": "CLT-DEN",
+      "TotalDelayMinutes": 7371
+    },
+    {
+      "AvgDepDelay": 82.67,
+      "DelayedFlights": 38,
+      "DestCode": "EGE",
+      "FlightVolume": 89,
+      "OriginCode": "DFW",
+      "PctDel15": 0.427,
+      "Route": "DFW-EGE",
+      "TotalDelayMinutes": 7358
+    },
+    {
+      "AvgDepDelay": 27.31,
+      "DelayedFlights": 82,
+      "DestCode": "DFW",
+      "FlightVolume": 269,
+      "OriginCode": "SEA",
+      "PctDel15": 0.3048,
+      "Route": "SEA-DFW",
+      "TotalDelayMinutes": 7347
+    },
+    {
+      "AvgDepDelay": 31.32,
+      "DelayedFlights": 70,
+      "DestCode": "DCA",
+      "FlightVolume": 234,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2991,
+      "Route": "BOS-DCA",
+      "TotalDelayMinutes": 7329
+    },
+    {
+      "AvgDepDelay": 36.79,
+      "DelayedFlights": 72,
+      "DestCode": "CLT",
+      "FlightVolume": 199,
+      "OriginCode": "BWI",
+      "PctDel15": 0.3618,
+      "Route": "BWI-CLT",
+      "TotalDelayMinutes": 7321
+    },
+    {
+      "AvgDepDelay": 32.08,
+      "DelayedFlights": 101,
+      "DestCode": "ATL",
+      "FlightVolume": 228,
+      "OriginCode": "DFW",
+      "PctDel15": 0.443,
+      "Route": "DFW-ATL",
+      "TotalDelayMinutes": 7315
+    },
+    {
+      "AvgDepDelay": 61.92,
+      "DelayedFlights": 51,
+      "DestCode": "ORD",
+      "FlightVolume": 118,
+      "OriginCode": "EWR",
+      "PctDel15": 0.4322,
+      "Route": "EWR-ORD",
+      "TotalDelayMinutes": 7307
+    },
+    {
+      "AvgDepDelay": 23.47,
+      "DelayedFlights": 81,
+      "DestCode": "DFW",
+      "FlightVolume": 311,
+      "OriginCode": "LGA",
+      "PctDel15": 0.2605,
+      "Route": "LGA-DFW",
+      "TotalDelayMinutes": 7299
+    },
+    {
+      "AvgDepDelay": 49.76,
+      "DelayedFlights": 84,
+      "DestCode": "PIT",
+      "FlightVolume": 146,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5753,
+      "Route": "CLT-PIT",
+      "TotalDelayMinutes": 7265
+    },
+    {
+      "AvgDepDelay": 48.99,
+      "DelayedFlights": 72,
+      "DestCode": "JFK",
+      "FlightVolume": 148,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4865,
+      "Route": "CLT-JFK",
+      "TotalDelayMinutes": 7251
+    },
+    {
+      "AvgDepDelay": 29.95,
+      "DelayedFlights": 80,
+      "DestCode": "MIA",
+      "FlightVolume": 242,
+      "OriginCode": "MCO",
+      "PctDel15": 0.3306,
+      "Route": "MCO-MIA",
+      "TotalDelayMinutes": 7248
+    },
+    {
+      "AvgDepDelay": 43.11,
+      "DelayedFlights": 68,
+      "DestCode": "CLT",
+      "FlightVolume": 168,
+      "OriginCode": "JAX",
+      "PctDel15": 0.4048,
+      "Route": "JAX-CLT",
+      "TotalDelayMinutes": 7243
+    },
+    {
+      "AvgDepDelay": 38.13,
+      "DelayedFlights": 68,
+      "DestCode": "CLT",
+      "FlightVolume": 189,
+      "OriginCode": "LAS",
+      "PctDel15": 0.3598,
+      "Route": "LAS-CLT",
+      "TotalDelayMinutes": 7207
+    },
+    {
+      "AvgDepDelay": 40.39,
+      "DelayedFlights": 87,
+      "DestCode": "BDL",
+      "FlightVolume": 177,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4915,
+      "Route": "CLT-BDL",
+      "TotalDelayMinutes": 7149
+    },
+    {
+      "AvgDepDelay": 30.46,
+      "DelayedFlights": 74,
+      "DestCode": "BOS",
+      "FlightVolume": 234,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3162,
+      "Route": "DCA-BOS",
+      "TotalDelayMinutes": 7128
+    },
+    {
+      "AvgDepDelay": 34.52,
+      "DelayedFlights": 90,
+      "DestCode": "MCO",
+      "FlightVolume": 206,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4369,
+      "Route": "PHL-MCO",
+      "TotalDelayMinutes": 7111
+    },
+    {
+      "AvgDepDelay": 81.33,
+      "DelayedFlights": 54,
+      "DestCode": "SRQ",
+      "FlightVolume": 87,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6207,
+      "Route": "CLT-SRQ",
+      "TotalDelayMinutes": 7076
+    },
+    {
+      "AvgDepDelay": 24.27,
+      "DelayedFlights": 96,
+      "DestCode": "DFW",
+      "FlightVolume": 290,
+      "OriginCode": "SFO",
+      "PctDel15": 0.331,
+      "Route": "SFO-DFW",
+      "TotalDelayMinutes": 7039
+    },
+    {
+      "AvgDepDelay": 48.16,
+      "DelayedFlights": 65,
+      "DestCode": "PBI",
+      "FlightVolume": 146,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4452,
+      "Route": "CLT-PBI",
+      "TotalDelayMinutes": 7031
+    },
+    {
+      "AvgDepDelay": 46.78,
+      "DelayedFlights": 60,
+      "DestCode": "CLT",
+      "FlightVolume": 150,
+      "OriginCode": "PVD",
+      "PctDel15": 0.4,
+      "Route": "PVD-CLT",
+      "TotalDelayMinutes": 7017
+    },
+    {
+      "AvgDepDelay": 44.85,
+      "DelayedFlights": 71,
+      "DestCode": "TPA",
+      "FlightVolume": 156,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4551,
+      "Route": "MIA-TPA",
+      "TotalDelayMinutes": 6997
+    },
+    {
+      "AvgDepDelay": 59.24,
+      "DelayedFlights": 49,
+      "DestCode": "CLT",
+      "FlightVolume": 118,
+      "OriginCode": "BNA",
+      "PctDel15": 0.4153,
+      "Route": "BNA-CLT",
+      "TotalDelayMinutes": 6990
+    },
+    {
+      "AvgDepDelay": 32.19,
+      "DelayedFlights": 91,
+      "DestCode": "LAX",
+      "FlightVolume": 217,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4194,
+      "Route": "MIA-LAX",
+      "TotalDelayMinutes": 6986
+    },
+    {
+      "AvgDepDelay": 22.34,
+      "DelayedFlights": 117,
+      "DestCode": "LGA",
+      "FlightVolume": 312,
+      "OriginCode": "DFW",
+      "PctDel15": 0.375,
+      "Route": "DFW-LGA",
+      "TotalDelayMinutes": 6969
+    },
+    {
+      "AvgDepDelay": 39.14,
+      "DelayedFlights": 85,
+      "DestCode": "ONT",
+      "FlightVolume": 178,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4775,
+      "Route": "DFW-ONT",
+      "TotalDelayMinutes": 6967
+    },
+    {
+      "AvgDepDelay": 27.41,
+      "DelayedFlights": 86,
+      "DestCode": "DCA",
+      "FlightVolume": 254,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3386,
+      "Route": "DFW-DCA",
+      "TotalDelayMinutes": 6961
+    },
+    {
+      "AvgDepDelay": 46.6,
+      "DelayedFlights": 56,
+      "DestCode": "CLT",
+      "FlightVolume": 149,
+      "OriginCode": "ILM",
+      "PctDel15": 0.3758,
+      "Route": "ILM-CLT",
+      "TotalDelayMinutes": 6943
+    },
+    {
+      "AvgDepDelay": 30.43,
+      "DelayedFlights": 68,
+      "DestCode": "CLT",
+      "FlightVolume": 228,
+      "OriginCode": "CHS",
+      "PctDel15": 0.2982,
+      "Route": "CHS-CLT",
+      "TotalDelayMinutes": 6937
+    },
+    {
+      "AvgDepDelay": 25.56,
+      "DelayedFlights": 66,
+      "DestCode": "MIA",
+      "FlightVolume": 267,
+      "OriginCode": "LGA",
+      "PctDel15": 0.2472,
+      "Route": "LGA-MIA",
+      "TotalDelayMinutes": 6824
+    },
+    {
+      "AvgDepDelay": 44.49,
+      "DelayedFlights": 45,
+      "DestCode": "MIA",
+      "FlightVolume": 153,
+      "OriginCode": "SJU",
+      "PctDel15": 0.2941,
+      "Route": "SJU-MIA",
+      "TotalDelayMinutes": 6807
+    },
+    {
+      "AvgDepDelay": 44.44,
+      "DelayedFlights": 56,
+      "DestCode": "MIA",
+      "FlightVolume": 153,
+      "OriginCode": "ATL",
+      "PctDel15": 0.366,
+      "Route": "ATL-MIA",
+      "TotalDelayMinutes": 6799
+    },
+    {
+      "AvgDepDelay": 75.48,
+      "DelayedFlights": 48,
+      "DestCode": "MIA",
+      "FlightVolume": 90,
+      "OriginCode": "LAS",
+      "PctDel15": 0.5333,
+      "Route": "LAS-MIA",
+      "TotalDelayMinutes": 6793
+    },
+    {
+      "AvgDepDelay": 57.27,
+      "DelayedFlights": 61,
+      "DestCode": "EWR",
+      "FlightVolume": 118,
+      "OriginCode": "ORD",
+      "PctDel15": 0.5169,
+      "Route": "ORD-EWR",
+      "TotalDelayMinutes": 6758
+    },
+    {
+      "AvgDepDelay": 32.81,
+      "DelayedFlights": 73,
+      "DestCode": "DFW",
+      "FlightVolume": 206,
+      "OriginCode": "TUL",
+      "PctDel15": 0.3544,
+      "Route": "TUL-DFW",
+      "TotalDelayMinutes": 6758
+    },
+    {
+      "AvgDepDelay": 57.74,
+      "DelayedFlights": 67,
+      "DestCode": "DSM",
+      "FlightVolume": 117,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5726,
+      "Route": "DFW-DSM",
+      "TotalDelayMinutes": 6755
+    },
+    {
+      "AvgDepDelay": 24.13,
+      "DelayedFlights": 71,
+      "DestCode": "LAX",
+      "FlightVolume": 277,
+      "OriginCode": "JFK",
+      "PctDel15": 0.2563,
+      "Route": "JFK-LAX",
+      "TotalDelayMinutes": 6683
+    },
+    {
+      "AvgDepDelay": 44.73,
+      "DelayedFlights": 66,
+      "DestCode": "STL",
+      "FlightVolume": 149,
+      "OriginCode": "CLT",
+      "PctDel15": 0.443,
+      "Route": "CLT-STL",
+      "TotalDelayMinutes": 6665
+    },
+    {
+      "AvgDepDelay": 43.09,
+      "DelayedFlights": 56,
+      "DestCode": "DCA",
+      "FlightVolume": 153,
+      "OriginCode": "MCO",
+      "PctDel15": 0.366,
+      "Route": "MCO-DCA",
+      "TotalDelayMinutes": 6593
+    },
+    {
+      "AvgDepDelay": 26.57,
+      "DelayedFlights": 87,
+      "DestCode": "JFK",
+      "FlightVolume": 247,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3522,
+      "Route": "MIA-JFK",
+      "TotalDelayMinutes": 6562
+    },
+    {
+      "AvgDepDelay": 25.5,
+      "DelayedFlights": 96,
+      "DestCode": "DEN",
+      "FlightVolume": 255,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3765,
+      "Route": "DFW-DEN",
+      "TotalDelayMinutes": 6503
+    },
+    {
+      "AvgDepDelay": 32.19,
+      "DelayedFlights": 87,
+      "DestCode": "BOS",
+      "FlightVolume": 201,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4328,
+      "Route": "ORD-BOS",
+      "TotalDelayMinutes": 6471
+    },
+    {
+      "AvgDepDelay": 25.38,
+      "DelayedFlights": 84,
+      "DestCode": "CLT",
+      "FlightVolume": 255,
+      "OriginCode": "LGA",
+      "PctDel15": 0.3294,
+      "Route": "LGA-CLT",
+      "TotalDelayMinutes": 6471
+    },
+    {
+      "AvgDepDelay": 73.92,
+      "DelayedFlights": 48,
+      "DestCode": "ALB",
+      "FlightVolume": 87,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5517,
+      "Route": "CLT-ALB",
+      "TotalDelayMinutes": 6431
+    },
+    {
+      "AvgDepDelay": 39.18,
+      "DelayedFlights": 59,
+      "DestCode": "CLT",
+      "FlightVolume": 164,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3598,
+      "Route": "DCA-CLT",
+      "TotalDelayMinutes": 6425
+    },
+    {
+      "AvgDepDelay": 35.98,
+      "DelayedFlights": 82,
+      "DestCode": "PDX",
+      "FlightVolume": 178,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4607,
+      "Route": "DFW-PDX",
+      "TotalDelayMinutes": 6405
+    },
+    {
+      "AvgDepDelay": 24.74,
+      "DelayedFlights": 68,
+      "DestCode": "DFW",
+      "FlightVolume": 256,
+      "OriginCode": "DEN",
+      "PctDel15": 0.2656,
+      "Route": "DEN-DFW",
+      "TotalDelayMinutes": 6334
+    },
+    {
+      "AvgDepDelay": 41.7,
+      "DelayedFlights": 68,
+      "DestCode": "OKC",
+      "FlightVolume": 151,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4503,
+      "Route": "DFW-OKC",
+      "TotalDelayMinutes": 6296
+    },
+    {
+      "AvgDepDelay": 31.45,
+      "DelayedFlights": 58,
+      "DestCode": "CLT",
+      "FlightVolume": 198,
+      "OriginCode": "DTW",
+      "PctDel15": 0.2929,
+      "Route": "DTW-CLT",
+      "TotalDelayMinutes": 6228
+    },
+    {
+      "AvgDepDelay": 28.69,
+      "DelayedFlights": 68,
+      "DestCode": "MIA",
+      "FlightVolume": 217,
+      "OriginCode": "LAX",
+      "PctDel15": 0.3134,
+      "Route": "LAX-MIA",
+      "TotalDelayMinutes": 6225
+    },
+    {
+      "AvgDepDelay": 42.27,
+      "DelayedFlights": 54,
+      "DestCode": "DFW",
+      "FlightVolume": 147,
+      "OriginCode": "CVG",
+      "PctDel15": 0.3673,
+      "Route": "CVG-DFW",
+      "TotalDelayMinutes": 6214
+    },
+    {
+      "AvgDepDelay": 53.62,
+      "DelayedFlights": 69,
+      "DestCode": "SAT",
+      "FlightVolume": 115,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6,
+      "Route": "CLT-SAT",
+      "TotalDelayMinutes": 6166
+    },
+    {
+      "AvgDepDelay": 44.26,
+      "DelayedFlights": 74,
+      "DestCode": "MSY",
+      "FlightVolume": 139,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5324,
+      "Route": "CLT-MSY",
+      "TotalDelayMinutes": 6152
+    },
+    {
+      "AvgDepDelay": 70.17,
+      "DelayedFlights": 47,
+      "DestCode": "CLT",
+      "FlightVolume": 87,
+      "OriginCode": "ALB",
+      "PctDel15": 0.5402,
+      "Route": "ALB-CLT",
+      "TotalDelayMinutes": 6105
+    },
+    {
+      "AvgDepDelay": 39.75,
+      "DelayedFlights": 62,
+      "DestCode": "RDU",
+      "FlightVolume": 153,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4052,
+      "Route": "MIA-RDU",
+      "TotalDelayMinutes": 6081
+    },
+    {
+      "AvgDepDelay": 39.98,
+      "DelayedFlights": 89,
+      "DestCode": "ELP",
+      "FlightVolume": 152,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5855,
+      "Route": "DFW-ELP",
+      "TotalDelayMinutes": 6077
+    },
+    {
+      "AvgDepDelay": 40.33,
+      "DelayedFlights": 46,
+      "DestCode": "CLT",
+      "FlightVolume": 150,
+      "OriginCode": "JFK",
+      "PctDel15": 0.3067,
+      "Route": "JFK-CLT",
+      "TotalDelayMinutes": 6050
+    },
+    {
+      "AvgDepDelay": 33.39,
+      "DelayedFlights": 79,
+      "DestCode": "JAX",
+      "FlightVolume": 181,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4365,
+      "Route": "DFW-JAX",
+      "TotalDelayMinutes": 6043
+    },
+    {
+      "AvgDepDelay": 68.36,
+      "DelayedFlights": 50,
+      "DestCode": "MKE",
+      "FlightVolume": 88,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5682,
+      "Route": "CLT-MKE",
+      "TotalDelayMinutes": 6016
+    },
+    {
+      "AvgDepDelay": 23.62,
+      "DelayedFlights": 74,
+      "DestCode": "DFW",
+      "FlightVolume": 253,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2925,
+      "Route": "DCA-DFW",
+      "TotalDelayMinutes": 5976
+    },
+    {
+      "AvgDepDelay": 38.73,
+      "DelayedFlights": 46,
+      "DestCode": "PHX",
+      "FlightVolume": 154,
+      "OriginCode": "SAN",
+      "PctDel15": 0.2987,
+      "Route": "SAN-PHX",
+      "TotalDelayMinutes": 5965
+    },
+    {
+      "AvgDepDelay": 51.03,
+      "DelayedFlights": 50,
+      "DestCode": "CLT",
+      "FlightVolume": 116,
+      "OriginCode": "MCI",
+      "PctDel15": 0.431,
+      "Route": "MCI-CLT",
+      "TotalDelayMinutes": 5920
+    },
+    {
+      "AvgDepDelay": 93.94,
+      "DelayedFlights": 27,
+      "DestCode": "DFW",
+      "FlightVolume": 63,
+      "OriginCode": "JAC",
+      "PctDel15": 0.4286,
+      "Route": "JAC-DFW",
+      "TotalDelayMinutes": 5918
+    },
+    {
+      "AvgDepDelay": 40.77,
+      "DelayedFlights": 64,
+      "DestCode": "SAN",
+      "FlightVolume": 145,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4414,
+      "Route": "CLT-SAN",
+      "TotalDelayMinutes": 5912
+    },
+    {
+      "AvgDepDelay": 27.91,
+      "DelayedFlights": 85,
+      "DestCode": "TPA",
+      "FlightVolume": 211,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4028,
+      "Route": "DFW-TPA",
+      "TotalDelayMinutes": 5888
+    },
+    {
+      "AvgDepDelay": 24.09,
+      "DelayedFlights": 75,
+      "DestCode": "ORD",
+      "FlightVolume": 244,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3074,
+      "Route": "PHX-ORD",
+      "TotalDelayMinutes": 5877
+    },
+    {
+      "AvgDepDelay": 72.37,
+      "DelayedFlights": 59,
+      "DestCode": "GSO",
+      "FlightVolume": 81,
+      "OriginCode": "CLT",
+      "PctDel15": 0.7284,
+      "Route": "CLT-GSO",
+      "TotalDelayMinutes": 5862
+    },
+    {
+      "AvgDepDelay": 50.94,
+      "DelayedFlights": 50,
+      "DestCode": "DFW",
+      "FlightVolume": 115,
+      "OriginCode": "RSW",
+      "PctDel15": 0.4348,
+      "Route": "RSW-DFW",
+      "TotalDelayMinutes": 5858
+    },
+    {
+      "AvgDepDelay": 32.71,
+      "DelayedFlights": 69,
+      "DestCode": "BOS",
+      "FlightVolume": 179,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3855,
+      "Route": "MIA-BOS",
+      "TotalDelayMinutes": 5855
+    },
+    {
+      "AvgDepDelay": 40.8,
+      "DelayedFlights": 71,
+      "DestCode": "MEM",
+      "FlightVolume": 143,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4965,
+      "Route": "DFW-MEM",
+      "TotalDelayMinutes": 5835
+    },
+    {
+      "AvgDepDelay": 32.85,
+      "DelayedFlights": 61,
+      "DestCode": "DFW",
+      "FlightVolume": 177,
+      "OriginCode": "RDU",
+      "PctDel15": 0.3446,
+      "Route": "RDU-DFW",
+      "TotalDelayMinutes": 5815
+    },
+    {
+      "AvgDepDelay": 33.16,
+      "DelayedFlights": 55,
+      "DestCode": "LAX",
+      "FlightVolume": 175,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3143,
+      "Route": "PHX-LAX",
+      "TotalDelayMinutes": 5803
+    },
+    {
+      "AvgDepDelay": 26.33,
+      "DelayedFlights": 56,
+      "DestCode": "ORD",
+      "FlightVolume": 220,
+      "OriginCode": "LGA",
+      "PctDel15": 0.2545,
+      "Route": "LGA-ORD",
+      "TotalDelayMinutes": 5793
+    },
+    {
+      "AvgDepDelay": 21.61,
+      "DelayedFlights": 63,
+      "DestCode": "ORD",
+      "FlightVolume": 268,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2351,
+      "Route": "LAX-ORD",
+      "TotalDelayMinutes": 5792
+    },
+    {
+      "AvgDepDelay": 51.04,
+      "DelayedFlights": 63,
+      "DestCode": "LEX",
+      "FlightVolume": 113,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5575,
+      "Route": "CLT-LEX",
+      "TotalDelayMinutes": 5767
+    },
+    {
+      "AvgDepDelay": 53.21,
+      "DelayedFlights": 42,
+      "DestCode": "MIA",
+      "FlightVolume": 108,
+      "OriginCode": "IAH",
+      "PctDel15": 0.3889,
+      "Route": "IAH-MIA",
+      "TotalDelayMinutes": 5747
+    },
+    {
+      "AvgDepDelay": 49.1,
+      "DelayedFlights": 58,
+      "DestCode": "DFW",
+      "FlightVolume": 117,
+      "OriginCode": "DSM",
+      "PctDel15": 0.4957,
+      "Route": "DSM-DFW",
+      "TotalDelayMinutes": 5745
+    },
+    {
+      "AvgDepDelay": 46.59,
+      "DelayedFlights": 32,
+      "DestCode": "DFW",
+      "FlightVolume": 123,
+      "OriginCode": "VPS",
+      "PctDel15": 0.2602,
+      "Route": "VPS-DFW",
+      "TotalDelayMinutes": 5731
+    },
+    {
+      "AvgDepDelay": 95.08,
+      "DelayedFlights": 40,
+      "DestCode": "CID",
+      "FlightVolume": 60,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6667,
+      "Route": "DFW-CID",
+      "TotalDelayMinutes": 5705
+    },
+    {
+      "AvgDepDelay": 38.17,
+      "DelayedFlights": 88,
+      "DestCode": "SMF",
+      "FlightVolume": 149,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5906,
+      "Route": "DFW-SMF",
+      "TotalDelayMinutes": 5688
+    },
+    {
+      "AvgDepDelay": 46.18,
+      "DelayedFlights": 65,
+      "DestCode": "PNS",
+      "FlightVolume": 123,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5285,
+      "Route": "DFW-PNS",
+      "TotalDelayMinutes": 5680
+    },
+    {
+      "AvgDepDelay": 37.07,
+      "DelayedFlights": 62,
+      "DestCode": "ATL",
+      "FlightVolume": 153,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4052,
+      "Route": "MIA-ATL",
+      "TotalDelayMinutes": 5671
+    },
+    {
+      "AvgDepDelay": 26.37,
+      "DelayedFlights": 59,
+      "DestCode": "PHL",
+      "FlightVolume": 210,
+      "OriginCode": "PHX",
+      "PctDel15": 0.281,
+      "Route": "PHX-PHL",
+      "TotalDelayMinutes": 5538
+    },
+    {
+      "AvgDepDelay": 46.07,
+      "DelayedFlights": 23,
+      "DestCode": "PHX",
+      "FlightVolume": 120,
+      "OriginCode": "SMF",
+      "PctDel15": 0.1917,
+      "Route": "SMF-PHX",
+      "TotalDelayMinutes": 5528
+    },
+    {
+      "AvgDepDelay": 37.85,
+      "DelayedFlights": 73,
+      "DestCode": "FAT",
+      "FlightVolume": 146,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5,
+      "Route": "DFW-FAT",
+      "TotalDelayMinutes": 5526
+    },
+    {
+      "AvgDepDelay": 89.1,
+      "DelayedFlights": 31,
+      "DestCode": "SJU",
+      "FlightVolume": 62,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5,
+      "Route": "CLT-SJU",
+      "TotalDelayMinutes": 5524
+    },
+    {
+      "AvgDepDelay": 93.42,
+      "DelayedFlights": 37,
+      "DestCode": "ICT",
+      "FlightVolume": 59,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6271,
+      "Route": "DFW-ICT",
+      "TotalDelayMinutes": 5512
+    },
+    {
+      "AvgDepDelay": 25.35,
+      "DelayedFlights": 64,
+      "DestCode": "MIA",
+      "FlightVolume": 217,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2949,
+      "Route": "ORD-MIA",
+      "TotalDelayMinutes": 5500
+    },
+    {
+      "AvgDepDelay": 77.36,
+      "DelayedFlights": 41,
+      "DestCode": "GSP",
+      "FlightVolume": 70,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5857,
+      "Route": "CLT-GSP",
+      "TotalDelayMinutes": 5415
+    },
+    {
+      "AvgDepDelay": 36.39,
+      "DelayedFlights": 63,
+      "DestCode": "CLT",
+      "FlightVolume": 148,
+      "OriginCode": "CLE",
+      "PctDel15": 0.4257,
+      "Route": "CLE-CLT",
+      "TotalDelayMinutes": 5386
+    },
+    {
+      "AvgDepDelay": 29.59,
+      "DelayedFlights": 63,
+      "DestCode": "DFW",
+      "FlightVolume": 180,
+      "OriginCode": "JAX",
+      "PctDel15": 0.35,
+      "Route": "JAX-DFW",
+      "TotalDelayMinutes": 5326
+    },
+    {
+      "AvgDepDelay": 43.85,
+      "DelayedFlights": 47,
+      "DestCode": "EWR",
+      "FlightVolume": 121,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3884,
+      "Route": "MIA-EWR",
+      "TotalDelayMinutes": 5306
+    },
+    {
+      "AvgDepDelay": 60.03,
+      "DelayedFlights": 28,
+      "DestCode": "MIA",
+      "FlightVolume": 88,
+      "OriginCode": "SFO",
+      "PctDel15": 0.3182,
+      "Route": "SFO-MIA",
+      "TotalDelayMinutes": 5283
+    },
+    {
+      "AvgDepDelay": 36.14,
+      "DelayedFlights": 43,
+      "DestCode": "CLT",
+      "FlightVolume": 146,
+      "OriginCode": "SEA",
+      "PctDel15": 0.2945,
+      "Route": "SEA-CLT",
+      "TotalDelayMinutes": 5276
+    },
+    {
+      "AvgDepDelay": 43.72,
+      "DelayedFlights": 53,
+      "DestCode": "BUF",
+      "FlightVolume": 120,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4417,
+      "Route": "CLT-BUF",
+      "TotalDelayMinutes": 5247
+    },
+    {
+      "AvgDepDelay": 35.21,
+      "DelayedFlights": 66,
+      "DestCode": "DFW",
+      "FlightVolume": 149,
+      "OriginCode": "SMF",
+      "PctDel15": 0.443,
+      "Route": "SMF-DFW",
+      "TotalDelayMinutes": 5247
+    },
+    {
+      "AvgDepDelay": 43.33,
+      "DelayedFlights": 51,
+      "DestCode": "MIA",
+      "FlightVolume": 121,
+      "OriginCode": "EWR",
+      "PctDel15": 0.4215,
+      "Route": "EWR-MIA",
+      "TotalDelayMinutes": 5243
+    },
+    {
+      "AvgDepDelay": 90.03,
+      "DelayedFlights": 40,
+      "DestCode": "TYS",
+      "FlightVolume": 58,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6897,
+      "Route": "CLT-TYS",
+      "TotalDelayMinutes": 5222
+    },
+    {
+      "AvgDepDelay": 47.96,
+      "DelayedFlights": 36,
+      "DestCode": "MIA",
+      "FlightVolume": 107,
+      "OriginCode": "JAX",
+      "PctDel15": 0.3364,
+      "Route": "JAX-MIA",
+      "TotalDelayMinutes": 5132
+    },
+    {
+      "AvgDepDelay": 43.01,
+      "DelayedFlights": 39,
+      "DestCode": "PHL",
+      "FlightVolume": 119,
+      "OriginCode": "TPA",
+      "PctDel15": 0.3277,
+      "Route": "TPA-PHL",
+      "TotalDelayMinutes": 5118
+    },
+    {
+      "AvgDepDelay": 28.74,
+      "DelayedFlights": 73,
+      "DestCode": "FLL",
+      "FlightVolume": 178,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4101,
+      "Route": "DFW-FLL",
+      "TotalDelayMinutes": 5115
+    },
+    {
+      "AvgDepDelay": 30.52,
+      "DelayedFlights": 68,
+      "DestCode": "RDU",
+      "FlightVolume": 167,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4072,
+      "Route": "PHL-RDU",
+      "TotalDelayMinutes": 5097
+    },
+    {
+      "AvgDepDelay": 84.82,
+      "DelayedFlights": 30,
+      "DestCode": "DFW",
+      "FlightVolume": 60,
+      "OriginCode": "EYW",
+      "PctDel15": 0.5,
+      "Route": "EYW-DFW",
+      "TotalDelayMinutes": 5089
+    },
+    {
+      "AvgDepDelay": 91.89,
+      "DelayedFlights": 38,
+      "DestCode": "ROC",
+      "FlightVolume": 55,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6909,
+      "Route": "CLT-ROC",
+      "TotalDelayMinutes": 5054
+    },
+    {
+      "AvgDepDelay": 41.85,
+      "DelayedFlights": 43,
+      "DestCode": "CLT",
+      "FlightVolume": 120,
+      "OriginCode": "BUF",
+      "PctDel15": 0.3583,
+      "Route": "BUF-CLT",
+      "TotalDelayMinutes": 5022
+    },
+    {
+      "AvgDepDelay": 44.71,
+      "DelayedFlights": 48,
+      "DestCode": "BNA",
+      "FlightVolume": 112,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4286,
+      "Route": "PHL-BNA",
+      "TotalDelayMinutes": 5007
+    },
+    {
+      "AvgDepDelay": 27.86,
+      "DelayedFlights": 57,
+      "DestCode": "DFW",
+      "FlightVolume": 179,
+      "OriginCode": "PDX",
+      "PctDel15": 0.3184,
+      "Route": "PDX-DFW",
+      "TotalDelayMinutes": 4987
+    },
+    {
+      "AvgDepDelay": 59.14,
+      "DelayedFlights": 52,
+      "DestCode": "CMH",
+      "FlightVolume": 84,
+      "OriginCode": "CLT",
+      "PctDel15": 0.619,
+      "Route": "CLT-CMH",
+      "TotalDelayMinutes": 4968
+    },
+    {
+      "AvgDepDelay": 60.86,
+      "DelayedFlights": 49,
+      "DestCode": "CLT",
+      "FlightVolume": 81,
+      "OriginCode": "GSO",
+      "PctDel15": 0.6049,
+      "Route": "GSO-CLT",
+      "TotalDelayMinutes": 4930
+    },
+    {
+      "AvgDepDelay": 46.07,
+      "DelayedFlights": 70,
+      "DestCode": "CVG",
+      "FlightVolume": 107,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6542,
+      "Route": "CLT-CVG",
+      "TotalDelayMinutes": 4929
+    },
+    {
+      "AvgDepDelay": 43.3,
+      "DelayedFlights": 57,
+      "DestCode": "CLT",
+      "FlightVolume": 113,
+      "OriginCode": "LEX",
+      "PctDel15": 0.5044,
+      "Route": "LEX-CLT",
+      "TotalDelayMinutes": 4893
+    },
+    {
+      "AvgDepDelay": 33.09,
+      "DelayedFlights": 65,
+      "DestCode": "STL",
+      "FlightVolume": 147,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4422,
+      "Route": "DFW-STL",
+      "TotalDelayMinutes": 4864
+    },
+    {
+      "AvgDepDelay": 23.26,
+      "DelayedFlights": 46,
+      "DestCode": "PHL",
+      "FlightVolume": 209,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2201,
+      "Route": "LAX-PHL",
+      "TotalDelayMinutes": 4861
+    },
+    {
+      "AvgDepDelay": 32.62,
+      "DelayedFlights": 60,
+      "DestCode": "CLE",
+      "FlightVolume": 149,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4027,
+      "Route": "DFW-CLE",
+      "TotalDelayMinutes": 4860
+    },
+    {
+      "AvgDepDelay": 41.84,
+      "DelayedFlights": 46,
+      "DestCode": "MYR",
+      "FlightVolume": 116,
+      "OriginCode": "CLT",
+      "PctDel15": 0.3966,
+      "Route": "CLT-MYR",
+      "TotalDelayMinutes": 4854
+    },
+    {
+      "AvgDepDelay": 23.22,
+      "DelayedFlights": 78,
+      "DestCode": "PHX",
+      "FlightVolume": 209,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3732,
+      "Route": "PHL-PHX",
+      "TotalDelayMinutes": 4852
+    },
+    {
+      "AvgDepDelay": 42.51,
+      "DelayedFlights": 41,
+      "DestCode": "CLT",
+      "FlightVolume": 114,
+      "OriginCode": "ORF",
+      "PctDel15": 0.3596,
+      "Route": "ORF-CLT",
+      "TotalDelayMinutes": 4846
+    },
+    {
+      "AvgDepDelay": 27.36,
+      "DelayedFlights": 63,
+      "DestCode": "CLT",
+      "FlightVolume": 177,
+      "OriginCode": "BDL",
+      "PctDel15": 0.3559,
+      "Route": "BDL-CLT",
+      "TotalDelayMinutes": 4842
+    },
+    {
+      "AvgDepDelay": 28.65,
+      "DelayedFlights": 52,
+      "DestCode": "PHL",
+      "FlightVolume": 168,
+      "OriginCode": "RDU",
+      "PctDel15": 0.3095,
+      "Route": "RDU-PHL",
+      "TotalDelayMinutes": 4813
+    },
+    {
+      "AvgDepDelay": 33.13,
+      "DelayedFlights": 45,
+      "DestCode": "CLT",
+      "FlightVolume": 145,
+      "OriginCode": "PBI",
+      "PctDel15": 0.3103,
+      "Route": "PBI-CLT",
+      "TotalDelayMinutes": 4804
+    },
+    {
+      "AvgDepDelay": 42.08,
+      "DelayedFlights": 26,
+      "DestCode": "DFW",
+      "FlightVolume": 114,
+      "OriginCode": "CMH",
+      "PctDel15": 0.2281,
+      "Route": "CMH-DFW",
+      "TotalDelayMinutes": 4797
+    },
+    {
+      "AvgDepDelay": 33.92,
+      "DelayedFlights": 41,
+      "DestCode": "PHX",
+      "FlightVolume": 140,
+      "OriginCode": "LAS",
+      "PctDel15": 0.2929,
+      "Route": "LAS-PHX",
+      "TotalDelayMinutes": 4749
+    },
+    {
+      "AvgDepDelay": 51.61,
+      "DelayedFlights": 30,
+      "DestCode": "PHL",
+      "FlightVolume": 92,
+      "OriginCode": "DEN",
+      "PctDel15": 0.3261,
+      "Route": "DEN-PHL",
+      "TotalDelayMinutes": 4748
+    },
+    {
+      "AvgDepDelay": 41.63,
+      "DelayedFlights": 48,
+      "DestCode": "DFW",
+      "FlightVolume": 114,
+      "OriginCode": "GRR",
+      "PctDel15": 0.4211,
+      "Route": "GRR-DFW",
+      "TotalDelayMinutes": 4746
+    },
+    {
+      "AvgDepDelay": 53.19,
+      "DelayedFlights": 44,
+      "DestCode": "AUS",
+      "FlightVolume": 89,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4944,
+      "Route": "PHL-AUS",
+      "TotalDelayMinutes": 4734
+    },
+    {
+      "AvgDepDelay": 35.01,
+      "DelayedFlights": 40,
+      "DestCode": "ORD",
+      "FlightVolume": 135,
+      "OriginCode": "LAS",
+      "PctDel15": 0.2963,
+      "Route": "LAS-ORD",
+      "TotalDelayMinutes": 4726
+    },
+    {
+      "AvgDepDelay": 38.04,
+      "DelayedFlights": 46,
+      "DestCode": "VPS",
+      "FlightVolume": 123,
+      "OriginCode": "DFW",
+      "PctDel15": 0.374,
+      "Route": "DFW-VPS",
+      "TotalDelayMinutes": 4679
+    },
+    {
+      "AvgDepDelay": 31.11,
+      "DelayedFlights": 34,
+      "DestCode": "PHX",
+      "FlightVolume": 150,
+      "OriginCode": "SNA",
+      "PctDel15": 0.2267,
+      "Route": "SNA-PHX",
+      "TotalDelayMinutes": 4666
+    },
+    {
+      "AvgDepDelay": 40.69,
+      "DelayedFlights": 46,
+      "DestCode": "ORF",
+      "FlightVolume": 114,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4035,
+      "Route": "CLT-ORF",
+      "TotalDelayMinutes": 4639
+    },
+    {
+      "AvgDepDelay": 77.27,
+      "DelayedFlights": 24,
+      "DestCode": "DFW",
+      "FlightVolume": 60,
+      "OriginCode": "CID",
+      "PctDel15": 0.4,
+      "Route": "CID-DFW",
+      "TotalDelayMinutes": 4636
+    },
+    {
+      "AvgDepDelay": 17.49,
+      "DelayedFlights": 62,
+      "DestCode": "CLT",
+      "FlightVolume": 265,
+      "OriginCode": "PHX",
+      "PctDel15": 0.234,
+      "Route": "PHX-CLT",
+      "TotalDelayMinutes": 4635
+    },
+    {
+      "AvgDepDelay": 71.8,
+      "DelayedFlights": 27,
+      "DestCode": "PHL",
+      "FlightVolume": 64,
+      "OriginCode": "IAH",
+      "PctDel15": 0.4219,
+      "Route": "IAH-PHL",
+      "TotalDelayMinutes": 4595
+    },
+    {
+      "AvgDepDelay": 40.26,
+      "DelayedFlights": 50,
+      "DestCode": "GRR",
+      "FlightVolume": 114,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4386,
+      "Route": "DFW-GRR",
+      "TotalDelayMinutes": 4590
+    },
+    {
+      "AvgDepDelay": 67.99,
+      "DelayedFlights": 31,
+      "DestCode": "ECP",
+      "FlightVolume": 67,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4627,
+      "Route": "DFW-ECP",
+      "TotalDelayMinutes": 4555
+    },
+    {
+      "AvgDepDelay": 21.66,
+      "DelayedFlights": 70,
+      "DestCode": "LAX",
+      "FlightVolume": 210,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3333,
+      "Route": "PHL-LAX",
+      "TotalDelayMinutes": 4549
+    },
+    {
+      "AvgDepDelay": 30.9,
+      "DelayedFlights": 74,
+      "DestCode": "CVG",
+      "FlightVolume": 147,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5034,
+      "Route": "DFW-CVG",
+      "TotalDelayMinutes": 4542
+    },
+    {
+      "AvgDepDelay": 39.09,
+      "DelayedFlights": 60,
+      "DestCode": "MCI",
+      "FlightVolume": 116,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5172,
+      "Route": "CLT-MCI",
+      "TotalDelayMinutes": 4534
+    },
+    {
+      "AvgDepDelay": 25.74,
+      "DelayedFlights": 59,
+      "DestCode": "DFW",
+      "FlightVolume": 176,
+      "OriginCode": "MCI",
+      "PctDel15": 0.3352,
+      "Route": "MCI-DFW",
+      "TotalDelayMinutes": 4530
+    },
+    {
+      "AvgDepDelay": 51.95,
+      "DelayedFlights": 36,
+      "DestCode": "CLT",
+      "FlightVolume": 87,
+      "OriginCode": "SRQ",
+      "PctDel15": 0.4138,
+      "Route": "SRQ-CLT",
+      "TotalDelayMinutes": 4520
+    },
+    {
+      "AvgDepDelay": 76.39,
+      "DelayedFlights": 40,
+      "DestCode": "ATL",
+      "FlightVolume": 59,
+      "OriginCode": "CLT",
+      "PctDel15": 0.678,
+      "Route": "CLT-ATL",
+      "TotalDelayMinutes": 4507
+    },
+    {
+      "AvgDepDelay": 49.94,
+      "DelayedFlights": 48,
+      "DestCode": "VPS",
+      "FlightVolume": 90,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5333,
+      "Route": "CLT-VPS",
+      "TotalDelayMinutes": 4495
+    },
+    {
+      "AvgDepDelay": 50.29,
+      "DelayedFlights": 45,
+      "DestCode": "PWM",
+      "FlightVolume": 89,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5056,
+      "Route": "CLT-PWM",
+      "TotalDelayMinutes": 4476
+    },
+    {
+      "AvgDepDelay": 30.61,
+      "DelayedFlights": 47,
+      "DestCode": "CLT",
+      "FlightVolume": 146,
+      "OriginCode": "PIT",
+      "PctDel15": 0.3219,
+      "Route": "PIT-CLT",
+      "TotalDelayMinutes": 4469
+    },
+    {
+      "AvgDepDelay": 29.71,
+      "DelayedFlights": 50,
+      "DestCode": "SNA",
+      "FlightVolume": 150,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3333,
+      "Route": "PHX-SNA",
+      "TotalDelayMinutes": 4456
+    },
+    {
+      "AvgDepDelay": 79.43,
+      "DelayedFlights": 32,
+      "DestCode": "CAE",
+      "FlightVolume": 56,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5714,
+      "Route": "DFW-CAE",
+      "TotalDelayMinutes": 4448
+    },
+    {
+      "AvgDepDelay": 49.17,
+      "DelayedFlights": 45,
+      "DestCode": "LAS",
+      "FlightVolume": 90,
+      "OriginCode": "MIA",
+      "PctDel15": 0.5,
+      "Route": "MIA-LAS",
+      "TotalDelayMinutes": 4425
+    },
+    {
+      "AvgDepDelay": 29.21,
+      "DelayedFlights": 44,
+      "DestCode": "DFW",
+      "FlightVolume": 151,
+      "OriginCode": "OKC",
+      "PctDel15": 0.2914,
+      "Route": "OKC-DFW",
+      "TotalDelayMinutes": 4411
+    },
+    {
+      "AvgDepDelay": 58.03,
+      "DelayedFlights": 36,
+      "DestCode": "BNA",
+      "FlightVolume": 76,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4737,
+      "Route": "MIA-BNA",
+      "TotalDelayMinutes": 4410
+    },
+    {
+      "AvgDepDelay": 39.12,
+      "DelayedFlights": 44,
+      "DestCode": "PIT",
+      "FlightVolume": 112,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3929,
+      "Route": "ORD-PIT",
+      "TotalDelayMinutes": 4381
+    },
+    {
+      "AvgDepDelay": 29.78,
+      "DelayedFlights": 40,
+      "DestCode": "DFW",
+      "FlightVolume": 147,
+      "OriginCode": "STL",
+      "PctDel15": 0.2721,
+      "Route": "STL-DFW",
+      "TotalDelayMinutes": 4377
+    },
+    {
+      "AvgDepDelay": 24.56,
+      "DelayedFlights": 50,
+      "DestCode": "DFW",
+      "FlightVolume": 178,
+      "OriginCode": "FLL",
+      "PctDel15": 0.2809,
+      "Route": "FLL-DFW",
+      "TotalDelayMinutes": 4372
+    },
+    {
+      "AvgDepDelay": 39.02,
+      "DelayedFlights": 52,
+      "DestCode": "PHL",
+      "FlightVolume": 112,
+      "OriginCode": "BNA",
+      "PctDel15": 0.4643,
+      "Route": "BNA-PHL",
+      "TotalDelayMinutes": 4370
+    },
+    {
+      "AvgDepDelay": 35.81,
+      "DelayedFlights": 49,
+      "DestCode": "AUS",
+      "FlightVolume": 122,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4016,
+      "Route": "MIA-AUS",
+      "TotalDelayMinutes": 4369
+    },
+    {
+      "AvgDepDelay": 48.5,
+      "DelayedFlights": 47,
+      "DestCode": "PBI",
+      "FlightVolume": 90,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5222,
+      "Route": "DFW-PBI",
+      "TotalDelayMinutes": 4365
+    },
+    {
+      "AvgDepDelay": 48.96,
+      "DelayedFlights": 38,
+      "DestCode": "DFW",
+      "FlightVolume": 89,
+      "OriginCode": "EGE",
+      "PctDel15": 0.427,
+      "Route": "EGE-DFW",
+      "TotalDelayMinutes": 4357
+    },
+    {
+      "AvgDepDelay": 17.67,
+      "DelayedFlights": 65,
+      "DestCode": "DFW",
+      "FlightVolume": 246,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2642,
+      "Route": "BOS-DFW",
+      "TotalDelayMinutes": 4346
+    },
+    {
+      "AvgDepDelay": 64.79,
+      "DelayedFlights": 30,
+      "DestCode": "DFW",
+      "FlightVolume": 67,
+      "OriginCode": "ECP",
+      "PctDel15": 0.4478,
+      "Route": "ECP-DFW",
+      "TotalDelayMinutes": 4341
+    },
+    {
+      "AvgDepDelay": 36.76,
+      "DelayedFlights": 51,
+      "DestCode": "SFO",
+      "FlightVolume": 118,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4322,
+      "Route": "PHX-SFO",
+      "TotalDelayMinutes": 4338
+    },
+    {
+      "AvgDepDelay": 40.81,
+      "DelayedFlights": 57,
+      "DestCode": "CLT",
+      "FlightVolume": 106,
+      "OriginCode": "CVG",
+      "PctDel15": 0.5377,
+      "Route": "CVG-CLT",
+      "TotalDelayMinutes": 4326
+    },
+    {
+      "AvgDepDelay": 30.2,
+      "DelayedFlights": 36,
+      "DestCode": "DFW",
+      "FlightVolume": 143,
+      "OriginCode": "MEM",
+      "PctDel15": 0.2517,
+      "Route": "MEM-DFW",
+      "TotalDelayMinutes": 4318
+    },
+    {
+      "AvgDepDelay": 29.89,
+      "DelayedFlights": 59,
+      "DestCode": "CLT",
+      "FlightVolume": 144,
+      "OriginCode": "IND",
+      "PctDel15": 0.4097,
+      "Route": "IND-CLT",
+      "TotalDelayMinutes": 4304
+    },
+    {
+      "AvgDepDelay": 23.99,
+      "DelayedFlights": 39,
+      "DestCode": "MIA",
+      "FlightVolume": 179,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2179,
+      "Route": "BOS-MIA",
+      "TotalDelayMinutes": 4295
+    },
+    {
+      "AvgDepDelay": 36.22,
+      "DelayedFlights": 31,
+      "DestCode": "PHX",
+      "FlightVolume": 118,
+      "OriginCode": "AUS",
+      "PctDel15": 0.2627,
+      "Route": "AUS-PHX",
+      "TotalDelayMinutes": 4274
+    },
+    {
+      "AvgDepDelay": 29.45,
+      "DelayedFlights": 52,
+      "DestCode": "CLT",
+      "FlightVolume": 145,
+      "OriginCode": "SAN",
+      "PctDel15": 0.3586,
+      "Route": "SAN-CLT",
+      "TotalDelayMinutes": 4270
+    },
+    {
+      "AvgDepDelay": 35.26,
+      "DelayedFlights": 47,
+      "DestCode": "MCO",
+      "FlightVolume": 121,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3884,
+      "Route": "ORD-MCO",
+      "TotalDelayMinutes": 4267
+    },
+    {
+      "AvgDepDelay": 71.08,
+      "DelayedFlights": 40,
+      "DestCode": "DEN",
+      "FlightVolume": 60,
+      "OriginCode": "MIA",
+      "PctDel15": 0.6667,
+      "Route": "MIA-DEN",
+      "TotalDelayMinutes": 4265
+    },
+    {
+      "AvgDepDelay": 70.92,
+      "DelayedFlights": 29,
+      "DestCode": "IND",
+      "FlightVolume": 60,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4833,
+      "Route": "PHX-IND",
+      "TotalDelayMinutes": 4255
+    },
+    {
+      "AvgDepDelay": 36.88,
+      "DelayedFlights": 35,
+      "DestCode": "CLT",
+      "FlightVolume": 115,
+      "OriginCode": "SAT",
+      "PctDel15": 0.3043,
+      "Route": "SAT-CLT",
+      "TotalDelayMinutes": 4241
+    },
+    {
+      "AvgDepDelay": 67.24,
+      "DelayedFlights": 42,
+      "DestCode": "MCI",
+      "FlightVolume": 63,
+      "OriginCode": "ORD",
+      "PctDel15": 0.6667,
+      "Route": "ORD-MCI",
+      "TotalDelayMinutes": 4236
+    },
+    {
+      "AvgDepDelay": 29.78,
+      "DelayedFlights": 57,
+      "DestCode": "DFW",
+      "FlightVolume": 142,
+      "OriginCode": "OMA",
+      "PctDel15": 0.4014,
+      "Route": "OMA-DFW",
+      "TotalDelayMinutes": 4229
+    },
+    {
+      "AvgDepDelay": 29.76,
+      "DelayedFlights": 64,
+      "DestCode": "OMA",
+      "FlightVolume": 142,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4507,
+      "Route": "DFW-OMA",
+      "TotalDelayMinutes": 4226
+    },
+    {
+      "AvgDepDelay": 19.77,
+      "DelayedFlights": 73,
+      "DestCode": "ORD",
+      "FlightVolume": 213,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3427,
+      "Route": "MIA-ORD",
+      "TotalDelayMinutes": 4211
+    },
+    {
+      "AvgDepDelay": 76.53,
+      "DelayedFlights": 34,
+      "DestCode": "XNA",
+      "FlightVolume": 55,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6182,
+      "Route": "DFW-XNA",
+      "TotalDelayMinutes": 4209
+    },
+    {
+      "AvgDepDelay": 28.41,
+      "DelayedFlights": 53,
+      "DestCode": "CLT",
+      "FlightVolume": 148,
+      "OriginCode": "DEN",
+      "PctDel15": 0.3581,
+      "Route": "DEN-CLT",
+      "TotalDelayMinutes": 4205
+    },
+    {
+      "AvgDepDelay": 23.07,
+      "DelayedFlights": 62,
+      "DestCode": "MIA",
+      "FlightVolume": 182,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3407,
+      "Route": "PHL-MIA",
+      "TotalDelayMinutes": 4199
+    },
+    {
+      "AvgDepDelay": 47.04,
+      "DelayedFlights": 43,
+      "DestCode": "RDU",
+      "FlightVolume": 89,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4831,
+      "Route": "ORD-RDU",
+      "TotalDelayMinutes": 4187
+    },
+    {
+      "AvgDepDelay": 38.03,
+      "DelayedFlights": 46,
+      "DestCode": "PHL",
+      "FlightVolume": 110,
+      "OriginCode": "IND",
+      "PctDel15": 0.4182,
+      "Route": "IND-PHL",
+      "TotalDelayMinutes": 4183
+    },
+    {
+      "AvgDepDelay": 24.24,
+      "DelayedFlights": 45,
+      "DestCode": "DFW",
+      "FlightVolume": 172,
+      "OriginCode": "TUS",
+      "PctDel15": 0.2616,
+      "Route": "TUS-DFW",
+      "TotalDelayMinutes": 4170
+    },
+    {
+      "AvgDepDelay": 134.42,
+      "DelayedFlights": 14,
+      "DestCode": "JAX",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4516,
+      "Route": "PHX-JAX",
+      "TotalDelayMinutes": 4167
+    },
+    {
+      "AvgDepDelay": 27.87,
+      "DelayedFlights": 39,
+      "DestCode": "MIA",
+      "FlightVolume": 149,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2617,
+      "Route": "PHX-MIA",
+      "TotalDelayMinutes": 4153
+    },
+    {
+      "AvgDepDelay": 18.34,
+      "DelayedFlights": 63,
+      "DestCode": "ORD",
+      "FlightVolume": 225,
+      "OriginCode": "DCA",
+      "PctDel15": 0.28,
+      "Route": "DCA-ORD",
+      "TotalDelayMinutes": 4126
+    },
+    {
+      "AvgDepDelay": 68.77,
+      "DelayedFlights": 22,
+      "DestCode": "EYW",
+      "FlightVolume": 60,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3667,
+      "Route": "DFW-EYW",
+      "TotalDelayMinutes": 4126
+    },
+    {
+      "AvgDepDelay": 35.84,
+      "DelayedFlights": 58,
+      "DestCode": "RSW",
+      "FlightVolume": 115,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5043,
+      "Route": "DFW-RSW",
+      "TotalDelayMinutes": 4122
+    },
+    {
+      "AvgDepDelay": 27.29,
+      "DelayedFlights": 64,
+      "DestCode": "MSP",
+      "FlightVolume": 150,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4267,
+      "Route": "DFW-MSP",
+      "TotalDelayMinutes": 4093
+    },
+    {
+      "AvgDepDelay": 67.1,
+      "DelayedFlights": 29,
+      "DestCode": "GEG",
+      "FlightVolume": 61,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4754,
+      "Route": "PHX-GEG",
+      "TotalDelayMinutes": 4093
+    },
+    {
+      "AvgDepDelay": 36.66,
+      "DelayedFlights": 54,
+      "DestCode": "IND",
+      "FlightVolume": 111,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4865,
+      "Route": "PHL-IND",
+      "TotalDelayMinutes": 4069
+    },
+    {
+      "AvgDepDelay": 73.85,
+      "DelayedFlights": 17,
+      "DestCode": "DFW",
+      "FlightVolume": 55,
+      "OriginCode": "CAE",
+      "PctDel15": 0.3091,
+      "Route": "CAE-DFW",
+      "TotalDelayMinutes": 4062
+    },
+    {
+      "AvgDepDelay": 74.87,
+      "DelayedFlights": 36,
+      "DestCode": "OKC",
+      "FlightVolume": 54,
+      "OriginCode": "CLT",
+      "PctDel15": 0.6667,
+      "Route": "CLT-OKC",
+      "TotalDelayMinutes": 4043
+    },
+    {
+      "AvgDepDelay": 46.93,
+      "DelayedFlights": 39,
+      "DestCode": "PIT",
+      "FlightVolume": 86,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4535,
+      "Route": "PHL-PIT",
+      "TotalDelayMinutes": 4036
+    },
+    {
+      "AvgDepDelay": 35.11,
+      "DelayedFlights": 52,
+      "DestCode": "ATL",
+      "FlightVolume": 114,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4561,
+      "Route": "PHL-ATL",
+      "TotalDelayMinutes": 4003
+    },
+    {
+      "AvgDepDelay": 33.34,
+      "DelayedFlights": 42,
+      "DestCode": "DFW",
+      "FlightVolume": 120,
+      "OriginCode": "EWR",
+      "PctDel15": 0.35,
+      "Route": "EWR-DFW",
+      "TotalDelayMinutes": 4001
+    },
+    {
+      "AvgDepDelay": 33.23,
+      "DelayedFlights": 62,
+      "DestCode": "EWR",
+      "FlightVolume": 120,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5167,
+      "Route": "DFW-EWR",
+      "TotalDelayMinutes": 3988
+    },
+    {
+      "AvgDepDelay": 16.96,
+      "DelayedFlights": 42,
+      "DestCode": "CLT",
+      "FlightVolume": 235,
+      "OriginCode": "LAX",
+      "PctDel15": 0.1787,
+      "Route": "LAX-CLT",
+      "TotalDelayMinutes": 3986
+    },
+    {
+      "AvgDepDelay": 26.71,
+      "DelayedFlights": 67,
+      "DestCode": "PIT",
+      "FlightVolume": 149,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4497,
+      "Route": "DFW-PIT",
+      "TotalDelayMinutes": 3980
+    },
+    {
+      "AvgDepDelay": 45.64,
+      "DelayedFlights": 22,
+      "DestCode": "PHL",
+      "FlightVolume": 87,
+      "OriginCode": "AUS",
+      "PctDel15": 0.2529,
+      "Route": "AUS-PHL",
+      "TotalDelayMinutes": 3971
+    },
+    {
+      "AvgDepDelay": 43.56,
+      "DelayedFlights": 33,
+      "DestCode": "SAN",
+      "FlightVolume": 91,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3626,
+      "Route": "PHL-SAN",
+      "TotalDelayMinutes": 3964
+    },
+    {
+      "AvgDepDelay": 26.19,
+      "DelayedFlights": 67,
+      "DestCode": "IND",
+      "FlightVolume": 151,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4437,
+      "Route": "DFW-IND",
+      "TotalDelayMinutes": 3955
+    },
+    {
+      "AvgDepDelay": 65.47,
+      "DelayedFlights": 17,
+      "DestCode": "CLT",
+      "FlightVolume": 60,
+      "OriginCode": "STT",
+      "PctDel15": 0.2833,
+      "Route": "STT-CLT",
+      "TotalDelayMinutes": 3928
+    },
+    {
+      "AvgDepDelay": 43.02,
+      "DelayedFlights": 35,
+      "DestCode": "MCI",
+      "FlightVolume": 91,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3846,
+      "Route": "PHL-MCI",
+      "TotalDelayMinutes": 3915
+    },
+    {
+      "AvgDepDelay": 44.97,
+      "DelayedFlights": 42,
+      "DestCode": "DFW",
+      "FlightVolume": 87,
+      "OriginCode": "RIC",
+      "PctDel15": 0.4828,
+      "Route": "RIC-DFW",
+      "TotalDelayMinutes": 3912
+    },
+    {
+      "AvgDepDelay": 33.14,
+      "DelayedFlights": 35,
+      "DestCode": "DFW",
+      "FlightVolume": 118,
+      "OriginCode": "RNO",
+      "PctDel15": 0.2966,
+      "Route": "RNO-DFW",
+      "TotalDelayMinutes": 3910
+    },
+    {
+      "AvgDepDelay": 33.27,
+      "DelayedFlights": 48,
+      "DestCode": "LAS",
+      "FlightVolume": 117,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4103,
+      "Route": "PHL-LAS",
+      "TotalDelayMinutes": 3893
+    },
+    {
+      "AvgDepDelay": 44.71,
+      "DelayedFlights": 30,
+      "DestCode": "PHL",
+      "FlightVolume": 87,
+      "OriginCode": "FLL",
+      "PctDel15": 0.3448,
+      "Route": "FLL-PHL",
+      "TotalDelayMinutes": 3890
+    },
+    {
+      "AvgDepDelay": 41.73,
+      "DelayedFlights": 30,
+      "DestCode": "DCA",
+      "FlightVolume": 93,
+      "OriginCode": "TPA",
+      "PctDel15": 0.3226,
+      "Route": "TPA-DCA",
+      "TotalDelayMinutes": 3881
+    },
+    {
+      "AvgDepDelay": 42.65,
+      "DelayedFlights": 31,
+      "DestCode": "PHL",
+      "FlightVolume": 91,
+      "OriginCode": "MCI",
+      "PctDel15": 0.3407,
+      "Route": "MCI-PHL",
+      "TotalDelayMinutes": 3881
+    },
+    {
+      "AvgDepDelay": 64.53,
+      "DelayedFlights": 38,
+      "DestCode": "MRY",
+      "FlightVolume": 60,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6333,
+      "Route": "DFW-MRY",
+      "TotalDelayMinutes": 3872
+    },
+    {
+      "AvgDepDelay": 43.59,
+      "DelayedFlights": 25,
+      "DestCode": "SAT",
+      "FlightVolume": 88,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2841,
+      "Route": "PHX-SAT",
+      "TotalDelayMinutes": 3836
+    },
+    {
+      "AvgDepDelay": 24.97,
+      "DelayedFlights": 46,
+      "DestCode": "MIA",
+      "FlightVolume": 153,
+      "OriginCode": "RDU",
+      "PctDel15": 0.3007,
+      "Route": "RDU-MIA",
+      "TotalDelayMinutes": 3820
+    },
+    {
+      "AvgDepDelay": 43.16,
+      "DelayedFlights": 34,
+      "DestCode": "DFW",
+      "FlightVolume": 88,
+      "OriginCode": "SAV",
+      "PctDel15": 0.3864,
+      "Route": "SAV-DFW",
+      "TotalDelayMinutes": 3798
+    },
+    {
+      "AvgDepDelay": 21.98,
+      "DelayedFlights": 54,
+      "DestCode": "CLT",
+      "FlightVolume": 172,
+      "OriginCode": "MEM",
+      "PctDel15": 0.314,
+      "Route": "MEM-CLT",
+      "TotalDelayMinutes": 3781
+    },
+    {
+      "AvgDepDelay": 31.22,
+      "DelayedFlights": 29,
+      "DestCode": "ORD",
+      "FlightVolume": 121,
+      "OriginCode": "MCO",
+      "PctDel15": 0.2397,
+      "Route": "MCO-ORD",
+      "TotalDelayMinutes": 3778
+    },
+    {
+      "AvgDepDelay": 44.98,
+      "DelayedFlights": 40,
+      "DestCode": "SYR",
+      "FlightVolume": 84,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4762,
+      "Route": "CLT-SYR",
+      "TotalDelayMinutes": 3778
+    },
+    {
+      "AvgDepDelay": 33.71,
+      "DelayedFlights": 46,
+      "DestCode": "AUS",
+      "FlightVolume": 112,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4107,
+      "Route": "ORD-AUS",
+      "TotalDelayMinutes": 3776
+    },
+    {
+      "AvgDepDelay": 21.11,
+      "DelayedFlights": 46,
+      "DestCode": "DFW",
+      "FlightVolume": 178,
+      "OriginCode": "ONT",
+      "PctDel15": 0.2584,
+      "Route": "ONT-DFW",
+      "TotalDelayMinutes": 3757
+    },
+    {
+      "AvgDepDelay": 25.71,
+      "DelayedFlights": 44,
+      "DestCode": "DFW",
+      "FlightVolume": 146,
+      "OriginCode": "FAT",
+      "PctDel15": 0.3014,
+      "Route": "FAT-DFW",
+      "TotalDelayMinutes": 3753
+    },
+    {
+      "AvgDepDelay": 43.02,
+      "DelayedFlights": 51,
+      "DestCode": "TYS",
+      "FlightVolume": 87,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5862,
+      "Route": "DFW-TYS",
+      "TotalDelayMinutes": 3743
+    },
+    {
+      "AvgDepDelay": 62.23,
+      "DelayedFlights": 22,
+      "DestCode": "PHX",
+      "FlightVolume": 60,
+      "OriginCode": "STL",
+      "PctDel15": 0.3667,
+      "Route": "STL-PHX",
+      "TotalDelayMinutes": 3734
+    },
+    {
+      "AvgDepDelay": 41.38,
+      "DelayedFlights": 37,
+      "DestCode": "PBI",
+      "FlightVolume": 90,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4111,
+      "Route": "PHL-PBI",
+      "TotalDelayMinutes": 3724
+    },
+    {
+      "AvgDepDelay": 27.45,
+      "DelayedFlights": 48,
+      "DestCode": "LAS",
+      "FlightVolume": 135,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3556,
+      "Route": "ORD-LAS",
+      "TotalDelayMinutes": 3706
+    },
+    {
+      "AvgDepDelay": 23.9,
+      "DelayedFlights": 44,
+      "DestCode": "SAN",
+      "FlightVolume": 154,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2857,
+      "Route": "PHX-SAN",
+      "TotalDelayMinutes": 3681
+    },
+    {
+      "AvgDepDelay": 32.21,
+      "DelayedFlights": 42,
+      "DestCode": "PHL",
+      "FlightVolume": 114,
+      "OriginCode": "ATL",
+      "PctDel15": 0.3684,
+      "Route": "ATL-PHL",
+      "TotalDelayMinutes": 3672
+    },
+    {
+      "AvgDepDelay": 59.15,
+      "DelayedFlights": 36,
+      "DestCode": "SDF",
+      "FlightVolume": 62,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5806,
+      "Route": "DFW-SDF",
+      "TotalDelayMinutes": 3667
+    },
+    {
+      "AvgDepDelay": 60.08,
+      "DelayedFlights": 35,
+      "DestCode": "FSD",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5738,
+      "Route": "DFW-FSD",
+      "TotalDelayMinutes": 3665
+    },
+    {
+      "AvgDepDelay": 40.83,
+      "DelayedFlights": 46,
+      "DestCode": "MKE",
+      "FlightVolume": 89,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5169,
+      "Route": "DFW-MKE",
+      "TotalDelayMinutes": 3634
+    },
+    {
+      "AvgDepDelay": 59.54,
+      "DelayedFlights": 32,
+      "DestCode": "SBA",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5246,
+      "Route": "DFW-SBA",
+      "TotalDelayMinutes": 3632
+    },
+    {
+      "AvgDepDelay": 24.5,
+      "DelayedFlights": 61,
+      "DestCode": "DTW",
+      "FlightVolume": 148,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4122,
+      "Route": "DFW-DTW",
+      "TotalDelayMinutes": 3626
+    },
+    {
+      "AvgDepDelay": 16.47,
+      "DelayedFlights": 40,
+      "DestCode": "DFW",
+      "FlightVolume": 220,
+      "OriginCode": "SNA",
+      "PctDel15": 0.1818,
+      "Route": "SNA-DFW",
+      "TotalDelayMinutes": 3623
+    },
+    {
+      "AvgDepDelay": 63.47,
+      "DelayedFlights": 21,
+      "DestCode": "CLT",
+      "FlightVolume": 57,
+      "OriginCode": "DSM",
+      "PctDel15": 0.3684,
+      "Route": "DSM-CLT",
+      "TotalDelayMinutes": 3618
+    },
+    {
+      "AvgDepDelay": 63.04,
+      "DelayedFlights": 33,
+      "DestCode": "LEX",
+      "FlightVolume": 57,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5789,
+      "Route": "DFW-LEX",
+      "TotalDelayMinutes": 3593
+    },
+    {
+      "AvgDepDelay": 45.83,
+      "DelayedFlights": 45,
+      "DestCode": "SAV",
+      "FlightVolume": 78,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5769,
+      "Route": "CLT-SAV",
+      "TotalDelayMinutes": 3575
+    },
+    {
+      "AvgDepDelay": 40.53,
+      "DelayedFlights": 38,
+      "DestCode": "SFO",
+      "FlightVolume": 88,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4318,
+      "Route": "MIA-SFO",
+      "TotalDelayMinutes": 3567
+    },
+    {
+      "AvgDepDelay": 30.48,
+      "DelayedFlights": 33,
+      "DestCode": "SAN",
+      "FlightVolume": 117,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2821,
+      "Route": "ORD-SAN",
+      "TotalDelayMinutes": 3566
+    },
+    {
+      "AvgDepDelay": 23.91,
+      "DelayedFlights": 50,
+      "DestCode": "CLT",
+      "FlightVolume": 149,
+      "OriginCode": "STL",
+      "PctDel15": 0.3356,
+      "Route": "STL-CLT",
+      "TotalDelayMinutes": 3562
+    },
+    {
+      "AvgDepDelay": 62.4,
+      "DelayedFlights": 24,
+      "DestCode": "DFW",
+      "FlightVolume": 57,
+      "OriginCode": "LEX",
+      "PctDel15": 0.4211,
+      "Route": "LEX-DFW",
+      "TotalDelayMinutes": 3557
+    },
+    {
+      "AvgDepDelay": 38.66,
+      "DelayedFlights": 24,
+      "DestCode": "ORD",
+      "FlightVolume": 92,
+      "OriginCode": "SEA",
+      "PctDel15": 0.2609,
+      "Route": "SEA-ORD",
+      "TotalDelayMinutes": 3557
+    },
+    {
+      "AvgDepDelay": 60.19,
+      "DelayedFlights": 27,
+      "DestCode": "LIT",
+      "FlightVolume": 59,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4576,
+      "Route": "DFW-LIT",
+      "TotalDelayMinutes": 3551
+    },
+    {
+      "AvgDepDelay": 23.03,
+      "DelayedFlights": 51,
+      "DestCode": "SJU",
+      "FlightVolume": 154,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3312,
+      "Route": "MIA-SJU",
+      "TotalDelayMinutes": 3546
+    },
+    {
+      "AvgDepDelay": 43.75,
+      "DelayedFlights": 26,
+      "DestCode": "PDX",
+      "FlightVolume": 81,
+      "OriginCode": "PHX",
+      "PctDel15": 0.321,
+      "Route": "PHX-PDX",
+      "TotalDelayMinutes": 3544
+    },
+    {
+      "AvgDepDelay": 23.78,
+      "DelayedFlights": 31,
+      "DestCode": "DFW",
+      "FlightVolume": 149,
+      "OriginCode": "MSP",
+      "PctDel15": 0.2081,
+      "Route": "MSP-DFW",
+      "TotalDelayMinutes": 3543
+    },
+    {
+      "AvgDepDelay": 40.36,
+      "DelayedFlights": 49,
+      "DestCode": "RIC",
+      "FlightVolume": 87,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5632,
+      "Route": "DFW-RIC",
+      "TotalDelayMinutes": 3511
+    },
+    {
+      "AvgDepDelay": 20.02,
+      "DelayedFlights": 41,
+      "DestCode": "PHX",
+      "FlightVolume": 175,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2343,
+      "Route": "LAX-PHX",
+      "TotalDelayMinutes": 3504
+    },
+    {
+      "AvgDepDelay": 15.93,
+      "DelayedFlights": 61,
+      "DestCode": "SNA",
+      "FlightVolume": 220,
+      "OriginCode": "DFW",
+      "PctDel15": 0.2773,
+      "Route": "DFW-SNA",
+      "TotalDelayMinutes": 3504
+    },
+    {
+      "AvgDepDelay": 44.87,
+      "DelayedFlights": 22,
+      "DestCode": "RDU",
+      "FlightVolume": 78,
+      "OriginCode": "LGA",
+      "PctDel15": 0.2821,
+      "Route": "LGA-RDU",
+      "TotalDelayMinutes": 3500
+    },
+    {
+      "AvgDepDelay": 39.56,
+      "DelayedFlights": 48,
+      "DestCode": "MSP",
+      "FlightVolume": 88,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5455,
+      "Route": "CLT-MSP",
+      "TotalDelayMinutes": 3481
+    },
+    {
+      "AvgDepDelay": 44.03,
+      "DelayedFlights": 29,
+      "DestCode": "LGA",
+      "FlightVolume": 79,
+      "OriginCode": "RDU",
+      "PctDel15": 0.3671,
+      "Route": "RDU-LGA",
+      "TotalDelayMinutes": 3478
+    },
+    {
+      "AvgDepDelay": 55.13,
+      "DelayedFlights": 42,
+      "DestCode": "GSP",
+      "FlightVolume": 63,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6667,
+      "Route": "DFW-GSP",
+      "TotalDelayMinutes": 3473
+    },
+    {
+      "AvgDepDelay": 37.95,
+      "DelayedFlights": 28,
+      "DestCode": "RNO",
+      "FlightVolume": 91,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3077,
+      "Route": "PHX-RNO",
+      "TotalDelayMinutes": 3453
+    },
+    {
+      "AvgDepDelay": 58.88,
+      "DelayedFlights": 42,
+      "DestCode": "OMA",
+      "FlightVolume": 58,
+      "OriginCode": "CLT",
+      "PctDel15": 0.7241,
+      "Route": "CLT-OMA",
+      "TotalDelayMinutes": 3415
+    },
+    {
+      "AvgDepDelay": 49.35,
+      "DelayedFlights": 31,
+      "DestCode": "CLT",
+      "FlightVolume": 69,
+      "OriginCode": "GSP",
+      "PctDel15": 0.4493,
+      "Route": "GSP-CLT",
+      "TotalDelayMinutes": 3405
+    },
+    {
+      "AvgDepDelay": 54.69,
+      "DelayedFlights": 28,
+      "DestCode": "SBP",
+      "FlightVolume": 62,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4516,
+      "Route": "DFW-SBP",
+      "TotalDelayMinutes": 3391
+    },
+    {
+      "AvgDepDelay": 55.57,
+      "DelayedFlights": 33,
+      "DestCode": "BFL",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.541,
+      "Route": "DFW-BFL",
+      "TotalDelayMinutes": 3390
+    },
+    {
+      "AvgDepDelay": 22.54,
+      "DelayedFlights": 46,
+      "DestCode": "PHX",
+      "FlightVolume": 150,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3067,
+      "Route": "MIA-PHX",
+      "TotalDelayMinutes": 3381
+    },
+    {
+      "AvgDepDelay": 29.65,
+      "DelayedFlights": 36,
+      "DestCode": "ORD",
+      "FlightVolume": 114,
+      "OriginCode": "SFO",
+      "PctDel15": 0.3158,
+      "Route": "SFO-ORD",
+      "TotalDelayMinutes": 3380
+    },
+    {
+      "AvgDepDelay": 37.08,
+      "DelayedFlights": 26,
+      "DestCode": "PHX",
+      "FlightVolume": 91,
+      "OriginCode": "RNO",
+      "PctDel15": 0.2857,
+      "Route": "RNO-PHX",
+      "TotalDelayMinutes": 3374
+    },
+    {
+      "AvgDepDelay": 37.88,
+      "DelayedFlights": 34,
+      "DestCode": "CLT",
+      "FlightVolume": 89,
+      "OriginCode": "MKE",
+      "PctDel15": 0.382,
+      "Route": "MKE-CLT",
+      "TotalDelayMinutes": 3371
+    },
+    {
+      "AvgDepDelay": 36.92,
+      "DelayedFlights": 38,
+      "DestCode": "GRR",
+      "FlightVolume": 91,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4176,
+      "Route": "CLT-GRR",
+      "TotalDelayMinutes": 3360
+    },
+    {
+      "AvgDepDelay": 55.02,
+      "DelayedFlights": 27,
+      "DestCode": "BUF",
+      "FlightVolume": 61,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4426,
+      "Route": "ORD-BUF",
+      "TotalDelayMinutes": 3356
+    },
+    {
+      "AvgDepDelay": 21.31,
+      "DelayedFlights": 41,
+      "DestCode": "MIA",
+      "FlightVolume": 157,
+      "OriginCode": "TPA",
+      "PctDel15": 0.2611,
+      "Route": "TPA-MIA",
+      "TotalDelayMinutes": 3346
+    },
+    {
+      "AvgDepDelay": 56.37,
+      "DelayedFlights": 44,
+      "DestCode": "STL",
+      "FlightVolume": 59,
+      "OriginCode": "ORD",
+      "PctDel15": 0.7458,
+      "Route": "ORD-STL",
+      "TotalDelayMinutes": 3326
+    },
+    {
+      "AvgDepDelay": 58.14,
+      "DelayedFlights": 23,
+      "DestCode": "LAX",
+      "FlightVolume": 57,
+      "OriginCode": "MCO",
+      "PctDel15": 0.4035,
+      "Route": "MCO-LAX",
+      "TotalDelayMinutes": 3314
+    },
+    {
+      "AvgDepDelay": 35.96,
+      "DelayedFlights": 39,
+      "DestCode": "SEA",
+      "FlightVolume": 92,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4239,
+      "Route": "ORD-SEA",
+      "TotalDelayMinutes": 3308
+    },
+    {
+      "AvgDepDelay": 37.34,
+      "DelayedFlights": 38,
+      "DestCode": "CLT",
+      "FlightVolume": 88,
+      "OriginCode": "MSP",
+      "PctDel15": 0.4318,
+      "Route": "MSP-CLT",
+      "TotalDelayMinutes": 3286
+    },
+    {
+      "AvgDepDelay": 51.3,
+      "DelayedFlights": 30,
+      "DestCode": "PHX",
+      "FlightVolume": 64,
+      "OriginCode": "MCO",
+      "PctDel15": 0.4688,
+      "Route": "MCO-PHX",
+      "TotalDelayMinutes": 3283
+    },
+    {
+      "AvgDepDelay": 23.41,
+      "DelayedFlights": 45,
+      "DestCode": "LAS",
+      "FlightVolume": 140,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3214,
+      "Route": "PHX-LAS",
+      "TotalDelayMinutes": 3278
+    },
+    {
+      "AvgDepDelay": 36.76,
+      "DelayedFlights": 36,
+      "DestCode": "CLT",
+      "FlightVolume": 89,
+      "OriginCode": "PWM",
+      "PctDel15": 0.4045,
+      "Route": "PWM-CLT",
+      "TotalDelayMinutes": 3272
+    },
+    {
+      "AvgDepDelay": 28.99,
+      "DelayedFlights": 39,
+      "DestCode": "ORD",
+      "FlightVolume": 112,
+      "OriginCode": "AUS",
+      "PctDel15": 0.3482,
+      "Route": "AUS-ORD",
+      "TotalDelayMinutes": 3247
+    },
+    {
+      "AvgDepDelay": 36.82,
+      "DelayedFlights": 42,
+      "DestCode": "FLL",
+      "FlightVolume": 88,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4773,
+      "Route": "PHL-FLL",
+      "TotalDelayMinutes": 3240
+    },
+    {
+      "AvgDepDelay": 52.1,
+      "DelayedFlights": 18,
+      "DestCode": "HNL",
+      "FlightVolume": 62,
+      "OriginCode": "DFW",
+      "PctDel15": 0.2903,
+      "Route": "DFW-HNL",
+      "TotalDelayMinutes": 3230
+    },
+    {
+      "AvgDepDelay": 27.06,
+      "DelayedFlights": 31,
+      "DestCode": "PHL",
+      "FlightVolume": 119,
+      "OriginCode": "CHS",
+      "PctDel15": 0.2605,
+      "Route": "CHS-PHL",
+      "TotalDelayMinutes": 3220
+    },
+    {
+      "AvgDepDelay": 55.24,
+      "DelayedFlights": 24,
+      "DestCode": "CLT",
+      "FlightVolume": 58,
+      "OriginCode": "TYS",
+      "PctDel15": 0.4138,
+      "Route": "TYS-CLT",
+      "TotalDelayMinutes": 3204
+    },
+    {
+      "AvgDepDelay": 35.13,
+      "DelayedFlights": 19,
+      "DestCode": "PHL",
+      "FlightVolume": 91,
+      "OriginCode": "SAN",
+      "PctDel15": 0.2088,
+      "Route": "SAN-PHL",
+      "TotalDelayMinutes": 3197
+    },
+    {
+      "AvgDepDelay": 29.81,
+      "DelayedFlights": 41,
+      "DestCode": "JAX",
+      "FlightVolume": 107,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3832,
+      "Route": "MIA-JAX",
+      "TotalDelayMinutes": 3190
+    },
+    {
+      "AvgDepDelay": 28.87,
+      "DelayedFlights": 43,
+      "DestCode": "IAH",
+      "FlightVolume": 110,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3909,
+      "Route": "MIA-IAH",
+      "TotalDelayMinutes": 3176
+    },
+    {
+      "AvgDepDelay": 105.67,
+      "DelayedFlights": 16,
+      "DestCode": "SAV",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.5333,
+      "Route": "MIA-SAV",
+      "TotalDelayMinutes": 3170
+    },
+    {
+      "AvgDepDelay": 35.52,
+      "DelayedFlights": 33,
+      "DestCode": "CLT",
+      "FlightVolume": 89,
+      "OriginCode": "VPS",
+      "PctDel15": 0.3708,
+      "Route": "VPS-CLT",
+      "TotalDelayMinutes": 3161
+    },
+    {
+      "AvgDepDelay": 20.76,
+      "DelayedFlights": 47,
+      "DestCode": "DFW",
+      "FlightVolume": 152,
+      "OriginCode": "ELP",
+      "PctDel15": 0.3092,
+      "Route": "ELP-DFW",
+      "TotalDelayMinutes": 3156
+    },
+    {
+      "AvgDepDelay": 20.61,
+      "DelayedFlights": 35,
+      "DestCode": "MCO",
+      "FlightVolume": 153,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2288,
+      "Route": "DCA-MCO",
+      "TotalDelayMinutes": 3154
+    },
+    {
+      "AvgDepDelay": 57.18,
+      "DelayedFlights": 14,
+      "DestCode": "PHX",
+      "FlightVolume": 55,
+      "OriginCode": "DTW",
+      "PctDel15": 0.2545,
+      "Route": "DTW-PHX",
+      "TotalDelayMinutes": 3145
+    },
+    {
+      "AvgDepDelay": 36.56,
+      "DelayedFlights": 39,
+      "DestCode": "STL",
+      "FlightVolume": 86,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4535,
+      "Route": "PHL-STL",
+      "TotalDelayMinutes": 3144
+    },
+    {
+      "AvgDepDelay": 26.59,
+      "DelayedFlights": 51,
+      "DestCode": "RNO",
+      "FlightVolume": 118,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4322,
+      "Route": "DFW-RNO",
+      "TotalDelayMinutes": 3138
+    },
+    {
+      "AvgDepDelay": 36.71,
+      "DelayedFlights": 41,
+      "DestCode": "MSN",
+      "FlightVolume": 85,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4824,
+      "Route": "DFW-MSN",
+      "TotalDelayMinutes": 3120
+    },
+    {
+      "AvgDepDelay": 35.01,
+      "DelayedFlights": 42,
+      "DestCode": "SAV",
+      "FlightVolume": 89,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4719,
+      "Route": "DFW-SAV",
+      "TotalDelayMinutes": 3116
+    },
+    {
+      "AvgDepDelay": 34.19,
+      "DelayedFlights": 33,
+      "DestCode": "DEN",
+      "FlightVolume": 91,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3626,
+      "Route": "PHL-DEN",
+      "TotalDelayMinutes": 3111
+    },
+    {
+      "AvgDepDelay": 32.71,
+      "DelayedFlights": 45,
+      "DestCode": "MSY",
+      "FlightVolume": 95,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4737,
+      "Route": "MIA-MSY",
+      "TotalDelayMinutes": 3107
+    },
+    {
+      "AvgDepDelay": 37.3,
+      "DelayedFlights": 38,
+      "DestCode": "DFW",
+      "FlightVolume": 83,
+      "OriginCode": "MSN",
+      "PctDel15": 0.4578,
+      "Route": "MSN-DFW",
+      "TotalDelayMinutes": 3096
+    },
+    {
+      "AvgDepDelay": 33.55,
+      "DelayedFlights": 20,
+      "DestCode": "DFW",
+      "FlightVolume": 92,
+      "OriginCode": "JFK",
+      "PctDel15": 0.2174,
+      "Route": "JFK-DFW",
+      "TotalDelayMinutes": 3087
+    },
+    {
+      "AvgDepDelay": 35.48,
+      "DelayedFlights": 27,
+      "DestCode": "LAX",
+      "FlightVolume": 87,
+      "OriginCode": "AUS",
+      "PctDel15": 0.3103,
+      "Route": "AUS-LAX",
+      "TotalDelayMinutes": 3087
+    },
+    {
+      "AvgDepDelay": 37.11,
+      "DelayedFlights": 29,
+      "DestCode": "ORD",
+      "FlightVolume": 83,
+      "OriginCode": "ATL",
+      "PctDel15": 0.3494,
+      "Route": "ATL-ORD",
+      "TotalDelayMinutes": 3080
+    },
+    {
+      "AvgDepDelay": 34.55,
+      "DelayedFlights": 27,
+      "DestCode": "PHL",
+      "FlightVolume": 89,
+      "OriginCode": "PBI",
+      "PctDel15": 0.3034,
+      "Route": "PBI-PHL",
+      "TotalDelayMinutes": 3075
+    },
+    {
+      "AvgDepDelay": 57.47,
+      "DelayedFlights": 28,
+      "DestCode": "DFW",
+      "FlightVolume": 53,
+      "OriginCode": "XNA",
+      "PctDel15": 0.5283,
+      "Route": "XNA-DFW",
+      "TotalDelayMinutes": 3046
+    },
+    {
+      "AvgDepDelay": 36.64,
+      "DelayedFlights": 35,
+      "DestCode": "ATL",
+      "FlightVolume": 83,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4217,
+      "Route": "ORD-ATL",
+      "TotalDelayMinutes": 3041
+    },
+    {
+      "AvgDepDelay": 16.8,
+      "DelayedFlights": 54,
+      "DestCode": "DFW",
+      "FlightVolume": 181,
+      "OriginCode": "SLC",
+      "PctDel15": 0.2983,
+      "Route": "SLC-DFW",
+      "TotalDelayMinutes": 3040
+    },
+    {
+      "AvgDepDelay": 51.79,
+      "DelayedFlights": 29,
+      "DestCode": "PWM",
+      "FlightVolume": 58,
+      "OriginCode": "PHL",
+      "PctDel15": 0.5,
+      "Route": "PHL-PWM",
+      "TotalDelayMinutes": 3004
+    },
+    {
+      "AvgDepDelay": 54.38,
+      "DelayedFlights": 23,
+      "DestCode": "SBP",
+      "FlightVolume": 55,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4182,
+      "Route": "PHX-SBP",
+      "TotalDelayMinutes": 2991
+    },
+    {
+      "AvgDepDelay": 25.84,
+      "DelayedFlights": 44,
+      "DestCode": "SFO",
+      "FlightVolume": 115,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3826,
+      "Route": "ORD-SFO",
+      "TotalDelayMinutes": 2972
+    },
+    {
+      "AvgDepDelay": 47.89,
+      "DelayedFlights": 31,
+      "DestCode": "ONT",
+      "FlightVolume": 62,
+      "OriginCode": "PHX",
+      "PctDel15": 0.5,
+      "Route": "PHX-ONT",
+      "TotalDelayMinutes": 2969
+    },
+    {
+      "AvgDepDelay": 95.48,
+      "DelayedFlights": 21,
+      "DestCode": "CHS",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.6774,
+      "Route": "MIA-CHS",
+      "TotalDelayMinutes": 2960
+    },
+    {
+      "AvgDepDelay": 45.51,
+      "DelayedFlights": 29,
+      "DestCode": "IAH",
+      "FlightVolume": 65,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4462,
+      "Route": "PHL-IAH",
+      "TotalDelayMinutes": 2958
+    },
+    {
+      "AvgDepDelay": 31.74,
+      "DelayedFlights": 31,
+      "DestCode": "LAX",
+      "FlightVolume": 93,
+      "OriginCode": "LAS",
+      "PctDel15": 0.3333,
+      "Route": "LAS-LAX",
+      "TotalDelayMinutes": 2952
+    },
+    {
+      "AvgDepDelay": 31.61,
+      "DelayedFlights": 30,
+      "DestCode": "LAS",
+      "FlightVolume": 93,
+      "OriginCode": "LAX",
+      "PctDel15": 0.3226,
+      "Route": "LAX-LAS",
+      "TotalDelayMinutes": 2940
+    },
+    {
+      "AvgDepDelay": 35.39,
+      "DelayedFlights": 34,
+      "DestCode": "CLT",
+      "FlightVolume": 83,
+      "OriginCode": "SDF",
+      "PctDel15": 0.4096,
+      "Route": "SDF-CLT",
+      "TotalDelayMinutes": 2937
+    },
+    {
+      "AvgDepDelay": 51.51,
+      "DelayedFlights": 31,
+      "DestCode": "DSM",
+      "FlightVolume": 57,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5439,
+      "Route": "CLT-DSM",
+      "TotalDelayMinutes": 2936
+    },
+    {
+      "AvgDepDelay": 52.39,
+      "DelayedFlights": 36,
+      "DestCode": "JAX",
+      "FlightVolume": 56,
+      "OriginCode": "PHL",
+      "PctDel15": 0.6429,
+      "Route": "PHL-JAX",
+      "TotalDelayMinutes": 2934
+    },
+    {
+      "AvgDepDelay": 51.47,
+      "DelayedFlights": 18,
+      "DestCode": "PHX",
+      "FlightVolume": 57,
+      "OriginCode": "ATL",
+      "PctDel15": 0.3158,
+      "Route": "ATL-PHX",
+      "TotalDelayMinutes": 2934
+    },
+    {
+      "AvgDepDelay": 33.6,
+      "DelayedFlights": 34,
+      "DestCode": "DFW",
+      "FlightVolume": 87,
+      "OriginCode": "BWI",
+      "PctDel15": 0.3908,
+      "Route": "BWI-DFW",
+      "TotalDelayMinutes": 2923
+    },
+    {
+      "AvgDepDelay": 26.48,
+      "DelayedFlights": 37,
+      "DestCode": "LGA",
+      "FlightVolume": 110,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3364,
+      "Route": "DCA-LGA",
+      "TotalDelayMinutes": 2913
+    },
+    {
+      "AvgDepDelay": 90.97,
+      "DelayedFlights": 21,
+      "DestCode": "DFW",
+      "FlightVolume": 32,
+      "OriginCode": "RDM",
+      "PctDel15": 0.6562,
+      "Route": "RDM-DFW",
+      "TotalDelayMinutes": 2911
+    },
+    {
+      "AvgDepDelay": 34.24,
+      "DelayedFlights": 26,
+      "DestCode": "PHL",
+      "FlightVolume": 85,
+      "OriginCode": "STL",
+      "PctDel15": 0.3059,
+      "Route": "STL-PHL",
+      "TotalDelayMinutes": 2910
+    },
+    {
+      "AvgDepDelay": 52.89,
+      "DelayedFlights": 21,
+      "DestCode": "CLT",
+      "FlightVolume": 55,
+      "OriginCode": "ROC",
+      "PctDel15": 0.3818,
+      "Route": "ROC-CLT",
+      "TotalDelayMinutes": 2909
+    },
+    {
+      "AvgDepDelay": 49.25,
+      "DelayedFlights": 26,
+      "DestCode": "ORD",
+      "FlightVolume": 59,
+      "OriginCode": "IND",
+      "PctDel15": 0.4407,
+      "Route": "IND-ORD",
+      "TotalDelayMinutes": 2906
+    },
+    {
+      "AvgDepDelay": 19.49,
+      "DelayedFlights": 44,
+      "DestCode": "DFW",
+      "FlightVolume": 149,
+      "OriginCode": "CLE",
+      "PctDel15": 0.2953,
+      "Route": "CLE-DFW",
+      "TotalDelayMinutes": 2904
+    },
+    {
+      "AvgDepDelay": 19.21,
+      "DelayedFlights": 41,
+      "DestCode": "DFW",
+      "FlightVolume": 151,
+      "OriginCode": "IND",
+      "PctDel15": 0.2715,
+      "Route": "IND-DFW",
+      "TotalDelayMinutes": 2900
+    },
+    {
+      "AvgDepDelay": 14.38,
+      "DelayedFlights": 54,
+      "DestCode": "ORD",
+      "FlightVolume": 201,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2687,
+      "Route": "BOS-ORD",
+      "TotalDelayMinutes": 2890
+    },
+    {
+      "AvgDepDelay": 31.3,
+      "DelayedFlights": 39,
+      "DestCode": "BZN",
+      "FlightVolume": 92,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4239,
+      "Route": "DFW-BZN",
+      "TotalDelayMinutes": 2880
+    },
+    {
+      "AvgDepDelay": 32.53,
+      "DelayedFlights": 34,
+      "DestCode": "DFW",
+      "FlightVolume": 88,
+      "OriginCode": "MKE",
+      "PctDel15": 0.3864,
+      "Route": "MKE-DFW",
+      "TotalDelayMinutes": 2863
+    },
+    {
+      "AvgDepDelay": 12.27,
+      "DelayedFlights": 53,
+      "DestCode": "CLT",
+      "FlightVolume": 233,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2275,
+      "Route": "BOS-CLT",
+      "TotalDelayMinutes": 2859
+    },
+    {
+      "AvgDepDelay": 89.34,
+      "DelayedFlights": 6,
+      "DestCode": "DFW",
+      "FlightVolume": 32,
+      "OriginCode": "EUG",
+      "PctDel15": 0.1875,
+      "Route": "EUG-DFW",
+      "TotalDelayMinutes": 2859
+    },
+    {
+      "AvgDepDelay": 31.4,
+      "DelayedFlights": 36,
+      "DestCode": "PHX",
+      "FlightVolume": 91,
+      "OriginCode": "EWR",
+      "PctDel15": 0.3956,
+      "Route": "EWR-PHX",
+      "TotalDelayMinutes": 2857
+    },
+    {
+      "AvgDepDelay": 20.45,
+      "DelayedFlights": 24,
+      "DestCode": "CLT",
+      "FlightVolume": 139,
+      "OriginCode": "SFO",
+      "PctDel15": 0.1727,
+      "Route": "SFO-CLT",
+      "TotalDelayMinutes": 2842
+    },
+    {
+      "AvgDepDelay": 94.1,
+      "DelayedFlights": 6,
+      "DestCode": "PHL",
+      "FlightVolume": 30,
+      "OriginCode": "CVG",
+      "PctDel15": 0.2,
+      "Route": "CVG-PHL",
+      "TotalDelayMinutes": 2823
+    },
+    {
+      "AvgDepDelay": 54.29,
+      "DelayedFlights": 12,
+      "DestCode": "AUS",
+      "FlightVolume": 52,
+      "OriginCode": "JFK",
+      "PctDel15": 0.2308,
+      "Route": "JFK-AUS",
+      "TotalDelayMinutes": 2823
+    },
+    {
+      "AvgDepDelay": 46.07,
+      "DelayedFlights": 29,
+      "DestCode": "XNA",
+      "FlightVolume": 61,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4754,
+      "Route": "CLT-XNA",
+      "TotalDelayMinutes": 2810
+    },
+    {
+      "AvgDepDelay": 30.85,
+      "DelayedFlights": 44,
+      "DestCode": "SJC",
+      "FlightVolume": 91,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4835,
+      "Route": "DFW-SJC",
+      "TotalDelayMinutes": 2807
+    },
+    {
+      "AvgDepDelay": 90.19,
+      "DelayedFlights": 10,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "JAX",
+      "PctDel15": 0.3226,
+      "Route": "JAX-PHX",
+      "TotalDelayMinutes": 2796
+    },
+    {
+      "AvgDepDelay": 46.47,
+      "DelayedFlights": 25,
+      "DestCode": "AVP",
+      "FlightVolume": 60,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4167,
+      "Route": "CLT-AVP",
+      "TotalDelayMinutes": 2788
+    },
+    {
+      "AvgDepDelay": 89.84,
+      "DelayedFlights": 16,
+      "DestCode": "CLT",
+      "FlightVolume": 31,
+      "OriginCode": "GEG",
+      "PctDel15": 0.5161,
+      "Route": "GEG-CLT",
+      "TotalDelayMinutes": 2785
+    },
+    {
+      "AvgDepDelay": 51.52,
+      "DelayedFlights": 32,
+      "DestCode": "CID",
+      "FlightVolume": 54,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5926,
+      "Route": "CLT-CID",
+      "TotalDelayMinutes": 2782
+    },
+    {
+      "AvgDepDelay": 48.72,
+      "DelayedFlights": 27,
+      "DestCode": "ATL",
+      "FlightVolume": 57,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4737,
+      "Route": "PHX-ATL",
+      "TotalDelayMinutes": 2777
+    },
+    {
+      "AvgDepDelay": 31.79,
+      "DelayedFlights": 41,
+      "DestCode": "COS",
+      "FlightVolume": 87,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4713,
+      "Route": "DFW-COS",
+      "TotalDelayMinutes": 2766
+    },
+    {
+      "AvgDepDelay": 30.03,
+      "DelayedFlights": 13,
+      "DestCode": "PHX",
+      "FlightVolume": 92,
+      "OriginCode": "DCA",
+      "PctDel15": 0.1413,
+      "Route": "DCA-PHX",
+      "TotalDelayMinutes": 2763
+    },
+    {
+      "AvgDepDelay": 30.64,
+      "DelayedFlights": 39,
+      "DestCode": "DEN",
+      "FlightVolume": 90,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4333,
+      "Route": "ORD-DEN",
+      "TotalDelayMinutes": 2758
+    },
+    {
+      "AvgDepDelay": 30.43,
+      "DelayedFlights": 28,
+      "DestCode": "ORD",
+      "FlightVolume": 90,
+      "OriginCode": "DEN",
+      "PctDel15": 0.3111,
+      "Route": "DEN-ORD",
+      "TotalDelayMinutes": 2739
+    },
+    {
+      "AvgDepDelay": 46.31,
+      "DelayedFlights": 20,
+      "DestCode": "DFW",
+      "FlightVolume": 59,
+      "OriginCode": "FCA",
+      "PctDel15": 0.339,
+      "Route": "FCA-DFW",
+      "TotalDelayMinutes": 2732
+    },
+    {
+      "AvgDepDelay": 90.83,
+      "DelayedFlights": 7,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "CHS",
+      "PctDel15": 0.2333,
+      "Route": "CHS-MIA",
+      "TotalDelayMinutes": 2725
+    },
+    {
+      "AvgDepDelay": 27.41,
+      "DelayedFlights": 46,
+      "DestCode": "DTW",
+      "FlightVolume": 99,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4646,
+      "Route": "PHL-DTW",
+      "TotalDelayMinutes": 2714
+    },
+    {
+      "AvgDepDelay": 43.74,
+      "DelayedFlights": 12,
+      "DestCode": "DFW",
+      "FlightVolume": 62,
+      "OriginCode": "ANC",
+      "PctDel15": 0.1935,
+      "Route": "ANC-DFW",
+      "TotalDelayMinutes": 2712
+    },
+    {
+      "AvgDepDelay": 32.61,
+      "DelayedFlights": 30,
+      "DestCode": "CLT",
+      "FlightVolume": 83,
+      "OriginCode": "SYR",
+      "PctDel15": 0.3614,
+      "Route": "SYR-CLT",
+      "TotalDelayMinutes": 2707
+    },
+    {
+      "AvgDepDelay": 89.83,
+      "DelayedFlights": 18,
+      "DestCode": "ORD",
+      "FlightVolume": 30,
+      "OriginCode": "DTW",
+      "PctDel15": 0.6,
+      "Route": "DTW-ORD",
+      "TotalDelayMinutes": 2695
+    },
+    {
+      "AvgDepDelay": 23,
+      "DelayedFlights": 36,
+      "DestCode": "PHL",
+      "FlightVolume": 117,
+      "OriginCode": "LAS",
+      "PctDel15": 0.3077,
+      "Route": "LAS-PHL",
+      "TotalDelayMinutes": 2691
+    },
+    {
+      "AvgDepDelay": 86.58,
+      "DelayedFlights": 21,
+      "DestCode": "BDL",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.6774,
+      "Route": "MIA-BDL",
+      "TotalDelayMinutes": 2684
+    },
+    {
+      "AvgDepDelay": 30.74,
+      "DelayedFlights": 41,
+      "DestCode": "BWI",
+      "FlightVolume": 87,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4713,
+      "Route": "DFW-BWI",
+      "TotalDelayMinutes": 2674
+    },
+    {
+      "AvgDepDelay": 30.18,
+      "DelayedFlights": 33,
+      "DestCode": "PHX",
+      "FlightVolume": 88,
+      "OriginCode": "SAT",
+      "PctDel15": 0.375,
+      "Route": "SAT-PHX",
+      "TotalDelayMinutes": 2656
+    },
+    {
+      "AvgDepDelay": 48.91,
+      "DelayedFlights": 22,
+      "DestCode": "DCA",
+      "FlightVolume": 54,
+      "OriginCode": "JAX",
+      "PctDel15": 0.4074,
+      "Route": "JAX-DCA",
+      "TotalDelayMinutes": 2641
+    },
+    {
+      "AvgDepDelay": 41.92,
+      "DelayedFlights": 31,
+      "DestCode": "JAC",
+      "FlightVolume": 63,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4921,
+      "Route": "DFW-JAC",
+      "TotalDelayMinutes": 2641
+    },
+    {
+      "AvgDepDelay": 44.68,
+      "DelayedFlights": 12,
+      "DestCode": "CLT",
+      "FlightVolume": 59,
+      "OriginCode": "ATL",
+      "PctDel15": 0.2034,
+      "Route": "ATL-CLT",
+      "TotalDelayMinutes": 2636
+    },
+    {
+      "AvgDepDelay": 17.68,
+      "DelayedFlights": 34,
+      "DestCode": "DFW",
+      "FlightVolume": 149,
+      "OriginCode": "PIT",
+      "PctDel15": 0.2282,
+      "Route": "PIT-DFW",
+      "TotalDelayMinutes": 2635
+    },
+    {
+      "AvgDepDelay": 43.16,
+      "DelayedFlights": 20,
+      "DestCode": "ORD",
+      "FlightVolume": 61,
+      "OriginCode": "BUF",
+      "PctDel15": 0.3279,
+      "Route": "BUF-ORD",
+      "TotalDelayMinutes": 2633
+    },
+    {
+      "AvgDepDelay": 22.47,
+      "DelayedFlights": 31,
+      "DestCode": "AUS",
+      "FlightVolume": 117,
+      "OriginCode": "PHX",
+      "PctDel15": 0.265,
+      "Route": "PHX-AUS",
+      "TotalDelayMinutes": 2629
+    },
+    {
+      "AvgDepDelay": 44.54,
+      "DelayedFlights": 23,
+      "DestCode": "CLT",
+      "FlightVolume": 59,
+      "OriginCode": "ECP",
+      "PctDel15": 0.3898,
+      "Route": "ECP-CLT",
+      "TotalDelayMinutes": 2628
+    },
+    {
+      "AvgDepDelay": 21.87,
+      "DelayedFlights": 34,
+      "DestCode": "CHS",
+      "FlightVolume": 119,
+      "OriginCode": "PHL",
+      "PctDel15": 0.2857,
+      "Route": "PHL-CHS",
+      "TotalDelayMinutes": 2603
+    },
+    {
+      "AvgDepDelay": 41.94,
+      "DelayedFlights": 24,
+      "DestCode": "DFW",
+      "FlightVolume": 62,
+      "OriginCode": "SDF",
+      "PctDel15": 0.3871,
+      "Route": "SDF-DFW",
+      "TotalDelayMinutes": 2600
+    },
+    {
+      "AvgDepDelay": 33.29,
+      "DelayedFlights": 30,
+      "DestCode": "CLT",
+      "FlightVolume": 78,
+      "OriginCode": "SAV",
+      "PctDel15": 0.3846,
+      "Route": "SAV-CLT",
+      "TotalDelayMinutes": 2597
+    },
+    {
+      "AvgDepDelay": 86.3,
+      "DelayedFlights": 18,
+      "DestCode": "DFW",
+      "FlightVolume": 30,
+      "OriginCode": "AVL",
+      "PctDel15": 0.6,
+      "Route": "AVL-DFW",
+      "TotalDelayMinutes": 2589
+    },
+    {
+      "AvgDepDelay": 83.39,
+      "DelayedFlights": 18,
+      "DestCode": "CMH",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.5806,
+      "Route": "PHX-CMH",
+      "TotalDelayMinutes": 2585
+    },
+    {
+      "AvgDepDelay": 42.98,
+      "DelayedFlights": 32,
+      "DestCode": "MSP",
+      "FlightVolume": 60,
+      "OriginCode": "ORD",
+      "PctDel15": 0.5333,
+      "Route": "ORD-MSP",
+      "TotalDelayMinutes": 2579
+    },
+    {
+      "AvgDepDelay": 21.38,
+      "DelayedFlights": 25,
+      "DestCode": "SMF",
+      "FlightVolume": 120,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2083,
+      "Route": "PHX-SMF",
+      "TotalDelayMinutes": 2566
+    },
+    {
+      "AvgDepDelay": 23.2,
+      "DelayedFlights": 25,
+      "DestCode": "DCA",
+      "FlightVolume": 110,
+      "OriginCode": "LGA",
+      "PctDel15": 0.2273,
+      "Route": "LGA-DCA",
+      "TotalDelayMinutes": 2552
+    },
+    {
+      "AvgDepDelay": 40.97,
+      "DelayedFlights": 27,
+      "DestCode": "PSP",
+      "FlightVolume": 62,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4355,
+      "Route": "DFW-PSP",
+      "TotalDelayMinutes": 2540
+    },
+    {
+      "AvgDepDelay": 41.62,
+      "DelayedFlights": 25,
+      "DestCode": "MSP",
+      "FlightVolume": 61,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4098,
+      "Route": "PHL-MSP",
+      "TotalDelayMinutes": 2539
+    },
+    {
+      "AvgDepDelay": 30.1,
+      "DelayedFlights": 24,
+      "DestCode": "CLT",
+      "FlightVolume": 84,
+      "OriginCode": "CMH",
+      "PctDel15": 0.2857,
+      "Route": "CMH-CLT",
+      "TotalDelayMinutes": 2528
+    },
+    {
+      "AvgDepDelay": 21.96,
+      "DelayedFlights": 48,
+      "DestCode": "BOI",
+      "FlightVolume": 115,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4174,
+      "Route": "DFW-BOI",
+      "TotalDelayMinutes": 2525
+    },
+    {
+      "AvgDepDelay": 41.25,
+      "DelayedFlights": 29,
+      "DestCode": "CLT",
+      "FlightVolume": 61,
+      "OriginCode": "PNS",
+      "PctDel15": 0.4754,
+      "Route": "PNS-CLT",
+      "TotalDelayMinutes": 2516
+    },
+    {
+      "AvgDepDelay": 38.06,
+      "DelayedFlights": 32,
+      "DestCode": "BGR",
+      "FlightVolume": 66,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4848,
+      "Route": "PHL-BGR",
+      "TotalDelayMinutes": 2512
+    },
+    {
+      "AvgDepDelay": 41.16,
+      "DelayedFlights": 37,
+      "DestCode": "GSO",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6066,
+      "Route": "DFW-GSO",
+      "TotalDelayMinutes": 2511
+    },
+    {
+      "AvgDepDelay": 83.57,
+      "DelayedFlights": 21,
+      "DestCode": "SMF",
+      "FlightVolume": 30,
+      "OriginCode": "CLT",
+      "PctDel15": 0.7,
+      "Route": "CLT-SMF",
+      "TotalDelayMinutes": 2507
+    },
+    {
+      "AvgDepDelay": 29.14,
+      "DelayedFlights": 28,
+      "DestCode": "PHL",
+      "FlightVolume": 86,
+      "OriginCode": "PIT",
+      "PctDel15": 0.3256,
+      "Route": "PIT-PHL",
+      "TotalDelayMinutes": 2506
+    },
+    {
+      "AvgDepDelay": 40.37,
+      "DelayedFlights": 30,
+      "DestCode": "GEG",
+      "FlightVolume": 62,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4839,
+      "Route": "DFW-GEG",
+      "TotalDelayMinutes": 2503
+    },
+    {
+      "AvgDepDelay": 42.14,
+      "DelayedFlights": 18,
+      "DestCode": "ECP",
+      "FlightVolume": 59,
+      "OriginCode": "CLT",
+      "PctDel15": 0.3051,
+      "Route": "CLT-ECP",
+      "TotalDelayMinutes": 2486
+    },
+    {
+      "AvgDepDelay": 41.27,
+      "DelayedFlights": 25,
+      "DestCode": "CLT",
+      "FlightVolume": 60,
+      "OriginCode": "SLC",
+      "PctDel15": 0.4167,
+      "Route": "SLC-CLT",
+      "TotalDelayMinutes": 2476
+    },
+    {
+      "AvgDepDelay": 28.74,
+      "DelayedFlights": 34,
+      "DestCode": "SFO",
+      "FlightVolume": 86,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3953,
+      "Route": "PHL-SFO",
+      "TotalDelayMinutes": 2472
+    },
+    {
+      "AvgDepDelay": 41.76,
+      "DelayedFlights": 32,
+      "DestCode": "IND",
+      "FlightVolume": 59,
+      "OriginCode": "ORD",
+      "PctDel15": 0.5424,
+      "Route": "ORD-IND",
+      "TotalDelayMinutes": 2464
+    },
+    {
+      "AvgDepDelay": 31.88,
+      "DelayedFlights": 29,
+      "DestCode": "ORD",
+      "FlightVolume": 77,
+      "OriginCode": "IAH",
+      "PctDel15": 0.3766,
+      "Route": "IAH-ORD",
+      "TotalDelayMinutes": 2455
+    },
+    {
+      "AvgDepDelay": 40.88,
+      "DelayedFlights": 27,
+      "DestCode": "SJU",
+      "FlightVolume": 60,
+      "OriginCode": "DFW",
+      "PctDel15": 0.45,
+      "Route": "DFW-SJU",
+      "TotalDelayMinutes": 2453
+    },
+    {
+      "AvgDepDelay": 26.93,
+      "DelayedFlights": 31,
+      "DestCode": "DFW",
+      "FlightVolume": 91,
+      "OriginCode": "SJC",
+      "PctDel15": 0.3407,
+      "Route": "SJC-DFW",
+      "TotalDelayMinutes": 2451
+    },
+    {
+      "AvgDepDelay": 27.1,
+      "DelayedFlights": 33,
+      "DestCode": "DFW",
+      "FlightVolume": 90,
+      "OriginCode": "PBI",
+      "PctDel15": 0.3667,
+      "Route": "PBI-DFW",
+      "TotalDelayMinutes": 2439
+    },
+    {
+      "AvgDepDelay": 39.15,
+      "DelayedFlights": 19,
+      "DestCode": "DFW",
+      "FlightVolume": 62,
+      "OriginCode": "SBP",
+      "PctDel15": 0.3065,
+      "Route": "SBP-DFW",
+      "TotalDelayMinutes": 2427
+    },
+    {
+      "AvgDepDelay": 27.26,
+      "DelayedFlights": 38,
+      "DestCode": "CLE",
+      "FlightVolume": 89,
+      "OriginCode": "PHL",
+      "PctDel15": 0.427,
+      "Route": "PHL-CLE",
+      "TotalDelayMinutes": 2426
+    },
+    {
+      "AvgDepDelay": 42.09,
+      "DelayedFlights": 17,
+      "DestCode": "DSM",
+      "FlightVolume": 57,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2982,
+      "Route": "PHX-DSM",
+      "TotalDelayMinutes": 2399
+    },
+    {
+      "AvgDepDelay": 21.11,
+      "DelayedFlights": 37,
+      "DestCode": "CMH",
+      "FlightVolume": 113,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3274,
+      "Route": "DFW-CMH",
+      "TotalDelayMinutes": 2385
+    },
+    {
+      "AvgDepDelay": 74.44,
+      "DelayedFlights": 16,
+      "DestCode": "RDM",
+      "FlightVolume": 32,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5,
+      "Route": "DFW-RDM",
+      "TotalDelayMinutes": 2382
+    },
+    {
+      "AvgDepDelay": 26.74,
+      "DelayedFlights": 24,
+      "DestCode": "ORD",
+      "FlightVolume": 89,
+      "OriginCode": "RDU",
+      "PctDel15": 0.2697,
+      "Route": "RDU-ORD",
+      "TotalDelayMinutes": 2380
+    },
+    {
+      "AvgDepDelay": 39.03,
+      "DelayedFlights": 27,
+      "DestCode": "MIA",
+      "FlightVolume": 60,
+      "OriginCode": "DEN",
+      "PctDel15": 0.45,
+      "Route": "DEN-MIA",
+      "TotalDelayMinutes": 2342
+    },
+    {
+      "AvgDepDelay": 38.98,
+      "DelayedFlights": 13,
+      "DestCode": "PHL",
+      "FlightVolume": 60,
+      "OriginCode": "MSP",
+      "PctDel15": 0.2167,
+      "Route": "MSP-PHL",
+      "TotalDelayMinutes": 2339
+    },
+    {
+      "AvgDepDelay": 38.98,
+      "DelayedFlights": 22,
+      "DestCode": "DFW",
+      "FlightVolume": 60,
+      "OriginCode": "MRY",
+      "PctDel15": 0.3667,
+      "Route": "MRY-DFW",
+      "TotalDelayMinutes": 2339
+    },
+    {
+      "AvgDepDelay": 19.97,
+      "DelayedFlights": 20,
+      "DestCode": "ORD",
+      "FlightVolume": 117,
+      "OriginCode": "SAN",
+      "PctDel15": 0.1709,
+      "Route": "SAN-ORD",
+      "TotalDelayMinutes": 2336
+    },
+    {
+      "AvgDepDelay": 25.33,
+      "DelayedFlights": 32,
+      "DestCode": "JFK",
+      "FlightVolume": 92,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3478,
+      "Route": "DFW-JFK",
+      "TotalDelayMinutes": 2330
+    },
+    {
+      "AvgDepDelay": 38.03,
+      "DelayedFlights": 20,
+      "DestCode": "STL",
+      "FlightVolume": 61,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3279,
+      "Route": "PHX-STL",
+      "TotalDelayMinutes": 2320
+    },
+    {
+      "AvgDepDelay": 25.17,
+      "DelayedFlights": 20,
+      "DestCode": "DCA",
+      "FlightVolume": 92,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2174,
+      "Route": "PHX-DCA",
+      "TotalDelayMinutes": 2316
+    },
+    {
+      "AvgDepDelay": 43.42,
+      "DelayedFlights": 22,
+      "DestCode": "CLT",
+      "FlightVolume": 53,
+      "OriginCode": "CID",
+      "PctDel15": 0.4151,
+      "Route": "CID-CLT",
+      "TotalDelayMinutes": 2301
+    },
+    {
+      "AvgDepDelay": 38.33,
+      "DelayedFlights": 21,
+      "DestCode": "PHL",
+      "FlightVolume": 60,
+      "OriginCode": "CMH",
+      "PctDel15": 0.35,
+      "Route": "CMH-PHL",
+      "TotalDelayMinutes": 2300
+    },
+    {
+      "AvgDepDelay": 26.36,
+      "DelayedFlights": 28,
+      "DestCode": "AUS",
+      "FlightVolume": 87,
+      "OriginCode": "LAX",
+      "PctDel15": 0.3218,
+      "Route": "LAX-AUS",
+      "TotalDelayMinutes": 2293
+    },
+    {
+      "AvgDepDelay": 40.93,
+      "DelayedFlights": 18,
+      "DestCode": "JAX",
+      "FlightVolume": 56,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3214,
+      "Route": "DCA-JAX",
+      "TotalDelayMinutes": 2292
+    },
+    {
+      "AvgDepDelay": 25.93,
+      "DelayedFlights": 20,
+      "DestCode": "PHX",
+      "FlightVolume": 88,
+      "OriginCode": "JFK",
+      "PctDel15": 0.2273,
+      "Route": "JFK-PHX",
+      "TotalDelayMinutes": 2282
+    },
+    {
+      "AvgDepDelay": 76,
+      "DelayedFlights": 20,
+      "DestCode": "GRR",
+      "FlightVolume": 30,
+      "OriginCode": "ORD",
+      "PctDel15": 0.6667,
+      "Route": "ORD-GRR",
+      "TotalDelayMinutes": 2280
+    },
+    {
+      "AvgDepDelay": 18.83,
+      "DelayedFlights": 43,
+      "DestCode": "TPA",
+      "FlightVolume": 121,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3554,
+      "Route": "PHL-TPA",
+      "TotalDelayMinutes": 2279
+    },
+    {
+      "AvgDepDelay": 73.19,
+      "DelayedFlights": 24,
+      "DestCode": "ONT",
+      "FlightVolume": 31,
+      "OriginCode": "CLT",
+      "PctDel15": 0.7742,
+      "Route": "CLT-ONT",
+      "TotalDelayMinutes": 2269
+    },
+    {
+      "AvgDepDelay": 75.6,
+      "DelayedFlights": 24,
+      "DestCode": "MSN",
+      "FlightVolume": 30,
+      "OriginCode": "CLT",
+      "PctDel15": 0.8,
+      "Route": "CLT-MSN",
+      "TotalDelayMinutes": 2268
+    },
+    {
+      "AvgDepDelay": 37.15,
+      "DelayedFlights": 13,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "MSO",
+      "PctDel15": 0.2131,
+      "Route": "MSO-DFW",
+      "TotalDelayMinutes": 2266
+    },
+    {
+      "AvgDepDelay": 19.12,
+      "DelayedFlights": 28,
+      "DestCode": "BOS",
+      "FlightVolume": 118,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2373,
+      "Route": "LAX-BOS",
+      "TotalDelayMinutes": 2256
+    },
+    {
+      "AvgDepDelay": 38.12,
+      "DelayedFlights": 31,
+      "DestCode": "IAD",
+      "FlightVolume": 59,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5254,
+      "Route": "DFW-IAD",
+      "TotalDelayMinutes": 2249
+    },
+    {
+      "AvgDepDelay": 36.7,
+      "DelayedFlights": 32,
+      "DestCode": "BUF",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5246,
+      "Route": "DFW-BUF",
+      "TotalDelayMinutes": 2239
+    },
+    {
+      "AvgDepDelay": 35.44,
+      "DelayedFlights": 22,
+      "DestCode": "DFW",
+      "FlightVolume": 63,
+      "OriginCode": "GSP",
+      "PctDel15": 0.3492,
+      "Route": "GSP-DFW",
+      "TotalDelayMinutes": 2233
+    },
+    {
+      "AvgDepDelay": 36.61,
+      "DelayedFlights": 27,
+      "DestCode": "PNS",
+      "FlightVolume": 61,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4426,
+      "Route": "CLT-PNS",
+      "TotalDelayMinutes": 2233
+    },
+    {
+      "AvgDepDelay": 71.77,
+      "DelayedFlights": 13,
+      "DestCode": "LAS",
+      "FlightVolume": 31,
+      "OriginCode": "AUS",
+      "PctDel15": 0.4194,
+      "Route": "AUS-LAS",
+      "TotalDelayMinutes": 2225
+    },
+    {
+      "AvgDepDelay": 27.78,
+      "DelayedFlights": 19,
+      "DestCode": "PHX",
+      "FlightVolume": 80,
+      "OriginCode": "PDX",
+      "PctDel15": 0.2375,
+      "Route": "PDX-PHX",
+      "TotalDelayMinutes": 2222
+    },
+    {
+      "AvgDepDelay": 39.59,
+      "DelayedFlights": 20,
+      "DestCode": "PIT",
+      "FlightVolume": 56,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3571,
+      "Route": "DCA-PIT",
+      "TotalDelayMinutes": 2217
+    },
+    {
+      "AvgDepDelay": 25.46,
+      "DelayedFlights": 25,
+      "DestCode": "PHL",
+      "FlightVolume": 87,
+      "OriginCode": "CLE",
+      "PctDel15": 0.2874,
+      "Route": "CLE-PHL",
+      "TotalDelayMinutes": 2215
+    },
+    {
+      "AvgDepDelay": 36.9,
+      "DelayedFlights": 27,
+      "DestCode": "SLC",
+      "FlightVolume": 60,
+      "OriginCode": "CLT",
+      "PctDel15": 0.45,
+      "Route": "CLT-SLC",
+      "TotalDelayMinutes": 2214
+    },
+    {
+      "AvgDepDelay": 36.28,
+      "DelayedFlights": 19,
+      "DestCode": "MCI",
+      "FlightVolume": 61,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3115,
+      "Route": "PHX-MCI",
+      "TotalDelayMinutes": 2213
+    },
+    {
+      "AvgDepDelay": 70.42,
+      "DelayedFlights": 24,
+      "DestCode": "PDX",
+      "FlightVolume": 31,
+      "OriginCode": "CLT",
+      "PctDel15": 0.7742,
+      "Route": "CLT-PDX",
+      "TotalDelayMinutes": 2183
+    },
+    {
+      "AvgDepDelay": 35.19,
+      "DelayedFlights": 16,
+      "DestCode": "TPA",
+      "FlightVolume": 62,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2581,
+      "Route": "PHX-TPA",
+      "TotalDelayMinutes": 2182
+    },
+    {
+      "AvgDepDelay": 72.57,
+      "DelayedFlights": 14,
+      "DestCode": "DTW",
+      "FlightVolume": 30,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4667,
+      "Route": "ORD-DTW",
+      "TotalDelayMinutes": 2177
+    },
+    {
+      "AvgDepDelay": 72.5,
+      "DelayedFlights": 21,
+      "DestCode": "CID",
+      "FlightVolume": 30,
+      "OriginCode": "ORD",
+      "PctDel15": 0.7,
+      "Route": "ORD-CID",
+      "TotalDelayMinutes": 2175
+    },
+    {
+      "AvgDepDelay": 28.1,
+      "DelayedFlights": 31,
+      "DestCode": "IAH",
+      "FlightVolume": 77,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4026,
+      "Route": "ORD-IAH",
+      "TotalDelayMinutes": 2164
+    },
+    {
+      "AvgDepDelay": 23.71,
+      "DelayedFlights": 33,
+      "DestCode": "EWR",
+      "FlightVolume": 91,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3626,
+      "Route": "PHX-EWR",
+      "TotalDelayMinutes": 2158
+    },
+    {
+      "AvgDepDelay": 23.67,
+      "DelayedFlights": 30,
+      "DestCode": "ORD",
+      "FlightVolume": 91,
+      "OriginCode": "TPA",
+      "PctDel15": 0.3297,
+      "Route": "TPA-ORD",
+      "TotalDelayMinutes": 2154
+    },
+    {
+      "AvgDepDelay": 68.39,
+      "DelayedFlights": 25,
+      "DestCode": "GEG",
+      "FlightVolume": 31,
+      "OriginCode": "CLT",
+      "PctDel15": 0.8065,
+      "Route": "CLT-GEG",
+      "TotalDelayMinutes": 2120
+    },
+    {
+      "AvgDepDelay": 37.91,
+      "DelayedFlights": 32,
+      "DestCode": "OMA",
+      "FlightVolume": 55,
+      "OriginCode": "ORD",
+      "PctDel15": 0.5818,
+      "Route": "ORD-OMA",
+      "TotalDelayMinutes": 2085
+    },
+    {
+      "AvgDepDelay": 67.23,
+      "DelayedFlights": 18,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "ANC",
+      "PctDel15": 0.5806,
+      "Route": "ANC-ORD",
+      "TotalDelayMinutes": 2084
+    },
+    {
+      "AvgDepDelay": 69.37,
+      "DelayedFlights": 16,
+      "DestCode": "BWI",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.5333,
+      "Route": "MIA-BWI",
+      "TotalDelayMinutes": 2081
+    },
+    {
+      "AvgDepDelay": 36.49,
+      "DelayedFlights": 15,
+      "DestCode": "PHX",
+      "FlightVolume": 57,
+      "OriginCode": "DSM",
+      "PctDel15": 0.2632,
+      "Route": "DSM-PHX",
+      "TotalDelayMinutes": 2080
+    },
+    {
+      "AvgDepDelay": 42.98,
+      "DelayedFlights": 17,
+      "DestCode": "MIA",
+      "FlightVolume": 48,
+      "OriginCode": "PIT",
+      "PctDel15": 0.3542,
+      "Route": "PIT-MIA",
+      "TotalDelayMinutes": 2063
+    },
+    {
+      "AvgDepDelay": 63.94,
+      "DelayedFlights": 22,
+      "DestCode": "EUG",
+      "FlightVolume": 32,
+      "OriginCode": "DFW",
+      "PctDel15": 0.6875,
+      "Route": "DFW-EUG",
+      "TotalDelayMinutes": 2046
+    },
+    {
+      "AvgDepDelay": 35.26,
+      "DelayedFlights": 31,
+      "DestCode": "MSY",
+      "FlightVolume": 58,
+      "OriginCode": "ORD",
+      "PctDel15": 0.5345,
+      "Route": "ORD-MSY",
+      "TotalDelayMinutes": 2045
+    },
+    {
+      "AvgDepDelay": 22.71,
+      "DelayedFlights": 24,
+      "DestCode": "CLT",
+      "FlightVolume": 90,
+      "OriginCode": "GRR",
+      "PctDel15": 0.2667,
+      "Route": "GRR-CLT",
+      "TotalDelayMinutes": 2044
+    },
+    {
+      "AvgDepDelay": 22.48,
+      "DelayedFlights": 36,
+      "DestCode": "CHS",
+      "FlightVolume": 90,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4,
+      "Route": "DFW-CHS",
+      "TotalDelayMinutes": 2023
+    },
+    {
+      "AvgDepDelay": 21.61,
+      "DelayedFlights": 25,
+      "DestCode": "TPA",
+      "FlightVolume": 93,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2688,
+      "Route": "DCA-TPA",
+      "TotalDelayMinutes": 2010
+    },
+    {
+      "AvgDepDelay": 57.43,
+      "DelayedFlights": 20,
+      "DestCode": "DFW",
+      "FlightVolume": 35,
+      "OriginCode": "MYR",
+      "PctDel15": 0.5714,
+      "Route": "MYR-DFW",
+      "TotalDelayMinutes": 2010
+    },
+    {
+      "AvgDepDelay": 21.77,
+      "DelayedFlights": 28,
+      "DestCode": "DFW",
+      "FlightVolume": 92,
+      "OriginCode": "BZN",
+      "PctDel15": 0.3043,
+      "Route": "BZN-DFW",
+      "TotalDelayMinutes": 2003
+    },
+    {
+      "AvgDepDelay": 35.59,
+      "DelayedFlights": 16,
+      "DestCode": "PHX",
+      "FlightVolume": 56,
+      "OriginCode": "MSP",
+      "PctDel15": 0.2857,
+      "Route": "MSP-PHX",
+      "TotalDelayMinutes": 1993
+    },
+    {
+      "AvgDepDelay": 64.23,
+      "DelayedFlights": 10,
+      "DestCode": "AVL",
+      "FlightVolume": 31,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3226,
+      "Route": "DFW-AVL",
+      "TotalDelayMinutes": 1991
+    },
+    {
+      "AvgDepDelay": 65.9,
+      "DelayedFlights": 17,
+      "DestCode": "MDT",
+      "FlightVolume": 30,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5667,
+      "Route": "DFW-MDT",
+      "TotalDelayMinutes": 1977
+    },
+    {
+      "AvgDepDelay": 33.46,
+      "DelayedFlights": 21,
+      "DestCode": "DFW",
+      "FlightVolume": 59,
+      "OriginCode": "LIT",
+      "PctDel15": 0.3559,
+      "Route": "LIT-DFW",
+      "TotalDelayMinutes": 1974
+    },
+    {
+      "AvgDepDelay": 21.67,
+      "DelayedFlights": 27,
+      "DestCode": "TPA",
+      "FlightVolume": 91,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2967,
+      "Route": "ORD-TPA",
+      "TotalDelayMinutes": 1972
+    },
+    {
+      "AvgDepDelay": 30.73,
+      "DelayedFlights": 19,
+      "DestCode": "MCO",
+      "FlightVolume": 64,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2969,
+      "Route": "PHX-MCO",
+      "TotalDelayMinutes": 1967
+    },
+    {
+      "AvgDepDelay": 35.64,
+      "DelayedFlights": 23,
+      "DestCode": "STL",
+      "FlightVolume": 55,
+      "OriginCode": "DCA",
+      "PctDel15": 0.4182,
+      "Route": "DCA-STL",
+      "TotalDelayMinutes": 1960
+    },
+    {
+      "AvgDepDelay": 22.27,
+      "DelayedFlights": 22,
+      "DestCode": "JFK",
+      "FlightVolume": 88,
+      "OriginCode": "PHX",
+      "PctDel15": 0.25,
+      "Route": "PHX-JFK",
+      "TotalDelayMinutes": 1960
+    },
+    {
+      "AvgDepDelay": 22.49,
+      "DelayedFlights": 29,
+      "DestCode": "DFW",
+      "FlightVolume": 87,
+      "OriginCode": "TYS",
+      "PctDel15": 0.3333,
+      "Route": "TYS-DFW",
+      "TotalDelayMinutes": 1957
+    },
+    {
+      "AvgDepDelay": 62.94,
+      "DelayedFlights": 12,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "MSY",
+      "PctDel15": 0.3871,
+      "Route": "MSY-PHX",
+      "TotalDelayMinutes": 1951
+    },
+    {
+      "AvgDepDelay": 22.92,
+      "DelayedFlights": 31,
+      "DestCode": "PWM",
+      "FlightVolume": 85,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3647,
+      "Route": "DCA-PWM",
+      "TotalDelayMinutes": 1948
+    },
+    {
+      "AvgDepDelay": 22.37,
+      "DelayedFlights": 32,
+      "DestCode": "DFW",
+      "FlightVolume": 87,
+      "OriginCode": "COS",
+      "PctDel15": 0.3678,
+      "Route": "COS-DFW",
+      "TotalDelayMinutes": 1946
+    },
+    {
+      "AvgDepDelay": 61.94,
+      "DelayedFlights": 23,
+      "DestCode": "ALB",
+      "FlightVolume": 31,
+      "OriginCode": "DFW",
+      "PctDel15": 0.7419,
+      "Route": "DFW-ALB",
+      "TotalDelayMinutes": 1920
+    },
+    {
+      "AvgDepDelay": 16.43,
+      "DelayedFlights": 27,
+      "DestCode": "CLT",
+      "FlightVolume": 116,
+      "OriginCode": "MYR",
+      "PctDel15": 0.2328,
+      "Route": "MYR-CLT",
+      "TotalDelayMinutes": 1906
+    },
+    {
+      "AvgDepDelay": 32.24,
+      "DelayedFlights": 21,
+      "DestCode": "DFW",
+      "FlightVolume": 59,
+      "OriginCode": "ICT",
+      "PctDel15": 0.3559,
+      "Route": "ICT-DFW",
+      "TotalDelayMinutes": 1902
+    },
+    {
+      "AvgDepDelay": 31.68,
+      "DelayedFlights": 20,
+      "DestCode": "DEN",
+      "FlightVolume": 60,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3333,
+      "Route": "PHX-DEN",
+      "TotalDelayMinutes": 1901
+    },
+    {
+      "AvgDepDelay": 34.45,
+      "DelayedFlights": 23,
+      "DestCode": "SAT",
+      "FlightVolume": 55,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4182,
+      "Route": "ORD-SAT",
+      "TotalDelayMinutes": 1895
+    },
+    {
+      "AvgDepDelay": 36.27,
+      "DelayedFlights": 10,
+      "DestCode": "JFK",
+      "FlightVolume": 52,
+      "OriginCode": "AUS",
+      "PctDel15": 0.1923,
+      "Route": "AUS-JFK",
+      "TotalDelayMinutes": 1886
+    },
+    {
+      "AvgDepDelay": 28.8,
+      "DelayedFlights": 20,
+      "DestCode": "PHL",
+      "FlightVolume": 65,
+      "OriginCode": "BGR",
+      "PctDel15": 0.3077,
+      "Route": "BGR-PHL",
+      "TotalDelayMinutes": 1872
+    },
+    {
+      "AvgDepDelay": 30.64,
+      "DelayedFlights": 24,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "FSD",
+      "PctDel15": 0.3934,
+      "Route": "FSD-DFW",
+      "TotalDelayMinutes": 1869
+    },
+    {
+      "AvgDepDelay": 62.23,
+      "DelayedFlights": 4,
+      "DestCode": "STT",
+      "FlightVolume": 30,
+      "OriginCode": "JFK",
+      "PctDel15": 0.1333,
+      "Route": "JFK-STT",
+      "TotalDelayMinutes": 1867
+    },
+    {
+      "AvgDepDelay": 21.89,
+      "DelayedFlights": 17,
+      "DestCode": "PHL",
+      "FlightVolume": 85,
+      "OriginCode": "SFO",
+      "PctDel15": 0.2,
+      "Route": "SFO-PHL",
+      "TotalDelayMinutes": 1861
+    },
+    {
+      "AvgDepDelay": 60.03,
+      "DelayedFlights": 18,
+      "DestCode": "SJU",
+      "FlightVolume": 31,
+      "OriginCode": "PHL",
+      "PctDel15": 0.5806,
+      "Route": "PHL-SJU",
+      "TotalDelayMinutes": 1861
+    },
+    {
+      "AvgDepDelay": 28.94,
+      "DelayedFlights": 24,
+      "DestCode": "DCA",
+      "FlightVolume": 64,
+      "OriginCode": "BGR",
+      "PctDel15": 0.375,
+      "Route": "BGR-DCA",
+      "TotalDelayMinutes": 1852
+    },
+    {
+      "AvgDepDelay": 15.47,
+      "DelayedFlights": 16,
+      "DestCode": "JFK",
+      "FlightVolume": 119,
+      "OriginCode": "SFO",
+      "PctDel15": 0.1345,
+      "Route": "SFO-JFK",
+      "TotalDelayMinutes": 1841
+    },
+    {
+      "AvgDepDelay": 32.26,
+      "DelayedFlights": 20,
+      "DestCode": "MCO",
+      "FlightVolume": 57,
+      "OriginCode": "LAX",
+      "PctDel15": 0.3509,
+      "Route": "LAX-MCO",
+      "TotalDelayMinutes": 1839
+    },
+    {
+      "AvgDepDelay": 32.62,
+      "DelayedFlights": 18,
+      "DestCode": "DCA",
+      "FlightVolume": 56,
+      "OriginCode": "PIT",
+      "PctDel15": 0.3214,
+      "Route": "PIT-DCA",
+      "TotalDelayMinutes": 1827
+    },
+    {
+      "AvgDepDelay": 32.04,
+      "DelayedFlights": 15,
+      "DestCode": "MSP",
+      "FlightVolume": 57,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2632,
+      "Route": "PHX-MSP",
+      "TotalDelayMinutes": 1826
+    },
+    {
+      "AvgDepDelay": 29.29,
+      "DelayedFlights": 15,
+      "DestCode": "CLT",
+      "FlightVolume": 62,
+      "OriginCode": "SJU",
+      "PctDel15": 0.2419,
+      "Route": "SJU-CLT",
+      "TotalDelayMinutes": 1816
+    },
+    {
+      "AvgDepDelay": 16.29,
+      "DelayedFlights": 31,
+      "DestCode": "ORD",
+      "FlightVolume": 111,
+      "OriginCode": "PIT",
+      "PctDel15": 0.2793,
+      "Route": "PIT-ORD",
+      "TotalDelayMinutes": 1808
+    },
+    {
+      "AvgDepDelay": 30.58,
+      "DelayedFlights": 30,
+      "DestCode": "PDX",
+      "FlightVolume": 59,
+      "OriginCode": "ORD",
+      "PctDel15": 0.5085,
+      "Route": "ORD-PDX",
+      "TotalDelayMinutes": 1804
+    },
+    {
+      "AvgDepDelay": 19.16,
+      "DelayedFlights": 21,
+      "DestCode": "MIA",
+      "FlightVolume": 94,
+      "OriginCode": "MSY",
+      "PctDel15": 0.2234,
+      "Route": "MSY-MIA",
+      "TotalDelayMinutes": 1801
+    },
+    {
+      "AvgDepDelay": 57.87,
+      "DelayedFlights": 3,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "OGG",
+      "PctDel15": 0.0968,
+      "Route": "OGG-PHX",
+      "TotalDelayMinutes": 1794
+    },
+    {
+      "AvgDepDelay": 29.03,
+      "DelayedFlights": 16,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "BUR",
+      "PctDel15": 0.2623,
+      "Route": "BUR-DFW",
+      "TotalDelayMinutes": 1771
+    },
+    {
+      "AvgDepDelay": 29.03,
+      "DelayedFlights": 18,
+      "DestCode": "PHX",
+      "FlightVolume": 61,
+      "OriginCode": "TPA",
+      "PctDel15": 0.2951,
+      "Route": "TPA-PHX",
+      "TotalDelayMinutes": 1771
+    },
+    {
+      "AvgDepDelay": 56.39,
+      "DelayedFlights": 16,
+      "DestCode": "SAN",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.5161,
+      "Route": "MIA-SAN",
+      "TotalDelayMinutes": 1748
+    },
+    {
+      "AvgDepDelay": 31.21,
+      "DelayedFlights": 15,
+      "DestCode": "DTW",
+      "FlightVolume": 56,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2679,
+      "Route": "PHX-DTW",
+      "TotalDelayMinutes": 1748
+    },
+    {
+      "AvgDepDelay": 20.08,
+      "DelayedFlights": 34,
+      "DestCode": "DFW",
+      "FlightVolume": 87,
+      "OriginCode": "ORF",
+      "PctDel15": 0.3908,
+      "Route": "ORF-DFW",
+      "TotalDelayMinutes": 1747
+    },
+    {
+      "AvgDepDelay": 29.02,
+      "DelayedFlights": 24,
+      "DestCode": "JFK",
+      "FlightVolume": 60,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4,
+      "Route": "ORD-JFK",
+      "TotalDelayMinutes": 1741
+    },
+    {
+      "AvgDepDelay": 28.13,
+      "DelayedFlights": 29,
+      "DestCode": "CLT",
+      "FlightVolume": 61,
+      "OriginCode": "XNA",
+      "PctDel15": 0.4754,
+      "Route": "XNA-CLT",
+      "TotalDelayMinutes": 1716
+    },
+    {
+      "AvgDepDelay": 31.89,
+      "DelayedFlights": 18,
+      "DestCode": "CLT",
+      "FlightVolume": 53,
+      "OriginCode": "OKC",
+      "PctDel15": 0.3396,
+      "Route": "OKC-CLT",
+      "TotalDelayMinutes": 1690
+    },
+    {
+      "AvgDepDelay": 28.12,
+      "DelayedFlights": 15,
+      "DestCode": "CMH",
+      "FlightVolume": 60,
+      "OriginCode": "PHL",
+      "PctDel15": 0.25,
+      "Route": "PHL-CMH",
+      "TotalDelayMinutes": 1687
+    },
+    {
+      "AvgDepDelay": 27,
+      "DelayedFlights": 24,
+      "DestCode": "PHL",
+      "FlightVolume": 62,
+      "OriginCode": "RSW",
+      "PctDel15": 0.3871,
+      "Route": "RSW-PHL",
+      "TotalDelayMinutes": 1674
+    },
+    {
+      "AvgDepDelay": 26.87,
+      "DelayedFlights": 20,
+      "DestCode": "BDL",
+      "FlightVolume": 62,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3226,
+      "Route": "ORD-BDL",
+      "TotalDelayMinutes": 1666
+    },
+    {
+      "AvgDepDelay": 27.3,
+      "DelayedFlights": 27,
+      "DestCode": "MSO",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4426,
+      "Route": "DFW-MSO",
+      "TotalDelayMinutes": 1665
+    },
+    {
+      "AvgDepDelay": 53.68,
+      "DelayedFlights": 12,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "SAN",
+      "PctDel15": 0.3871,
+      "Route": "SAN-MIA",
+      "TotalDelayMinutes": 1664
+    },
+    {
+      "AvgDepDelay": 17.49,
+      "DelayedFlights": 34,
+      "DestCode": "BOS",
+      "FlightVolume": 95,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3579,
+      "Route": "PHX-BOS",
+      "TotalDelayMinutes": 1662
+    },
+    {
+      "AvgDepDelay": 28.02,
+      "DelayedFlights": 30,
+      "DestCode": "BDL",
+      "FlightVolume": 59,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5085,
+      "Route": "DFW-BDL",
+      "TotalDelayMinutes": 1653
+    },
+    {
+      "AvgDepDelay": 53.29,
+      "DelayedFlights": 20,
+      "DestCode": "SLC",
+      "FlightVolume": 31,
+      "OriginCode": "PHL",
+      "PctDel15": 0.6452,
+      "Route": "PHL-SLC",
+      "TotalDelayMinutes": 1652
+    },
+    {
+      "AvgDepDelay": 10.91,
+      "DelayedFlights": 32,
+      "DestCode": "DFW",
+      "FlightVolume": 148,
+      "OriginCode": "DTW",
+      "PctDel15": 0.2162,
+      "Route": "DTW-DFW",
+      "TotalDelayMinutes": 1615
+    },
+    {
+      "AvgDepDelay": 52,
+      "DelayedFlights": 19,
+      "DestCode": "MCI",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.6129,
+      "Route": "MIA-MCI",
+      "TotalDelayMinutes": 1612
+    },
+    {
+      "AvgDepDelay": 51.55,
+      "DelayedFlights": 15,
+      "DestCode": "DTW",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4839,
+      "Route": "MIA-DTW",
+      "TotalDelayMinutes": 1598
+    },
+    {
+      "AvgDepDelay": 18.29,
+      "DelayedFlights": 36,
+      "DestCode": "ORF",
+      "FlightVolume": 87,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4138,
+      "Route": "DFW-ORF",
+      "TotalDelayMinutes": 1591
+    },
+    {
+      "AvgDepDelay": 20.88,
+      "DelayedFlights": 18,
+      "DestCode": "MIA",
+      "FlightVolume": 76,
+      "OriginCode": "BNA",
+      "PctDel15": 0.2368,
+      "Route": "BNA-MIA",
+      "TotalDelayMinutes": 1587
+    },
+    {
+      "AvgDepDelay": 51.06,
+      "DelayedFlights": 4,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "PIT",
+      "PctDel15": 0.129,
+      "Route": "PIT-PHX",
+      "TotalDelayMinutes": 1583
+    },
+    {
+      "AvgDepDelay": 26.37,
+      "DelayedFlights": 13,
+      "DestCode": "PHX",
+      "FlightVolume": 60,
+      "OriginCode": "IND",
+      "PctDel15": 0.2167,
+      "Route": "IND-PHX",
+      "TotalDelayMinutes": 1582
+    },
+    {
+      "AvgDepDelay": 52.63,
+      "DelayedFlights": 12,
+      "DestCode": "BTV",
+      "FlightVolume": 30,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4,
+      "Route": "PHL-BTV",
+      "TotalDelayMinutes": 1579
+    },
+    {
+      "AvgDepDelay": 46.21,
+      "DelayedFlights": 18,
+      "DestCode": "BNA",
+      "FlightVolume": 34,
+      "OriginCode": "DCA",
+      "PctDel15": 0.5294,
+      "Route": "DCA-BNA",
+      "TotalDelayMinutes": 1571
+    },
+    {
+      "AvgDepDelay": 51.43,
+      "DelayedFlights": 9,
+      "DestCode": "AUS",
+      "FlightVolume": 30,
+      "OriginCode": "BOS",
+      "PctDel15": 0.3,
+      "Route": "BOS-AUS",
+      "TotalDelayMinutes": 1543
+    },
+    {
+      "AvgDepDelay": 51.43,
+      "DelayedFlights": 15,
+      "DestCode": "PDX",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.5,
+      "Route": "MIA-PDX",
+      "TotalDelayMinutes": 1543
+    },
+    {
+      "AvgDepDelay": 49.32,
+      "DelayedFlights": 17,
+      "DestCode": "AUS",
+      "FlightVolume": 31,
+      "OriginCode": "LAS",
+      "PctDel15": 0.5484,
+      "Route": "LAS-AUS",
+      "TotalDelayMinutes": 1529
+    },
+    {
+      "AvgDepDelay": 46.18,
+      "DelayedFlights": 17,
+      "DestCode": "BGR",
+      "FlightVolume": 33,
+      "OriginCode": "CLT",
+      "PctDel15": 0.5152,
+      "Route": "CLT-BGR",
+      "TotalDelayMinutes": 1524
+    },
+    {
+      "AvgDepDelay": 26.74,
+      "DelayedFlights": 20,
+      "DestCode": "PHL",
+      "FlightVolume": 57,
+      "OriginCode": "JAX",
+      "PctDel15": 0.3509,
+      "Route": "JAX-PHL",
+      "TotalDelayMinutes": 1524
+    },
+    {
+      "AvgDepDelay": 49.13,
+      "DelayedFlights": 11,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "SMF",
+      "PctDel15": 0.3548,
+      "Route": "SMF-MIA",
+      "TotalDelayMinutes": 1523
+    },
+    {
+      "AvgDepDelay": 24.37,
+      "DelayedFlights": 13,
+      "DestCode": "DFW",
+      "FlightVolume": 62,
+      "OriginCode": "PSP",
+      "PctDel15": 0.2097,
+      "Route": "PSP-DFW",
+      "TotalDelayMinutes": 1511
+    },
+    {
+      "AvgDepDelay": 24.23,
+      "DelayedFlights": 25,
+      "DestCode": "ANC",
+      "FlightVolume": 62,
+      "OriginCode": "DFW",
+      "PctDel15": 0.4032,
+      "Route": "DFW-ANC",
+      "TotalDelayMinutes": 1502
+    },
+    {
+      "AvgDepDelay": 48.45,
+      "DelayedFlights": 13,
+      "DestCode": "MEM",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4194,
+      "Route": "MIA-MEM",
+      "TotalDelayMinutes": 1502
+    },
+    {
+      "AvgDepDelay": 24.57,
+      "DelayedFlights": 19,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "GEG",
+      "PctDel15": 0.3115,
+      "Route": "GEG-DFW",
+      "TotalDelayMinutes": 1499
+    },
+    {
+      "AvgDepDelay": 24.15,
+      "DelayedFlights": 17,
+      "DestCode": "PHX",
+      "FlightVolume": 62,
+      "OriginCode": "ONT",
+      "PctDel15": 0.2742,
+      "Route": "ONT-PHX",
+      "TotalDelayMinutes": 1497
+    },
+    {
+      "AvgDepDelay": 24.68,
+      "DelayedFlights": 15,
+      "DestCode": "ORD",
+      "FlightVolume": 60,
+      "OriginCode": "JFK",
+      "PctDel15": 0.25,
+      "Route": "JFK-ORD",
+      "TotalDelayMinutes": 1481
+    },
+    {
+      "AvgDepDelay": 23.48,
+      "DelayedFlights": 12,
+      "DestCode": "DCA",
+      "FlightVolume": 62,
+      "OriginCode": "LAX",
+      "PctDel15": 0.1935,
+      "Route": "LAX-DCA",
+      "TotalDelayMinutes": 1456
+    },
+    {
+      "AvgDepDelay": 46.87,
+      "DelayedFlights": 6,
+      "DestCode": "LAX",
+      "FlightVolume": 31,
+      "OriginCode": "OGG",
+      "PctDel15": 0.1935,
+      "Route": "OGG-LAX",
+      "TotalDelayMinutes": 1453
+    },
+    {
+      "AvgDepDelay": 24.08,
+      "DelayedFlights": 20,
+      "DestCode": "ORD",
+      "FlightVolume": 60,
+      "OriginCode": "MSP",
+      "PctDel15": 0.3333,
+      "Route": "MSP-ORD",
+      "TotalDelayMinutes": 1445
+    },
+    {
+      "AvgDepDelay": 48.07,
+      "DelayedFlights": 14,
+      "DestCode": "RDU",
+      "FlightVolume": 30,
+      "OriginCode": "DCA",
+      "PctDel15": 0.4667,
+      "Route": "DCA-RDU",
+      "TotalDelayMinutes": 1442
+    },
+    {
+      "AvgDepDelay": 12.14,
+      "DelayedFlights": 26,
+      "DestCode": "LAX",
+      "FlightVolume": 118,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2203,
+      "Route": "BOS-LAX",
+      "TotalDelayMinutes": 1433
+    },
+    {
+      "AvgDepDelay": 23.39,
+      "DelayedFlights": 21,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "GSO",
+      "PctDel15": 0.3443,
+      "Route": "GSO-DFW",
+      "TotalDelayMinutes": 1427
+    },
+    {
+      "AvgDepDelay": 39.64,
+      "DelayedFlights": 14,
+      "DestCode": "BFL",
+      "FlightVolume": 36,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3889,
+      "Route": "PHX-BFL",
+      "TotalDelayMinutes": 1427
+    },
+    {
+      "AvgDepDelay": 25.49,
+      "DelayedFlights": 16,
+      "DestCode": "ORD",
+      "FlightVolume": 55,
+      "OriginCode": "OMA",
+      "PctDel15": 0.2909,
+      "Route": "OMA-ORD",
+      "TotalDelayMinutes": 1402
+    },
+    {
+      "AvgDepDelay": 22.93,
+      "DelayedFlights": 26,
+      "DestCode": "STX",
+      "FlightVolume": 61,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4262,
+      "Route": "MIA-STX",
+      "TotalDelayMinutes": 1399
+    },
+    {
+      "AvgDepDelay": 14.95,
+      "DelayedFlights": 20,
+      "DestCode": "LAX",
+      "FlightVolume": 93,
+      "OriginCode": "HNL",
+      "PctDel15": 0.2151,
+      "Route": "HNL-LAX",
+      "TotalDelayMinutes": 1390
+    },
+    {
+      "AvgDepDelay": 44.77,
+      "DelayedFlights": 6,
+      "DestCode": "DCA",
+      "FlightVolume": 31,
+      "OriginCode": "LAS",
+      "PctDel15": 0.1935,
+      "Route": "LAS-DCA",
+      "TotalDelayMinutes": 1388
+    },
+    {
+      "AvgDepDelay": 46.03,
+      "DelayedFlights": 13,
+      "DestCode": "ORF",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4333,
+      "Route": "MIA-ORF",
+      "TotalDelayMinutes": 1381
+    },
+    {
+      "AvgDepDelay": 15.95,
+      "DelayedFlights": 19,
+      "DestCode": "DCA",
+      "FlightVolume": 84,
+      "OriginCode": "PWM",
+      "PctDel15": 0.2262,
+      "Route": "PWM-DCA",
+      "TotalDelayMinutes": 1340
+    },
+    {
+      "AvgDepDelay": 20.88,
+      "DelayedFlights": 21,
+      "DestCode": "BGR",
+      "FlightVolume": 64,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3281,
+      "Route": "DCA-BGR",
+      "TotalDelayMinutes": 1336
+    },
+    {
+      "AvgDepDelay": 21.87,
+      "DelayedFlights": 13,
+      "DestCode": "PHX",
+      "FlightVolume": 61,
+      "OriginCode": "GEG",
+      "PctDel15": 0.2131,
+      "Route": "GEG-PHX",
+      "TotalDelayMinutes": 1334
+    },
+    {
+      "AvgDepDelay": 24.59,
+      "DelayedFlights": 13,
+      "DestCode": "PHX",
+      "FlightVolume": 54,
+      "OriginCode": "SBP",
+      "PctDel15": 0.2407,
+      "Route": "SBP-PHX",
+      "TotalDelayMinutes": 1328
+    },
+    {
+      "AvgDepDelay": 22.08,
+      "DelayedFlights": 14,
+      "DestCode": "CLT",
+      "FlightVolume": 60,
+      "OriginCode": "AVP",
+      "PctDel15": 0.2333,
+      "Route": "AVP-CLT",
+      "TotalDelayMinutes": 1325
+    },
+    {
+      "AvgDepDelay": 23.09,
+      "DelayedFlights": 14,
+      "DestCode": "BUR",
+      "FlightVolume": 57,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2456,
+      "Route": "PHX-BUR",
+      "TotalDelayMinutes": 1316
+    },
+    {
+      "AvgDepDelay": 43.83,
+      "DelayedFlights": 13,
+      "DestCode": "DFW",
+      "FlightVolume": 30,
+      "OriginCode": "MDT",
+      "PctDel15": 0.4333,
+      "Route": "MDT-DFW",
+      "TotalDelayMinutes": 1315
+    },
+    {
+      "AvgDepDelay": 43.53,
+      "DelayedFlights": 18,
+      "DestCode": "CVG",
+      "FlightVolume": 30,
+      "OriginCode": "PHL",
+      "PctDel15": 0.6,
+      "Route": "PHL-CVG",
+      "TotalDelayMinutes": 1306
+    },
+    {
+      "AvgDepDelay": 37.26,
+      "DelayedFlights": 12,
+      "DestCode": "FCA",
+      "FlightVolume": 35,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3429,
+      "Route": "ORD-FCA",
+      "TotalDelayMinutes": 1304
+    },
+    {
+      "AvgDepDelay": 13.71,
+      "DelayedFlights": 20,
+      "DestCode": "PHX",
+      "FlightVolume": 95,
+      "OriginCode": "BOS",
+      "PctDel15": 0.2105,
+      "Route": "BOS-PHX",
+      "TotalDelayMinutes": 1302
+    },
+    {
+      "AvgDepDelay": 20.3,
+      "DelayedFlights": 9,
+      "DestCode": "ORD",
+      "FlightVolume": 64,
+      "OriginCode": "MCI",
+      "PctDel15": 0.1406,
+      "Route": "MCI-ORD",
+      "TotalDelayMinutes": 1299
+    },
+    {
+      "AvgDepDelay": 20.92,
+      "DelayedFlights": 17,
+      "DestCode": "ORD",
+      "FlightVolume": 62,
+      "OriginCode": "BDL",
+      "PctDel15": 0.2742,
+      "Route": "BDL-ORD",
+      "TotalDelayMinutes": 1297
+    },
+    {
+      "AvgDepDelay": 20.98,
+      "DelayedFlights": 25,
+      "DestCode": "PHL",
+      "FlightVolume": 60,
+      "OriginCode": "SEA",
+      "PctDel15": 0.4167,
+      "Route": "SEA-PHL",
+      "TotalDelayMinutes": 1259
+    },
+    {
+      "AvgDepDelay": 40.32,
+      "DelayedFlights": 13,
+      "DestCode": "SMF",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4194,
+      "Route": "MIA-SMF",
+      "TotalDelayMinutes": 1250
+    },
+    {
+      "AvgDepDelay": 40.26,
+      "DelayedFlights": 11,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "BZN",
+      "PctDel15": 0.3548,
+      "Route": "BZN-ORD",
+      "TotalDelayMinutes": 1248
+    },
+    {
+      "AvgDepDelay": 12.61,
+      "DelayedFlights": 21,
+      "DestCode": "PHL",
+      "FlightVolume": 99,
+      "OriginCode": "DTW",
+      "PctDel15": 0.2121,
+      "Route": "DTW-PHL",
+      "TotalDelayMinutes": 1248
+    },
+    {
+      "AvgDepDelay": 25.83,
+      "DelayedFlights": 22,
+      "DestCode": "PIT",
+      "FlightVolume": 48,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4583,
+      "Route": "MIA-PIT",
+      "TotalDelayMinutes": 1240
+    },
+    {
+      "AvgDepDelay": 23.83,
+      "DelayedFlights": 19,
+      "DestCode": "IND",
+      "FlightVolume": 52,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3654,
+      "Route": "MIA-IND",
+      "TotalDelayMinutes": 1239
+    },
+    {
+      "AvgDepDelay": 39.94,
+      "DelayedFlights": 13,
+      "DestCode": "KOA",
+      "FlightVolume": 31,
+      "OriginCode": "LAX",
+      "PctDel15": 0.4194,
+      "Route": "LAX-KOA",
+      "TotalDelayMinutes": 1238
+    },
+    {
+      "AvgDepDelay": 13.88,
+      "DelayedFlights": 21,
+      "DestCode": "DFW",
+      "FlightVolume": 89,
+      "OriginCode": "CHS",
+      "PctDel15": 0.236,
+      "Route": "CHS-DFW",
+      "TotalDelayMinutes": 1235
+    },
+    {
+      "AvgDepDelay": 34.8,
+      "DelayedFlights": 7,
+      "DestCode": "ORD",
+      "FlightVolume": 35,
+      "OriginCode": "FCA",
+      "PctDel15": 0.2,
+      "Route": "FCA-ORD",
+      "TotalDelayMinutes": 1218
+    },
+    {
+      "AvgDepDelay": 19.75,
+      "DelayedFlights": 22,
+      "DestCode": "MTJ",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3607,
+      "Route": "DFW-MTJ",
+      "TotalDelayMinutes": 1205
+    },
+    {
+      "AvgDepDelay": 19.32,
+      "DelayedFlights": 13,
+      "DestCode": "LAX",
+      "FlightVolume": 62,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2097,
+      "Route": "DCA-LAX",
+      "TotalDelayMinutes": 1198
+    },
+    {
+      "AvgDepDelay": 35.15,
+      "DelayedFlights": 6,
+      "DestCode": "DCA",
+      "FlightVolume": 34,
+      "OriginCode": "BNA",
+      "PctDel15": 0.1765,
+      "Route": "BNA-DCA",
+      "TotalDelayMinutes": 1195
+    },
+    {
+      "AvgDepDelay": 20.93,
+      "DelayedFlights": 17,
+      "DestCode": "CLT",
+      "FlightVolume": 57,
+      "OriginCode": "OMA",
+      "PctDel15": 0.2982,
+      "Route": "OMA-CLT",
+      "TotalDelayMinutes": 1193
+    },
+    {
+      "AvgDepDelay": 18.05,
+      "DelayedFlights": 11,
+      "DestCode": "MIA",
+      "FlightVolume": 66,
+      "OriginCode": "STT",
+      "PctDel15": 0.1667,
+      "Route": "STT-MIA",
+      "TotalDelayMinutes": 1191
+    },
+    {
+      "AvgDepDelay": 38.39,
+      "DelayedFlights": 2,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "KOA",
+      "PctDel15": 0.0645,
+      "Route": "KOA-PHX",
+      "TotalDelayMinutes": 1190
+    },
+    {
+      "AvgDepDelay": 19.15,
+      "DelayedFlights": 16,
+      "DestCode": "RSW",
+      "FlightVolume": 62,
+      "OriginCode": "PHL",
+      "PctDel15": 0.2581,
+      "Route": "PHL-RSW",
+      "TotalDelayMinutes": 1187
+    },
+    {
+      "AvgDepDelay": 33.71,
+      "DelayedFlights": 12,
+      "DestCode": "MYR",
+      "FlightVolume": 35,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3429,
+      "Route": "DFW-MYR",
+      "TotalDelayMinutes": 1180
+    },
+    {
+      "AvgDepDelay": 20.4,
+      "DelayedFlights": 12,
+      "DestCode": "PHX",
+      "FlightVolume": 57,
+      "OriginCode": "BUR",
+      "PctDel15": 0.2105,
+      "Route": "BUR-PHX",
+      "TotalDelayMinutes": 1163
+    },
+    {
+      "AvgDepDelay": 37.39,
+      "DelayedFlights": 16,
+      "DestCode": "SYR",
+      "FlightVolume": 31,
+      "OriginCode": "DFW",
+      "PctDel15": 0.5161,
+      "Route": "DFW-SYR",
+      "TotalDelayMinutes": 1159
+    },
+    {
+      "AvgDepDelay": 38.4,
+      "DelayedFlights": 13,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "IAH",
+      "PctDel15": 0.4333,
+      "Route": "IAH-PHX",
+      "TotalDelayMinutes": 1152
+    },
+    {
+      "AvgDepDelay": 36.94,
+      "DelayedFlights": 3,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "LIH",
+      "PctDel15": 0.0968,
+      "Route": "LIH-PHX",
+      "TotalDelayMinutes": 1145
+    },
+    {
+      "AvgDepDelay": 18.66,
+      "DelayedFlights": 23,
+      "DestCode": "BUR",
+      "FlightVolume": 61,
+      "OriginCode": "DFW",
+      "PctDel15": 0.377,
+      "Route": "DFW-BUR",
+      "TotalDelayMinutes": 1138
+    },
+    {
+      "AvgDepDelay": 36.68,
+      "DelayedFlights": 13,
+      "DestCode": "SDF",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4194,
+      "Route": "MIA-SDF",
+      "TotalDelayMinutes": 1137
+    },
+    {
+      "AvgDepDelay": 9.79,
+      "DelayedFlights": 22,
+      "DestCode": "DFW",
+      "FlightVolume": 114,
+      "OriginCode": "BOI",
+      "PctDel15": 0.193,
+      "Route": "BOI-DFW",
+      "TotalDelayMinutes": 1116
+    },
+    {
+      "AvgDepDelay": 37.17,
+      "DelayedFlights": 5,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "STL",
+      "PctDel15": 0.1667,
+      "Route": "STL-MIA",
+      "TotalDelayMinutes": 1115
+    },
+    {
+      "AvgDepDelay": 18.85,
+      "DelayedFlights": 22,
+      "DestCode": "SEA",
+      "FlightVolume": 59,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3729,
+      "Route": "PHL-SEA",
+      "TotalDelayMinutes": 1112
+    },
+    {
+      "AvgDepDelay": 35.65,
+      "DelayedFlights": 19,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "PBI",
+      "PctDel15": 0.6129,
+      "Route": "PBI-ORD",
+      "TotalDelayMinutes": 1105
+    },
+    {
+      "AvgDepDelay": 36.77,
+      "DelayedFlights": 9,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "MKE",
+      "PctDel15": 0.3,
+      "Route": "MKE-PHX",
+      "TotalDelayMinutes": 1103
+    },
+    {
+      "AvgDepDelay": 36.67,
+      "DelayedFlights": 13,
+      "DestCode": "CLT",
+      "FlightVolume": 30,
+      "OriginCode": "JAC",
+      "PctDel15": 0.4333,
+      "Route": "JAC-CLT",
+      "TotalDelayMinutes": 1100
+    },
+    {
+      "AvgDepDelay": 35.35,
+      "DelayedFlights": 15,
+      "DestCode": "BOS",
+      "FlightVolume": 31,
+      "OriginCode": "AUS",
+      "PctDel15": 0.4839,
+      "Route": "AUS-BOS",
+      "TotalDelayMinutes": 1096
+    },
+    {
+      "AvgDepDelay": 32.21,
+      "DelayedFlights": 19,
+      "DestCode": "BNA",
+      "FlightVolume": 34,
+      "OriginCode": "PHX",
+      "PctDel15": 0.5588,
+      "Route": "PHX-BNA",
+      "TotalDelayMinutes": 1095
+    },
+    {
+      "AvgDepDelay": 35.13,
+      "DelayedFlights": 12,
+      "DestCode": "PIT",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3871,
+      "Route": "PHX-PIT",
+      "TotalDelayMinutes": 1089
+    },
+    {
+      "AvgDepDelay": 34.77,
+      "DelayedFlights": 13,
+      "DestCode": "MSY",
+      "FlightVolume": 31,
+      "OriginCode": "PHL",
+      "PctDel15": 0.4194,
+      "Route": "PHL-MSY",
+      "TotalDelayMinutes": 1078
+    },
+    {
+      "AvgDepDelay": 34.65,
+      "DelayedFlights": 7,
+      "DestCode": "OGG",
+      "FlightVolume": 31,
+      "OriginCode": "DFW",
+      "PctDel15": 0.2258,
+      "Route": "DFW-OGG",
+      "TotalDelayMinutes": 1074
+    },
+    {
+      "AvgDepDelay": 34.48,
+      "DelayedFlights": 11,
+      "DestCode": "JAC",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3548,
+      "Route": "ORD-JAC",
+      "TotalDelayMinutes": 1069
+    },
+    {
+      "AvgDepDelay": 35.1,
+      "DelayedFlights": 8,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "SAV",
+      "PctDel15": 0.2667,
+      "Route": "SAV-MIA",
+      "TotalDelayMinutes": 1053
+    },
+    {
+      "AvgDepDelay": 17.33,
+      "DelayedFlights": 22,
+      "DestCode": "ORD",
+      "FlightVolume": 60,
+      "OriginCode": "STL",
+      "PctDel15": 0.3667,
+      "Route": "STL-ORD",
+      "TotalDelayMinutes": 1040
+    },
+    {
+      "AvgDepDelay": 34.43,
+      "DelayedFlights": 13,
+      "DestCode": "MSP",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4333,
+      "Route": "MIA-MSP",
+      "TotalDelayMinutes": 1033
+    },
+    {
+      "AvgDepDelay": 10.99,
+      "DelayedFlights": 17,
+      "DestCode": "HNL",
+      "FlightVolume": 93,
+      "OriginCode": "LAX",
+      "PctDel15": 0.1828,
+      "Route": "LAX-HNL",
+      "TotalDelayMinutes": 1022
+    },
+    {
+      "AvgDepDelay": 32.26,
+      "DelayedFlights": 12,
+      "DestCode": "MSN",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3871,
+      "Route": "PHX-MSN",
+      "TotalDelayMinutes": 1000
+    },
+    {
+      "AvgDepDelay": 16.25,
+      "DelayedFlights": 15,
+      "DestCode": "STT",
+      "FlightVolume": 61,
+      "OriginCode": "CLT",
+      "PctDel15": 0.2459,
+      "Route": "CLT-STT",
+      "TotalDelayMinutes": 991
+    },
+    {
+      "AvgDepDelay": 31.94,
+      "DelayedFlights": 11,
+      "DestCode": "MSY",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3548,
+      "Route": "PHX-MSY",
+      "TotalDelayMinutes": 990
+    },
+    {
+      "AvgDepDelay": 16.15,
+      "DelayedFlights": 12,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "BFL",
+      "PctDel15": 0.1967,
+      "Route": "BFL-DFW",
+      "TotalDelayMinutes": 985
+    },
+    {
+      "AvgDepDelay": 28.09,
+      "DelayedFlights": 14,
+      "DestCode": "EYW",
+      "FlightVolume": 35,
+      "OriginCode": "CLT",
+      "PctDel15": 0.4,
+      "Route": "CLT-EYW",
+      "TotalDelayMinutes": 983
+    },
+    {
+      "AvgDepDelay": 32.67,
+      "DelayedFlights": 9,
+      "DestCode": "CLT",
+      "FlightVolume": 30,
+      "OriginCode": "SMF",
+      "PctDel15": 0.3,
+      "Route": "SMF-CLT",
+      "TotalDelayMinutes": 980
+    },
+    {
+      "AvgDepDelay": 31.48,
+      "DelayedFlights": 11,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "MEM",
+      "PctDel15": 0.3548,
+      "Route": "MEM-PHX",
+      "TotalDelayMinutes": 976
+    },
+    {
+      "AvgDepDelay": 16.36,
+      "DelayedFlights": 18,
+      "DestCode": "DFW",
+      "FlightVolume": 59,
+      "OriginCode": "IAD",
+      "PctDel15": 0.3051,
+      "Route": "IAD-DFW",
+      "TotalDelayMinutes": 965
+    },
+    {
+      "AvgDepDelay": 16.2,
+      "DelayedFlights": 13,
+      "DestCode": "PHL",
+      "FlightVolume": 59,
+      "OriginCode": "PWM",
+      "PctDel15": 0.2203,
+      "Route": "PWM-PHL",
+      "TotalDelayMinutes": 956
+    },
+    {
+      "AvgDepDelay": 27.14,
+      "DelayedFlights": 9,
+      "DestCode": "BTV",
+      "FlightVolume": 35,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2571,
+      "Route": "DCA-BTV",
+      "TotalDelayMinutes": 950
+    },
+    {
+      "AvgDepDelay": 15.49,
+      "DelayedFlights": 16,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "MTJ",
+      "PctDel15": 0.2623,
+      "Route": "MTJ-DFW",
+      "TotalDelayMinutes": 945
+    },
+    {
+      "AvgDepDelay": 30.48,
+      "DelayedFlights": 12,
+      "DestCode": "PHL",
+      "FlightVolume": 31,
+      "OriginCode": "SLC",
+      "PctDel15": 0.3871,
+      "Route": "SLC-PHL",
+      "TotalDelayMinutes": 945
+    },
+    {
+      "AvgDepDelay": 18.53,
+      "DelayedFlights": 19,
+      "DestCode": "SNA",
+      "FlightVolume": 51,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3725,
+      "Route": "ORD-SNA",
+      "TotalDelayMinutes": 945
+    },
+    {
+      "AvgDepDelay": 16.58,
+      "DelayedFlights": 17,
+      "DestCode": "ORD",
+      "FlightVolume": 57,
+      "OriginCode": "MSY",
+      "PctDel15": 0.2982,
+      "Route": "MSY-ORD",
+      "TotalDelayMinutes": 945
+    },
+    {
+      "AvgDepDelay": 28.45,
+      "DelayedFlights": 12,
+      "DestCode": "CLT",
+      "FlightVolume": 33,
+      "OriginCode": "BGR",
+      "PctDel15": 0.3636,
+      "Route": "BGR-CLT",
+      "TotalDelayMinutes": 939
+    },
+    {
+      "AvgDepDelay": 15.2,
+      "DelayedFlights": 20,
+      "DestCode": "MIA",
+      "FlightVolume": 61,
+      "OriginCode": "STX",
+      "PctDel15": 0.3279,
+      "Route": "STX-MIA",
+      "TotalDelayMinutes": 927
+    },
+    {
+      "AvgDepDelay": 16.75,
+      "DelayedFlights": 12,
+      "DestCode": "ORD",
+      "FlightVolume": 55,
+      "OriginCode": "SAT",
+      "PctDel15": 0.2182,
+      "Route": "SAT-ORD",
+      "TotalDelayMinutes": 921
+    },
+    {
+      "AvgDepDelay": 14.74,
+      "DelayedFlights": 7,
+      "DestCode": "DFW",
+      "FlightVolume": 62,
+      "OriginCode": "HNL",
+      "PctDel15": 0.1129,
+      "Route": "HNL-DFW",
+      "TotalDelayMinutes": 914
+    },
+    {
+      "AvgDepDelay": 28.81,
+      "DelayedFlights": 12,
+      "DestCode": "DFW",
+      "FlightVolume": 31,
+      "OriginCode": "SRQ",
+      "PctDel15": 0.3871,
+      "Route": "SRQ-DFW",
+      "TotalDelayMinutes": 893
+    },
+    {
+      "AvgDepDelay": 29.5,
+      "DelayedFlights": 12,
+      "DestCode": "RDU",
+      "FlightVolume": 30,
+      "OriginCode": "PHX",
+      "PctDel15": 0.4,
+      "Route": "PHX-RDU",
+      "TotalDelayMinutes": 885
+    },
+    {
+      "AvgDepDelay": 28.45,
+      "DelayedFlights": 14,
+      "DestCode": "DCA",
+      "FlightVolume": 31,
+      "OriginCode": "IND",
+      "PctDel15": 0.4516,
+      "Route": "IND-DCA",
+      "TotalDelayMinutes": 882
+    },
+    {
+      "AvgDepDelay": 14.21,
+      "DelayedFlights": 15,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "SBA",
+      "PctDel15": 0.2459,
+      "Route": "SBA-DFW",
+      "TotalDelayMinutes": 867
+    },
+    {
+      "AvgDepDelay": 24.08,
+      "DelayedFlights": 11,
+      "DestCode": "DCA",
+      "FlightVolume": 36,
+      "OriginCode": "BTV",
+      "PctDel15": 0.3056,
+      "Route": "BTV-DCA",
+      "TotalDelayMinutes": 867
+    },
+    {
+      "AvgDepDelay": 27.68,
+      "DelayedFlights": 8,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "MEM",
+      "PctDel15": 0.2581,
+      "Route": "MEM-MIA",
+      "TotalDelayMinutes": 858
+    },
+    {
+      "AvgDepDelay": 16.21,
+      "DelayedFlights": 14,
+      "DestCode": "MIA",
+      "FlightVolume": 52,
+      "OriginCode": "IND",
+      "PctDel15": 0.2692,
+      "Route": "IND-MIA",
+      "TotalDelayMinutes": 843
+    },
+    {
+      "AvgDepDelay": 14.52,
+      "DelayedFlights": 17,
+      "DestCode": "ORD",
+      "FlightVolume": 58,
+      "OriginCode": "PDX",
+      "PctDel15": 0.2931,
+      "Route": "PDX-ORD",
+      "TotalDelayMinutes": 842
+    },
+    {
+      "AvgDepDelay": 27.5,
+      "DelayedFlights": 14,
+      "DestCode": "RIC",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4667,
+      "Route": "MIA-RIC",
+      "TotalDelayMinutes": 825
+    },
+    {
+      "AvgDepDelay": 26.35,
+      "DelayedFlights": 10,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "SLC",
+      "PctDel15": 0.3226,
+      "Route": "SLC-ORD",
+      "TotalDelayMinutes": 817
+    },
+    {
+      "AvgDepDelay": 13.39,
+      "DelayedFlights": 12,
+      "DestCode": "DFW",
+      "FlightVolume": 61,
+      "OriginCode": "BUF",
+      "PctDel15": 0.1967,
+      "Route": "BUF-DFW",
+      "TotalDelayMinutes": 817
+    },
+    {
+      "AvgDepDelay": 13.55,
+      "DelayedFlights": 6,
+      "DestCode": "PHX",
+      "FlightVolume": 60,
+      "OriginCode": "DEN",
+      "PctDel15": 0.1,
+      "Route": "DEN-PHX",
+      "TotalDelayMinutes": 813
+    },
+    {
+      "AvgDepDelay": 26.97,
+      "DelayedFlights": 11,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "PDX",
+      "PctDel15": 0.3667,
+      "Route": "PDX-MIA",
+      "TotalDelayMinutes": 809
+    },
+    {
+      "AvgDepDelay": 26.77,
+      "DelayedFlights": 8,
+      "DestCode": "FAT",
+      "FlightVolume": 30,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2667,
+      "Route": "PHX-FAT",
+      "TotalDelayMinutes": 803
+    },
+    {
+      "AvgDepDelay": 26.3,
+      "DelayedFlights": 4,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "FAT",
+      "PctDel15": 0.1333,
+      "Route": "FAT-PHX",
+      "TotalDelayMinutes": 789
+    },
+    {
+      "AvgDepDelay": 25.39,
+      "DelayedFlights": 5,
+      "DestCode": "OGG",
+      "FlightVolume": 31,
+      "OriginCode": "LAX",
+      "PctDel15": 0.1613,
+      "Route": "LAX-OGG",
+      "TotalDelayMinutes": 787
+    },
+    {
+      "AvgDepDelay": 26.07,
+      "DelayedFlights": 15,
+      "DestCode": "SAT",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.5,
+      "Route": "MIA-SAT",
+      "TotalDelayMinutes": 782
+    },
+    {
+      "AvgDepDelay": 25.19,
+      "DelayedFlights": 15,
+      "DestCode": "PBI",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4839,
+      "Route": "ORD-PBI",
+      "TotalDelayMinutes": 781
+    },
+    {
+      "AvgDepDelay": 24.94,
+      "DelayedFlights": 6,
+      "DestCode": "PHL",
+      "FlightVolume": 31,
+      "OriginCode": "MSY",
+      "PctDel15": 0.1935,
+      "Route": "MSY-PHL",
+      "TotalDelayMinutes": 773
+    },
+    {
+      "AvgDepDelay": 25.77,
+      "DelayedFlights": 11,
+      "DestCode": "ORD",
+      "FlightVolume": 30,
+      "OriginCode": "RSW",
+      "PctDel15": 0.3667,
+      "Route": "RSW-ORD",
+      "TotalDelayMinutes": 773
+    },
+    {
+      "AvgDepDelay": 24.58,
+      "DelayedFlights": 10,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "SEA",
+      "PctDel15": 0.3226,
+      "Route": "SEA-MIA",
+      "TotalDelayMinutes": 762
+    },
+    {
+      "AvgDepDelay": 25.23,
+      "DelayedFlights": 11,
+      "DestCode": "DFW",
+      "FlightVolume": 30,
+      "OriginCode": "STS",
+      "PctDel15": 0.3667,
+      "Route": "STS-DFW",
+      "TotalDelayMinutes": 757
+    },
+    {
+      "AvgDepDelay": 12.81,
+      "DelayedFlights": 19,
+      "DestCode": "DFW",
+      "FlightVolume": 59,
+      "OriginCode": "BDL",
+      "PctDel15": 0.322,
+      "Route": "BDL-DFW",
+      "TotalDelayMinutes": 756
+    },
+    {
+      "AvgDepDelay": 20.41,
+      "DelayedFlights": 13,
+      "DestCode": "BUF",
+      "FlightVolume": 37,
+      "OriginCode": "PHL",
+      "PctDel15": 0.3514,
+      "Route": "PHL-BUF",
+      "TotalDelayMinutes": 755
+    },
+    {
+      "AvgDepDelay": 12.48,
+      "DelayedFlights": 10,
+      "DestCode": "PHX",
+      "FlightVolume": 60,
+      "OriginCode": "MCI",
+      "PctDel15": 0.1667,
+      "Route": "MCI-PHX",
+      "TotalDelayMinutes": 749
+    },
+    {
+      "AvgDepDelay": 23.97,
+      "DelayedFlights": 8,
+      "DestCode": "CLT",
+      "FlightVolume": 31,
+      "OriginCode": "ONT",
+      "PctDel15": 0.2581,
+      "Route": "ONT-CLT",
+      "TotalDelayMinutes": 743
+    },
+    {
+      "AvgDepDelay": 23.71,
+      "DelayedFlights": 9,
+      "DestCode": "SLC",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2903,
+      "Route": "ORD-SLC",
+      "TotalDelayMinutes": 735
+    },
+    {
+      "AvgDepDelay": 24.17,
+      "DelayedFlights": 9,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "MRY",
+      "PctDel15": 0.3,
+      "Route": "MRY-PHX",
+      "TotalDelayMinutes": 725
+    },
+    {
+      "AvgDepDelay": 23.13,
+      "DelayedFlights": 15,
+      "DestCode": "PVD",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.4839,
+      "Route": "ORD-PVD",
+      "TotalDelayMinutes": 717
+    },
+    {
+      "AvgDepDelay": 23.67,
+      "DelayedFlights": 10,
+      "DestCode": "MRY",
+      "FlightVolume": 30,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3333,
+      "Route": "PHX-MRY",
+      "TotalDelayMinutes": 710
+    },
+    {
+      "AvgDepDelay": 22.87,
+      "DelayedFlights": 12,
+      "DestCode": "CLE",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.3871,
+      "Route": "MIA-CLE",
+      "TotalDelayMinutes": 709
+    },
+    {
+      "AvgDepDelay": 22.58,
+      "DelayedFlights": 12,
+      "DestCode": "JFK",
+      "FlightVolume": 31,
+      "OriginCode": "SNA",
+      "PctDel15": 0.3871,
+      "Route": "SNA-JFK",
+      "TotalDelayMinutes": 700
+    },
+    {
+      "AvgDepDelay": 19.97,
+      "DelayedFlights": 14,
+      "DestCode": "CLT",
+      "FlightVolume": 35,
+      "OriginCode": "EYW",
+      "PctDel15": 0.4,
+      "Route": "EYW-CLT",
+      "TotalDelayMinutes": 699
+    },
+    {
+      "AvgDepDelay": 5.8,
+      "DelayedFlights": 15,
+      "DestCode": "SFO",
+      "FlightVolume": 119,
+      "OriginCode": "JFK",
+      "PctDel15": 0.1261,
+      "Route": "JFK-SFO",
+      "TotalDelayMinutes": 690
+    },
+    {
+      "AvgDepDelay": 22.03,
+      "DelayedFlights": 13,
+      "DestCode": "SEA",
+      "FlightVolume": 31,
+      "OriginCode": "MIA",
+      "PctDel15": 0.4194,
+      "Route": "MIA-SEA",
+      "TotalDelayMinutes": 683
+    },
+    {
+      "AvgDepDelay": 12.41,
+      "DelayedFlights": 13,
+      "DestCode": "DCA",
+      "FlightVolume": 54,
+      "OriginCode": "STL",
+      "PctDel15": 0.2407,
+      "Route": "STL-DCA",
+      "TotalDelayMinutes": 670
+    },
+    {
+      "AvgDepDelay": 10.14,
+      "DelayedFlights": 18,
+      "DestCode": "STT",
+      "FlightVolume": 66,
+      "OriginCode": "MIA",
+      "PctDel15": 0.2727,
+      "Route": "MIA-STT",
+      "TotalDelayMinutes": 669
+    },
+    {
+      "AvgDepDelay": 21.55,
+      "DelayedFlights": 11,
+      "DestCode": "EUG",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3548,
+      "Route": "PHX-EUG",
+      "TotalDelayMinutes": 668
+    },
+    {
+      "AvgDepDelay": 21.32,
+      "DelayedFlights": 8,
+      "DestCode": "MKE",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2581,
+      "Route": "PHX-MKE",
+      "TotalDelayMinutes": 661
+    },
+    {
+      "AvgDepDelay": 21.26,
+      "DelayedFlights": 11,
+      "DestCode": "DFW",
+      "FlightVolume": 31,
+      "OriginCode": "ALB",
+      "PctDel15": 0.3548,
+      "Route": "ALB-DFW",
+      "TotalDelayMinutes": 659
+    },
+    {
+      "AvgDepDelay": 21.19,
+      "DelayedFlights": 8,
+      "DestCode": "JFK",
+      "FlightVolume": 31,
+      "OriginCode": "STT",
+      "PctDel15": 0.2581,
+      "Route": "STT-JFK",
+      "TotalDelayMinutes": 657
+    },
+    {
+      "AvgDepDelay": 21.1,
+      "DelayedFlights": 12,
+      "DestCode": "DFW",
+      "FlightVolume": 31,
+      "OriginCode": "TVC",
+      "PctDel15": 0.3871,
+      "Route": "TVC-DFW",
+      "TotalDelayMinutes": 654
+    },
+    {
+      "AvgDepDelay": 19.9,
+      "DelayedFlights": 10,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "EUG",
+      "PctDel15": 0.3226,
+      "Route": "EUG-PHX",
+      "TotalDelayMinutes": 617
+    },
+    {
+      "AvgDepDelay": 16.68,
+      "DelayedFlights": 11,
+      "DestCode": "PHL",
+      "FlightVolume": 37,
+      "OriginCode": "BUF",
+      "PctDel15": 0.2973,
+      "Route": "BUF-PHL",
+      "TotalDelayMinutes": 617
+    },
+    {
+      "AvgDepDelay": 19.9,
+      "DelayedFlights": 12,
+      "DestCode": "TVC",
+      "FlightVolume": 31,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3871,
+      "Route": "DFW-TVC",
+      "TotalDelayMinutes": 617
+    },
+    {
+      "AvgDepDelay": 20.23,
+      "DelayedFlights": 7,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "RDU",
+      "PctDel15": 0.2333,
+      "Route": "RDU-PHX",
+      "TotalDelayMinutes": 607
+    },
+    {
+      "AvgDepDelay": 19.83,
+      "DelayedFlights": 3,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "CMH",
+      "PctDel15": 0.1,
+      "Route": "CMH-PHX",
+      "TotalDelayMinutes": 595
+    },
+    {
+      "AvgDepDelay": 18.68,
+      "DelayedFlights": 9,
+      "DestCode": "BZN",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2903,
+      "Route": "ORD-BZN",
+      "TotalDelayMinutes": 579
+    },
+    {
+      "AvgDepDelay": 19.1,
+      "DelayedFlights": 6,
+      "DestCode": "ORD",
+      "FlightVolume": 30,
+      "OriginCode": "GRR",
+      "PctDel15": 0.2,
+      "Route": "GRR-ORD",
+      "TotalDelayMinutes": 573
+    },
+    {
+      "AvgDepDelay": 18.45,
+      "DelayedFlights": 12,
+      "DestCode": "IND",
+      "FlightVolume": 31,
+      "OriginCode": "DCA",
+      "PctDel15": 0.3871,
+      "Route": "DCA-IND",
+      "TotalDelayMinutes": 572
+    },
+    {
+      "AvgDepDelay": 9.26,
+      "DelayedFlights": 13,
+      "DestCode": "DCA",
+      "FlightVolume": 61,
+      "OriginCode": "PBI",
+      "PctDel15": 0.2131,
+      "Route": "PBI-DCA",
+      "TotalDelayMinutes": 565
+    },
+    {
+      "AvgDepDelay": 17.9,
+      "DelayedFlights": 12,
+      "DestCode": "SRQ",
+      "FlightVolume": 31,
+      "OriginCode": "DFW",
+      "PctDel15": 0.3871,
+      "Route": "DFW-SRQ",
+      "TotalDelayMinutes": 555
+    },
+    {
+      "AvgDepDelay": 18.27,
+      "DelayedFlights": 6,
+      "DestCode": "STS",
+      "FlightVolume": 30,
+      "OriginCode": "DFW",
+      "PctDel15": 0.2,
+      "Route": "DFW-STS",
+      "TotalDelayMinutes": 548
+    },
+    {
+      "AvgDepDelay": 9,
+      "DelayedFlights": 12,
+      "DestCode": "CHS",
+      "FlightVolume": 59,
+      "OriginCode": "DCA",
+      "PctDel15": 0.2034,
+      "Route": "DCA-CHS",
+      "TotalDelayMinutes": 531
+    },
+    {
+      "AvgDepDelay": 16.84,
+      "DelayedFlights": 10,
+      "DestCode": "MEM",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.3226,
+      "Route": "PHX-MEM",
+      "TotalDelayMinutes": 522
+    },
+    {
+      "AvgDepDelay": 16.45,
+      "DelayedFlights": 7,
+      "DestCode": "ABQ",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2258,
+      "Route": "ORD-ABQ",
+      "TotalDelayMinutes": 510
+    },
+    {
+      "AvgDepDelay": 16.42,
+      "DelayedFlights": 7,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "ABQ",
+      "PctDel15": 0.2258,
+      "Route": "ABQ-ORD",
+      "TotalDelayMinutes": 509
+    },
+    {
+      "AvgDepDelay": 16.97,
+      "DelayedFlights": 7,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "MSP",
+      "PctDel15": 0.2333,
+      "Route": "MSP-MIA",
+      "TotalDelayMinutes": 509
+    },
+    {
+      "AvgDepDelay": 14.97,
+      "DelayedFlights": 12,
+      "DestCode": "PHX",
+      "FlightVolume": 34,
+      "OriginCode": "TUS",
+      "PctDel15": 0.3529,
+      "Route": "TUS-PHX",
+      "TotalDelayMinutes": 509
+    },
+    {
+      "AvgDepDelay": 14.88,
+      "DelayedFlights": 8,
+      "DestCode": "TUS",
+      "FlightVolume": 34,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2353,
+      "Route": "PHX-TUS",
+      "TotalDelayMinutes": 506
+    },
+    {
+      "AvgDepDelay": 16.87,
+      "DelayedFlights": 6,
+      "DestCode": "STL",
+      "FlightVolume": 30,
+      "OriginCode": "MIA",
+      "PctDel15": 0.2,
+      "Route": "MIA-STL",
+      "TotalDelayMinutes": 506
+    },
+    {
+      "AvgDepDelay": 16.19,
+      "DelayedFlights": 8,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "SDF",
+      "PctDel15": 0.2581,
+      "Route": "SDF-MIA",
+      "TotalDelayMinutes": 502
+    },
+    {
+      "AvgDepDelay": 16.7,
+      "DelayedFlights": 7,
+      "DestCode": "ABQ",
+      "FlightVolume": 30,
+      "OriginCode": "PHX",
+      "PctDel15": 0.2333,
+      "Route": "PHX-ABQ",
+      "TotalDelayMinutes": 501
+    },
+    {
+      "AvgDepDelay": 16.03,
+      "DelayedFlights": 8,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "SJU",
+      "PctDel15": 0.2581,
+      "Route": "SJU-ORD",
+      "TotalDelayMinutes": 497
+    },
+    {
+      "AvgDepDelay": 16.2,
+      "DelayedFlights": 5,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "ABQ",
+      "PctDel15": 0.1667,
+      "Route": "ABQ-PHX",
+      "TotalDelayMinutes": 486
+    },
+    {
+      "AvgDepDelay": 15.58,
+      "DelayedFlights": 6,
+      "DestCode": "LAX",
+      "FlightVolume": 31,
+      "OriginCode": "LIH",
+      "PctDel15": 0.1935,
+      "Route": "LIH-LAX",
+      "TotalDelayMinutes": 483
+    },
+    {
+      "AvgDepDelay": 15.32,
+      "DelayedFlights": 9,
+      "DestCode": "LAX",
+      "FlightVolume": 31,
+      "OriginCode": "KOA",
+      "PctDel15": 0.2903,
+      "Route": "KOA-LAX",
+      "TotalDelayMinutes": 475
+    },
+    {
+      "AvgDepDelay": 15.1,
+      "DelayedFlights": 5,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "BDL",
+      "PctDel15": 0.1613,
+      "Route": "BDL-MIA",
+      "TotalDelayMinutes": 468
+    },
+    {
+      "AvgDepDelay": 7.9,
+      "DelayedFlights": 15,
+      "DestCode": "FCA",
+      "FlightVolume": 59,
+      "OriginCode": "DFW",
+      "PctDel15": 0.2542,
+      "Route": "DFW-FCA",
+      "TotalDelayMinutes": 466
+    },
+    {
+      "AvgDepDelay": 7.14,
+      "DelayedFlights": 11,
+      "DestCode": "DCA",
+      "FlightVolume": 59,
+      "OriginCode": "CHS",
+      "PctDel15": 0.1864,
+      "Route": "CHS-DCA",
+      "TotalDelayMinutes": 421
+    },
+    {
+      "AvgDepDelay": 13.93,
+      "DelayedFlights": 4,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "ORF",
+      "PctDel15": 0.1333,
+      "Route": "ORF-MIA",
+      "TotalDelayMinutes": 418
+    },
+    {
+      "AvgDepDelay": 13.23,
+      "DelayedFlights": 5,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "BWI",
+      "PctDel15": 0.1667,
+      "Route": "BWI-MIA",
+      "TotalDelayMinutes": 397
+    },
+    {
+      "AvgDepDelay": 12.52,
+      "DelayedFlights": 10,
+      "DestCode": "ANC",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.3226,
+      "Route": "ORD-ANC",
+      "TotalDelayMinutes": 388
+    },
+    {
+      "AvgDepDelay": 12,
+      "DelayedFlights": 5,
+      "DestCode": "PHL",
+      "FlightVolume": 31,
+      "OriginCode": "SJU",
+      "PctDel15": 0.1613,
+      "Route": "SJU-PHL",
+      "TotalDelayMinutes": 372
+    },
+    {
+      "AvgDepDelay": 12.3,
+      "DelayedFlights": 4,
+      "DestCode": "OMA",
+      "FlightVolume": 30,
+      "OriginCode": "PHX",
+      "PctDel15": 0.1333,
+      "Route": "PHX-OMA",
+      "TotalDelayMinutes": 369
+    },
+    {
+      "AvgDepDelay": 5.7,
+      "DelayedFlights": 12,
+      "DestCode": "PBI",
+      "FlightVolume": 61,
+      "OriginCode": "DCA",
+      "PctDel15": 0.1967,
+      "Route": "DCA-PBI",
+      "TotalDelayMinutes": 348
+    },
+    {
+      "AvgDepDelay": 11.47,
+      "DelayedFlights": 7,
+      "DestCode": "RSW",
+      "FlightVolume": 30,
+      "OriginCode": "ORD",
+      "PctDel15": 0.2333,
+      "Route": "ORD-RSW",
+      "TotalDelayMinutes": 344
+    },
+    {
+      "AvgDepDelay": 10.61,
+      "DelayedFlights": 6,
+      "DestCode": "DFW",
+      "FlightVolume": 31,
+      "OriginCode": "SYR",
+      "PctDel15": 0.1935,
+      "Route": "SYR-DFW",
+      "TotalDelayMinutes": 329
+    },
+    {
+      "AvgDepDelay": 10.32,
+      "DelayedFlights": 4,
+      "DestCode": "LIH",
+      "FlightVolume": 31,
+      "OriginCode": "LAX",
+      "PctDel15": 0.129,
+      "Route": "LAX-LIH",
+      "TotalDelayMinutes": 320
+    },
+    {
+      "AvgDepDelay": 9.65,
+      "DelayedFlights": 3,
+      "DestCode": "LIH",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.0968,
+      "Route": "PHX-LIH",
+      "TotalDelayMinutes": 299
+    },
+    {
+      "AvgDepDelay": 8.11,
+      "DelayedFlights": 4,
+      "DestCode": "PHX",
+      "FlightVolume": 36,
+      "OriginCode": "BFL",
+      "PctDel15": 0.1111,
+      "Route": "BFL-PHX",
+      "TotalDelayMinutes": 292
+    },
+    {
+      "AvgDepDelay": 9.42,
+      "DelayedFlights": 6,
+      "DestCode": "DFW",
+      "FlightVolume": 31,
+      "OriginCode": "OGG",
+      "PctDel15": 0.1935,
+      "Route": "OGG-DFW",
+      "TotalDelayMinutes": 292
+    },
+    {
+      "AvgDepDelay": 9.7,
+      "DelayedFlights": 2,
+      "DestCode": "PHX",
+      "FlightVolume": 30,
+      "OriginCode": "OMA",
+      "PctDel15": 0.0667,
+      "Route": "OMA-PHX",
+      "TotalDelayMinutes": 291
+    },
+    {
+      "AvgDepDelay": 9.39,
+      "DelayedFlights": 2,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "PVD",
+      "PctDel15": 0.0645,
+      "Route": "PVD-ORD",
+      "TotalDelayMinutes": 291
+    },
+    {
+      "AvgDepDelay": 8.9,
+      "DelayedFlights": 2,
+      "DestCode": "KOA",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.0645,
+      "Route": "PHX-KOA",
+      "TotalDelayMinutes": 276
+    },
+    {
+      "AvgDepDelay": 8.81,
+      "DelayedFlights": 5,
+      "DestCode": "SJU",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.1613,
+      "Route": "ORD-SJU",
+      "TotalDelayMinutes": 273
+    },
+    {
+      "AvgDepDelay": 8.39,
+      "DelayedFlights": 5,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "JAC",
+      "PctDel15": 0.1613,
+      "Route": "JAC-ORD",
+      "TotalDelayMinutes": 260
+    },
+    {
+      "AvgDepDelay": 8.16,
+      "DelayedFlights": 4,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "CLE",
+      "PctDel15": 0.129,
+      "Route": "CLE-MIA",
+      "TotalDelayMinutes": 253
+    },
+    {
+      "AvgDepDelay": 8,
+      "DelayedFlights": 4,
+      "DestCode": "JAC",
+      "FlightVolume": 30,
+      "OriginCode": "CLT",
+      "PctDel15": 0.1333,
+      "Route": "CLT-JAC",
+      "TotalDelayMinutes": 240
+    },
+    {
+      "AvgDepDelay": 7.57,
+      "DelayedFlights": 7,
+      "DestCode": "DCA",
+      "FlightVolume": 30,
+      "OriginCode": "RSW",
+      "PctDel15": 0.2333,
+      "Route": "RSW-DCA",
+      "TotalDelayMinutes": 227
+    },
+    {
+      "AvgDepDelay": 7.03,
+      "DelayedFlights": 5,
+      "DestCode": "DCA",
+      "FlightVolume": 31,
+      "OriginCode": "SRQ",
+      "PctDel15": 0.1613,
+      "Route": "SRQ-DCA",
+      "TotalDelayMinutes": 218
+    },
+    {
+      "AvgDepDelay": 6.27,
+      "DelayedFlights": 5,
+      "DestCode": "CLT",
+      "FlightVolume": 30,
+      "OriginCode": "MSN",
+      "PctDel15": 0.1667,
+      "Route": "MSN-CLT",
+      "TotalDelayMinutes": 188
+    },
+    {
+      "AvgDepDelay": 6.17,
+      "DelayedFlights": 6,
+      "DestCode": "BNA",
+      "FlightVolume": 30,
+      "OriginCode": "LAX",
+      "PctDel15": 0.2,
+      "Route": "LAX-BNA",
+      "TotalDelayMinutes": 185
+    },
+    {
+      "AvgDepDelay": 5.87,
+      "DelayedFlights": 5,
+      "DestCode": "HNL",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.1613,
+      "Route": "PHX-HNL",
+      "TotalDelayMinutes": 182
+    },
+    {
+      "AvgDepDelay": 5.74,
+      "DelayedFlights": 3,
+      "DestCode": "LAX",
+      "FlightVolume": 31,
+      "OriginCode": "BNA",
+      "PctDel15": 0.0968,
+      "Route": "BNA-LAX",
+      "TotalDelayMinutes": 178
+    },
+    {
+      "AvgDepDelay": 3.42,
+      "DelayedFlights": 7,
+      "DestCode": "ORD",
+      "FlightVolume": 52,
+      "OriginCode": "SNA",
+      "PctDel15": 0.1346,
+      "Route": "SNA-ORD",
+      "TotalDelayMinutes": 178
+    },
+    {
+      "AvgDepDelay": 4.74,
+      "DelayedFlights": 3,
+      "DestCode": "SRQ",
+      "FlightVolume": 31,
+      "OriginCode": "DCA",
+      "PctDel15": 0.0968,
+      "Route": "DCA-SRQ",
+      "TotalDelayMinutes": 147
+    },
+    {
+      "AvgDepDelay": 4.77,
+      "DelayedFlights": 5,
+      "DestCode": "DCA",
+      "FlightVolume": 30,
+      "OriginCode": "RDU",
+      "PctDel15": 0.1667,
+      "Route": "RDU-DCA",
+      "TotalDelayMinutes": 143
+    },
+    {
+      "AvgDepDelay": 4.18,
+      "DelayedFlights": 4,
+      "DestCode": "PHX",
+      "FlightVolume": 33,
+      "OriginCode": "BNA",
+      "PctDel15": 0.1212,
+      "Route": "BNA-PHX",
+      "TotalDelayMinutes": 138
+    },
+    {
+      "AvgDepDelay": 4.39,
+      "DelayedFlights": 5,
+      "DestCode": "CLT",
+      "FlightVolume": 31,
+      "OriginCode": "PDX",
+      "PctDel15": 0.1613,
+      "Route": "PDX-CLT",
+      "TotalDelayMinutes": 136
+    },
+    {
+      "AvgDepDelay": 4.26,
+      "DelayedFlights": 2,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "DTW",
+      "PctDel15": 0.0645,
+      "Route": "DTW-MIA",
+      "TotalDelayMinutes": 132
+    },
+    {
+      "AvgDepDelay": 4.1,
+      "DelayedFlights": 5,
+      "DestCode": "RSW",
+      "FlightVolume": 31,
+      "OriginCode": "DCA",
+      "PctDel15": 0.1613,
+      "Route": "DCA-RSW",
+      "TotalDelayMinutes": 127
+    },
+    {
+      "AvgDepDelay": 3.84,
+      "DelayedFlights": 5,
+      "DestCode": "TUS",
+      "FlightVolume": 31,
+      "OriginCode": "ORD",
+      "PctDel15": 0.1613,
+      "Route": "ORD-TUS",
+      "TotalDelayMinutes": 119
+    },
+    {
+      "AvgDepDelay": 3.84,
+      "DelayedFlights": 3,
+      "DestCode": "AUS",
+      "FlightVolume": 31,
+      "OriginCode": "MCO",
+      "PctDel15": 0.0968,
+      "Route": "MCO-AUS",
+      "TotalDelayMinutes": 119
+    },
+    {
+      "AvgDepDelay": 1.42,
+      "DelayedFlights": 5,
+      "DestCode": "DFW",
+      "FlightVolume": 59,
+      "OriginCode": "SJU",
+      "PctDel15": 0.0847,
+      "Route": "SJU-DFW",
+      "TotalDelayMinutes": 84
+    },
+    {
+      "AvgDepDelay": 2.32,
+      "DelayedFlights": 2,
+      "DestCode": "OGG",
+      "FlightVolume": 31,
+      "OriginCode": "PHX",
+      "PctDel15": 0.0645,
+      "Route": "PHX-OGG",
+      "TotalDelayMinutes": 72
+    },
+    {
+      "AvgDepDelay": 1.35,
+      "DelayedFlights": 2,
+      "DestCode": "SNA",
+      "FlightVolume": 31,
+      "OriginCode": "JFK",
+      "PctDel15": 0.0645,
+      "Route": "JFK-SNA",
+      "TotalDelayMinutes": 42
+    },
+    {
+      "AvgDepDelay": 1.29,
+      "DelayedFlights": 3,
+      "DestCode": "MIA",
+      "FlightVolume": 31,
+      "OriginCode": "MCI",
+      "PctDel15": 0.0968,
+      "Route": "MCI-MIA",
+      "TotalDelayMinutes": 40
+    },
+    {
+      "AvgDepDelay": 0.97,
+      "DelayedFlights": 1,
+      "DestCode": "LAS",
+      "FlightVolume": 31,
+      "OriginCode": "DCA",
+      "PctDel15": 0.0323,
+      "Route": "DCA-LAS",
+      "TotalDelayMinutes": 30
+    },
+    {
+      "AvgDepDelay": 0.2,
+      "DelayedFlights": 2,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "RIC",
+      "PctDel15": 0.0667,
+      "Route": "RIC-MIA",
+      "TotalDelayMinutes": 6
+    },
+    {
+      "AvgDepDelay": -0.06,
+      "DelayedFlights": 1,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "HNL",
+      "PctDel15": 0.0323,
+      "Route": "HNL-PHX",
+      "TotalDelayMinutes": -2
+    },
+    {
+      "AvgDepDelay": -0.1,
+      "DelayedFlights": 2,
+      "DestCode": "MIA",
+      "FlightVolume": 30,
+      "OriginCode": "SAT",
+      "PctDel15": 0.0667,
+      "Route": "SAT-MIA",
+      "TotalDelayMinutes": -3
+    },
+    {
+      "AvgDepDelay": -0.19,
+      "DelayedFlights": 1,
+      "DestCode": "PHX",
+      "FlightVolume": 31,
+      "OriginCode": "MSN",
+      "PctDel15": 0.0323,
+      "Route": "MSN-PHX",
+      "TotalDelayMinutes": -6
+    },
+    {
+      "AvgDepDelay": -0.68,
+      "DelayedFlights": 3,
+      "DestCode": "ORD",
+      "FlightVolume": 31,
+      "OriginCode": "TUS",
+      "PctDel15": 0.0968,
+      "Route": "TUS-ORD",
+      "TotalDelayMinutes": -21
+    },
+    {
+      "AvgDepDelay": -3.19,
+      "DelayedFlights": 1,
+      "DestCode": "MCO",
+      "FlightVolume": 31,
+      "OriginCode": "AUS",
+      "PctDel15": 0.0323,
+      "Route": "AUS-MCO",
+      "TotalDelayMinutes": -99
+    }
+  ],
+  "row_count": 799,
+  "generated_at": "2026-03-24T16:36:01.627526Z",
+  "source_query_sha256": "655cfda93eb20e4e0d3692e2fea545ec6bdf79e1b2ef61c5b0dd87103f248bc5",
+  "log_comment": "qforge|question=q006|run=run-001|runner=gemini|model=gemini-3.1-pro-preview|phase=full|subquestion=q3"
+}

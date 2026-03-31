@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Tail_Number",
+    "Carrier",
+    "FlightNum",
+    "FlightDate",
+    "Hops",
+    "Route",
+    "DepartureTimes"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "05:43, 08:10, 10:20, 11:42, 14:01, 16:43, 18:28, 20:41",
+      "FlightDate": "2024-12-01T00:00:00Z",
+      "FlightNum": "366",
+      "Hops": 8,
+      "Route": "ISP -\u003e BWI -\u003e MYR -\u003e BNA -\u003e VPS -\u003e DAL -\u003e LAS -\u003e OAK -\u003e SEA",
+      "Tail_Number": "N957WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:21, 08:01, 10:07, 12:34, 15:14, 17:47, 19:02, 21:17",
+      "FlightDate": "2024-02-18T00:00:00Z",
+      "FlightNum": "3149",
+      "Hops": 8,
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N7835A"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:18, 08:00, 10:12, 12:39, 15:15, 17:56, 18:59, 20:59",
+      "FlightDate": "2024-01-28T00:00:00Z",
+      "FlightNum": "3149",
+      "Hops": 8,
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N429WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:20, 08:10, 10:17, 12:37, 15:10, 18:00, 19:03, 21:02",
+      "FlightDate": "2024-01-21T00:00:00Z",
+      "FlightNum": "3149",
+      "Hops": 8,
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N228WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:25, 08:05, 10:11, 12:41, 16:07, 19:09, 20:06, 21:56",
+      "FlightDate": "2024-01-14T00:00:00Z",
+      "FlightNum": "3149",
+      "Hops": 8,
+      "Route": "CLE -\u003e BNA -\u003e PNS -\u003e HOU -\u003e MCI -\u003e PHX -\u003e BUR -\u003e OAK -\u003e DEN",
+      "Tail_Number": "N569WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:27, 09:39, 11:24, 14:34, 16:56, 18:31, 20:40, 22:46",
+      "FlightDate": "2023-04-30T00:00:00Z",
+      "FlightNum": "154",
+      "Hops": 8,
+      "Route": "ELP -\u003e DAL -\u003e LIT -\u003e ATL -\u003e RIC -\u003e MDW -\u003e MCI -\u003e PHX -\u003e SAN",
+      "Tail_Number": "N7742B"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:22, 09:41, 11:22, 14:33, 16:59, 18:32, 20:41, 22:26",
+      "FlightDate": "2023-04-16T00:00:00Z",
+      "FlightNum": "154",
+      "Hops": 8,
+      "Route": "ELP -\u003e DAL -\u003e LIT -\u003e ATL -\u003e RIC -\u003e MDW -\u003e MCI -\u003e PHX -\u003e SAN",
+      "Tail_Number": "N929WN"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:08, 09:44, 11:56, 13:54, 15:53, 17:29, 20:45, 21:49",
+      "FlightDate": "2022-10-23T00:00:00Z",
+      "FlightNum": "2787",
+      "Hops": 8,
+      "Route": "MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX",
+      "Tail_Number": "N8631A"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:10, 09:17, 11:42, 13:55, 15:36, 17:16, 20:40, 21:47",
+      "FlightDate": "2022-10-02T00:00:00Z",
+      "FlightNum": "2787",
+      "Hops": 8,
+      "Route": "MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX",
+      "Tail_Number": "N8809L"
+    },
+    {
+      "Carrier": "WN",
+      "DepartureTimes": "06:01, 09:18, 11:41, 13:47, 15:39, 17:24, 21:12, 22:42",
+      "FlightDate": "2022-09-25T00:00:00Z",
+      "FlightNum": "2787",
+      "Hops": 8,
+      "Route": "MSY -\u003e ATL -\u003e CMH -\u003e BWI -\u003e RDU -\u003e BNA -\u003e DTW -\u003e MDW -\u003e LAX",
+      "Tail_Number": "N8811L"
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-18T21:33:25.896504Z",
+  "source_query_sha256": "380aa2f51353810f7094b6bd8d8f859fd50898a96d649aedc0e4975fb02a530d",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full"
+}

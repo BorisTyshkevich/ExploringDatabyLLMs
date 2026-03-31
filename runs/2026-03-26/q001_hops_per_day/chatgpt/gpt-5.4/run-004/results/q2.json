@@ -1,0 +1,107 @@
+{
+  "columns": [
+    "Route",
+    "total_flown_distance",
+    "unique_airports",
+    "unique_city_markets",
+    "unique_states",
+    "unique_local_time_offsets",
+    "entirely_domestic"
+  ],
+  "rows": [
+    {
+      "Route": "BWI-MCO-MEM-MDW-IAD-ATL-MSY-DAL-LAX",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 5169,
+      "unique_airports": 9,
+      "unique_city_markets": 8,
+      "unique_local_time_offsets": 3,
+      "unique_states": 9
+    },
+    {
+      "Route": "CLE-BNA-PNS-HOU-MCI-PHX-BUR-OAK-DEN",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4688,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 4,
+      "unique_states": 8
+    },
+    {
+      "Route": "MSY-ATL-CMH-BWI-RDU-BNA-DTW-MDW-LAX",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4340,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 3,
+      "unique_states": 9
+    },
+    {
+      "Route": "ISP-BWI-MYR-BNA-VPS-DAL-LAS-OAK-SEA",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4255,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 3,
+      "unique_states": 9
+    },
+    {
+      "Route": "ELP-DAL-LIT-ATL-RIC-MDW-MCI-PHX-SAN",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4174,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 4,
+      "unique_states": 8
+    },
+    {
+      "Route": "HOU-MSY-BNA-MYR-CMH-DAL-ABQ-LAS-OAK",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4124,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 4,
+      "unique_states": 8
+    },
+    {
+      "Route": "MSY-TPA-BWI-ORD-DEN-SLC-LAS-BUR-SJC",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4117,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 4,
+      "unique_states": 8
+    },
+    {
+      "Route": "BWI-FLL-MSY-DAL-MAF-DEN-LAS-BUR-OAK",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 4093,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 4,
+      "unique_states": 7
+    },
+    {
+      "Route": "LGA-STL-ICT-DEN-COS-PHX-ELP-HOU-JAN",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 3707,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 3,
+      "unique_states": 7
+    },
+    {
+      "Route": "SMF-SAN-PHX-COS-DEN-PSP-OAK-RNO-LAS",
+      "entirely_domestic": "Yes",
+      "total_flown_distance": 3128,
+      "unique_airports": 9,
+      "unique_city_markets": 9,
+      "unique_local_time_offsets": 2,
+      "unique_states": 4
+    }
+  ],
+  "row_count": 10,
+  "generated_at": "2026-03-26T19:26:11.047226Z",
+  "source_query_sha256": "56989c7eeda11817206e3d4b40da490ba513a9d915a35e60fe1cb400041ad4e5",
+  "log_comment": "qforge|question=q001|run=run-004|runner=codex|model=gpt-5.4|phase=full|section=q2"
+}

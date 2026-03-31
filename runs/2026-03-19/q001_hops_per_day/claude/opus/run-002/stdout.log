@@ -1,0 +1,1 @@
+Artifact written to `answer.raw.json`. The query finds the maximum daily hop count is **8** — all belonging to Southwest Airlines (WN), with strong weekly route repetition across the top 10 itineraries.

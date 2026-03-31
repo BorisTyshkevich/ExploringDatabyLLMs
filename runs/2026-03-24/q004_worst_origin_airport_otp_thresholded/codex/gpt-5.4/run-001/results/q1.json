@@ -1,0 +1,184 @@
+{
+  "columns": [
+    "otp_rank",
+    "origin_code",
+    "DisplayAirportName",
+    "completed_departures",
+    "dep_otp_pct",
+    "avg_dep_delay_min",
+    "p90_dep_delay_min",
+    "first_date",
+    "last_date"
+  ],
+  "rows": [
+    {
+      "DisplayAirportName": "Chicago Midway International",
+      "avg_dep_delay_min": 11.8,
+      "completed_departures": 2512354,
+      "dep_otp_pct": 76.52,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "MDW",
+      "otp_rank": 1,
+      "p90_dep_delay_min": 36.91
+    },
+    {
+      "DisplayAirportName": "Chicago O'Hare International",
+      "avg_dep_delay_min": 12.16,
+      "completed_departures": 11143843,
+      "dep_otp_pct": 78.61,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "ORD",
+      "otp_rank": 2,
+      "p90_dep_delay_min": 42.77
+    },
+    {
+      "DisplayAirportName": "Newark Liberty International",
+      "avg_dep_delay_min": 12.62,
+      "completed_departures": 4548113,
+      "dep_otp_pct": 78.69,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "EWR",
+      "otp_rank": 3,
+      "p90_dep_delay_min": 44.31
+    },
+    {
+      "DisplayAirportName": "William P Hobby",
+      "avg_dep_delay_min": 10.31,
+      "completed_departures": 2084605,
+      "dep_otp_pct": 78.92,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "HOU",
+      "otp_rank": 4,
+      "p90_dep_delay_min": 32.81
+    },
+    {
+      "DisplayAirportName": "Dallas Love Field",
+      "avg_dep_delay_min": 10.34,
+      "completed_departures": 1931453,
+      "dep_otp_pct": 78.99,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "DAL",
+      "otp_rank": 5,
+      "p90_dep_delay_min": 32.11
+    },
+    {
+      "DisplayAirportName": "John F. Kennedy International",
+      "avg_dep_delay_min": 11.99,
+      "completed_departures": 3072552,
+      "dep_otp_pct": 79.52,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "JFK",
+      "otp_rank": 6,
+      "p90_dep_delay_min": 41.29
+    },
+    {
+      "DisplayAirportName": "Baltimore/Washington International Thurgood Marshall",
+      "avg_dep_delay_min": 10.39,
+      "completed_departures": 3285203,
+      "dep_otp_pct": 79.63,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "BWI",
+      "otp_rank": 7,
+      "p90_dep_delay_min": 32.91
+    },
+    {
+      "DisplayAirportName": "Harry Reid International",
+      "avg_dep_delay_min": 9.99,
+      "completed_departures": 5189435,
+      "dep_otp_pct": 79.75,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "LAS",
+      "otp_rank": 8,
+      "p90_dep_delay_min": 33.52
+    },
+    {
+      "DisplayAirportName": "Denver International",
+      "avg_dep_delay_min": 10.65,
+      "completed_departures": 7385210,
+      "dep_otp_pct": 79.93,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "DEN",
+      "otp_rank": 9,
+      "p90_dep_delay_min": 36.06
+    },
+    {
+      "DisplayAirportName": "Fort Lauderdale-Hollywood International",
+      "avg_dep_delay_min": 11.25,
+      "completed_departures": 2312776,
+      "dep_otp_pct": 79.99,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "FLL",
+      "otp_rank": 10,
+      "p90_dep_delay_min": 38.18
+    },
+    {
+      "DisplayAirportName": "San Francisco International",
+      "avg_dep_delay_min": 10.58,
+      "completed_departures": 5139849,
+      "dep_otp_pct": 80.4,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "SFO",
+      "otp_rank": 11,
+      "p90_dep_delay_min": 38.99
+    },
+    {
+      "DisplayAirportName": "Dallas/Fort Worth International",
+      "avg_dep_delay_min": 10.64,
+      "completed_departures": 10023965,
+      "dep_otp_pct": 80.49,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "DFW",
+      "otp_rank": 12,
+      "p90_dep_delay_min": 36.1
+    },
+    {
+      "DisplayAirportName": "Miami International",
+      "avg_dep_delay_min": 11.12,
+      "completed_departures": 2818035,
+      "dep_otp_pct": 80.57,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "MIA",
+      "otp_rank": 13,
+      "p90_dep_delay_min": 37.83
+    },
+    {
+      "DisplayAirportName": "Philadelphia International",
+      "avg_dep_delay_min": 10.43,
+      "completed_departures": 3556123,
+      "dep_otp_pct": 80.66,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "PHL",
+      "otp_rank": 14,
+      "p90_dep_delay_min": 35.42
+    },
+    {
+      "DisplayAirportName": "Hartsfield-Jackson Atlanta International",
+      "avg_dep_delay_min": 9.97,
+      "completed_departures": 12072831,
+      "dep_otp_pct": 81,
+      "first_date": "1987-10-01T00:00:00Z",
+      "last_date": "2025-11-30T00:00:00Z",
+      "origin_code": "ATL",
+      "otp_rank": 15,
+      "p90_dep_delay_min": 32.46
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T14:18:36.998836Z",
+  "source_query_sha256": "04071e28a4f8db9f25003a01c7380f31e502ae4b389a40982edc236368a4df2c",
+  "log_comment": "qforge|question=q004|run=run-001|runner=codex|model=gpt-5.4|phase=full|subquestion=q1"
+}

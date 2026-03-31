@@ -1,0 +1,26 @@
+{
+  "columns": [
+    "Tail_Number",
+    "FlightNum",
+    "Carrier",
+    "FlightDate",
+    "hop_count",
+    "Route",
+    "occurrences"
+  ],
+  "rows": [
+    {
+      "Carrier": "WN",
+      "FlightDate": "2025-11-30T00:00:00Z",
+      "FlightNum": "2179",
+      "Route": "SAT-TPA-FLL-RDU-BNA-STL-AUS",
+      "Tail_Number": "N925WN",
+      "hop_count": 6,
+      "occurrences": 1
+    }
+  ],
+  "row_count": 1,
+  "generated_at": "2026-03-25T16:50:35.297985Z",
+  "source_query_sha256": "414b37e62272834bf8e665792cb56bbbbdfc2017a6a26a3ab6d2a7b27f96a6aa",
+  "log_comment": "qforge|question=q001|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=q2"
+}

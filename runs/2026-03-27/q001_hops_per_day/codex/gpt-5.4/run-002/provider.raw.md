@@ -1,0 +1,3 @@
+Wrote the review to [review.md](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-27/q001_hops_per_day/codex/gpt-5.4/run-002/review.md).
+
+Verdict is `FAIL`. The main issue is that [queries/main.sql](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-27/q001_hops_per_day/codex/gpt-5.4/run-002/queries/main.sql) de-duplicates by departure time and then mixes `min()` values across conflicting rows, which can fabricate legs and routes, so the ranked results in [results/main.json](/Users/bvt/work/ExploringDatabyLLMs-runs/2026-03-27/q001_hops_per_day/codex/gpt-5.4/run-002/results/main.json) are not reliable evidence for the prompt’s required grain.

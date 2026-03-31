@@ -1,0 +1,104 @@
+{
+  "columns": [
+    "OriginCode",
+    "flights",
+    "avg_dep_delay_min",
+    "pct_dep_del15"
+  ],
+  "rows": [
+    {
+      "OriginCode": "EYW",
+      "avg_dep_delay_min": 70,
+      "flights": 119,
+      "pct_dep_del15": 45.38
+    },
+    {
+      "OriginCode": "JAC",
+      "avg_dep_delay_min": 58.69,
+      "flights": 124,
+      "pct_dep_del15": 36.29
+    },
+    {
+      "OriginCode": "ALB",
+      "avg_dep_delay_min": 57.32,
+      "flights": 118,
+      "pct_dep_del15": 49.15
+    },
+    {
+      "OriginCode": "PNS",
+      "avg_dep_delay_min": 54.73,
+      "flights": 210,
+      "pct_dep_del15": 52.38
+    },
+    {
+      "OriginCode": "ECP",
+      "avg_dep_delay_min": 53.93,
+      "flights": 130,
+      "pct_dep_del15": 41.54
+    },
+    {
+      "OriginCode": "CLT",
+      "avg_dep_delay_min": 51.99,
+      "flights": 10568,
+      "pct_dep_del15": 52.24
+    },
+    {
+      "OriginCode": "LEX",
+      "avg_dep_delay_min": 49.71,
+      "flights": 170,
+      "pct_dep_del15": 47.65
+    },
+    {
+      "OriginCode": "DSM",
+      "avg_dep_delay_min": 49.54,
+      "flights": 231,
+      "pct_dep_del15": 40.69
+    },
+    {
+      "OriginCode": "CID",
+      "avg_dep_delay_min": 49.34,
+      "flights": 142,
+      "pct_dep_del15": 34.51
+    },
+    {
+      "OriginCode": "MFE",
+      "avg_dep_delay_min": 47.97,
+      "flights": 157,
+      "pct_dep_del15": 39.49
+    },
+    {
+      "OriginCode": "CVG",
+      "avg_dep_delay_min": 47.42,
+      "flights": 312,
+      "pct_dep_del15": 39.42
+    },
+    {
+      "OriginCode": "IAH",
+      "avg_dep_delay_min": 47.08,
+      "flights": 632,
+      "pct_dep_del15": 40.19
+    },
+    {
+      "OriginCode": "ILM",
+      "avg_dep_delay_min": 46.27,
+      "flights": 150,
+      "pct_dep_del15": 37.33
+    },
+    {
+      "OriginCode": "RSW",
+      "avg_dep_delay_min": 45.3,
+      "flights": 354,
+      "pct_dep_del15": 42.37
+    },
+    {
+      "OriginCode": "EWR",
+      "avg_dep_delay_min": 44.88,
+      "flights": 615,
+      "pct_dep_del15": 40.81
+    }
+  ],
+  "row_count": 15,
+  "generated_at": "2026-03-24T08:16:43.100905Z",
+  "source_query_sha256": "14516984ca49da57300b63fb461283bf9feb49fb9e738917349e08e88c1ce871",
+  "log_comment": "qforge|question=q006|run=run-001|runner=claude|model=sonnet|phase=full|subquestion=origin_contributors"
+}

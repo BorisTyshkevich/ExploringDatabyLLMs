@@ -1,0 +1,43 @@
+{
+  "schema_version": "2",
+  "status": "ok",
+  "question_id": "q003",
+  "question_slug": "q003_delta_atl_departure_delay_hotspots",
+  "question_title": "Delta ATL departure delay hotspots by destination and time block",
+  "dataset": "ontime_v2",
+  "runner": "codex",
+  "model": "gpt-5.4",
+  "cli_bin": "codex",
+  "mcp_server_name": "altinity_ontime_demo",
+  "mcp_config_source": "datasets/ontime_v2/mcp.yaml",
+  "started_at": "2026-03-17T12:28:00.342624Z",
+  "finished_at": "2026-03-17T12:35:50.030687Z",
+  "duration_sec": 469,
+  "log_comment": "qforge|question=q003|run=run-001|runner=codex|model=gpt-5.4|phase=full",
+  "query_sha256": "0b3262087152905c5a304b265ed56db4030106be224dc33a882a4354cf7eb477",
+  "result_row_count": 832,
+  "phases": {
+    "sql_generation": "ok",
+    "sql_execution": "ok",
+    "presentation_generation": "ok",
+    "presentation_render": "ok"
+  },
+  "artifacts": {
+    "prompt_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/prompt.sql.md",
+    "answer_sql_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/answer.sql.raw.md",
+    "query_sql": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/query.sql",
+    "result_tsv": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/result.tsv",
+    "result_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/result.json",
+    "manifest_json": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/manifest.json",
+    "stdout_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/stdout.log",
+    "stderr_log": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/stderr.log",
+    "prompt_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/prompt.presentation.md",
+    "answer_presentation_raw": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/answer.presentation.raw.md",
+    "report_template_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/report.template.md",
+    "report_md": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/report.md",
+    "visual_html": "/Users/bvt/work/ExploringDatabyLLMs/runs/2026-03-17/q003_delta_atl_departure_delay_hotspots/codex/gpt-5.4/run-001/visual.html"
+  },
+  "metadata": {
+    "execution_response_bytes": "112670"
+  }
+}

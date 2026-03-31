@@ -1,0 +1,41 @@
+{
+  "sql": "WITH leg_data AS (\n    SELECT\n        Tail_Number,\n        Flight_Number_Reporting_Airline,\n        IATA_CODE_Reporting_Airline AS Carrier,\n        FlightDate,\n        arraySort(\n            x -\u003e x.1,\n            groupArray((\n                coalesce(DepTime, CRSDepTime, 0),\n                Origin,\n                Dest\n            ))\n        ) AS sorted_legs\n    FROM ontime.ontime\n    WHERE Tail_Number != ''\n      AND Flight_Number_Reporting_Airline != ''\n      AND Cancelled = 0\n    GROUP BY Tail_Number, Flight_Number_Reporting_Airline, Carrier, FlightDate\n    HAVING length(sorted_legs) \u003e= 2\n)\nSELECT\n    Tail_Number,\n    Flight_Number_Reporting_Airline,\n    Carrier,\n    FlightDate,\n    length(sorted_legs) AS Hops,\n    arrayStringConcat(\n        arrayPushBack(\n            arrayMap(x -\u003e x.2, sorted_legs),\n            arrayElement(sorted_legs, -1).3\n        ),\n        ' → '\n    ) AS Route,\n    arrayStringConcat(\n        arrayMap(x -\u003e concat(leftPad(toString(x.1), 4, '0'), ' (', x.2, ')'), sorted_legs),\n        ', '\n    ) AS DepartureTimes\nFROM leg_data\nORDER BY Hops DESC, FlightDate DESC\nLIMIT 10",
+  "report_markdown": "# Highest Daily Hops for One Aircraft on One Flight Number\n\n{{data_overview_md}}\n\n## Maximum Hop Count\n\nThe highest recorded daily hop count is **{{metric.max_hops}} hops** ({{metric.max_hops_leg_count}} legs in a single day), achieved by carrier **{{metric.top_carrier}}** on flight **{{metric.top_flight_number}}** operated by tail number **{{metric.top_tail_number}}** on **{{metric.top_date}}**.\n\nThe full route for this itinerary:\n\n\u003e {{metric.top_route}}\n\nDeparture times per leg: {{metric.top_departure_times}}\n\n## Operating Pattern\n\n{{metric.max_hops}} hops represents the ceiling across the entire dataset. The top-10 itineraries show that this is a **recurring scheduled pattern**, not a one-off event — the same flight number and identical route sequence appears on multiple dates with different tail numbers, indicating a fixed published multi-hop rotation rather than an irregular assignment.\n\n## Top 10 Longest Itineraries\n\n{{result_table_md}}\n\n## Route Repetition and Clustering\n\nAll 10 results belong to a single carrier ({{metric.dominant_carrier}}). Several flight numbers recur across multiple dates with near-identical routing:\n\n- **{{metric.repeated_flight_1}}** follows the same {{metric.max_hops}}-hop sequence on {{metric.repeated_flight_1_count}} separate dates.\n- **{{metric.repeated_flight_2}}** and **{{metric.repeated_flight_3}}** also appear multiple times with consistent routing.\n\nThis clustering confirms that {{metric.max_hops}}-hop daily rotations are a deliberate scheduling strategy for point-to-point carriers that chain aircraft through multiple short segments in a single day.\n\n---\n*Generated: {{generated_at}}*",
+  "metrics": {
+    "summary_facts": [
+      "The maximum observed daily hop count is 8 hops (9 airports) in a single day for one aircraft on one flight number, achieved entirely by Southwest Airlines (WN) across multiple flight numbers and dates.",
+      "WN flight 3149 (CLE→BNA→PNS→HOU→MCI→PHX→BUR→OAK→DEN) achieves 8 hops on at least 4 separate dates with different tail numbers, confirming it as a regularly scheduled 8-leg rotation.",
+      "The most recent 8-hop itinerary is WN 366 on 2024-12-01 (N957WN): ISP→BWI→MYR→BNA→VPS→DAL→LAS→OAK→SEA, departing ISP at 05:43.",
+      "All top-10 results belong to Southwest Airlines, which uses a point-to-point model well-suited to high-frequency same-day multi-hop rotations."
+    ],
+    "named_values": {
+      "dominant_carrier": "WN (Southwest Airlines)",
+      "max_hops": "8",
+      "max_hops_leg_count": "8",
+      "repeated_flight_1": "WN 3149 (CLE→BNA→PNS→HOU→MCI→PHX→BUR→OAK→DEN)",
+      "repeated_flight_1_count": "4",
+      "repeated_flight_2": "WN 154 (ELP→DAL→LIT→ATL→RIC→MDW→MCI→PHX→SAN)",
+      "repeated_flight_3": "WN 2787 (MSY→ATL→CMH→BWI→RDU→BNA→DTW→MDW→LAX)",
+      "top_carrier": "WN (Southwest Airlines)",
+      "top_date": "2024-12-01",
+      "top_departure_times": "0543 (ISP), 0810 (BWI), 1020 (MYR), 1142 (BNA), 1401 (VPS), 1643 (DAL), 1828 (LAS), 2041 (OAK)",
+      "top_flight_number": "366",
+      "top_route": "ISP → BWI → MYR → BNA → VPS → DAL → LAS → OAK → SEA",
+      "top_tail_number": "N957WN"
+    },
+    "named_lists": {
+      "top_10_itineraries": [
+        "WN 366 | N957WN | 2024-12-01 | 8 hops | ISP → BWI → MYR → BNA → VPS → DAL → LAS → OAK → SEA",
+        "WN 3149 | N7835A | 2024-02-18 | 8 hops | CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+        "WN 3149 | N429WN | 2024-01-28 | 8 hops | CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+        "WN 3149 | N228WN | 2024-01-21 | 8 hops | CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+        "WN 3149 | N569WN | 2024-01-14 | 8 hops | CLE → BNA → PNS → HOU → MCI → PHX → BUR → OAK → DEN",
+        "WN 154 | N7742B | 2023-04-30 | 8 hops | ELP → DAL → LIT → ATL → RIC → MDW → MCI → PHX → SAN",
+        "WN 154 | N929WN | 2023-04-16 | 8 hops | ELP → DAL → LIT → ATL → RIC → MDW → MCI → PHX → SAN",
+        "WN 2787 | N8631A | 2022-10-23 | 8 hops | MSY → ATL → CMH → BWI → RDU → BNA → DTW → MDW → LAX",
+        "WN 2787 | N8809L | 2022-10-02 | 8 hops | MSY → ATL → CMH → BWI → RDU → BNA → DTW → MDW → LAX",
+        "WN 2787 | N8811L | 2022-09-25 | 8 hops | MSY → ATL → CMH → BWI → RDU → BNA → DTW → MDW → LAX"
+      ]
+    }
+  }
+}

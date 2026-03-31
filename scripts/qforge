@@ -3,6 +3,9 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$repo_root"
+export QFORGE_CODE_ROOT="${QFORGE_CODE_ROOT:-$repo_root}"
+export QFORGE_RUN_ROOT="${QFORGE_RUN_ROOT:-$repo_root/runs}"
+
+cd "$QFORGE_CODE_ROOT"
 
 exec go run ./cmd/qforge "$@"
