@@ -12,38 +12,79 @@ import (
 
 const analysisPromptFile = "analysis_prompt.md"
 
-func BuildAnalysisPrompt(codeRoot, runsRoot string, question model.Question, report Report, compareJSONPath string) (string, error) {
-	templatePath := filepath.Join(codeRoot, "prompts", analysisPromptFile)
+func BuildAnalysisPrompt(repoRoot string, question model.Question, report Report, compareJSONPath string) (string, error) {
+	templatePath := filepath.Join(repoRoot, "prompts", analysisPromptFile)
 	data, err := os.ReadFile(templatePath)
 	if err != nil {
 		return "", fmt.Errorf("load analysis prompt %s: %w", templatePath, err)
 	}
 	values := map[string]string{
-		"question_id":                question.Meta.ID,
-		"question_slug":              question.Meta.Slug,
-		"question_title":             question.Meta.Title,
-		"compare_day":                report.Day,
-		"compare_json_path":          repoRelativePath(runsRoot, compareJSONPath),
-		"compare_json_url":           publishedBlobURL(publishedRelativePath(runsRoot, compareJSONPath)),
-		"prompt_report_paths_md":     bulletList(promptReportPaths(report.Runs)),
-		"prompt_visual_paths_md":     bulletList(promptVisualPaths(report.Runs)),
-		"run_dirs_md":                bulletList(repoRelativePaths(runsRoot, runDirs(report.Runs))),
-		"query_sql_paths_md":         bulletList(repoRelativePaths(runsRoot, querySQLPaths(report.Runs))),
-		"report_md_paths_md":         bulletList(repoRelativePaths(runsRoot, reportMDPaths(report.Runs))),
-		"review_md_paths_md":         bulletList(repoRelativePaths(runsRoot, reviewMDPaths(report.Runs))),
-		"visual_html_paths_md":       bulletList(repoRelativePaths(runsRoot, visualHTMLPaths(report.Runs))),
-		"result_json_paths_md":       bulletList(repoRelativePaths(runsRoot, resultJSONPaths(report.Runs))),
-		"published_run_artifacts_md": renderPublishedRunArtifacts(report.Runs),
+		"question_id":           question.Meta.ID,
+		"question_slug":         question.Meta.Slug,
+		"question_title":        question.Meta.Title,
+		"compare_day":           report.Day,
+		"compare_json_path":     runsRelativePath(repoRoot, compareJSONPath),
+		"question_prompt_path":  githubPromptURL(repoRoot, filepath.Join(question.Dir, "prompt.md")),
+		"report_prompt_path":    optionalGithubPromptURL(repoRoot, filepath.Join(question.Dir, "report_prompt.md")),
+		"visual_prompt_path":    optionalGithubPromptURL(repoRoot, filepath.Join(question.Dir, "visual_prompt.md")),
+		"compare_contract_path": optionalGithubPromptURL(repoRoot, filepath.Join(question.Dir, "compare.yaml")),
+		"run_dirs_md":           bulletList(runsRelativePaths(repoRoot, runDirs(report.Runs))),
+		"query_sql_paths_md":    bulletList(runsRelativePaths(repoRoot, querySQLPaths(report.Runs))),
+		"report_md_paths_md":    bulletList(runsRelativePaths(repoRoot, reportMDPaths(report.Runs))),
+		"visual_html_paths_md":  bulletList(runsRelativePaths(repoRoot, visualHTMLPaths(report.Runs))),
+		"result_json_paths_md":  bulletList(runsRelativePaths(repoRoot, resultJSONPaths(report.Runs))),
+		"compare_summary_md":    renderMarkdown(report),
 	}
 	return prompts.RenderTemplate(string(data), values), nil
 }
 
-func repoRelativePaths(repoRoot string, values []string) []string {
+func publishPath(repoRoot, path string) string {
+	if path == "" {
+		return path
+	}
+	rel, err := filepath.Rel(repoRoot, path)
+	if err == nil && rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return filepath.ToSlash(rel)
+	}
+	return path
+}
+
+// runsRelativePath converts absolute path to path relative to question dir in runs repo.
+// e.g., /path/to/runs/2026-03-17/q001_slug/claude/opus/run-001 -> claude/opus/run-001
+func runsRelativePath(repoRoot, path string) string {
+	rel := publishPath(repoRoot, path)
+	// Strip "runs/YYYY-MM-DD/qXXX_slug/" prefix to get path relative to question dir
+	parts := strings.SplitN(rel, "/", 4) // runs / date / qslug / rest
+	if len(parts) >= 4 && parts[0] == "runs" {
+		return parts[3]
+	}
+	return rel
+}
+
+// runsRelativePaths applies runsRelativePath to a slice of paths.
+func runsRelativePaths(repoRoot string, values []string) []string {
 	out := make([]string, 0, len(values))
 	for _, value := range values {
-		out = append(out, repoRelativePath(repoRoot, value))
+		out = append(out, runsRelativePath(repoRoot, value))
 	}
 	return out
+}
+
+// githubPromptURL converts prompt path to absolute GitHub URL.
+func githubPromptURL(repoRoot, path string) string {
+	rel := publishPath(repoRoot, path)
+	if strings.HasPrefix(rel, "prompts/") {
+		return "https://github.com/BorisTyshkevich/ExploringDatabyLLMs/blob/main/" + rel
+	}
+	return rel
+}
+
+// optionalGithubPromptURL returns a GitHub URL for the prompt if it exists, otherwise "(not present)".
+func optionalGithubPromptURL(repoRoot, path string) string {
+	if _, err := os.Stat(path); err == nil {
+		return githubPromptURL(repoRoot, path)
+	}
+	return "(not present)"
 }
 
 func bulletList(values []string) string {
@@ -68,43 +109,7 @@ func runDirs(items []RunSummary) []string {
 func querySQLPaths(items []RunSummary) []string {
 	out := make([]string, 0, len(items))
 	for _, item := range items {
-		if len(item.Artifacts.QuerySQLs) > 0 {
-			for _, ref := range item.Artifacts.QuerySQLs {
-				if ref.LocalPath != "" {
-					out = append(out, ref.LocalPath)
-				}
-			}
-			continue
-		}
-		path := filepath.Join(item.RunDir, "query.sql")
-		if _, err := os.Stat(path); err == nil {
-			out = append(out, path)
-			continue
-		}
-		primaryPath := filepath.Join(item.RunDir, "queries", "main.sql")
-		if _, err := os.Stat(primaryPath); err == nil {
-			out = append(out, primaryPath)
-		}
-	}
-	return out
-}
-
-func promptReportPaths(items []RunSummary) []string {
-	out := make([]string, 0, len(items))
-	for _, item := range items {
-		if item.Artifacts.PromptReportMD.LocalPath != "" {
-			out = append(out, item.Artifacts.PromptReportMD.LocalPath)
-		}
-	}
-	return out
-}
-
-func promptVisualPaths(items []RunSummary) []string {
-	out := make([]string, 0, len(items))
-	for _, item := range items {
-		if item.Artifacts.PromptVisualMD.LocalPath != "" {
-			out = append(out, item.Artifacts.PromptVisualMD.LocalPath)
-		}
+		out = append(out, filepath.Join(item.RunDir, "query.sql"))
 	}
 	return out
 }
@@ -125,129 +130,10 @@ func reportMDPaths(items []RunSummary) []string {
 	return out
 }
 
-func reviewMDPaths(items []RunSummary) []string {
-	out := make([]string, 0, len(items))
-	for _, item := range items {
-		out = append(out, filepath.Join(item.RunDir, "review.md"))
-	}
-	return out
-}
-
 func visualHTMLPaths(items []RunSummary) []string {
 	out := make([]string, 0, len(items))
 	for _, item := range items {
 		out = append(out, filepath.Join(item.RunDir, "visual.html"))
-	}
-	return out
-}
-
-func renderPublishedRunArtifacts(items []RunSummary) string {
-	if len(items) == 0 {
-		return "- none"
-	}
-	var b strings.Builder
-	lastGroup := ""
-	for _, item := range items {
-		group := item.Runner + " / " + item.Model
-		if group != lastGroup {
-			if b.Len() > 0 {
-				b.WriteString("\n")
-			}
-			b.WriteString("### ")
-			b.WriteString(group)
-			b.WriteString("\n")
-			lastGroup = group
-		}
-		runLabel := item.RunID
-		if runLabel == "" {
-			runLabel = "run"
-		}
-		b.WriteString("- `")
-		b.WriteString(runLabel)
-		b.WriteString("`\n")
-		b.WriteString("  - Published links: ")
-		b.WriteString(renderPublishedLinks(item.Artifacts))
-		b.WriteString("\n")
-		b.WriteString("  - Local verification: `")
-		b.WriteString(strings.Join(existingLocalPaths(item.Artifacts), "`, `"))
-		b.WriteString("`\n")
-	}
-	return strings.TrimSpace(b.String())
-}
-
-func renderPublishedLinks(links ArtifactLinks) string {
-	var parts []string
-	if links.QuerySQL.URL != "" {
-		label := filepath.Base(links.QuerySQL.PublishedPath)
-		if label == "" {
-			label = "query.sql"
-		}
-		parts = append(parts, fmt.Sprintf("%s: %s", label, links.QuerySQL.URL))
-	} else {
-		for _, ref := range links.QuerySQLs {
-			if ref.URL == "" {
-				continue
-			}
-			label := filepath.Base(ref.PublishedPath)
-			if label == "" {
-				label = "query.sql"
-			}
-			parts = append(parts, fmt.Sprintf("%s: %s", label, ref.URL))
-		}
-	}
-	if links.ReportMD.URL != "" {
-		parts = append(parts, fmt.Sprintf("report.md: %s", links.ReportMD.URL))
-	}
-	if links.PromptReportMD.URL != "" {
-		parts = append(parts, fmt.Sprintf("prompt.report.md: %s", links.PromptReportMD.URL))
-	}
-	if links.PromptVisualMD.URL != "" {
-		parts = append(parts, fmt.Sprintf("prompt.visual.md: %s", links.PromptVisualMD.URL))
-	}
-	if links.ReviewMD.URL != "" {
-		parts = append(parts, fmt.Sprintf("review.md: %s", links.ReviewMD.URL))
-	}
-	if links.ResultJSON.URL != "" {
-		parts = append(parts, fmt.Sprintf("result.json: %s", links.ResultJSON.URL))
-	}
-	if links.VisualHTML.URL != "" {
-		parts = append(parts, fmt.Sprintf("visual.html: %s", links.VisualHTML.URL))
-	}
-	if links.VisualSource.URL != "" {
-		parts = append(parts, fmt.Sprintf("visual_src: %s", links.VisualSource.URL))
-	}
-	if links.VisualBuild.URL != "" {
-		parts = append(parts, fmt.Sprintf("visual_build: %s", links.VisualBuild.URL))
-	}
-	if len(parts) == 0 {
-		return "(no published artifacts found)"
-	}
-	return strings.Join(parts, " | ")
-}
-
-func existingLocalPaths(links ArtifactLinks) []string {
-	seen := map[string]struct{}{}
-	var out []string
-	for _, ref := range links.QuerySQLs {
-		if ref.LocalPath != "" {
-			if _, ok := seen[ref.LocalPath]; ok {
-				continue
-			}
-			seen[ref.LocalPath] = struct{}{}
-			out = append(out, ref.LocalPath)
-		}
-	}
-	for _, ref := range []ArtifactRef{links.QuerySQL, links.PromptReportMD, links.PromptVisualMD, links.ReportMD, links.ReviewMD, links.ResultJSON, links.VisualHTML, links.VisualSource, links.VisualBuild} {
-		if ref.LocalPath != "" {
-			if _, ok := seen[ref.LocalPath]; ok {
-				continue
-			}
-			seen[ref.LocalPath] = struct{}{}
-			out = append(out, ref.LocalPath)
-		}
-	}
-	if len(out) == 0 {
-		return []string{"(no local artifact files found)"}
 	}
 	return out
 }

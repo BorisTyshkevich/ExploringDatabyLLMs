@@ -12,7 +12,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode"
 
 	"qforge/internal/compare"
 	"qforge/internal/datasets"
@@ -192,8 +191,6 @@ func runRun(ctx context.Context, args []string) error {
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
 	reviewRunner := fs.String("review-runner", "", "Runner for the mandatory post-analysis review; default: same as the generation runner")
 	reviewModel := fs.String("review-model", "", "Model for the mandatory post-analysis review; default: same as the generation model")
-	analysisMode := fs.String("analysis-mode", "", "Override analysis mode for template_files questions; cannot switch to or from multi_query")
-	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	manual := fs.Bool("manual", false, "Stage prompt.report.md and skip provider execution, SQL execution, and review")
 	fs.BoolVar(manual, "m", false, "Stage prompt.report.md and skip provider execution, SQL execution, and review (shorthand)")
 	withVisual := fs.Bool("with-visual", false, "After SQL and report rendering succeed, make a separate presentation call for visual.html")
@@ -245,9 +242,7 @@ func runRun(ctx context.Context, args []string) error {
 			MCPToken:             *mcpToken,
 			MCPTokenFile:         *mcpTokenFile,
 			CLIBin:               *cliBin,
-			AnalysisModeOverride: strings.TrimSpace(*analysisMode),
 			Manual:               *manual,
-			PresentationTarget:   *presentationTarget,
 			WithVisual:           *withVisual,
 			SkipVisualValidation: *skipVisualValidation,
 			SkipBrowserLiveFetch: *skipBrowserLiveFetch,
@@ -416,7 +411,7 @@ func executeCompare(ctx context.Context, opts compareOptions) error {
 	if err != nil {
 		return err
 	}
-	prompt, err := compare.BuildAnalysisPrompt(codeRoot, runRoot, question, report, paths.JSON)
+	prompt, err := compare.BuildAnalysisPrompt(codeRoot, question, report, paths.JSON)
 	if err != nil {
 		return err
 	}
@@ -455,16 +450,6 @@ func executeCompare(ctx context.Context, opts compareOptions) error {
 		return fmt.Errorf("extract compare report for %s: %w", question.Meta.ID, err)
 	}
 	return os.WriteFile(paths.ReportMD, []byte(reportMD+"\n"), 0o644)
-}
-
-func reviewCLIBin(opts runAnalysisReviewOptions) string {
-	if strings.TrimSpace(opts.CLIBin) == "" {
-		return ""
-	}
-	if strings.TrimSpace(opts.Manifest.ReviewRunner) != "" && strings.TrimSpace(opts.Manifest.ReviewRunner) != strings.TrimSpace(opts.Manifest.Runner) {
-		return ""
-	}
-	return opts.CLIBin
 }
 
 func compareResolveMCPURL(cfg model.DatasetConfig, explicitURL, explicitToken string) (string, string, error) {
@@ -533,7 +518,6 @@ func runVisual(ctx context.Context, args []string) error {
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
-	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	skipVisualValidation := fs.Bool("skip-visual-validation", false, "Skip contract and browser validation for visual.html")
 	skipBrowserLiveFetch := fs.Bool("skip-browser-live-fetch", false, "Skip only the browser live-fetch step during visual validation")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
@@ -554,7 +538,6 @@ func runVisual(ctx context.Context, args []string) error {
 		MCPToken:             *mcpToken,
 		MCPTokenFile:         *mcpTokenFile,
 		CLIBin:               *cliBin,
-		PresentationTarget:   *presentationTarget,
 		SkipVisualValidation: *skipVisualValidation,
 		SkipBrowserLiveFetch: *skipBrowserLiveFetch,
 		Verbose:              *verbose,
@@ -587,7 +570,6 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 	mcpServer := fs.String("mcp-server-name", "", "Explicit MCP server name for provider config")
 	mcpToken := fs.String("mcp-token", "", "Explicit MCP bearer token")
 	mcpTokenFile := fs.String("mcp-token-file", "", "Read MCP token from a file")
-	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
 	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	if err := fs.Parse(args); err != nil {
@@ -605,7 +587,6 @@ func runProcessPresentation(ctx context.Context, args []string) error {
 		MCPServer:          *mcpServer,
 		MCPToken:           *mcpToken,
 		MCPTokenFile:       *mcpTokenFile,
-		PresentationTarget: *presentationTarget,
 		Verbose:            *verbose,
 	})
 }
@@ -641,7 +622,6 @@ func runProcessReview(ctx context.Context, args []string) error {
 	reviewRunner := fs.String("review-runner", "", "Runner for the review provider; default: manifest review runner or run runner")
 	reviewModel := fs.String("review-model", "", "Model for the review provider; default: manifest review model or run model")
 	cliBin := fs.String("cli-bin", "", "Override the provider CLI executable")
-	presentationTarget := fs.String("presentation-target", "", "Override presentation target: html or react")
 	verbose := fs.Bool("verbose", false, "Print phase-level progress logs")
 	fs.BoolVar(verbose, "v", false, "Print phase-level progress logs (shorthand)")
 	if err := fs.Parse(args); err != nil {
@@ -662,7 +642,6 @@ func runProcessReview(ctx context.Context, args []string) error {
 		ReviewRunner:       *reviewRunner,
 		ReviewModel:        *reviewModel,
 		CLIBin:             *cliBin,
-		PresentationTarget: *presentationTarget,
 		Verbose:            *verbose,
 	})
 }
@@ -710,14 +689,12 @@ type runOptions struct {
 	ReviewRunner         string
 	ReviewModel          string
 	Dataset              string
-	AnalysisModeOverride string
 	Manual               bool
 	MCPURL               string
 	MCPServer            string
 	MCPToken             string
 	MCPTokenFile         string
 	CLIBin               string
-	PresentationTarget   string
 	WithVisual           bool
 	SkipVisualValidation bool
 	SkipBrowserLiveFetch bool
@@ -731,7 +708,6 @@ type processVisualOptions struct {
 	MCPToken             string
 	MCPTokenFile         string
 	CLIBin               string
-	PresentationTarget   string
 	SkipVisualValidation bool
 	SkipBrowserLiveFetch bool
 	Verbose              bool
@@ -743,7 +719,6 @@ type processPresentationOptions struct {
 	MCPServer          string
 	MCPToken           string
 	MCPTokenFile       string
-	PresentationTarget string
 	Verbose            bool
 }
 
@@ -756,7 +731,6 @@ type processReviewOptions struct {
 	ReviewRunner       string
 	ReviewModel        string
 	CLIBin             string
-	PresentationTarget string
 	Verbose            bool
 }
 
@@ -768,9 +742,6 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	runRoot := runsRoot(codeRoot)
 	question, err := questions.Resolve(codeRoot, opts.QuestionRef)
 	if err != nil {
-		return err
-	}
-	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
 		return err
 	}
 	datasetName := question.Meta.Dataset
@@ -801,10 +772,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 			return err
 		}
 	}
-	analysisMode, err := resolveRunAnalysisMode(question.Meta.AnalysisMode, opts.AnalysisModeOverride)
-	if err != nil {
-		return err
-	}
+	analysisMode := model.AnalysisModeStructured
 	commandTimeoutSec := question.Meta.CommandTimeoutSec
 	if commandTimeoutSec <= 0 {
 		commandTimeoutSec = defaultCommandTimeoutSec
@@ -827,7 +795,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		Runner:             opts.Runner,
 		Model:              opts.Model,
 		AnalysisMode:       string(analysisMode),
-		PresentationTarget: normalizePresentationTarget(question.Meta.PresentationTarget),
+		PresentationTarget: "html",
 		ReviewRunner:       firstNonEmpty(opts.ReviewRunner, opts.Runner),
 		ReviewModel:        firstNonEmpty(opts.ReviewModel, opts.Model),
 		MCPServerName:      datasets.ResolveMCPServerName(cfg, opts.MCPServer),
@@ -848,7 +816,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		_ = runs.WriteManifest(artifacts.ManifestJSON, manifest)
 	}()
 
-	sqlPrompt, err := prompts.BuildSQLPrompt(question, cfg, analysisMode)
+	sqlPrompt, err := prompts.BuildSQLPrompt(question, cfg)
 	if err != nil {
 		return err
 	}
@@ -899,7 +867,6 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	_ = os.WriteFile(artifacts.StdoutLog, []byte(sqlResponse.Stdout), 0o644)
 	_ = os.WriteFile(artifacts.StderrLog, []byte(sqlResponse.Stderr), 0o644)
 	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
-		Mode:      analysisMode,
 		Question:  question,
 		Artifacts: artifacts,
 	})
@@ -976,7 +943,7 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	presentationResponse, presentationErr := provider.GeneratePresentation(presentationCtx, req)
 	manifest.PresentationProviderDurationMs = time.Since(presentationProviderStartedAt).Milliseconds()
 	_ = os.WriteFile(artifacts.AnswerPresentationRaw, []byte(presentationResponse.RawOutput), 0o644)
-	artifactResult, err := materializePresentationArtifact(outDir, question, artifacts, presentationResponse.RawOutput, presentationStartedAt, opts.Model, opts.Verbose)
+	artifactResult, err := materializePresentationArtifact(outDir, presentationResponse.RawOutput, presentationStartedAt)
 	if err != nil {
 		for key, value := range artifactResult.Metadata {
 			manifest.Metadata = addMetadata(manifest.Metadata, key, value)
@@ -992,7 +959,6 @@ func executeRun(ctx context.Context, opts runOptions) error {
 		}
 		return err
 	}
-	manifest.PresentationBuildDurationMs = artifactResult.BuildDurationMS
 	if presentationErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", presentationErr.Error())
 	}
@@ -1001,10 +967,8 @@ func executeRun(ctx context.Context, opts runOptions) error {
 	for key, value := range artifactResult.Metadata {
 		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
 	}
-	if normalizePresentationTarget(question.Meta.PresentationTarget) != "react" {
-		if err := os.WriteFile(artifacts.VisualHTML, []byte(artifactResult.HTML), 0o644); err != nil {
-			return err
-		}
+	if err := os.WriteFile(artifacts.VisualHTML, []byte(artifactResult.HTML), 0o644); err != nil {
+		return err
 	}
 
 	validationResult := validatePresentationHTML(ctx, presentationValidationOptions{
@@ -1123,21 +1087,16 @@ func runAnalysisReview(ctx context.Context, opts runAnalysisReviewOptions) error
 }
 
 func buildReviewPrompt(opts runAnalysisReviewOptions) (string, error) {
+	queryDir := filepath.Join(opts.OutDir, "queries")
+	resultDir := filepath.Join(opts.OutDir, "results")
 	inputs := prompts.ReviewPromptInputs{
 		Question:        opts.Question,
-		AnalysisMode:    opts.AnalysisMode,
 		ReportMarkdown:  mustReadOptional(opts.Artifacts.ReportMD),
 		AnswerRawJSON:   mustReadOptional(opts.Artifacts.AnswerRawJSON),
 		AnalysisJSON:    mustReadOptional(opts.Artifacts.AnalysisJSON),
-		QuerySQL:        mustReadOptional(opts.Artifacts.QuerySQL),
-		ResultJSON:      mustReadOptional(opts.Artifacts.ResultJSON),
 		VisualInputJSON: mustReadOptional(opts.Artifacts.VisualInputJSON),
-	}
-	if opts.AnalysisMode == model.AnalysisModeMultiQuery {
-		queryDir := filepath.Join(opts.OutDir, "queries")
-		resultDir := filepath.Join(opts.OutDir, "results")
-		inputs.QueryFiles = readDirArtifactPaths(queryDir, ".sql")
-		inputs.ResultFiles = append(inputs.ResultFiles, readDirArtifactPaths(resultDir, ".json")...)
+		QueryFiles:      readDirArtifactPaths(queryDir, ".sql"),
+		ResultFiles:     readDirArtifactPaths(resultDir, ".json"),
 	}
 	return prompts.BuildReviewPrompt(inputs)
 }
@@ -1148,28 +1107,6 @@ func mustReadOptional(path string) string {
 		return ""
 	}
 	return string(data)
-}
-
-func readDirArtifacts(dir, suffix string) map[string]string {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return nil
-	}
-	out := map[string]string{}
-	for _, entry := range entries {
-		if entry.IsDir() || !strings.HasSuffix(entry.Name(), suffix) {
-			continue
-		}
-		data, err := os.ReadFile(filepath.Join(dir, entry.Name()))
-		if err != nil {
-			continue
-		}
-		out[strings.TrimSuffix(entry.Name(), suffix)] = string(data)
-	}
-	if len(out) == 0 {
-		return nil
-	}
-	return out
 }
 
 func readDirArtifactPaths(dir, suffix string) []string {
@@ -1229,70 +1166,7 @@ func successfulRunStatus(reviewVerdict string) model.RunStatus {
 }
 
 func materializeSavedAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
-	if opts.AnalysisMode == model.AnalysisModeMultiQuery {
-		return materializeMultiQueryAnalysis(ctx, opts)
-	}
-	return materializeSingleQueryAnalysis(ctx, opts)
-}
-
-func materializeSingleQueryAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
-	sqlBlock := opts.AnalysisArtifact.SQL
-	reportTemplate := opts.AnalysisArtifact.ReportMarkdown
-	if err := render.ValidateReportTemplate(reportTemplate); err != nil {
-		opts.Manifest.Status = model.RunStatusPartial
-		opts.Manifest.Phases.SQLGeneration = model.PhaseStatusFailed
-		return materializedAnalysis{}, err
-	}
-	if err := os.WriteFile(opts.Manifest.Artifacts.QuerySQL, []byte(sqlBlock+"\n"), 0o644); err != nil {
-		return materializedAnalysis{}, err
-	}
-	analysisJSON, err := json.MarshalIndent(opts.AnalysisArtifact, "", "  ")
-	if err != nil {
-		return materializedAnalysis{}, err
-	}
-	if err := os.WriteFile(opts.Manifest.Artifacts.AnalysisJSON, analysisJSON, 0o644); err != nil {
-		return materializedAnalysis{}, err
-	}
-	if opts.Question.ReportEnabled {
-		if err := os.WriteFile(opts.Manifest.Artifacts.ReportTemplateMD, []byte(reportTemplate), 0o644); err != nil {
-			return materializedAnalysis{}, err
-		}
-	}
-	opts.Manifest.QuerySHA256 = runs.QuerySHA256(sqlBlock)
-	opts.Manifest.Phases.SQLGeneration = model.PhaseStatusOK
-	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_generation status=ok query_sha=%s", opts.Manifest.QuerySHA256[:12])
-	if strings.TrimSpace(opts.Manifest.LogComment) == "" {
-		opts.Manifest.LogComment = defaultLogComment(opts.Question.Meta.ID, filepath.Base(opts.RunDir), opts.Manifest.Runner, opts.Manifest.Model)
-	}
-	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=started log_comment=%s", opts.Manifest.LogComment)
-	rawDB, result, err := execute.ExecuteSQL(ctx, opts.MCPURL, opts.Token, sqlBlock, opts.Manifest.LogComment)
-	if err != nil {
-		opts.Manifest.Status = model.RunStatusPartial
-		opts.Manifest.Phases.SQLExecution = model.PhaseStatusFailed
-		return materializedAnalysis{}, err
-	}
-	opts.Manifest.Phases.SQLExecution = model.PhaseStatusOK
-	opts.Manifest.ResultRowCount = result.RowCount
-	logf(opts.Verbose, opts.Manifest.Model, "phase=sql_execution status=ok row_count=%d", result.RowCount)
-	if err := execute.WriteJSON(opts.Manifest.Artifacts.ResultJSON, result); err != nil {
-		return materializedAnalysis{}, err
-	}
-	visualSummary := buildVisualInputSummary(opts.Question, result)
-	if err := execute.WriteJSON(opts.Manifest.Artifacts.VisualInputJSON, visualSummary); err != nil {
-		return materializedAnalysis{}, err
-	}
-	if opts.Question.ReportEnabled {
-		renderedReport := render.RenderReport(reportTemplate, opts.Question, result)
-		if err := os.WriteFile(opts.Manifest.Artifacts.ReportMD, []byte(renderedReport), 0o644); err != nil {
-			return materializedAnalysis{}, err
-		}
-	}
-	opts.Manifest.Metadata = addMetadata(opts.Manifest.Metadata, "execution_response_bytes", fmt.Sprintf("%d", len(rawDB)))
-	return materializedAnalysis{
-		Result:      result,
-		VisualInput: visualSummary,
-		SQL:         sqlBlock,
-	}, nil
+	return materializeMultiQueryAnalysis(ctx, opts)
 }
 
 func materializeMultiQueryAnalysis(ctx context.Context, opts materializeSavedAnalysisOptions) (materializedAnalysis, error) {
@@ -1459,31 +1333,6 @@ func defaultLogComment(questionID, runName, runner, modelName string) string {
 	return fmt.Sprintf("qforge|question=%s|run=%s|runner=%s|model=%s|phase=full", questionID, runName, runner, modelName)
 }
 
-func enforceSQLPolicy(sql string, cfg model.DatasetConfig) error {
-	return nil
-}
-
-func tokenizeSQL(input string) []string {
-	var tokens []string
-	var current strings.Builder
-	flush := func() {
-		if current.Len() == 0 {
-			return
-		}
-		tokens = append(tokens, current.String())
-		current.Reset()
-	}
-	for _, r := range input {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || r == '_' || r == '.' {
-			current.WriteRune(r)
-			continue
-		}
-		flush()
-	}
-	flush()
-	return tokens
-}
-
 func addMetadata(metadata map[string]string, key, value string) map[string]string {
 	if metadata == nil {
 		metadata = map[string]string{}
@@ -1497,7 +1346,7 @@ func clearPresentationValidationMetadata(metadata map[string]string) map[string]
 		return metadata
 	}
 	for key := range metadata {
-		if strings.HasPrefix(key, "visual_validation") || strings.HasPrefix(key, "browser_validation") || strings.HasPrefix(key, "react_") || key == "presentation_target" {
+		if strings.HasPrefix(key, "visual_validation") || strings.HasPrefix(key, "browser_validation") {
 			delete(metadata, key)
 		}
 	}
@@ -1519,70 +1368,9 @@ func logPresentationFailure(enabled bool, modelName string, err error, resp mode
 		return
 	}
 	logf(true, modelName, "phase=presentation_generation status=failed reason=%q", err.Error())
-	if summary := summarizeProviderFailure(resp.Stderr, resp.Stdout, resp.RawOutput); summary != "" {
+	if summary := providers.SummarizeProviderFailure(resp.Stderr, resp.Stdout, resp.RawOutput); summary != "" {
 		logf(true, modelName, "presentation_provider_detail=%q", summary)
 	}
-}
-
-func summarizeProviderFailure(parts ...string) string {
-	for _, part := range parts {
-		s := strings.TrimSpace(part)
-		if s == "" {
-			continue
-		}
-		lower := strings.ToLower(s)
-		switch {
-		case strings.Contains(lower, "terminalquotaerror"):
-			return firstMatchingLine(s, "TerminalQuotaError")
-		case strings.Contains(lower, "quota will reset"):
-			return firstMatchingLine(s, "quota will reset")
-		case strings.Contains(lower, "quota"):
-			return firstMatchingLine(s, "quota")
-		case strings.Contains(lower, "rate limit"):
-			return firstMatchingLine(s, "rate limit")
-		case strings.Contains(lower, "authentication"):
-			return firstMatchingLine(s, "authentication")
-		case strings.Contains(lower, "unauthorized"):
-			return firstMatchingLine(s, "unauthorized")
-		case strings.Contains(lower, "forbidden"):
-			return firstMatchingLine(s, "forbidden")
-		case strings.Contains(lower, "error when talking to"):
-			return firstMatchingLine(s, "Error when talking to")
-		}
-
-		for _, line := range strings.Split(s, "\n") {
-			line = strings.TrimSpace(line)
-			if line == "" {
-				continue
-			}
-			l := strings.ToLower(line)
-			if strings.Contains(l, "yolo mode is enabled") || strings.Contains(l, "loaded cached credentials") {
-				continue
-			}
-			return truncate(line, 240)
-		}
-	}
-	return ""
-}
-
-func firstMatchingLine(s, needle string) string {
-	for _, line := range strings.Split(s, "\n") {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-		if strings.Contains(strings.ToLower(line), strings.ToLower(needle)) {
-			return truncate(line, 240)
-		}
-	}
-	return truncate(strings.TrimSpace(s), 240)
-}
-
-func truncate(s string, limit int) string {
-	if len(s) <= limit {
-		return s
-	}
-	return s[:limit] + "...(truncated)"
 }
 
 func processVisual(ctx context.Context, opts processVisualOptions) error {
@@ -1603,22 +1391,6 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	question, err := questions.Resolve(codeRoot, manifest.QuestionID)
 	if err != nil {
 		return err
-	}
-	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
-		return err
-	}
-	analysisMode, ok := parseAnalysisMode(question.Meta.AnalysisMode)
-	if !ok {
-		analysisMode = model.AnalysisModeTemplateFiles
-	}
-	if analysisMode != model.AnalysisModeMultiQuery {
-		resultBytes, err := os.ReadFile(filepath.Join(runDir, "result.json"))
-		if err != nil {
-			return fmt.Errorf("visual requires result.json: %w", err)
-		}
-		if err := json.Unmarshal(resultBytes, &result); err != nil {
-			return err
-		}
 	}
 	if !question.VisualEnabled {
 		return fmt.Errorf("question %s does not declare visual artifacts", manifest.QuestionID)
@@ -1644,35 +1416,20 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, true)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "4"
-	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
+	manifest.PresentationTarget = "html"
 	logf(opts.Verbose, manifest.Model, "visual run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
-	querySQLPath := filepath.Join(runDir, "query.sql")
-	if analysisMode == model.AnalysisModeMultiQuery {
-		querySQLPath = primaryMultiQuerySQLPath(runDir, question)
-	}
+	querySQLPath := primaryMultiQuerySQLPath(runDir, question)
 	querySQL, err := os.ReadFile(querySQLPath)
 	if err != nil {
 		return fmt.Errorf("visual requires %s: %w", filepath.Base(querySQLPath), err)
 	}
-	if analysisMode != model.AnalysisModeMultiQuery && strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
-		if _, err := os.Stat(filepath.Join(runDir, "result.json")); err != nil {
-			return fmt.Errorf("visual requires result.json for static mode: %w", err)
-		}
-	}
 	var visualInput model.VisualInputSummary
-	if analysisMode == model.AnalysisModeMultiQuery {
-		visualInputBytes, err := os.ReadFile(filepath.Join(runDir, "visual_input.json"))
-		if err != nil {
-			return fmt.Errorf("visual requires visual_input.json for multi_query mode: %w", err)
-		}
-		if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
-			return fmt.Errorf("parse visual_input.json: %w", err)
-		}
-	} else {
-		visualInput, err = ensureVisualInputSummary(filepath.Join(runDir, "visual_input.json"), question, result)
-		if err != nil {
-			return err
-		}
+	visualInputBytes, err := os.ReadFile(filepath.Join(runDir, "visual_input.json"))
+	if err != nil {
+		return fmt.Errorf("visual requires visual_input.json: %w", err)
+	}
+	if err := json.Unmarshal(visualInputBytes, &visualInput); err != nil {
+		return fmt.Errorf("parse visual_input.json: %w", err)
 	}
 	prompt, err := prompts.BuildVisualPrompt(question, cfg, result, string(querySQL), dynamicQueryEndpointTemplate(mcpURL, token, cfg), visualInput)
 	if err != nil {
@@ -1712,7 +1469,7 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 	if providerErr != nil {
 		manifest.Metadata = addMetadata(manifest.Metadata, "presentation_generation_warning", providerErr.Error())
 	}
-	artifactResult, err := materializePresentationArtifact(runDir, question, manifest.Artifacts, resp.RawOutput, presentationStartedAt, manifest.Model, opts.Verbose)
+	artifactResult, err := materializePresentationArtifact(runDir, resp.RawOutput, presentationStartedAt)
 	if err != nil {
 		for key, value := range artifactResult.Metadata {
 			manifest.Metadata = addMetadata(manifest.Metadata, key, value)
@@ -1729,13 +1486,12 @@ func processVisual(ctx context.Context, opts processVisualOptions) error {
 		_ = runs.WriteManifest(manifest.Artifacts.ManifestJSON, manifest)
 		return err
 	}
-	manifest.PresentationBuildDurationMs = artifactResult.BuildDurationMS
 	manifest.Phases.PresentationGeneration = model.PhaseStatusOK
 	logf(opts.Verbose, manifest.Model, "phase=presentation_generation status=ok")
 	for key, value := range artifactResult.Metadata {
 		manifest.Metadata = addMetadata(manifest.Metadata, key, value)
 	}
-	if normalizePresentationTarget(question.Meta.PresentationTarget) != "react" {
+	if "html" != "react" {
 		if err := os.WriteFile(manifest.Artifacts.VisualHTML, []byte(artifactResult.HTML), 0o644); err != nil {
 			return err
 		}
@@ -1799,9 +1555,6 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	if err != nil {
 		return err
 	}
-	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
-		return err
-	}
 	mcpURL, token, err := datasets.ResolveMCPURL(cfg, opts.MCPURL)
 	if err != nil {
 		return err
@@ -1819,12 +1572,9 @@ func processPresentation(ctx context.Context, opts processPresentationOptions) e
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "4"
-	analysisMode, ok := parseAnalysisMode(question.Meta.AnalysisMode)
-	if !ok {
-		analysisMode = model.AnalysisModeTemplateFiles
-	}
+	analysisMode := model.AnalysisModeStructured
 	manifest.AnalysisMode = string(analysisMode)
-	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
+	manifest.PresentationTarget = "html"
 	logf(opts.Verbose, manifest.Model, "process-presentation run_dir=%s question=%s runner=%s model=%s", runDir, manifest.QuestionID, manifest.Runner, manifest.Model)
 	logf(opts.Verbose, manifest.Model, "phase=sql_generation status=started source=%s", analysisMode)
 	materialized, err := materializeExistingAnalysis(ctx, materializeExistingAnalysisOptions{
@@ -1882,9 +1632,6 @@ func processReview(ctx context.Context, opts processReviewOptions) error {
 	if err != nil {
 		return err
 	}
-	if err := applyPresentationTargetOverride(&question, opts.PresentationTarget); err != nil {
-		return err
-	}
 	mcpURL, token, err := datasets.ResolveMCPURL(cfg, opts.MCPURL)
 	if err != nil {
 		return err
@@ -1902,16 +1649,13 @@ func processReview(ctx context.Context, opts processReviewOptions) error {
 	manifest.Artifacts = runs.DefaultArtifacts(runDir, question.PresentationEnabled)
 	manifest.MCPServerName = datasets.ResolveMCPServerName(cfg, opts.MCPServer)
 	manifest.SchemaVersion = "4"
-	analysisMode, ok := parseAnalysisMode(question.Meta.AnalysisMode)
-	if !ok {
-		analysisMode = model.AnalysisModeTemplateFiles
-	}
-	question, err = overlayQuestionFromSavedPromptReport(question, manifest.Artifacts.PromptReportRaw, analysisMode)
+	analysisMode := model.AnalysisModeStructured
+	question, err = overlayQuestionFromSavedPromptReport(question, manifest.Artifacts.PromptReportRaw)
 	if err != nil {
 		return err
 	}
 	manifest.AnalysisMode = string(analysisMode)
-	manifest.PresentationTarget = normalizePresentationTarget(question.Meta.PresentationTarget)
+	manifest.PresentationTarget = "html"
 	reviewRunner, reviewModel, err := resolveReviewRunnerModel(manifest, opts.ReviewRunner, opts.ReviewModel)
 	if err != nil {
 		return err
@@ -1966,7 +1710,7 @@ func processReview(ctx context.Context, opts processReviewOptions) error {
 	return nil
 }
 
-func overlayQuestionFromSavedPromptReport(question model.Question, promptPath string, analysisMode model.AnalysisMode) (model.Question, error) {
+func overlayQuestionFromSavedPromptReport(question model.Question, promptPath string) (model.Question, error) {
 	data, err := os.ReadFile(promptPath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -1979,13 +1723,11 @@ func overlayQuestionFromSavedPromptReport(question model.Question, promptPath st
 		return question, nil
 	}
 	question.Prompt = guidance
-	if analysisMode == model.AnalysisModeMultiQuery {
-		subquestions, err := questions.ExtractPromptSections(guidance)
-		if err != nil {
-			return model.Question{}, fmt.Errorf("parse saved question guidance from prompt.report.md: %w", err)
-		}
-		question.Subquestions = subquestions
+	subquestions, err := questions.ExtractPromptSections(guidance)
+	if err != nil {
+		return model.Question{}, fmt.Errorf("parse saved question guidance from prompt.report.md: %w", err)
 	}
+	question.Subquestions = subquestions
 	return question, nil
 }
 
@@ -2014,7 +1756,6 @@ type materializeExistingAnalysisOptions struct {
 
 func materializeExistingAnalysis(ctx context.Context, opts materializeExistingAnalysisOptions) (materializedAnalysis, error) {
 	analysisArtifact, err := loadSavedAnalysisArtifact(savedAnalysisSource{
-		Mode:      opts.AnalysisMode,
 		Question:  opts.Question,
 		Artifacts: opts.Manifest.Artifacts,
 	})
@@ -2066,7 +1807,7 @@ func readOrInferRunManifest(codeRoot, runDir string) (model.RunManifest, model.Q
 		Runner:             runner,
 		Model:              modelName,
 		AnalysisMode:       question.Meta.AnalysisMode,
-		PresentationTarget: normalizePresentationTarget(question.Meta.PresentationTarget),
+		PresentationTarget: "html",
 		StartedAt:          time.Now().UTC(),
 		Artifacts:          runs.DefaultArtifacts(runDir, question.PresentationEnabled),
 		Phases: model.RunPhases{
@@ -2104,23 +1845,6 @@ func resolveReviewRunnerModel(manifest model.RunManifest, reviewRunnerOverride, 
 		}
 	}
 	return reviewRunner, reviewModel, nil
-}
-
-func applyPresentationTargetOverride(question *model.Question, override string) error {
-	override = strings.TrimSpace(override)
-	if override == "" {
-		if strings.TrimSpace(question.Meta.PresentationTarget) == "" {
-			question.Meta.PresentationTarget = "html"
-		}
-		return nil
-	}
-	switch override {
-	case "html", "react":
-		question.Meta.PresentationTarget = override
-		return nil
-	default:
-		return fmt.Errorf("unsupported presentation target override %q", override)
-	}
 }
 
 func modelLabelForRunners(runners, explicitModels []string) (string, error) {
@@ -2405,58 +2129,12 @@ func defaultModelForRunner(runner string) (string, error) {
 }
 
 type savedAnalysisSource struct {
-	Mode      model.AnalysisMode
 	Question  model.Question
 	Artifacts model.ArtifactPaths
 }
 
-func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, error) {
-	htmlTemplate, htmlErr := extract.Block(rawOutput, "html")
-	if htmlErr == nil {
-		return htmlTemplate, nil
-	}
-
-	htmlPath := filepath.Join(outDir, "visual.html")
-	htmlInfo, htmlStatErr := os.Stat(htmlPath)
-	htmlBytes, readHTMLErr := os.ReadFile(htmlPath)
-	if htmlStatErr == nil && readHTMLErr == nil && !htmlInfo.ModTime().Before(notBefore) {
-		return strings.TrimSpace(string(htmlBytes)), nil
-	}
-
-	return "", htmlErr
-}
-
 func loadSavedAnalysisArtifact(source savedAnalysisSource) (model.AnalysisArtifact, error) {
-	switch source.Mode {
-	case model.AnalysisModeMultiQuery:
-		return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.AnswerRawJSON)
-	case model.AnalysisModeTemplateFiles:
-		return loadTemplateAnalysisArtifact(source.Artifacts)
-	default:
-		return model.AnalysisArtifact{}, fmt.Errorf("unsupported analysis mode %q", source.Mode)
-	}
-}
-
-func loadTemplateAnalysisArtifact(artifacts model.ArtifactPaths) (model.AnalysisArtifact, error) {
-	sqlBytes, err := os.ReadFile(artifacts.QuerySQL)
-	if err != nil {
-		return model.AnalysisArtifact{}, fmt.Errorf("read query.sql: %w", err)
-	}
-	reportBytes, err := os.ReadFile(artifacts.ReportTemplateMD)
-	if err != nil {
-		return model.AnalysisArtifact{}, fmt.Errorf("read report.template.md: %w", err)
-	}
-	artifact := model.AnalysisArtifact{
-		SQL:            normalizeEscapedMultiline(strings.TrimSpace(string(sqlBytes))),
-		ReportMarkdown: normalizeEscapedMultiline(strings.TrimSpace(string(reportBytes))),
-	}
-	if artifact.SQL == "" {
-		return model.AnalysisArtifact{}, fmt.Errorf("analysis templates missing non-empty query.sql")
-	}
-	if artifact.ReportMarkdown == "" {
-		return model.AnalysisArtifact{}, fmt.Errorf("analysis templates missing non-empty report.template.md")
-	}
-	return artifact, nil
+	return loadMultiQueryAnalysisArtifact(source.Question, source.Artifacts.AnswerRawJSON)
 }
 
 func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model.AnalysisArtifact, error) {
@@ -2475,40 +2153,6 @@ func loadMultiQueryAnalysisArtifact(question model.Question, path string) (model
 	artifact.Subquestions = ordered
 	artifact.SQL = primaryMultiQuerySQL(question, toQueryResultSummaries(ordered))
 	return artifact, nil
-}
-
-func resolveRunAnalysisMode(questionModeRaw, overrideRaw string) (model.AnalysisMode, error) {
-	questionMode, ok := parseAnalysisMode(questionModeRaw)
-	if !ok {
-		if strings.TrimSpace(questionModeRaw) == "" {
-			questionMode = model.AnalysisModeTemplateFiles
-		} else {
-			return "", fmt.Errorf("unsupported analysis mode %q", strings.TrimSpace(questionModeRaw))
-		}
-	}
-	override := strings.TrimSpace(overrideRaw)
-	if override == "" {
-		return questionMode, nil
-	}
-	overrideMode, ok := parseAnalysisMode(override)
-	if !ok {
-		return "", fmt.Errorf("unsupported analysis mode override %q", override)
-	}
-	if questionMode == model.AnalysisModeMultiQuery || overrideMode == model.AnalysisModeMultiQuery {
-		return "", fmt.Errorf("analysis mode override cannot switch to or from structured json modes")
-	}
-	return overrideMode, nil
-}
-
-func parseAnalysisMode(raw string) (model.AnalysisMode, bool) {
-	switch model.AnalysisMode(strings.TrimSpace(raw)) {
-	case model.AnalysisModeMultiQuery:
-		return model.AnalysisModeMultiQuery, true
-	case model.AnalysisModeTemplateFiles:
-		return model.AnalysisModeTemplateFiles, true
-	default:
-		return "", false
-	}
 }
 
 func normalizeEscapedMultiline(value string) string {

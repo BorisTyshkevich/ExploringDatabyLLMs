@@ -45,11 +45,11 @@ type cliProvider struct {
 }
 
 func (p cliProvider) GenerateSQL(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexAnalysisComplete(req.OutDir, model.AnalysisMode(req.AnalysisMode)))
+	return p.run(ctx, req, req.Prompt, codexAnalysisComplete(req.OutDir))
 }
 
 func (p cliProvider) GeneratePresentation(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
-	return p.run(ctx, req, req.Prompt, codexVisualComplete(req.OutDir, req.Question.Meta.PresentationTarget))
+	return p.run(ctx, req, req.Prompt, codexVisualComplete(req.OutDir))
 }
 
 func (p cliProvider) GenerateReview(ctx context.Context, req model.ProviderRequest) (model.ProviderResponse, error) {
@@ -213,19 +213,7 @@ func readFileText(path string) string {
 	return string(data)
 }
 
-func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) bool {
-	if mode == model.AnalysisModeTemplateFiles {
-		sqlPath := filepath.Join(outDir, "query.sql")
-		reportPath := filepath.Join(outDir, "report.template.md")
-		return func(string) bool {
-			sqlBytes, sqlErr := os.ReadFile(sqlPath)
-			reportBytes, reportErr := os.ReadFile(reportPath)
-			if sqlErr != nil || reportErr != nil {
-				return false
-			}
-			return strings.TrimSpace(string(sqlBytes)) != "" && strings.TrimSpace(string(reportBytes)) != ""
-		}
-	}
+func codexAnalysisComplete(outDir string) func(string) bool {
 	answerPath := filepath.Join(outDir, "answer.raw.json")
 	return func(string) bool {
 		data, err := os.ReadFile(answerPath)
@@ -236,7 +224,7 @@ func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) 
 		if err := json.Unmarshal(data, &artifact); err != nil {
 			return false
 		}
-		if mode != model.AnalysisModeMultiQuery || len(artifact.Subquestions) == 0 {
+		if len(artifact.Subquestions) == 0 {
 			return false
 		}
 		for _, item := range artifact.Subquestions {
@@ -248,24 +236,7 @@ func codexAnalysisComplete(outDir string, mode model.AnalysisMode) func(string) 
 	}
 }
 
-func codexVisualComplete(outDir, presentationTarget string) func(string) bool {
-	if strings.EqualFold(strings.TrimSpace(presentationTarget), "react") {
-		return func(string) bool {
-			required := []string{
-				filepath.Join(outDir, "visual_src", "package.json"),
-				filepath.Join(outDir, "visual_src", "index.html"),
-				filepath.Join(outDir, "visual_src", "src", "main.jsx"),
-				filepath.Join(outDir, "visual_src", "src", "App.jsx"),
-			}
-			for _, path := range required {
-				data, err := os.ReadFile(path)
-				if err != nil || strings.TrimSpace(string(data)) == "" {
-					return false
-				}
-			}
-			return true
-		}
-	}
+func codexVisualComplete(outDir string) func(string) bool {
 	return func(raw string) bool {
 		_, htmlErr := extract.Block(raw, "html")
 		return htmlErr == nil
@@ -424,12 +395,12 @@ func logProviderDetails(enabled bool, model, providerName, stdoutText, stderrTex
 	if !enabled {
 		return
 	}
-	if summary := summarizeProviderFailure(stderrText, stdoutText); summary != "" {
+	if summary := SummarizeProviderFailure(stderrText, stdoutText); summary != "" {
 		verbosepkg.Printf(os.Stdout, time.Now, model, "provider=%s detail=%q", providerName, summary)
 	}
 }
 
-func summarizeProviderFailure(parts ...string) string {
+func SummarizeProviderFailure(parts ...string) string {
 	for _, part := range parts {
 		s := strings.TrimSpace(part)
 		if s == "" {

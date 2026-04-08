@@ -2,16 +2,13 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 
-	"qforge/internal/model"
+	"qforge/internal/extract"
 	"qforge/internal/validate"
 	browservalidate "qforge/internal/validate/browser"
 )
@@ -35,13 +32,8 @@ type presentationValidationResult struct {
 }
 
 type presentationArtifactResult struct {
-	HTML            string
-	BuildDurationMS int64
-	Metadata        map[string]string
-}
-
-type reactPackageJSON struct {
-	Scripts map[string]string `json:"scripts"`
+	HTML     string
+	Metadata map[string]string
 }
 
 type presentationArtifactError struct {
@@ -137,205 +129,30 @@ func validatePresentationHTML(ctx context.Context, opts presentationValidationOp
 	return result
 }
 
-func materializePresentationArtifact(outDir string, question model.Question, artifacts model.ArtifactPaths, rawOutput string, notBefore time.Time, modelName string, verbose bool) (presentationArtifactResult, error) {
+func materializePresentationArtifact(outDir string, rawOutput string, notBefore time.Time) (presentationArtifactResult, error) {
 	result := presentationArtifactResult{
-		Metadata: map[string]string{
-			"presentation_target": normalizePresentationTarget(question.Meta.PresentationTarget),
-		},
+		Metadata: map[string]string{},
 	}
-	if normalizePresentationTarget(question.Meta.PresentationTarget) != "react" {
-		html, err := loadVisualArtifact(rawOutput, outDir, notBefore)
-		if err != nil {
-			return result, presentationArtifactError{Stage: "generation", Err: err}
-		}
-		result.HTML = html
-		return result, nil
-	}
-
-	if err := loadReactSourceArtifact(artifacts.VisualSourceDir, notBefore); err != nil {
+	html, err := loadVisualArtifact(rawOutput, outDir, notBefore)
+	if err != nil {
 		return result, presentationArtifactError{Stage: "generation", Err: err}
 	}
-	if err := validateReactSourceArtifacts(artifacts.VisualSourceDir); err != nil {
-		result.Metadata["react_source_validation"] = "failed"
-		result.Metadata["react_source_validation_errors"] = err.Error()
-		return result, presentationArtifactError{Stage: "render", Err: err}
-	}
-	result.Metadata["react_source_validation"] = "ok"
-
-	buildStartedAt := time.Now()
-	if err := buildReactPresentation(artifacts.VisualSourceDir, artifacts.VisualBuildDir, modelName, verbose); err != nil {
-		result.Metadata["react_build"] = "failed"
-		result.Metadata["react_build_errors"] = err.Error()
-		return result, presentationArtifactError{Stage: "render", Err: err}
-	}
-	result.BuildDurationMS = time.Since(buildStartedAt).Milliseconds()
-	result.Metadata["react_build"] = "ok"
-	result.Metadata["react_build_duration_ms"] = strconv.FormatInt(result.BuildDurationMS, 10)
-
-	html, err := finalizeBuiltReactArtifact(artifacts)
-	if err != nil {
-		result.Metadata["react_build"] = "failed"
-		result.Metadata["react_build_errors"] = err.Error()
-		return result, presentationArtifactError{Stage: "render", Err: err}
-	}
 	result.HTML = html
-	if size, err := dirSizeBytes(artifacts.VisualSourceDir); err == nil {
-		result.Metadata["react_source_bytes"] = strconv.FormatInt(size, 10)
-	}
-	if size, err := dirSizeBytes(artifacts.VisualBuildDir); err == nil {
-		result.Metadata["react_build_bytes"] = strconv.FormatInt(size, 10)
-	}
 	return result, nil
 }
 
-func normalizePresentationTarget(value string) string {
-	if strings.EqualFold(strings.TrimSpace(value), "react") {
-		return "react"
+func loadVisualArtifact(rawOutput, outDir string, notBefore time.Time) (string, error) {
+	htmlTemplate, htmlErr := extract.Block(rawOutput, "html")
+	if htmlErr == nil {
+		return htmlTemplate, nil
 	}
-	return "html"
-}
 
-func loadReactSourceArtifact(sourceDir string, notBefore time.Time) error {
-	required := []string{
-		filepath.Join(sourceDir, "package.json"),
-		filepath.Join(sourceDir, "index.html"),
-		filepath.Join(sourceDir, "src", "main.jsx"),
-		filepath.Join(sourceDir, "src", "App.jsx"),
+	htmlPath := filepath.Join(outDir, "visual.html")
+	htmlInfo, htmlStatErr := os.Stat(htmlPath)
+	htmlBytes, readHTMLErr := os.ReadFile(htmlPath)
+	if htmlStatErr == nil && readHTMLErr == nil && !htmlInfo.ModTime().Before(notBefore) {
+		return strings.TrimSpace(string(htmlBytes)), nil
 	}
-	for _, path := range required {
-		info, err := os.Stat(path)
-		if err != nil {
-			return fmt.Errorf("missing react source artifact %s: %w", path, err)
-		}
-		if info.ModTime().Before(notBefore) {
-			return fmt.Errorf("stale react source artifact %s", path)
-		}
-		data, err := os.ReadFile(path)
-		if err != nil {
-			return fmt.Errorf("read react source artifact %s: %w", path, err)
-		}
-		if strings.TrimSpace(string(data)) == "" {
-			return fmt.Errorf("empty react source artifact %s", path)
-		}
-	}
-	return nil
-}
 
-func validateReactSourceArtifacts(sourceDir string) error {
-	required := []string{
-		filepath.Join(sourceDir, "package.json"),
-		filepath.Join(sourceDir, "index.html"),
-		filepath.Join(sourceDir, "src", "main.jsx"),
-		filepath.Join(sourceDir, "src", "App.jsx"),
-	}
-	for _, path := range required {
-		data, err := os.ReadFile(path)
-		if err != nil {
-			return fmt.Errorf("read required react source file %s: %w", path, err)
-		}
-		if strings.TrimSpace(string(data)) == "" {
-			return fmt.Errorf("required react source file %s is empty", path)
-		}
-	}
-	packageJSONPath := filepath.Join(sourceDir, "package.json")
-	data, err := os.ReadFile(packageJSONPath)
-	if err != nil {
-		return err
-	}
-	var pkg reactPackageJSON
-	if err := json.Unmarshal(data, &pkg); err != nil {
-		return fmt.Errorf("parse %s: %w", packageJSONPath, err)
-	}
-	if strings.TrimSpace(pkg.Scripts["build"]) == "" {
-		return fmt.Errorf("%s must declare a build script", packageJSONPath)
-	}
-	lower := strings.ToLower(string(data))
-	if strings.Contains(lower, "\"next\"") || strings.Contains(lower, "\"express\"") {
-		return fmt.Errorf("%s must not depend on server-side runtimes", packageJSONPath)
-	}
-	return nil
-}
-
-func buildReactPresentation(sourceDir, buildDir, modelName string, verbose bool) error {
-	_ = os.RemoveAll(buildDir)
-	if err := os.MkdirAll(sourceDir, 0o755); err != nil {
-		return err
-	}
-	install := exec.Command("npm", "install", "--no-fund", "--no-audit")
-	install.Dir = sourceDir
-	if output, err := install.CombinedOutput(); err != nil {
-		logf(verbose, modelName, "phase=react_build status=failed step=install output=%q", string(output))
-		return fmt.Errorf("npm install failed: %w", err)
-	}
-	build := exec.Command("npm", "run", "build")
-	build.Dir = sourceDir
-	if output, err := build.CombinedOutput(); err != nil {
-		logf(verbose, modelName, "phase=react_build status=failed step=build output=%q", string(output))
-		return fmt.Errorf("npm run build failed: %w", err)
-	}
-	indexPath := filepath.Join(buildDir, "index.html")
-	if _, err := os.Stat(indexPath); err != nil {
-		return fmt.Errorf("react build missing %s: %w", indexPath, err)
-	}
-	return nil
-}
-
-func finalizeBuiltReactArtifact(artifacts model.ArtifactPaths) (string, error) {
-	buildHTMLPath := filepath.Join(artifacts.VisualBuildDir, "index.html")
-	buildHTML, err := os.ReadFile(buildHTMLPath)
-	if err != nil {
-		return "", fmt.Errorf("read built react html: %w", err)
-	}
-	if err := os.RemoveAll(artifacts.VisualAssetsDir); err != nil && !os.IsNotExist(err) {
-		return "", err
-	}
-	buildAssetsDir := filepath.Join(artifacts.VisualBuildDir, "visual_assets")
-	if _, err := os.Stat(buildAssetsDir); err == nil {
-		if err := copyDir(buildAssetsDir, artifacts.VisualAssetsDir); err != nil {
-			return "", err
-		}
-	}
-	if err := os.WriteFile(artifacts.VisualHTML, buildHTML, 0o644); err != nil {
-		return "", err
-	}
-	return strings.TrimSpace(string(buildHTML)), nil
-}
-
-func copyDir(src, dst string) error {
-	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		rel, err := filepath.Rel(src, path)
-		if err != nil {
-			return err
-		}
-		target := filepath.Join(dst, rel)
-		if info != nil && info.IsDir() {
-			return os.MkdirAll(target, 0o755)
-		}
-		data, err := os.ReadFile(path)
-		if err != nil {
-			return err
-		}
-		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
-			return err
-		}
-		return os.WriteFile(target, data, 0o644)
-	})
-}
-
-func dirSizeBytes(root string) (int64, error) {
-	var total int64
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if info == nil || info.IsDir() {
-			return nil
-		}
-		total += info.Size()
-		return nil
-	})
-	return total, err
+	return "", htmlErr
 }

@@ -41,7 +41,7 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
-		AnalysisMode:  string(model.AnalysisModeMultiQuery),
+		AnalysisMode:  string(model.AnalysisModeStructured),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,
@@ -59,7 +59,7 @@ func TestRunCodexRecoversFromStableVisualOutputFile(t *testing.T) {
 	if elapsed > 8*time.Second {
 		t.Fatalf("expected recovery before context timeout, elapsed=%s", elapsed)
 	}
-	if !codexVisualComplete(tmpDir, "html")(resp.RawOutput) {
+	if !codexVisualComplete(tmpDir)(resp.RawOutput) {
 		t.Fatalf("expected complete presentation output, got: %s", resp.RawOutput)
 	}
 	if !strings.Contains(resp.RawOutput, "<!doctype html>") {
@@ -72,21 +72,12 @@ func TestCodexCompletionChecks(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(tmpDir, "answer.raw.json"), []byte("{\"subquestions\":[{\"id\":\"q1\",\"answer_markdown\":\"Answer\",\"sql\":\"SELECT 1\"}]}"), 0o644); err != nil {
 		t.Fatalf("write answer.raw.json: %v", err)
 	}
-	if !codexAnalysisComplete(tmpDir, model.AnalysisModeMultiQuery)("") {
+	if !codexAnalysisComplete(tmpDir)("") {
 		t.Fatalf("expected analysis completion checker to accept id-based answer.raw.json")
-	}
-	if err := os.WriteFile(filepath.Join(tmpDir, "query.sql"), []byte("SELECT 1"), 0o644); err != nil {
-		t.Fatalf("write query.sql: %v", err)
-	}
-	if err := os.WriteFile(filepath.Join(tmpDir, "report.template.md"), []byte("# Title\n\n{{data_overview_md}}"), 0o644); err != nil {
-		t.Fatalf("write report.template.md: %v", err)
-	}
-	if !codexAnalysisComplete(tmpDir, model.AnalysisModeTemplateFiles)("") {
-		t.Fatalf("expected template analysis completion checker to accept direct files")
 	}
 
 	presentationRaw := "```html\n<!doctype html>\n<html></html>\n```"
-	if !codexVisualComplete(tmpDir, "html")(presentationRaw) {
+	if !codexVisualComplete(tmpDir)(presentationRaw) {
 		t.Fatalf("expected presentation completion checker to accept fenced html")
 	}
 	if err := os.WriteFile(filepath.Join(tmpDir, "review.md"), []byte("# Analysis Review\nVerdict: PASS\n"), 0o644); err != nil {
@@ -96,10 +87,10 @@ func TestCodexCompletionChecks(t *testing.T) {
 		t.Fatalf("expected review completion checker to accept review.md")
 	}
 
-	if codexAnalysisComplete(t.TempDir(), model.AnalysisModeMultiQuery)("") {
+	if codexAnalysisComplete(t.TempDir())("") {
 		t.Fatalf("did not expect analysis checker to accept incomplete json")
 	}
-	if codexVisualComplete(tmpDir, "html")("```report\nonly report\n```") {
+	if codexVisualComplete(tmpDir)("```report\nonly report\n```") {
 		t.Fatalf("did not expect visual checker to accept non-html output")
 	}
 }
@@ -156,7 +147,7 @@ func TestRunCodexRecoversFromStableAnalysisFile(t *testing.T) {
 	req := model.ProviderRequest{
 		OutDir:        tmpDir,
 		Model:         "gpt-5.4",
-		AnalysisMode:  string(model.AnalysisModeMultiQuery),
+		AnalysisMode:  string(model.AnalysisModeStructured),
 		MCPURL:        "https://example.invalid/http",
 		MCPServerName: "altinity_ontime_demo",
 		CLIBin:        scriptPath,

@@ -62,32 +62,23 @@ func Load(dir string) (model.Question, error) {
 	if err := yaml.Unmarshal(metaBytes, &meta); err != nil {
 		return model.Question{}, fmt.Errorf("parse %s: %w", metaPath, err)
 	}
-	if strings.TrimSpace(meta.AnalysisMode) == "" {
-		meta.AnalysisMode = string(model.AnalysisModeTemplateFiles)
+	if strings.TrimSpace(meta.AnalysisMode) == "" || strings.TrimSpace(meta.AnalysisMode) == "multi_query" {
+		meta.AnalysisMode = string(model.AnalysisModeStructured)
 	}
-	switch model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) {
-	case model.AnalysisModeMultiQuery, model.AnalysisModeTemplateFiles:
-	default:
+	if model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)) != model.AnalysisModeStructured {
 		return model.Question{}, fmt.Errorf("parse %s: unsupported analysis_mode %q", metaPath, meta.AnalysisMode)
 	}
 	if strings.TrimSpace(meta.VisualMode) == "" {
 		meta.VisualMode = "dynamic"
 	}
-	if strings.TrimSpace(meta.PresentationTarget) == "" {
-		meta.PresentationTarget = "html"
-	}
-	switch strings.TrimSpace(meta.PresentationTarget) {
-	case "html", "react":
-	default:
-		return model.Question{}, fmt.Errorf("parse %s: unsupported presentation_target %q", metaPath, meta.PresentationTarget)
-	}
+	meta.PresentationTarget = "html"
 	reportPromptBytes, err := os.ReadFile(reportPromptPath)
 	if err != nil {
 		return model.Question{}, err
 	}
 	visualPromptBytes, _ := os.ReadFile(visualPromptPath)
 	reportPrompt := strings.TrimSpace(string(reportPromptBytes))
-	subquestions, err := loadSubquestions(dir, model.AnalysisMode(strings.TrimSpace(meta.AnalysisMode)), reportPrompt)
+	subquestions, err := loadSubquestions(dir, reportPrompt)
 	if err != nil {
 		return model.Question{}, err
 	}
@@ -105,15 +96,12 @@ func Load(dir string) (model.Question, error) {
 	}, nil
 }
 
-func loadSubquestions(dir string, mode model.AnalysisMode, reportPrompt string) ([]model.QuestionSubquestion, error) {
+func loadSubquestions(dir string, reportPrompt string) ([]model.QuestionSubquestion, error) {
 	path := filepath.Join(dir, "subquestions.yaml")
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			if mode == model.AnalysisModeMultiQuery {
-				return extractPromptSections(reportPrompt)
-			}
-			return nil, nil
+			return extractPromptSections(reportPrompt)
 		}
 		return nil, err
 	}
@@ -123,8 +111,8 @@ func loadSubquestions(dir string, mode model.AnalysisMode, reportPrompt string) 
 	if err := yaml.Unmarshal(data, &file); err != nil {
 		return nil, fmt.Errorf("parse %s: %w", path, err)
 	}
-	if mode == model.AnalysisModeMultiQuery && len(file.Subquestions) == 0 {
-		return nil, fmt.Errorf("parse %s: subquestions list is required for analysis_mode %q", path, mode)
+	if len(file.Subquestions) == 0 {
+		return nil, fmt.Errorf("parse %s: subquestions list is required for analysis_mode %q", path, model.AnalysisModeStructured)
 	}
 	return file.Subquestions, nil
 }

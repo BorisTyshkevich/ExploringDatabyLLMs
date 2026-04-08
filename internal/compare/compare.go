@@ -265,7 +265,7 @@ func summarizeRun(ctx context.Context, codeRoot, runsRoot, runDir, explicitMCPUR
 }
 
 func isMultiQueryRun(manifest model.RunManifest, runDir string) bool {
-	if strings.TrimSpace(manifest.AnalysisMode) == string(model.AnalysisModeMultiQuery) {
+	if strings.TrimSpace(manifest.AnalysisMode) == string(model.AnalysisModeStructured) || strings.TrimSpace(manifest.AnalysisMode) == "multi_query" {
 		return true
 	}
 	entries, err := os.ReadDir(filepath.Join(runDir, "queries"))

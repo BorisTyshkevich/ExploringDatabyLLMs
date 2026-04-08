@@ -19,9 +19,9 @@ This repository still contains historical Bash and Python benchmark code, but th
 1. SQL generation
    - the model is prompted to inspect schema and self-verify its SQL before writing artifacts
    - the exact artifact contract is selected by the question's `analysis_mode`
-   - `multi_query`: the model writes `answer.raw.json` with ordered section answers and proof queries keyed by `main`, `qN`, or implicit `q0`
-   - `template_files`: the model writes `query.sql` and `report.template.md`
-   - `--manual`: runtime staging flag that skips provider invocation for the selected analysis contract; it works with both `multi_query` and `template_files`
+   - `structured`: the model writes `answer.raw.json` with ordered section answers and proof queries keyed by `main`, `qN`, or implicit `q0`
+   - `structured`: the model writes `query.sql` and `report.template.md`
+   - `--manual`: runtime staging flag that skips provider invocation for the selected analysis contract; it works with both `structured` and `structured`
 2. Report and review materialization
    - `qforge run` executes SQL, renders `report.md`, and makes a separate review-model call
    - `qforge review` is the manual-run completion path for an existing run directory; it materializes `report.md` and writes `review.md`
@@ -46,7 +46,7 @@ Prompt assembly is split into shared and phase-specific assets under [`/Users/bv
 
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common.md)
   - shared qforge and dataset-scope guidance used by both SQL and presentation phases
-- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_multi_query.md)
+- [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_structured.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_structured.md)
   - SQL-only rules such as schema inspection, self-verification, and the `answer.raw.json` multi-query contract
 - [`/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md`](/Users/bvt/work/ExploringDatabyLLMs/prompts/common_report_templates.md)
   - SQL-only rules for direct `query.sql` plus `report.template.md` output
@@ -292,8 +292,8 @@ Flags:
   - override the provider CLI executable
 - `--analysis-mode`
   - optional
-  - may override only for non-`multi_query` questions
-  - cannot switch to or from `multi_query`
+  - may override only for non-`structured` questions
+  - cannot switch to or from `structured`
   - does not control whether the run is staged manually
 - `--presentation-target`
   - optional
@@ -302,7 +302,7 @@ Flags:
 - `--manual`
   - optional
   - runtime staging flag that skips provider invocation and leaves the selected analysis contract unchanged
-  - works with both `template_files` and `multi_query`
+  - works with both `structured` and `structured`
 - `-m`
   - shorthand for `--manual`
 - `--verbose`
@@ -484,8 +484,8 @@ Files required before a manual visual pass:
 - produced by the earlier qforge materialization step:
   - `visual_input.json`
   - the primary saved SQL artifact:
-    - `query.sql` for `template_files`
-    - `queries/<id>.sql` for `multi_query`
+    - `query.sql` for `structured`
+    - `queries/<id>.sql` for `structured`
 - for static visual mode:
   - `result.json`
 

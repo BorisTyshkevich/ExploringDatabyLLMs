@@ -11,19 +11,14 @@ Question context:
 
 Primary structured compare artifact:
 
-- Local path: `{{compare_json_path}}`
-- Published URL: `{{compare_json_url}}`
+- `{{compare_json_path}}`
 
-Exact run prompt artifacts:
+Question files:
 
-- `prompt.report.md` files:
-{{prompt_report_paths_md}}
-- `prompt.visual.md` files:
-{{prompt_visual_paths_md}}
-
-Published run artifact links to use in the final Markdown:
-
-{{published_run_artifacts_md}}
+- SQL question prompt: `{{question_prompt_path}}`
+- Report prompt: `{{report_prompt_path}}`
+- Visual prompt: `{{visual_prompt_path}}`
+- Compare contract: `{{compare_contract_path}}`
 
 Run directories:
 
@@ -37,10 +32,6 @@ Report Markdown files:
 
 {{report_md_paths_md}}
 
-Review Markdown files:
-
-{{review_md_paths_md}}
-
 Visual HTML files:
 
 {{visual_html_paths_md}}
@@ -49,25 +40,22 @@ Result JSON files:
 
 {{result_json_paths_md}}
 
+Deterministic compare summary:
+
+{{compare_summary_md}}
+
 Your job:
 
 - write one evidence-based Markdown report suitable for `compare_report.md`
 - use the real local artifacts above as the source of truth
-- treat every file listed above as a reference to inspect directly; do not assume its contents are embedded in this prompt
 - verify whether outputs actually differ before claiming they differ
 - quantify differences when they exist
 - mention performance differences only from verified query-log metrics
-- use `review.md` when discussing correctness, prompt-alignment issues, or known failures
-- use `prompt.report.md` and `prompt.visual.md` when discussing prompt differences or prompt-alignment issues
 - describe SQL-shape differences only when supported by the actual `query.sql` files
 - cite `report.md` and `visual.html` artifacts when discussing presentation outputs
-- treat actual `visual.html` artifact existence as the source of truth for whether a visual is available; if manifest phases say presentation was skipped but `visual.html` exists, report that the visual artifact is present and note the mismatch instead of saying no visual was produced
 - prefer links to local artifacts instead of long pasted SQL
-- use only the published URLs provided above in the final Markdown for run artifacts; never emit absolute filesystem paths
-- for `report.md`, use the provided `md.html?file=...` URL
-- for `query.sql` and `result.json`, use the provided GitHub blob URL
-- for `visual.html`, use the provided GitHub Pages file URL
-- in sections 6 and 9, group content by provider/model and then by run id
+- keep artifact links relative: run artifacts use paths relative to the question directory (e.g., `claude/opus/run-001/report.md`); prompt files use full GitHub URLs
+- when discussing artifacts, presentation output, or execution stats, organize the evidence by provider/run so readers can scan Claude, Codex, and Gemini separately
 - keep the note concise but complete enough for a blog-style benchmark write-up
 
 Required sections:
@@ -90,10 +78,7 @@ Rules:
 - If differences are localized to one field or row type, say that precisely.
 - Do not use vague judgments like “better” or “worse” without concrete evidence.
 - Do not mention files that you did not verify.
-- In sections 6 and 9, prefer short provider-grouped subsections with per-run bullets.
-- In section 10 (`## Execution stats`), use a Markdown table as the primary presentation, not prose bullets.
-- The execution-stats table should have one row per run and include at least: provider/model, run id, status, query time, rows read, bytes read, peak memory, SQL generation time, visual generation time, and total run duration when available.
-- After the execution-stats table, add at most one short paragraph calling out the most important performance spread or anomaly.
+- In sections 6, 9, and 10, prefer short provider-grouped subsections or bullets over one merged paragraph.
 - Return only one fenced Markdown block.
 
 Return exactly this fenced section:

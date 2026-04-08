@@ -17,7 +17,7 @@ Each question lives under `prompts/qXXX_.../` and usually includes:
 - `meta.yaml`
 - `report_prompt.md`
 - `visual_prompt.md`
-- optional `subquestions.yaml` for `analysis_mode: multi_query`
+- optional `subquestions.yaml` for `analysis_mode: structured`
 
 Use them for different jobs:
 
@@ -134,7 +134,7 @@ It should not restate shared runtime mechanics already covered by:
 - `common_visual.md`
 - `common_visual_dynamic.md`
 - `common_visual_static.md`
-- `common_visual_multi_query.md`
+- `common_visual_structured.md`
 - the `ontime-analyst-dashboard` skill
 
 ### For dynamic visuals

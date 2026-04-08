@@ -16,7 +16,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 		Prompt: "### main\nQuestion-specific SQL guidance.\n\n### q1\nWhich hotspot is worst?\n\n### q2\nIs it persistent?",
 	}
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeMultiQuery)
+	got, err := BuildSQLPrompt(question, dataset)
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
@@ -33,7 +33,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 		t.Fatalf("did not expect inlined semantic layer guidance, got: %s", got)
 	}
 	if !strings.Contains(got, "answer.raw.json") || !strings.Contains(got, "\"subquestions\"") || !strings.Contains(got, "\"answer_markdown\"") {
-		t.Fatalf("expected multi-query json analysis contract, got: %s", got)
+		t.Fatalf("expected structured json analysis contract, got: %s", got)
 	}
 	if !strings.Contains(got, "Write one JSON object to `answer.raw.json` file with shape:") || !strings.Contains(got, "Do not emit result rows") || !strings.Contains(got, "\"id\"") {
 		t.Fatalf("expected strict answer.raw.json file rules, got: %s", got)
@@ -55,52 +55,7 @@ func TestBuildSQLPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 }
 
-func TestBuildSQLPromptTemplateModeUsesDirectFileContract(t *testing.T) {
-	question := model.Question{
-		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Prompt: "Question-specific SQL guidance.",
-	}
-	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeTemplateFiles)
-	if err != nil {
-		t.Fatalf("BuildSQLPrompt returned error: %v", err)
-	}
-	if !strings.Contains(got, "Write the final verified SQL to `query.sql`.") {
-		t.Fatalf("expected query.sql contract, got: %s", got)
-	}
-	if !strings.Contains(got, "most recent 5 years by default") {
-		t.Fatalf("expected shared 5-year default in template mode prompt, got: %s", got)
-	}
-	if !strings.Contains(got, "Write the Markdown report template to `report.template.md`.") {
-		t.Fatalf("expected report.template.md contract, got: %s", got)
-	}
-	if strings.Contains(got, "Write one JSON object containing the final verified SQL") {
-		t.Fatalf("did not expect answer.raw.json contract in template mode, got: %s", got)
-	}
-	if !strings.Contains(got, "Allowed built-in placeholders:") || !strings.Contains(got, "Do not invent any placeholder outside the built-in list.") {
-		t.Fatalf("expected placeholder constraints in template mode, got: %s", got)
-	}
-}
-
-func TestBuildSQLPromptPreservesExplicitQuestionTimeWindowGuidance(t *testing.T) {
-	question := model.Question{
-		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Prompt: "Analyze only calendar year 2024.",
-	}
-	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeTemplateFiles)
-	if err != nil {
-		t.Fatalf("BuildSQLPrompt returned error: %v", err)
-	}
-	if !strings.Contains(got, "most recent 5 years by default") {
-		t.Fatalf("expected shared default window guidance, got: %s", got)
-	}
-	if !strings.Contains(got, "Analyze only calendar year 2024.") {
-		t.Fatalf("expected explicit question time window guidance to be preserved, got: %s", got)
-	}
-}
-
-func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
+func TestBuildSQLPromptStructuredModeUsesStructuredJSONContract(t *testing.T) {
 	question := model.Question{
 		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Prompt: "### main\nQuestion-specific SQL guidance.\n\n### q1\nWhich hotspot is worst?\n\n### q2\nIs it persistent?",
@@ -111,7 +66,7 @@ func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
 		},
 	}
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeMultiQuery)
+	got, err := BuildSQLPrompt(question, dataset)
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
@@ -129,10 +84,10 @@ func TestBuildSQLPromptMultiQueryModeUsesStructuredJSONContract(t *testing.T) {
 	}
 }
 
-func TestBuildSQLPromptMultiQueryModePreservesSectionedPromptWithoutInjection(t *testing.T) {
+func TestBuildSQLPromptStructuredModePreservesSectionedPromptWithoutInjection(t *testing.T) {
 	question := model.Question{
 		Dir:    filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Meta:   model.QuestionMeta{AnalysisMode: string(model.AnalysisModeMultiQuery)},
+		Meta:   model.QuestionMeta{AnalysisMode: string(model.AnalysisModeStructured)},
 		Prompt: "### q1\nWhich hotspot is worst?\n\n### q2\nIs it persistent?",
 		Subquestions: []model.QuestionSubquestion{
 			{ID: "q1", Text: "Which hotspot is worst?"},
@@ -140,7 +95,7 @@ func TestBuildSQLPromptMultiQueryModePreservesSectionedPromptWithoutInjection(t 
 		},
 	}
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildSQLPrompt(question, dataset, model.AnalysisModeMultiQuery)
+	got, err := BuildSQLPrompt(question, dataset)
 	if err != nil {
 		t.Fatalf("BuildSQLPrompt returned error: %v", err)
 	}
@@ -152,10 +107,10 @@ func TestBuildSQLPromptMultiQueryModePreservesSectionedPromptWithoutInjection(t 
 	}
 }
 
-func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.T) {
+func TestBuildVisualPromptStructuredModeUsesDynamicDashboardContract(t *testing.T) {
 	question := model.Question{
 		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Meta:         model.QuestionMeta{ID: "q003", Title: "Delta ATL", VisualMode: "dynamic", VisualType: "html_heatmap", AnalysisMode: string(model.AnalysisModeMultiQuery)},
+		Meta:         model.QuestionMeta{ID: "q003", Title: "Delta ATL", VisualMode: "dynamic", VisualType: "html_heatmap", AnalysisMode: string(model.AnalysisModeStructured)},
 		VisualPrompt: "Visual guidance.",
 	}
 	visualInput := model.VisualInputSummary{
@@ -204,12 +159,11 @@ func TestBuildVisualPromptMultiQueryModeUsesDynamicDashboardContract(t *testing.
 func TestBuildReviewPromptIncludesRunArtifacts(t *testing.T) {
 	question := model.Question{
 		Dir:    filepath.Join("..", "..", "prompts", "q004_worst_origin_airport_otp_thresholded"),
-		Meta:   model.QuestionMeta{Title: "Worst origin airports", AnalysisMode: string(model.AnalysisModeMultiQuery)},
+		Meta:   model.QuestionMeta{Title: "Worst origin airports", AnalysisMode: string(model.AnalysisModeStructured)},
 		Prompt: "### main\nQuestion-specific SQL guidance.\n\n### q1\nWhich airport ranks worst?\n\n### q2\nHow wide is the spread?",
 	}
 	got, err := BuildReviewPrompt(ReviewPromptInputs{
 		Question:        question,
-		AnalysisMode:    model.AnalysisModeMultiQuery,
 		ReportMarkdown:  "# Report",
 		AnswerRawJSON:   "{\"subquestions\":[]}",
 		AnalysisJSON:    "{\"subquestions\":[]}",
@@ -233,7 +187,7 @@ func TestBuildReviewPromptIncludesRunArtifacts(t *testing.T) {
 	}
 }
 
-func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
+func TestBuildVisualPromptLoadsMarkdownAssets(t *testing.T) {
 	question := model.Question{
 		Dir:          filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Meta:         model.QuestionMeta{ID: "q003", Title: "Delta ATL", VisualMode: "dynamic", VisualType: "html_heatmap"},
@@ -256,7 +210,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT *\nFROM ontime.fact_ontime", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", visualInput)
 	if err != nil {
-		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
+		t.Fatalf("BuildVisualPrompt returned error: %v", err)
 	}
 	if !strings.Contains(got, "Use the `ontime` database to answer analytical questions") {
 		t.Fatalf("expected shared core scaffold, got: %s", got)
@@ -307,7 +261,7 @@ func TestBuildPresentationPromptLoadsMarkdownAssets(t *testing.T) {
 	}
 }
 
-func TestBuildPresentationPromptQ001UsesLookupContract(t *testing.T) {
+func TestBuildVisualPromptQ001UsesLookupContract(t *testing.T) {
 	repoRoot := filepath.Join("..", "..")
 	question, err := questions.Resolve(repoRoot, "q001")
 	if err != nil {
@@ -326,7 +280,7 @@ func TestBuildPresentationPromptQ001UsesLookupContract(t *testing.T) {
 	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
 	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
 	if err != nil {
-		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
+		t.Fatalf("BuildVisualPrompt returned error: %v", err)
 	}
 	if !strings.Contains(got, "*-analyst-dashboard") || !strings.Contains(got, "Use `ontime-semantic-layer` skill for schema inspection") {
 		t.Fatalf("expected q001 prompt to reference dashboard and semantic skill guidance, got: %s", got)
@@ -365,7 +319,7 @@ func TestBuildPresentationPromptQ001UsesLookupContract(t *testing.T) {
 	}
 }
 
-func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T) {
+func TestBuildVisualPromptStaticModeUsesEmbeddedDataContract(t *testing.T) {
 	question := model.Question{
 		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
 		Meta: model.QuestionMeta{
@@ -389,7 +343,7 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 		ModeHint:      "Static mode embeds analytical data from result.json directly in the page.",
 	})
 	if err != nil {
-		t.Fatalf("BuildPresentationPrompt returned error: %v", err)
+		t.Fatalf("BuildVisualPrompt returned error: %v", err)
 	}
 	if !strings.Contains(got, "Visual mode: `static`") {
 		t.Fatalf("expected static visual mode in prompt, got: %s", got)
@@ -411,72 +365,3 @@ func TestBuildPresentationPromptStaticModeUsesEmbeddedDataContract(t *testing.T)
 	}
 }
 
-func TestBuildPresentationPromptReactDynamicUsesSourceContract(t *testing.T) {
-	question := model.Question{
-		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Meta: model.QuestionMeta{
-			ID:                 "q901",
-			Title:              "React Dynamic Fixture",
-			VisualMode:         "dynamic",
-			PresentationTarget: "react",
-			VisualType:         "html_heatmap",
-		},
-		VisualPrompt: "Visual guidance.",
-	}
-	result := model.CanonicalResult{
-		Columns:     []string{"Carrier", "Flights"},
-		GeneratedAt: time.Now(),
-	}
-	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "https://mcp.example.invalid/{JWE}/openapi/execute_query?query=...", model.VisualInputSummary{})
-	if err != nil {
-		t.Fatalf("BuildVisualPrompt returned error: %v", err)
-	}
-	for _, want := range []string{
-		"Presentation target: `react`",
-		"Create a React source artifact under `visual_src/`",
-		"`visual_src/package.json`",
-		"`visual_src/src/main.jsx`",
-		"Do not emit the source code inline in the response",
-		"Use this endpoint template for every browser query",
-	} {
-		if !strings.Contains(got, want) {
-			t.Fatalf("expected react dynamic prompt to contain %q, got: %s", want, got)
-		}
-	}
-	if strings.Contains(got, "Create browser-ready HTML `visual.html`") {
-		t.Fatalf("did not expect html-only contract in react prompt, got: %s", got)
-	}
-}
-
-func TestBuildPresentationPromptReactStaticAvoidsDynamicTokenFlow(t *testing.T) {
-	question := model.Question{
-		Dir: filepath.Join("..", "..", "prompts", "q003_delta_atl_departure_delay_hotspots"),
-		Meta: model.QuestionMeta{
-			ID:                 "q902",
-			Title:              "React Static Fixture",
-			VisualMode:         "static",
-			PresentationTarget: "react",
-			VisualType:         "html_ranked_dashboard",
-		},
-		VisualPrompt: "Visual guidance.",
-	}
-	result := model.CanonicalResult{
-		Columns:     []string{"Carrier", "Flights"},
-		GeneratedAt: time.Now(),
-	}
-	dataset := model.DatasetConfig{DefaultDatabase: "ontime"}
-	got, err := BuildVisualPrompt(question, dataset, result, "SELECT 1", "", model.VisualInputSummary{})
-	if err != nil {
-		t.Fatalf("BuildVisualPrompt returned error: %v", err)
-	}
-	if !strings.Contains(got, "Presentation target: `react`") || !strings.Contains(got, "Create a React source artifact under `visual_src/`") {
-		t.Fatalf("expected react static source contract, got: %s", got)
-	}
-	if !strings.Contains(got, "Build a self-contained benchmark artifact") {
-		t.Fatalf("expected static runtime guidance, got: %s", got)
-	}
-	if strings.Contains(got, "OnTimeAnalystDashboard::auth::jwe") {
-		t.Fatalf("did not expect dynamic token flow in static react prompt, got: %s", got)
-	}
-}

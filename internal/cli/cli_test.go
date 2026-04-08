@@ -171,19 +171,6 @@ func TestRunVisualRequiresRunDir(t *testing.T) {
 	}
 }
 
-func TestApplyPresentationTargetOverride(t *testing.T) {
-	question := model.Question{Meta: model.QuestionMeta{PresentationTarget: "html"}}
-	if err := applyPresentationTargetOverride(&question, "react"); err != nil {
-		t.Fatalf("applyPresentationTargetOverride returned error: %v", err)
-	}
-	if question.Meta.PresentationTarget != "react" {
-		t.Fatalf("expected presentation target override to apply, got %q", question.Meta.PresentationTarget)
-	}
-	if err := applyPresentationTargetOverride(&question, "bad"); err == nil {
-		t.Fatalf("expected unsupported presentation target override to fail")
-	}
-}
-
 func TestParseReviewVerdict(t *testing.T) {
 	got, err := parseReviewVerdict("# Analysis Review\nVerdict: PASS\n")
 	if err != nil {
@@ -281,78 +268,6 @@ func TestLoadVisualArtifactAcceptsFreshFallbackFile(t *testing.T) {
 	}
 	if gotHTML != "<!doctype html>\n<html><body>fresh</body></html>" {
 		t.Fatalf("unexpected html content: %q", gotHTML)
-	}
-}
-
-func TestValidateReactSourceArtifactsRejectsMissingBuildScript(t *testing.T) {
-	sourceDir := filepath.Join(t.TempDir(), "visual_src")
-	if err := os.MkdirAll(filepath.Join(sourceDir, "src"), 0o755); err != nil {
-		t.Fatalf("mkdir src: %v", err)
-	}
-	files := map[string]string{
-		"package.json": `{"name":"fixture","scripts":{}}`,
-		"index.html":   "<!doctype html><html><body><div id=\"root\"></div></body></html>",
-		"src/main.jsx": "console.log('main')",
-		"src/App.jsx":  "export default function App(){ return null }",
-	}
-	for name, content := range files {
-		if err := os.WriteFile(filepath.Join(sourceDir, name), []byte(content), 0o644); err != nil {
-			t.Fatalf("write %s: %v", name, err)
-		}
-	}
-	if err := validateReactSourceArtifacts(sourceDir); err == nil {
-		t.Fatalf("expected missing build script to fail source validation")
-	}
-}
-
-func TestMaterializePresentationArtifactBuildsReactOutput(t *testing.T) {
-	runDir := t.TempDir()
-	artifacts := model.ArtifactPaths{
-		VisualSourceDir:   filepath.Join(runDir, "visual_src"),
-		VisualBuildDir:    filepath.Join(runDir, "visual_build"),
-		VisualAssetsDir:   filepath.Join(runDir, "visual_assets"),
-		VisualPackageJSON: filepath.Join(runDir, "visual_src", "package.json"),
-		VisualHTML:        filepath.Join(runDir, "visual.html"),
-	}
-	if err := os.MkdirAll(filepath.Join(artifacts.VisualSourceDir, "src"), 0o755); err != nil {
-		t.Fatalf("mkdir src: %v", err)
-	}
-	files := map[string]string{
-		"package.json": `{"name":"fixture","private":true,"scripts":{"build":"node build.mjs"}}`,
-		"index.html":   "<!doctype html><html><body><div id=\"root\"></div></body></html>",
-		"build.mjs": `import { mkdirSync, writeFileSync } from 'node:fs';
-mkdirSync('../visual_build/visual_assets', { recursive: true });
-writeFileSync('../visual_build/index.html', '<!doctype html><html><head><script type="module" src="./visual_assets/app.js"></script></head><body><footer><input type="password"/><textarea>SELECT 1</textarea><button>Fetch</button><div id="query-ledger"></div><div data-status>ok</div></footer></body></html>');
-writeFileSync('../visual_build/visual_assets/app.js', 'console.log("ok")');
-`,
-		"src/main.jsx": "console.log('main')",
-		"src/App.jsx":  "export default function App(){ return null }",
-	}
-	for name, content := range files {
-		if err := os.WriteFile(filepath.Join(artifacts.VisualSourceDir, name), []byte(content), 0o644); err != nil {
-			t.Fatalf("write %s: %v", name, err)
-		}
-	}
-	notBefore := time.Now().Add(-1 * time.Second)
-	question := model.Question{Meta: model.QuestionMeta{PresentationTarget: "react", VisualMode: "dynamic"}}
-	got, err := materializePresentationArtifact(runDir, question, artifacts, "", notBefore, "test-model", false)
-	if err != nil {
-		t.Fatalf("materializePresentationArtifact returned error: %v", err)
-	}
-	if got.BuildDurationMS <= 0 {
-		t.Fatalf("expected build duration to be recorded, got %+v", got)
-	}
-	if !strings.Contains(got.HTML, "./visual_assets/app.js") {
-		t.Fatalf("expected built html to reference visual_assets, got: %s", got.HTML)
-	}
-	if _, err := os.Stat(artifacts.VisualHTML); err != nil {
-		t.Fatalf("expected visual.html to be written: %v", err)
-	}
-	if _, err := os.Stat(filepath.Join(artifacts.VisualAssetsDir, "app.js")); err != nil {
-		t.Fatalf("expected built visual asset to be copied: %v", err)
-	}
-	if got.Metadata["react_build"] != "ok" || got.Metadata["react_source_validation"] != "ok" {
-		t.Fatalf("expected react metadata to record successful build, got %+v", got.Metadata)
 	}
 }
 
@@ -462,7 +377,7 @@ func TestWritePresentationPromptFromSummaryUsesProvidedPrimarySQLForMultiQuery(t
 			Title:        "Delta ATL",
 			VisualMode:   "dynamic",
 			VisualType:   "html_heatmap",
-			AnalysisMode: string(model.AnalysisModeMultiQuery),
+			AnalysisMode: string(model.AnalysisModeStructured),
 		},
 		VisualPrompt: "Visual guidance.",
 	}
@@ -507,7 +422,7 @@ func TestRunComparePositionalQuestionRefScopesOutputs(t *testing.T) {
 		{dir: "q001_hops_per_day", id: "q001", slug: "q001_hops_per_day", title: "Hops Per Day"},
 		{dir: "q002_top_carrier", id: "q002", slug: "q002_top_carrier", title: "Top Carrier"},
 	} {
-		mustWriteFile(t, filepath.Join(codeRoot, "prompts", item.dir, "meta.yaml"), fmt.Sprintf("id: %s\nslug: %s\ntitle: %q\ndataset: ontime\nanalysis_mode: template_files\nartifacts_required: report.md\npresentation_target: html\n", item.id, item.slug, item.title))
+		mustWriteFile(t, filepath.Join(codeRoot, "prompts", item.dir, "meta.yaml"), fmt.Sprintf("id: %s\nslug: %s\ntitle: %q\ndataset: ontime\nanalysis_mode: structured\nartifacts_required: report.md\npresentation_target: html\n", item.id, item.slug, item.title))
 		mustWriteFile(t, filepath.Join(codeRoot, "prompts", item.dir, "report_prompt.md"), "# Prompt\n")
 	}
 

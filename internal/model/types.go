@@ -12,8 +12,7 @@ const (
 type AnalysisMode string
 
 const (
-	AnalysisModeMultiQuery    AnalysisMode = "multi_query"
-	AnalysisModeTemplateFiles AnalysisMode = "template_files"
+	AnalysisModeStructured AnalysisMode = "structured"
 )
 
 type RunStatus string
@@ -86,7 +85,6 @@ type ArtifactPaths struct {
 	AnswerReviewRaw       string `json:"answer_review_raw,omitempty"`
 	ReviewMD              string `json:"review_md,omitempty"`
 	QuerySQL              string `json:"query_sql"`
-	ResultTSV             string `json:"result_tsv,omitempty"`
 	ResultJSON            string `json:"result_json"`
 	VisualInputJSON       string `json:"visual_input_json,omitempty"`
 	ManifestJSON          string `json:"manifest_json"`
@@ -97,10 +95,6 @@ type ArtifactPaths struct {
 	ReportTemplateMD      string `json:"report_template_md,omitempty"`
 	ReportMD              string `json:"report_md,omitempty"`
 	VisualHTML            string `json:"visual_html,omitempty"`
-	VisualSourceDir       string `json:"visual_source_dir,omitempty"`
-	VisualBuildDir        string `json:"visual_build_dir,omitempty"`
-	VisualAssetsDir       string `json:"visual_assets_dir,omitempty"`
-	VisualPackageJSON     string `json:"visual_package_json,omitempty"`
 }
 
 type RunPhases struct {
@@ -205,11 +199,6 @@ type VisualInputSummary struct {
 	FieldShapeNotes map[string]string    `json:"field_shape_notes,omitempty"`
 	ModeHint        string               `json:"mode_hint,omitempty"`
 	QuerySummaries  []QueryResultSummary `json:"query_summaries,omitempty"`
-}
-
-type NumericColumnSpec struct {
-	Name         string  `yaml:"name" json:"name"`
-	ToleranceAbs float64 `yaml:"tolerance_abs" json:"tolerance_abs"`
 }
 
 type QueryLogMetrics struct {

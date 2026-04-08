@@ -13,27 +13,21 @@ import (
 
 const (
 	commonPromptFile                 = "common.md"
-	commonReportMultiQueryPromptFile = "common_report_multi_query.md"
-	commonReportTemplatePromptFile   = "common_report_templates.md"
+	commonReportStructuredPromptFile = "common_report_multi_query.md"
 	commonReviewPromptFile           = "common_review.md"
 	commonVisualPromptFile           = "common_visual.md"
 	commonVisualHTMLPromptFile       = "common_visual_html.md"
-	commonVisualReactPromptFile      = "common_visual_react.md"
 	commonVisualMultiQueryPromptFile = "common_visual_multi_query.md"
 	commonVisualStaticPromptFile     = "common_visual_static.md"
 	commonVisualDynamicPromptFile    = "common_visual_dynamic.md"
 )
 
-func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode model.AnalysisMode) (string, error) {
+func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig) (string, error) {
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
 	}
-	contractPromptFile := commonReportMultiQueryPromptFile
-	if mode == model.AnalysisModeTemplateFiles {
-		contractPromptFile = commonReportTemplatePromptFile
-	}
-	commonReport, err := loadCommonPrompt(question, contractPromptFile)
+	commonReport, err := loadCommonPrompt(question, commonReportStructuredPromptFile)
 	if err != nil {
 		return "", err
 	}
@@ -50,27 +44,18 @@ func BuildSQLPrompt(question model.Question, dataset model.DatasetConfig, mode m
 	return joinSections(sections), nil
 }
 
-func BuildPresentationPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string) (string, error) {
-	return BuildVisualPrompt(question, dataset, result, savedSQL, dynamicQueryEndpointTemplate, model.VisualInputSummary{})
-}
-
 func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, result model.CanonicalResult, savedSQL, dynamicQueryEndpointTemplate string, visualInput model.VisualInputSummary) (string, error) {
-	commonVisualFile := commonVisualPromptFile
-	analysisMode := model.AnalysisMode(strings.TrimSpace(question.Meta.AnalysisMode))
 	common, err := loadCommonPrompt(question, commonPromptFile)
 	if err != nil {
 		return "", err
 	}
-	commonVisual, err := loadCommonPrompt(question, commonVisualFile)
+	commonVisual, err := loadCommonPrompt(question, commonVisualPromptFile)
 	if err != nil {
 		return "", err
 	}
-	var multiQueryVisual string
-	if analysisMode == model.AnalysisModeMultiQuery {
-		multiQueryVisual, err = loadCommonPrompt(question, commonVisualMultiQueryPromptFile)
-		if err != nil {
-			return "", err
-		}
+	multiQueryVisual, err := loadCommonPrompt(question, commonVisualMultiQueryPromptFile)
+	if err != nil {
+		return "", err
 	}
 	modePromptFile := commonVisualDynamicPromptFile
 	if strings.EqualFold(strings.TrimSpace(question.Meta.VisualMode), "static") {
@@ -80,11 +65,7 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 	if err != nil {
 		return "", err
 	}
-	targetPromptFile := commonVisualHTMLPromptFile
-	if strings.EqualFold(strings.TrimSpace(question.Meta.PresentationTarget), "react") {
-		targetPromptFile = commonVisualReactPromptFile
-	}
-	targetVisual, err := loadCommonPrompt(question, targetPromptFile)
+	targetVisual, err := loadCommonPrompt(question, commonVisualHTMLPromptFile)
 	if err != nil {
 		return "", err
 	}
@@ -92,7 +73,7 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		"dataset_name":                    datasetPromptName(dataset),
 		"question_title":                  question.Meta.Title,
 		"visual_mode":                     strings.TrimSpace(question.Meta.VisualMode),
-		"presentation_target":             presentationTarget(question.Meta.PresentationTarget),
+		"presentation_target":             "html",
 		"visual_type":                     question.Meta.VisualType,
 		"result_columns_csv":              strings.Join(result.Columns, ", "),
 		"saved_sql":                       strings.TrimSpace(savedSQL),
@@ -100,24 +81,21 @@ func BuildVisualPrompt(question model.Question, dataset model.DatasetConfig, res
 		"visual_input_summary_json":       visualInputSummaryJSON(visualInput),
 		"visual_prompt_md":                question.VisualPrompt,
 	}
-	sections := []string{RenderTemplate(commonVisual, values)}
-	sections = append([]string{RenderTemplate(common, values)}, sections...)
-	if analysisMode == model.AnalysisModeMultiQuery {
-		sections = append(sections, RenderTemplate(multiQueryVisual, values))
+	sections := []string{
+		RenderTemplate(common, values),
+		RenderTemplate(commonVisual, values),
+		RenderTemplate(multiQueryVisual, values),
+		RenderTemplate(modeVisual, values),
+		RenderTemplate(targetVisual, values),
 	}
-	sections = append(sections, RenderTemplate(modeVisual, values))
-	sections = append(sections, RenderTemplate(targetVisual, values))
 	return joinSections(sections), nil
 }
 
 type ReviewPromptInputs struct {
 	Question        model.Question
-	AnalysisMode    model.AnalysisMode
 	ReportMarkdown  string
 	AnswerRawJSON   string
 	AnalysisJSON    string
-	QuerySQL        string
-	ResultJSON      string
 	VisualInputJSON string
 	QueryFiles      []string
 	ResultFiles     []string
@@ -128,11 +106,7 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	contractPromptFile := commonReportMultiQueryPromptFile
-	if inputs.AnalysisMode == model.AnalysisModeTemplateFiles {
-		contractPromptFile = commonReportTemplatePromptFile
-	}
-	analysisContract, err := loadCommonPrompt(inputs.Question, contractPromptFile)
+	analysisContract, err := loadCommonPrompt(inputs.Question, commonReportStructuredPromptFile)
 	if err != nil {
 		return "", err
 	}
@@ -154,41 +128,32 @@ func BuildReviewPrompt(inputs ReviewPromptInputs) (string, error) {
 		"Question-specific guidance:\n\n"+strings.TrimSpace(inputs.Question.Prompt),
 		"Generated report.md:\n\n```md\n"+strings.TrimSpace(inputs.ReportMarkdown)+"\n```",
 	)
-	if inputs.AnalysisMode == model.AnalysisModeMultiQuery {
-		if strings.TrimSpace(inputs.AnswerRawJSON) != "" {
-			sections = append(sections, "Saved answer.raw.json:\n\n```json\n"+strings.TrimSpace(inputs.AnswerRawJSON)+"\n```")
+	if strings.TrimSpace(inputs.AnswerRawJSON) != "" {
+		sections = append(sections, "Saved answer.raw.json:\n\n```json\n"+strings.TrimSpace(inputs.AnswerRawJSON)+"\n```")
+	}
+	if strings.TrimSpace(inputs.AnalysisJSON) != "" {
+		sections = append(sections, "Saved analysis.json:\n\n```json\n"+strings.TrimSpace(inputs.AnalysisJSON)+"\n```")
+	}
+	if strings.TrimSpace(inputs.VisualInputJSON) != "" {
+		sections = append(sections, "Saved visual_input.json:\n\n```json\n"+strings.TrimSpace(inputs.VisualInputJSON)+"\n```")
+	}
+	if len(inputs.QueryFiles) > 0 {
+		files := append([]string(nil), inputs.QueryFiles...)
+		sort.Strings(files)
+		parts := make([]string, 0, len(files))
+		for _, path := range files {
+			parts = append(parts, "- `"+strings.TrimSpace(path)+"`")
 		}
-		if strings.TrimSpace(inputs.AnalysisJSON) != "" {
-			sections = append(sections, "Saved analysis.json:\n\n```json\n"+strings.TrimSpace(inputs.AnalysisJSON)+"\n```")
+		sections = append(sections, "Proof queries are saved as files in the run directory. Read the SQL files you need to verify grain, filters, metrics, and ranking logic:\n\n"+strings.Join(parts, "\n"))
+	}
+	if len(inputs.ResultFiles) > 0 {
+		files := append([]string(nil), inputs.ResultFiles...)
+		sort.Strings(files)
+		parts := make([]string, 0, len(files))
+		for _, path := range files {
+			parts = append(parts, "- `"+strings.TrimSpace(path)+"`")
 		}
-		if strings.TrimSpace(inputs.VisualInputJSON) != "" {
-			sections = append(sections, "Saved visual_input.json:\n\n```json\n"+strings.TrimSpace(inputs.VisualInputJSON)+"\n```")
-		}
-		if len(inputs.QueryFiles) > 0 {
-			files := append([]string(nil), inputs.QueryFiles...)
-			sort.Strings(files)
-			parts := make([]string, 0, len(files))
-			for _, path := range files {
-				parts = append(parts, "- `"+strings.TrimSpace(path)+"`")
-			}
-			sections = append(sections, "Proof queries are saved as files in the run directory. Read the SQL files you need to verify grain, filters, metrics, and ranking logic:\n\n"+strings.Join(parts, "\n"))
-		}
-		if len(inputs.ResultFiles) > 0 {
-			files := append([]string(nil), inputs.ResultFiles...)
-			sort.Strings(files)
-			parts := make([]string, 0, len(files))
-			for _, path := range files {
-				parts = append(parts, "- `"+strings.TrimSpace(path)+"`")
-			}
-			sections = append(sections, "Executed query results are saved as files in the run directory. Read the result files you need for verification instead of assuming the report summary is complete:\n\n"+strings.Join(parts, "\n"))
-		}
-	} else {
-		if strings.TrimSpace(inputs.QuerySQL) != "" {
-			sections = append(sections, "Saved query.sql:\n\n```sql\n"+strings.TrimSpace(inputs.QuerySQL)+"\n```")
-		}
-		if strings.TrimSpace(inputs.ResultJSON) != "" {
-			sections = append(sections, "Saved result.json:\n\n```json\n"+strings.TrimSpace(inputs.ResultJSON)+"\n```")
-		}
+		sections = append(sections, "Executed query results are saved as files in the run directory. Read the result files you need for verification instead of assuming the report summary is complete:\n\n"+strings.Join(parts, "\n"))
 	}
 	return joinSections(sections), nil
 }
@@ -247,11 +212,4 @@ func datasetPromptName(dataset model.DatasetConfig) string {
 		return strings.TrimSpace(dataset.Name)
 	}
 	return "configured"
-}
-
-func presentationTarget(value string) string {
-	if strings.EqualFold(strings.TrimSpace(value), "react") {
-		return "react"
-	}
-	return "html"
 }

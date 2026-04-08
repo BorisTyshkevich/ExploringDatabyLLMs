@@ -50,7 +50,6 @@ func DefaultArtifacts(outDir string, presentation bool) model.ArtifactPaths {
 		AnswerReviewRaw: filepath.Join(outDir, "answer.review.raw.md"),
 		ReviewMD:        filepath.Join(outDir, "review.md"),
 		QuerySQL:        filepath.Join(outDir, "query.sql"),
-		ResultTSV:       filepath.Join(outDir, "result.tsv"),
 		ResultJSON:      filepath.Join(outDir, "result.json"),
 		VisualInputJSON: filepath.Join(outDir, "visual_input.json"),
 		ManifestJSON:    filepath.Join(outDir, "manifest.json"),
@@ -63,10 +62,6 @@ func DefaultArtifacts(outDir string, presentation bool) model.ArtifactPaths {
 		artifacts.ReportTemplateMD = filepath.Join(outDir, "report.template.md")
 		artifacts.ReportMD = filepath.Join(outDir, "report.md")
 		artifacts.VisualHTML = filepath.Join(outDir, "visual.html")
-		artifacts.VisualSourceDir = filepath.Join(outDir, "visual_src")
-		artifacts.VisualBuildDir = filepath.Join(outDir, "visual_build")
-		artifacts.VisualAssetsDir = filepath.Join(outDir, "visual_assets")
-		artifacts.VisualPackageJSON = filepath.Join(outDir, "visual_src", "package.json")
 	}
 	return artifacts
 }
