@@ -13,3 +13,18 @@ Return:
 - hop count
 - route recurrence count: total number of days across the analyzed window on which this exact Route string was flown by any aircraft
 - textual `Route` in chronological order, including every origin and the final destination, using `-` as the delimiter throughout, for example `SMF-SAN-PHX-COS-DEN`
+
+### q1
+Which airports or legs are the main operational stress points within the top 10 unique maximum-hop itineraries?
+
+Return per-airport and per-leg: average departure delay, average arrival delay, rate of 15-plus-minute delays, diversion incidence, and the stop positions most associated with disruption.
+
+### q2
+Which airports act as the key connectors, origins, and termini within the top 10 unique maximum-hop itineraries?
+
+Classify airport appearances by route position and return: airport code, airport name, city/state, total appearances, origin appearances, intermediate-stop appearances, final-destination appearances, and share of itineraries containing that airport.
+
+### q3
+How geographically extreme is each of the top 10 unique maximum-hop itineraries?
+
+Return: total flown distance, unique airports, unique city markets, unique states, unique local-time offsets, and whether the route is entirely domestic. Summarize which routes are the most geographically expansive.

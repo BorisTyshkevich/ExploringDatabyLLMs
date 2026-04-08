@@ -23,15 +23,12 @@
 
 ### operational-stress
 
-Which airports or legs are the main operational stress points within the top 10 unique maximum-hop itineraries?
-Return per-airport and per-leg average departure delay, average arrival delay, rate of 15-plus-minute delays, and diversion incidence, and identify the stop positions most associated with disruption.
+Use the `q1` supporting query for the operational stress panel. The verified SQL and results are in the analysis package.
 
 ### key connectors
 
-Which airports act as the key connectors, origins, and termini within the top 10 unique maximum-hop itineraries?
-Classify airport appearances by route position and return airport code, airport name, city/state, total appearances, origin appearances, intermediate-stop appearances, final-destination appearances, and share of itineraries containing that airport.
+Use the `q2` supporting query for the key connectors panel. The verified SQL and results are in the analysis package.
 
 ### geographically extreme
 
-How geographically extreme is each of the top 10 unique maximum-hop itineraries?
-Return total flown distance, unique airports, unique city markets, unique states, unique local-time offsets, and whether the route is entirely domestic, then summarize which routes are the most geographically expansive.
+Use the `q3` supporting query for the geographic extremes panel. The verified SQL and results are in the analysis package.

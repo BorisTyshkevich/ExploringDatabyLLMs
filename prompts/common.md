@@ -3,4 +3,4 @@
 - Use `{{dataset_name}}-semantic-layer` skill for schema inspection, join guidance, and dimension semantics.
 - write correct and efficient ClickHouse SQL 
 - Before writing any SQL artifact, self-verify every SQL statement you intend to save. Run a cheap debug execution for each query first, usually with a small `LIMIT`, a narrow `WHERE` filter, or both applied inside the main data-reading subquery or CTE.
-- Treat successful execution as mandatory. Fix any syntax, type, aggregate, window, join, or unknown-column errors in a loop until every saved query runs successfully. Do not write not tested SQL to the artifact.
+- Treat successful execution as mandatory. Fix any syntax, type, aggregate, window, join, or unknown-column errors in a loop until every saved query runs successfully. If self-verification still fails after 3 attempts on the same query, stop retrying, report the last error in the answer, and write the best-effort SQL so the run is not silently incomplete. Do not write untested SQL to the artifact without this disclosure.

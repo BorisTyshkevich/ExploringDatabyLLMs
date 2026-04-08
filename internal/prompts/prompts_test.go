@@ -133,8 +133,8 @@ func TestBuildVisualPromptStructuredModeUsesDynamicDashboardContract(t *testing.
 	for _, want := range []string{
 		"### Multi-query additions",
 		"### additional questions",
-		"label that panel query in the query ledger with the header name",
-		"additional lookup query use the currently selected context from the primary/main query result set",
+		"Label that panel query in the query ledger with the header name",
+		"A lookup query uses the currently selected context from the primary/main query result set",
 	} {
 		if !strings.Contains(got, want) {
 			t.Fatalf("expected multi-query visual prompt to contain %q, got: %s", want, got)
