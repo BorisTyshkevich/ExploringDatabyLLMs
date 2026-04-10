@@ -1,0 +1,30 @@
+{
+  "mode": "steps",
+  "session_id": "4febb28f-2dc1-48e8-9176-733e8673de7d",
+  "completed_steps": [
+    {
+      "id": "01_main_query",
+      "status": "ok",
+      "completed_at": "2026-04-10T13:43:27.681439Z",
+      "duration_ms": 76890
+    },
+    {
+      "id": "02_execute_and_review",
+      "status": "ok",
+      "completed_at": "2026-04-10T13:45:08.304233Z",
+      "duration_ms": 100621
+    },
+    {
+      "id": "03_visual_scaffold",
+      "status": "ok",
+      "completed_at": "2026-04-10T13:49:46.400987Z",
+      "duration_ms": 278095
+    },
+    {
+      "id": "04_visual_panels",
+      "status": "ok",
+      "completed_at": "2026-04-10T13:56:37.511565Z",
+      "duration_ms": 411125
+    }
+  ]
+}

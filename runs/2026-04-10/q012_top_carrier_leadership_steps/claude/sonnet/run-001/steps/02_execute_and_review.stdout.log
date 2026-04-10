@@ -1,0 +1,14 @@
+Both files written. Here's a summary of the findings:
+
+**Results validated:**
+- Shares always sum well below 100% (sensible — many carriers split the rest)
+- All 3 `leadership_changed=1` rows match actual leader swaps confirmed by `prev_leader`
+- Gap figures are arithmetically consistent throughout
+
+**Report highlights (`report.md`):**
+- **4 eras / 3 transitions**: DL (1987–89) → US (1990–91) → DL (1992–99) → WN (2000–2025)
+- **Sharpest transition**: 1990, US took over DL by 174,169 flights / 3.34 pct pts — by far the most decisive handoff
+- **Longest reign**: WN at 26 consecutive years (and counting)
+- **Closest race**: the 2000 transition itself — WN beat DL by just 0.48 pct pts
+- **Peak dominance**: 2009, WN held a 9.14 pct pts lead over AA
+- **2020 curiosity**: regional carrier OO (SkyWest) emerged as runner-up due to the pandemic collapse of major network carriers

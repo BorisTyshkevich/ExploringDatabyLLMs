@@ -1,0 +1,32 @@
+`visual.html` written. Here's what the scaffold contains:
+
+**Layout (top to bottom):**
+- Sticky `<header>` — navy gradient, Georgia serif title, auth badge + login/logout buttons in top-right
+- `<main>` — max-width 1280px, two states:
+  - `#auth-gate` — centered sign-in card (shown when unauthenticated)
+  - `#dashboard` — hidden until auth; contains status bar, then the five placeholder panels
+- `<footer>` — always visible utility strip with controls
+
+**Five placeholder panels with correct IDs:**
+| ID | Description |
+|----|-------------|
+| `#kpi-strip` | Grid row, expands to 4-up KPI cards |
+| `#chart-bump` | Left chart panel (bump) |
+| `#chart-share` | Right chart panel (share %) |
+| `#transition-table` | Full-width table panel |
+| `#narrative` | Full-width text panel |
+
+**Footer controls:**
+- Year range inputs defaulting to 2021–2025 with "All time (1987–2025)" button
+- SQL `<textarea>` prefilled with `main.sql` — the `yearly_carrier` CTE now includes `WHERE Year BETWEEN __START_YEAR__ AND __END_YEAR__`
+- Run / Export CSV buttons (disabled until authenticated)
+- Query ledger table with collapsible SQL rows (▶/▼ toggle), status dots, and row counts
+
+**Auth & execution:**
+- `STORAGE_KEY = 'OnTimeAnalystDashboard::auth::oauth2'`
+- Full PKCE flow: `/register` → `/authorize` → `/token` (modeled on `app.html`)
+- Callback parsed on page load; URL cleaned via `history.replaceState`
+- `execQuery(sql)` uses Bearer token; handles 401/403 by clearing auth and returning to gate
+- `applyYearRange(sql)` substitutes both placeholders before every execution
+- Monotonic `runCounter` discards stale async completions
+- `exportCsv()` RFC-4180 CSV from `lastRows`

@@ -1,0 +1,15 @@
+Query saved to `queries/main.sql`. Here's a summary of what it does:
+
+**Structure (4 CTEs):**
+1. `yearly_carrier` — aggregates `countIf(Cancelled = 0)` per `(Year, Reporting_Airline)`
+2. `with_rank` — adds `year_total` via window SUM and `rank()` by flights descending within each year
+3. `pivoted` — collapses to one row per year using `maxIf` to extract rank-1 (leader) and rank-2 (runner-up) values
+4. Final SELECT — computes share %, gap, and uses `lagInFrame(..., leader_carrier)` to detect leadership transitions (default = self for first row → `leadership_changed = 0`)
+
+**Verified sample (1987–1991):**
+| Year | Leader | Flights | Share% | Runner | Runner% | Gap | Changed |
+|------|--------|---------|--------|--------|---------|-----|---------|
+| 1987 | DL | 183,717 | 14.22 | AA | 12.63 | 20,552 | 0 |
+| 1990 | US | 991,989 | 19.01 | DL | 15.67 | 174,169 | **1** |
+
+Leadership transitions are correctly detected (e.g., DL → US in 1990).

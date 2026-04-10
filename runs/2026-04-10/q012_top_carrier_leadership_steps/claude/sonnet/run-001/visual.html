@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yearly Carrier Leadership — Completed Flights</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+/* ── Theme tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --bg-top:      #eaf3f8;
+  --bg-bottom:   #f6fafc;
+  --panel:       #ffffff;
+  --panel-alt:   #f3f7fa;
+  --ink:         #163244;
+  --muted:       #5d7485;
+  --navy:        #0e3a52;
+  --slate:       #5c7080;
+  --sky:         #3c88b5;
+  --teal:        #1f8a70;
+  --amber:       #d48a1f;
+  --red:         #c54f36;
+  --grid:        rgba(22, 50, 68, 0.12);
+  --border:      rgba(22, 50, 68, 0.10);
+  --shadow:      0 18px 45px rgba(14, 58, 82, 0.10);
+  --radius-xl:   22px;
+  --radius-lg:   16px;
+  --radius-md:   12px;
+  --radius-sm:   8px;
+}
+
+/* ── Reset & base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  min-height: 100vh;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+header {
+  background: linear-gradient(130deg, var(--navy) 0%, #1b5776 100%);
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(14, 58, 82, 0.25);
+}
+
+.brand h1 {
+  font-family: Georgia, ui-serif, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.brand p {
+  font-size: 0.78rem;
+  opacity: 0.70;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.auth-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.auth-badge {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.65);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 7px 16px;
+  transition: opacity 0.15s, transform 0.10s;
+}
+button:hover:not(:disabled) { opacity: 0.87; }
+button:active:not(:disabled) { transform: scale(0.97); }
+button:disabled { opacity: 0.42; cursor: not-allowed; }
+
+.btn-login   { background: var(--sky);  color: #fff; font-weight: 600; padding: 8px 20px; }
+.btn-logout  { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.28); font-size: 0.80rem; padding: 5px 13px; }
+.btn-run     { background: var(--teal); color: #fff; font-weight: 600; }
+.btn-alltime { background: transparent; color: var(--sky); border: 1px solid var(--sky); font-size: 0.78rem; padding: 4px 10px; }
+.btn-export  { background: var(--panel-alt); color: var(--slate); border: 1px solid var(--border); }
+
+/* ── Main container ───────────────────────────────────────────────────────── */
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 24px 40px;
+}
+
+/* ── Auth gate ────────────────────────────────────────────────────────────── */
+#auth-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 62vh;
+}
+.sign-in-card {
+  background: var(--panel);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+  padding: 52px 60px;
+  text-align: center;
+  max-width: 420px;
+  border: 1px solid var(--border);
+}
+.sign-in-card .icon {
+  font-size: 2.6rem;
+  margin-bottom: 14px;
+  display: block;
+}
+.sign-in-card h2 {
+  font-family: Georgia, ui-serif, serif;
+  font-size: 1.15rem;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.sign-in-card p {
+  font-size: 0.86rem;
+  color: var(--muted);
+  margin-bottom: 26px;
+  line-height: 1.55;
+}
+
+/* ── Dashboard ────────────────────────────────────────────────────────────── */
+#dashboard { display: none; }
+
+/* ── Status bar ───────────────────────────────────────────────────────────── */
+.status-bar {
+  font-size: 0.82rem;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+  border-left: 3px solid transparent;
+}
+.status-bar.ok   { background: #e6f4ef; color: var(--teal);  border-color: var(--teal); }
+.status-bar.warn { background: #fef8e8; color: var(--amber); border-color: var(--amber); }
+.status-bar.err  { background: #fdecea; color: var(--red);   border-color: var(--red); }
+.status-bar.info { background: var(--panel-alt); color: var(--slate); border-color: var(--sky); }
+
+/* ── Section labels ───────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* ── KPI strip ────────────────────────────────────────────────────────────── */
+#kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+/* ── Panel shell ──────────────────────────────────────────────────────────── */
+.panel {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+}
+.panel-title {
+  font-family: Georgia, ui-serif, serif;
+  font-size: 0.95rem;
+  color: var(--navy);
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+.panel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  color: var(--muted);
+  font-size: 0.83rem;
+  font-style: italic;
+}
+
+/* ── Charts row ───────────────────────────────────────────────────────────── */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+@media (max-width: 860px) {
+  .charts-row { grid-template-columns: 1fr; }
+}
+
+#chart-bump  { min-height: 300px; }
+#chart-share { min-height: 300px; }
+
+/* ── Transition table panel ───────────────────────────────────────────────── */
+#transition-table { margin-bottom: 24px; }
+
+/* ── Narrative panel ──────────────────────────────────────────────────────── */
+#narrative { margin-bottom: 24px; }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+footer {
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 26px 24px 36px;
+}
+.footer-section-title {
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Year range row */
+.year-range-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.year-range-row label {
+  font-size: 0.82rem;
+  color: var(--slate);
+}
+.year-input {
+  width: 74px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  color: var(--ink);
+  font-family: inherit;
+  background: var(--panel-alt);
+}
+.year-input:focus { outline: 2px solid var(--sky); border-color: transparent; }
+
+/* SQL editor */
+.sql-field-label {
+  font-size: 0.77rem;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.sql-textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 10px 12px;
+  font-family: "SF Mono", "Cascadia Code", "Fira Code", Monaco, "Courier New", monospace;
+  font-size: 0.76rem;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  margin-bottom: 10px;
+  tab-size: 4;
+}
+.sql-textarea:focus { outline: 2px solid var(--sky); border-color: transparent; }
+
+/* Footer toolbar */
+.footer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+#run-status {
+  font-size: 0.80rem;
+  color: var(--muted);
+}
+
+/* ── Query ledger ─────────────────────────────────────────────────────────── */
+.ledger-label {
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.81rem;
+}
+.ledger-table thead th {
+  text-align: left;
+  padding: 6px 10px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  font-size: 0.73rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.ledger-row td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.ledger-row:hover td { background: var(--panel-alt); cursor: pointer; }
+.ledger-toggle { font-size: 0.72rem; color: var(--muted); user-select: none; }
+.ledger-sql-row td {
+  padding: 0 10px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.ledger-sql-block {
+  display: none;
+  background: var(--panel-alt);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  font-family: "SF Mono", "Cascadia Code", Monaco, monospace;
+  font-size: 0.73rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.status-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.status-dot.ok      { background: var(--teal); }
+.status-dot.pending { background: var(--amber); }
+.status-dot.err     { background: var(--red); }
+
+/* ── KPI cards ────────────────────────────────────────────────────────────── */
+.kpi-card {
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  padding: 18px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.kpi-label {
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.kpi-value {
+  font-family: Georgia, ui-serif, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.1;
+}
+.kpi-sub {
+  font-size: 0.78rem;
+  color: var(--slate);
+  margin-top: 1px;
+  line-height: 1.45;
+}
+.kpi-accent { color: var(--sky); }
+.kpi-amber  { color: var(--amber); }
+.kpi-teal   { color: var(--teal); }
+
+/* ── Carrier chip ─────────────────────────────────────────────────────────── */
+.carrier-chip {
+  display: inline-block;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0px 6px;
+  font-family: "SF Mono", "Cascadia Code", Monaco, monospace;
+  font-size: 0.77rem;
+  font-weight: 700;
+  color: var(--navy);
+  vertical-align: middle;
+}
+
+/* ── Chart canvas container ───────────────────────────────────────────────── */
+.chart-canvas-wrap {
+  position: relative;
+  height: 270px;
+}
+
+/* ── Data table (inside panels) ───────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+}
+.data-table th {
+  text-align: left;
+  padding: 7px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+  background: var(--panel-alt);
+}
+.data-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+.data-table tr:hover td { background: var(--panel-alt); }
+.data-table tr.highlight td {
+  background: #fef8e8;
+}
+.data-table tr.highlight td:first-child {
+  border-left: 3px solid var(--amber);
+  padding-left: 7px;
+}
+.table-footnote {
+  font-size: 0.73rem;
+  color: var(--muted);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Narrative prose ──────────────────────────────────────────────────────── */
+.narrative-body {
+  font-size: 0.90rem;
+  line-height: 1.72;
+  color: var(--ink);
+}
+.narrative-body p { margin-bottom: 12px; }
+.narrative-body p:last-child { margin-bottom: 0; }
+.narrative-body strong { color: var(--navy); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ HEADER ═════════ -->
+<header>
+  <div class="brand">
+    <h1>Yearly Carrier Leadership — Completed Flights</h1>
+    <p>Who led US domestic aviation by completed flights, year by year &nbsp;·&nbsp; BTS On-Time Performance 1987–2025</p>
+  </div>
+  <div class="auth-controls">
+    <span class="auth-badge" id="auth-badge"></span>
+    <button class="btn-login"  id="btn-login"  onclick="startLogin()" style="display:none">Sign in</button>
+    <button class="btn-logout" id="btn-logout" onclick="logout()"     style="display:none">Sign out</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ MAIN ══════════ -->
+<main>
+
+  <!-- Auth gate — shown when not authenticated -->
+  <div id="auth-gate">
+    <div class="sign-in-card">
+      <span class="icon">✈</span>
+      <h2>Sign in to explore</h2>
+      <p>This dashboard queries live BTS On-Time Performance data via the Altinity ClickHouse MCP server. Sign in with your Google account to continue.</p>
+      <button class="btn-login" onclick="startLogin()">Sign in with Google</button>
+    </div>
+  </div>
+
+  <!-- Dashboard — shown after successful authentication -->
+  <div id="dashboard">
+
+    <div id="main-status" class="status-bar info" style="display:none"></div>
+
+    <!-- KPI strip -->
+    <div class="section-label">Key Metrics</div>
+    <div id="kpi-strip">
+      <!-- Placeholder: replaced by renderKpis() after data loads -->
+      <div class="panel panel-empty">KPI cards will appear here after run</div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <!-- Bump chart panel -->
+      <div class="panel" id="chart-bump">
+        <div class="panel-title">Carrier Rank Over Time</div>
+        <div class="panel-empty">Bump chart loads after run</div>
+      </div>
+      <!-- Share time series panel -->
+      <div class="panel" id="chart-share">
+        <div class="panel-title">Leader &amp; Runner-up Market Share %</div>
+        <div class="panel-empty">Share chart loads after run</div>
+      </div>
+    </div>
+
+    <!-- Leadership transitions table -->
+    <div class="panel" id="transition-table">
+      <div class="panel-title">Leadership Transitions</div>
+      <div class="panel-empty">Transition table loads after run</div>
+    </div>
+
+    <!-- Narrative section -->
+    <div class="panel" id="narrative">
+      <div class="panel-title">Analytical Summary</div>
+      <div class="panel-empty">Narrative loads after run</div>
+    </div>
+
+  </div><!-- /#dashboard -->
+</main>
+
+<!-- ═══════════════════════════════════════════════════════ FOOTER ════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-section-title">Query Controls &amp; Data Provenance</div>
+
+    <!-- Year range controls -->
+    <div class="year-range-row">
+      <label for="year-start">Year range:</label>
+      <input type="number" id="year-start" class="year-input"
+             value="2021" min="1987" max="2025" step="1">
+      <span style="color:var(--muted);font-size:0.9rem">–</span>
+      <input type="number" id="year-end" class="year-input"
+             value="2025" min="1987" max="2025" step="1">
+      <button class="btn-alltime" onclick="setAllTime()">All time (1987–2025)</button>
+    </div>
+
+    <!-- Primary SQL editor -->
+    <div class="sql-field-label">
+      Primary query — <em>edit and re-run at any time; use <code>__START_YEAR__</code> / <code>__END_YEAR__</code> for range substitution</em>
+    </div>
+    <textarea id="sql-main" class="sql-textarea" spellcheck="false">-- Yearly carrier leadership by completed flights
+-- One row per year: leader, runner-up, share/gap metrics, and leadership transition flag
+-- __START_YEAR__ and __END_YEAR__ are substituted from the year-range inputs above
+WITH
+    -- Step 1: completed flights per carrier per year (within selected range)
+    yearly_carrier AS (
+        SELECT
+            Year,
+            Reporting_Airline AS carrier,
+            countIf(Cancelled = 0) AS flights
+        FROM ontime.fact_ontime
+        WHERE Year BETWEEN __START_YEAR__ AND __END_YEAR__
+        GROUP BY Year, carrier
+    ),
+    -- Step 2: rank carriers within each year and compute year total
+    with_rank AS (
+        SELECT
+            Year,
+            carrier,
+            flights,
+            SUM(flights) OVER (PARTITION BY Year) AS year_total,
+            rank() OVER (PARTITION BY Year ORDER BY flights DESC) AS rnk
+        FROM yearly_carrier
+    ),
+    -- Step 3: pivot to one row per year with leader (rank 1) and runner-up (rank 2)
+    pivoted AS (
+        SELECT
+            Year,
+            maxIf(carrier, rnk = 1)            AS leader_carrier,
+            maxIf(toInt64(flights), rnk = 1)   AS leader_flights,
+            maxIf(carrier, rnk = 2)            AS runner_carrier,
+            maxIf(toInt64(flights), rnk = 2)   AS runner_flights,
+            max(year_total)                     AS year_total
+        FROM with_rank
+        WHERE rnk <= 2
+        GROUP BY Year
+    )
+-- Step 4: compute share, gap, and leadership transition
+SELECT
+    Year,
+    leader_carrier,
+    leader_flights,
+    round(leader_flights * 100.0 / year_total, 2)                    AS leader_share_pct,
+    runner_carrier,
+    runner_flights,
+    round(runner_flights * 100.0 / year_total, 2)                    AS runner_share_pct,
+    leader_flights - runner_flights                                    AS gap_flights,
+    round((leader_flights - runner_flights) * 100.0 / year_total, 2) AS gap_share_pct_pts,
+    lagInFrame(leader_carrier, 1, leader_carrier)
+        OVER (ORDER BY Year ASC)                                      AS prev_leader,
+    if(
+        lagInFrame(leader_carrier, 1, leader_carrier)
+            OVER (ORDER BY Year ASC) != leader_carrier,
+        1, 0
+    )                                                                 AS leadership_changed
+FROM pivoted
+ORDER BY Year</textarea>
+
+    <!-- Toolbar -->
+    <div class="footer-toolbar">
+      <button class="btn-run"    id="btn-run"    onclick="runMain()"   disabled>Run</button>
+      <button class="btn-export" id="btn-export" onclick="exportCsv()" disabled>Export CSV</button>
+      <span id="run-status">Sign in to run queries</span>
+    </div>
+
+    <!-- Bump / share chart SQL editor -->
+    <div class="sql-field-label" style="margin-top:4px">
+      Supporting query (bump &amp; share charts) — <em>ranks top 7 carriers per year; runs automatically with primary</em>
+    </div>
+    <textarea id="sql-bump" class="sql-textarea" spellcheck="false" style="min-height:120px">-- Carrier rank lookup for bump & share charts (top 7 by total flights)
+-- __START_YEAR__ and __END_YEAR__ substituted from year-range inputs
+WITH
+    yearly_carrier AS (
+        SELECT
+            Year,
+            Reporting_Airline AS carrier,
+            countIf(Cancelled = 0) AS flights
+        FROM ontime.fact_ontime
+        WHERE Year BETWEEN __START_YEAR__ AND __END_YEAR__
+        GROUP BY Year, carrier
+    ),
+    year_totals AS (
+        SELECT Year, sum(flights) AS year_total
+        FROM yearly_carrier
+        GROUP BY Year
+    ),
+    top_carriers AS (
+        SELECT carrier
+        FROM yearly_carrier
+        GROUP BY carrier
+        ORDER BY sum(flights) DESC
+        LIMIT 7
+    ),
+    all_ranked AS (
+        SELECT
+            y.Year,
+            y.carrier,
+            y.flights,
+            t.year_total,
+            rank() OVER (PARTITION BY y.Year ORDER BY y.flights DESC) AS rnk
+        FROM yearly_carrier y
+        JOIN year_totals t ON t.Year = y.Year
+    )
+SELECT
+    Year,
+    carrier,
+    flights,
+    round(flights * 100.0 / year_total, 2) AS share_pct,
+    toUInt16(rnk)                           AS rnk
+FROM all_ranked
+WHERE carrier IN (SELECT carrier FROM top_carriers)
+ORDER BY Year, rnk</textarea>
+
+    <!-- Query ledger -->
+    <div class="ledger-label">Query ledger</div>
+    <table class="ledger-table" aria-label="Query ledger">
+      <thead>
+        <tr>
+          <th style="width:1.6em"></th>
+          <th>Label</th>
+          <th style="width:7em">Role</th>
+          <th style="width:8em">Range</th>
+          <th style="width:6em">Status</th>
+          <th style="width:5em;text-align:right">Rows</th>
+        </tr>
+      </thead>
+      <tbody id="ledger-body">
+        <tr id="ledger-placeholder">
+          <td colspan="6" style="padding:10px 10px;color:var(--muted);font-size:0.82rem;font-style:italic">
+            No queries run yet.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div><!-- /.footer-inner -->
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════ SCRIPT ════════ -->
+<script>
+'use strict';
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const MCP_BASE    = 'https://mcp.demo.altinity.cloud';
+const STORAGE_KEY = 'OnTimeAnalystDashboard::auth::oauth2';
+
+// ── Runtime state ─────────────────────────────────────────────────────────────
+let authState  = {};
+let lastRows   = null;   // most recent result set (for CSV export)
+let isRunning  = false;
+let runCounter = 0;      // monotonic; stale async completions are discarded
+let bumpChart  = null;   // Chart.js instance — destroyed before each re-render
+let shareChart = null;   // Chart.js instance — destroyed before each re-render
+
+// ── Carrier color palette ─────────────────────────────────────────────────────
+const CARRIER_COLORS = new Map([
+  ['WN', '#3c88b5'],  // sky     — Southwest
+  ['DL', '#1f8a70'],  // teal    — Delta
+  ['AA', '#d48a1f'],  // amber   — American
+  ['US', '#c54f36'],  // red     — US Airways
+  ['UA', '#7e6b8f'],  // violet  — United
+  ['EV', '#5c7080'],  // slate   — ExpressJet/SkyWest regional
+  ['OO', '#2c7873'],  // dark teal — SkyWest
+]);
+const FALLBACK_COLORS = [
+  '#3c88b5','#1f8a70','#d48a1f','#c54f36','#7e6b8f','#5c7080','#2c7873'
+];
+function carrierColor(carrier, fallbackIdx) {
+  return CARRIER_COLORS.get(carrier) ?? FALLBACK_COLORS[fallbackIdx % FALLBACK_COLORS.length];
+}
+
+// ── Auth persistence ──────────────────────────────────────────────────────────
+function loadAuth() {
+  try { authState = JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {}; }
+  catch { authState = {}; }
+}
+function saveAuth() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(authState));
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function showStatus(msg, type = 'info') {
+  const el = document.getElementById('main-status');
+  el.textContent = msg;
+  el.className   = 'status-bar ' + type;
+  el.style.display = msg ? '' : 'none';
+}
+
+function setRunStatus(msg) {
+  document.getElementById('run-status').textContent = msg;
+}
+
+function setAuthUI(authenticated) {
+  document.getElementById('auth-badge').textContent  = authenticated ? 'Authenticated' : '';
+  document.getElementById('btn-login').style.display  = authenticated ? 'none' : '';
+  document.getElementById('btn-logout').style.display = authenticated ? '' : 'none';
+  document.getElementById('auth-gate').style.display  = authenticated ? 'none' : '';
+  document.getElementById('dashboard').style.display  = authenticated ? '' : 'none';
+  document.getElementById('btn-run').disabled          = !authenticated;
+  setRunStatus(authenticated ? 'Ready — click Run or press Ctrl+Enter' : 'Sign in to run queries');
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = String(s ?? '');
+  return d.innerHTML;
+}
+
+// ── PKCE helpers ──────────────────────────────────────────────────────────────
+function randomString(byteLen) {
+  const arr = new Uint8Array(byteLen);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function sha256Base64Url(plain) {
+  const data = new TextEncoder().encode(plain);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+// ── OAuth2 PKCE flow ──────────────────────────────────────────────────────────
+async function register() {
+  const resp = await fetch(MCP_BASE + '/register', {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body   : JSON.stringify({
+      client_name               : 'OnTime Carrier Leadership Dashboard',
+      redirect_uris             : [window.location.origin + window.location.pathname],
+      grant_types               : ['authorization_code'],
+      response_types            : ['code'],
+      token_endpoint_auth_method: 'none'
+    })
+  });
+  if (!resp.ok) throw new Error('Registration failed: ' + await resp.text());
+  return resp.json();
+}
+
+async function startLogin() {
+  try {
+    setRunStatus('Registering OAuth client…');
+    const reg = await register();
+    authState.client_id = reg.client_id;
+
+    const verifier  = randomString(32);
+    const challenge = await sha256Base64Url(verifier);
+    const nonce     = randomString(16);
+
+    authState.code_verifier = verifier;
+    authState.state         = nonce;
+    saveAuth();
+
+    const params = new URLSearchParams({
+      response_type        : 'code',
+      client_id            : reg.client_id,
+      redirect_uri         : window.location.origin + window.location.pathname,
+      scope                : 'openid email',
+      state                : nonce,
+      code_challenge       : challenge,
+      code_challenge_method: 'S256'
+    });
+    window.location.href = MCP_BASE + '/authorize?' + params.toString();
+  } catch (e) {
+    setRunStatus('Login error: ' + e.message);
+  }
+}
+
+async function exchangeCode(code) {
+  const resp = await fetch(MCP_BASE + '/token', {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body   : new URLSearchParams({
+      grant_type   : 'authorization_code',
+      code,
+      redirect_uri : window.location.origin + window.location.pathname,
+      client_id    : authState.client_id,
+      code_verifier: authState.code_verifier
+    })
+  });
+  if (!resp.ok) throw new Error('Token exchange failed: ' + await resp.text());
+  return resp.json();
+}
+
+function logout() {
+  localStorage.removeItem(STORAGE_KEY);
+  authState = {};
+  lastRows  = null;
+  document.getElementById('btn-export').disabled = true;
+  clearLedger();
+  setAuthUI(false);
+  showStatus('Signed out.', 'info');
+}
+
+// ── Year range helpers ────────────────────────────────────────────────────────
+function getYearRange() {
+  return {
+    start: parseInt(document.getElementById('year-start').value, 10) || 1987,
+    end  : parseInt(document.getElementById('year-end').value,   10) || 2025
+  };
+}
+
+function setAllTime() {
+  document.getElementById('year-start').value = 1987;
+  document.getElementById('year-end').value   = 2025;
+}
+
+// ── SQL placeholder substitution ──────────────────────────────────────────────
+function applyYearRange(sql) {
+  const { start, end } = getYearRange();
+  return sql
+    .replaceAll('__START_YEAR__', String(start))
+    .replaceAll('__END_YEAR__',   String(end));
+}
+
+// ── Core query executor ───────────────────────────────────────────────────────
+async function execQuery(sql) {
+  if (!authState.access_token) throw new Error('Not authenticated');
+
+  const resp = await fetch(
+    MCP_BASE + '/openapi/execute_query?query=' + encodeURIComponent(sql),
+    { headers: { Authorization: 'Bearer ' + authState.access_token } }
+  );
+
+  if (!resp.ok) {
+    const body = await resp.text();
+    if (resp.status === 401 || resp.status === 403) {
+      delete authState.access_token;
+      saveAuth();
+      setAuthUI(false);
+      throw new Error('Session expired (HTTP ' + resp.status + '). Please sign in again.');
+    }
+    throw new Error('Query failed (HTTP ' + resp.status + '): ' + body);
+  }
+
+  const data    = await resp.json();
+  const columns = data.columns ?? [];
+  const rows    = data.rows    ?? [];
+  return { columns, rows, count: data.count ?? rows.length };
+}
+
+// ── Query ledger ──────────────────────────────────────────────────────────────
+let ledgerSeq = 0;
+
+function clearLedger() {
+  ledgerSeq = 0;
+  const tbody = document.getElementById('ledger-body');
+  tbody.innerHTML = `
+    <tr id="ledger-placeholder">
+      <td colspan="6" style="padding:10px;color:var(--muted);font-size:0.82rem;font-style:italic">
+        No queries run yet.
+      </td>
+    </tr>`;
+}
+
+function ledgerAdd(label, role, range) {
+  ledgerSeq++;
+  const seq   = ledgerSeq;
+  const tbody = document.getElementById('ledger-body');
+
+  // Remove placeholder row on first real entry
+  const placeholder = document.getElementById('ledger-placeholder');
+  if (placeholder) placeholder.remove();
+
+  const tr = document.createElement('tr');
+  tr.className = 'ledger-row';
+  tr.id        = 'ledger-row-' + seq;
+  tr.innerHTML = `
+    <td class="ledger-toggle">▶</td>
+    <td>${escHtml(label)}</td>
+    <td style="color:var(--muted)">${escHtml(role)}</td>
+    <td style="color:var(--muted);font-size:0.78rem">${escHtml(range)}</td>
+    <td><span class="status-dot pending"></span>Pending</td>
+    <td style="text-align:right;font-variant-numeric:tabular-nums">—</td>`;
+
+  const sqlTr = document.createElement('tr');
+  sqlTr.className = 'ledger-sql-row';
+  sqlTr.id        = 'ledger-sql-' + seq;
+  sqlTr.innerHTML = `<td colspan="6"><pre class="ledger-sql-block" id="ledger-code-${seq}"></pre></td>`;
+
+  tr.addEventListener('click', () => {
+    const pre    = document.getElementById('ledger-code-' + seq);
+    const isOpen = pre.style.display === 'block';
+    pre.style.display = isOpen ? 'none' : 'block';
+    tr.querySelector('.ledger-toggle').textContent = isOpen ? '▶' : '▼';
+  });
+
+  tbody.appendChild(tr);
+  tbody.appendChild(sqlTr);
+  return seq;
+}
+
+function ledgerUpdate(seq, { status, rows, sql } = {}) {
+  const tr = document.getElementById('ledger-row-' + seq);
+  if (!tr) return;
+  const cells = tr.querySelectorAll('td');
+
+  if (status !== undefined) {
+    const cls  = status === 'ok' ? 'ok' : status === 'err' ? 'err' : 'pending';
+    const text = status === 'ok' ? 'OK'  : status === 'err' ? 'Failed' : 'Running…';
+    cells[4].innerHTML = `<span class="status-dot ${cls}"></span>${text}`;
+  }
+  if (rows !== undefined) {
+    cells[5].textContent = Number(rows).toLocaleString();
+  }
+  if (sql !== undefined) {
+    const pre = document.getElementById('ledger-code-' + seq);
+    if (pre) pre.textContent = sql;
+  }
+}
+
+// ── Main run ──────────────────────────────────────────────────────────────────
+async function runMain() {
+  if (isRunning) return;
+  isRunning = true;
+  runCounter++;
+  const thisRun = runCounter;
+
+  const btnRun    = document.getElementById('btn-run');
+  const btnExport = document.getElementById('btn-export');
+  btnRun.disabled    = true;
+  btnExport.disabled = true;
+
+  showStatus('Running query…', 'warn');
+  setRunStatus('Running…');
+
+  const rawSql    = document.getElementById('sql-main').value.trim();
+  const effectSql = applyYearRange(rawSql);
+  const { start, end } = getYearRange();
+  const rangeLabel = start + '–' + end;
+
+  const seq = ledgerAdd('Carrier leadership by year', 'primary', rangeLabel);
+  ledgerUpdate(seq, { status: 'pending', sql: effectSql });
+
+  try {
+    const { columns, rows, count } = await execQuery(effectSql);
+
+    if (thisRun !== runCounter) return;  // stale — a newer run superseded this
+
+    // Convert row arrays → objects
+    const data = (rows ?? []).map(r => {
+      const obj = {};
+      columns.forEach((c, i) => { obj[c] = r[i]; });
+      return obj;
+    });
+
+    lastRows = data;
+    ledgerUpdate(seq, { status: 'ok', rows: count });
+
+    if (data.length === 0) {
+      showStatus('Query returned 0 rows for ' + rangeLabel + '.', 'warn');
+    } else {
+      showStatus('Loaded ' + count.toLocaleString() + ' rows for ' + rangeLabel + '.', 'ok');
+      btnExport.disabled = false;
+      const transitionYears = data
+        .filter(r => Number(r['leadership_changed']) === 1)
+        .map(r => Number(r['Year']));
+      renderKpis(data);
+      renderTransitionTable(data);
+      renderNarrative(data);
+      runBump(rangeLabel, thisRun, transitionYears);
+    }
+
+  } catch (e) {
+    if (thisRun !== runCounter) return;
+    ledgerUpdate(seq, { status: 'err' });
+    showStatus(e.message, 'err');
+    setRunStatus('Error — see status bar');
+  } finally {
+    if (thisRun === runCounter) {
+      isRunning       = false;
+      btnRun.disabled = false;
+      setRunStatus('Done');
+    }
+  }
+}
+
+// ── CSV export ────────────────────────────────────────────────────────────────
+function exportCsv() {
+  if (!lastRows?.length) return;
+  const cols  = Object.keys(lastRows[0]);
+  const lines = [
+    cols.join(','),
+    ...lastRows.map(r =>
+      cols.map(c => {
+        const v = String(r[c] ?? '');
+        return v.includes(',') || v.includes('"') || v.includes('\n')
+          ? '"' + v.replace(/"/g, '""') + '"'
+          : v;
+      }).join(',')
+    )
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a    = Object.assign(document.createElement('a'), {
+    href    : URL.createObjectURL(blob),
+    download: 'carrier_leadership_' + getYearRange().start + '_' + getYearRange().end + '.csv'
+  });
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── Panel helpers ─────────────────────────────────────────────────────────────
+function setPanelLoading(panelId, msg) {
+  const panel = document.getElementById(panelId);
+  panel.querySelectorAll('canvas').forEach(el => el.remove());
+  let empty = panel.querySelector('.panel-empty');
+  if (!empty) {
+    empty = document.createElement('div');
+    empty.className = 'panel-empty';
+    panel.appendChild(empty);
+  }
+  empty.textContent = msg;
+}
+
+function prepareChartCanvas(panelId) {
+  const panel = document.getElementById(panelId);
+  panel.querySelectorAll('.panel-empty, canvas').forEach(el => el.remove());
+  const wrap = document.createElement('div');
+  wrap.className = 'chart-canvas-wrap';
+  const canvas = document.createElement('canvas');
+  wrap.appendChild(canvas);
+  panel.appendChild(wrap);
+  return canvas;
+}
+
+// ── KPI strip ─────────────────────────────────────────────────────────────────
+function renderKpis(data) {
+  const strip = document.getElementById('kpi-strip');
+  if (!data.length) { strip.innerHTML = '<div class="panel panel-empty">No data</div>'; return; }
+
+  const years   = data.map(r => Number(r['Year']));
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+
+  const distinctLeaders = [...new Set(data.map(r => r['leader_carrier']))];
+
+  const maxGapRow = data.reduce((a, b) =>
+    Number(b['gap_share_pct_pts']) > Number(a['gap_share_pct_pts']) ? b : a);
+
+  const transitions = data.filter(r => Number(r['leadership_changed']) === 1);
+  const sharpest = transitions.length
+    ? transitions.reduce((a, b) =>
+        Number(b['gap_share_pct_pts']) > Number(a['gap_share_pct_pts']) ? b : a)
+    : null;
+
+  const chip = c => `<span class="carrier-chip">${escHtml(c)}</span>`;
+  const f2   = v => Number(v).toFixed(2);
+
+  strip.innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Years Analyzed</div>
+      <div class="kpi-value kpi-accent">${data.length}</div>
+      <div class="kpi-sub">${minYear} – ${maxYear}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Distinct Annual Leaders</div>
+      <div class="kpi-value kpi-teal">${distinctLeaders.length}</div>
+      <div class="kpi-sub">${distinctLeaders.map(chip).join(' ')}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Largest Lead Gap</div>
+      <div class="kpi-value kpi-amber">${f2(maxGapRow['gap_share_pct_pts'])} pp</div>
+      <div class="kpi-sub">${maxGapRow['Year']} · ${chip(maxGapRow['leader_carrier'])} over ${chip(maxGapRow['runner_carrier'])}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Sharpest Transition</div>
+      ${sharpest
+        ? `<div class="kpi-value kpi-amber">${sharpest['Year']}</div>
+           <div class="kpi-sub">${chip(sharpest['prev_leader'])} → ${chip(sharpest['leader_carrier'])} &nbsp;+${f2(sharpest['gap_share_pct_pts'])} pp</div>`
+        : `<div class="kpi-value" style="color:var(--muted);font-size:1.1rem">—</div>
+           <div class="kpi-sub">No leadership changes in range</div>`}
+    </div>`;
+}
+
+// ── Leadership transition table ────────────────────────────────────────────────
+function renderTransitionTable(data) {
+  const panel = document.getElementById('transition-table');
+  const transitions = data.filter(r => Number(r['leadership_changed']) === 1);
+
+  if (!transitions.length) {
+    panel.innerHTML = `
+      <div class="panel-title">Leadership Transitions</div>
+      <div class="panel-empty">No leadership changes in the selected year range.</div>`;
+    return;
+  }
+
+  const maxGap = Math.max(...transitions.map(r => Number(r['gap_share_pct_pts'])));
+  const chip   = c => `<span class="carrier-chip">${escHtml(c)}</span>`;
+  const f2     = v => Number(v).toFixed(2);
+
+  const rows = transitions.map(r => {
+    const isSharpest = Number(r['gap_share_pct_pts']) === maxGap;
+    return `
+      <tr class="${isSharpest ? 'highlight' : ''}">
+        <td><strong>${r['Year']}</strong></td>
+        <td>${chip(r['prev_leader'])}</td>
+        <td>${chip(r['leader_carrier'])}</td>
+        <td>${f2(r['leader_share_pct'])}%</td>
+        <td>${f2(r['gap_share_pct_pts'])} pp${isSharpest ? ' ★' : ''}</td>
+        <td style="text-align:right">${Number(r['gap_flights']).toLocaleString()}</td>
+      </tr>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="panel-title">Leadership Transitions</div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th>Prior Leader</th>
+          <th>New Leader</th>
+          <th>New Leader Share</th>
+          <th>Gap (pp)</th>
+          <th style="text-align:right">Gap (flights)</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="table-footnote">★ Sharpest transition — largest leader-over-runner gap at time of changeover</p>`;
+}
+
+// ── Narrative ─────────────────────────────────────────────────────────────────
+function renderNarrative(data) {
+  const panel = document.getElementById('narrative');
+
+  if (!data.length) {
+    panel.innerHTML = `<div class="panel-title">Analytical Summary</div>
+      <div class="panel-empty">No data in the selected range.</div>`;
+    return;
+  }
+
+  // Build leadership eras (consecutive spans of same leader)
+  const eras = [];
+  let curLeader = null, eraStart = null;
+  data.forEach(r => {
+    const yr = Number(r['Year']);
+    const lc = r['leader_carrier'];
+    if (lc !== curLeader) {
+      if (curLeader !== null) eras.push({ carrier: curLeader, start: eraStart, end: yr - 1, years: yr - eraStart });
+      curLeader = lc;
+      eraStart  = yr;
+    }
+  });
+  if (curLeader) {
+    const last = data[data.length - 1];
+    eras.push({ carrier: curLeader, start: eraStart, end: Number(last['Year']), years: Number(last['Year']) - eraStart + 1 });
+  }
+
+  const transitions    = data.filter(r => Number(r['leadership_changed']) === 1);
+  const distinctLeaders = [...new Set(data.map(r => r['leader_carrier']))];
+  const longestEra     = eras.reduce((a, b) => b.years > a.years ? b : a);
+  const widestGapRow   = data.reduce((a, b) => Number(b['gap_share_pct_pts']) > Number(a['gap_share_pct_pts']) ? b : a);
+  const closestRaceRow = data.reduce((a, b) => Number(b['gap_share_pct_pts']) < Number(a['gap_share_pct_pts']) ? b : a);
+  const peakShareRow   = data.reduce((a, b) => Number(b['leader_share_pct'])  > Number(a['leader_share_pct'])  ? b : a);
+
+  const chip = c => `<span class="carrier-chip">${escHtml(c)}</span>`;
+  const f2   = v => Number(v).toFixed(2);
+
+  const eraDescs = eras.map(e => {
+    const range = e.start === e.end ? String(e.start) : `${e.start}–${e.end}`;
+    return `<strong>${escHtml(e.carrier)}</strong> (${range}, ${e.years} yr${e.years !== 1 ? 's' : ''})`;
+  }).join(', ');
+
+  const stabilityNote = transitions.length === 0
+    ? 'No leadership changes occurred — the market showed stable dominance across the selected range.'
+    : transitions.length === 1
+    ? `One leadership change occurred in ${transitions[0]['Year']}.`
+    : `${transitions.length} leadership changes occurred, averaging one change roughly every ${Math.round(data.length / transitions.length)} years.`;
+
+  panel.innerHTML = `
+    <div class="panel-title">Analytical Summary</div>
+    <div class="narrative-body">
+      <p>
+        Over the <strong>${data.length} year${data.length !== 1 ? 's' : ''}</strong> in the selected range
+        (${Number(data[0]['Year'])}–${Number(data[data.length - 1]['Year'])}),
+        <strong>${distinctLeaders.length}</strong> distinct carrier${distinctLeaders.length !== 1 ? 's' : ''}
+        led US domestic aviation by completed flights across <strong>${eras.length}</strong>
+        era${eras.length !== 1 ? 's' : ''}: ${eraDescs}.
+      </p>
+      <p>
+        ${stabilityNote}
+        The <strong>longest uninterrupted reign</strong> belonged to ${chip(longestEra.carrier)},
+        which led for <strong>${longestEra.years} consecutive year${longestEra.years !== 1 ? 's' : ''}</strong>
+        (${longestEra.start}–${longestEra.end}).
+      </p>
+      <p>
+        The <strong>widest leader-runner gap</strong> was recorded in <strong>${widestGapRow['Year']}</strong>,
+        when ${chip(widestGapRow['leader_carrier'])} led ${chip(widestGapRow['runner_carrier'])} by
+        <strong>${f2(widestGapRow['gap_share_pct_pts'])} pp</strong>
+        (${Number(widestGapRow['gap_flights']).toLocaleString()} flights).
+        The <strong>closest race</strong> was in <strong>${closestRaceRow['Year']}</strong>,
+        with a margin of just <strong>${f2(closestRaceRow['gap_share_pct_pts'])} pp</strong>
+        (${Number(closestRaceRow['gap_flights']).toLocaleString()} flights).
+      </p>
+      <p>
+        Peak market concentration: ${chip(peakShareRow['leader_carrier'])} reached its highest recorded share
+        of <strong>${f2(peakShareRow['leader_share_pct'])}%</strong> in <strong>${peakShareRow['Year']}</strong>.
+      </p>
+    </div>`;
+}
+
+// ── Bump query + chart ─────────────────────────────────────────────────────────
+async function runBump(rangeLabel, callerRun, transitionYears) {
+  setPanelLoading('chart-bump',  'Loading chart…');
+  setPanelLoading('chart-share', 'Loading chart…');
+
+  const rawSql    = document.getElementById('sql-bump').value.trim();
+  const effectSql = applyYearRange(rawSql);
+  const seq = ledgerAdd('Carrier ranks by year (bump & share)', 'supporting', rangeLabel);
+  ledgerUpdate(seq, { status: 'pending', sql: effectSql });
+
+  try {
+    const { columns, rows, count } = await execQuery(effectSql);
+    if (callerRun !== runCounter) return;
+
+    const data = (rows ?? []).map(r => {
+      const obj = {};
+      columns.forEach((c, i) => { obj[c] = r[i]; });
+      return obj;
+    });
+
+    ledgerUpdate(seq, { status: 'ok', rows: count });
+
+    if (data.length > 0) {
+      renderBump(data, transitionYears);
+      renderShare(data, transitionYears);
+    } else {
+      setPanelLoading('chart-bump',  'No data for selected range.');
+      setPanelLoading('chart-share', 'No data for selected range.');
+    }
+  } catch (e) {
+    if (callerRun !== runCounter) return;
+    ledgerUpdate(seq, { status: 'err' });
+    setPanelLoading('chart-bump',  'Chart load failed: ' + e.message);
+    setPanelLoading('chart-share', 'Chart load failed: ' + e.message);
+  }
+}
+
+function buildTransitionAnnotations(years, labelPrefix) {
+  const annotations = {};
+  (years ?? []).forEach((yr, i) => {
+    annotations[labelPrefix + i] = {
+      type       : 'line',
+      xMin       : String(yr),
+      xMax       : String(yr),
+      borderColor: 'rgba(212,138,31,0.65)',
+      borderWidth: 2,
+      borderDash : [5, 4],
+      label      : {
+        content : yr + ' ↑',
+        display : true,
+        position: 'start',
+        color   : '#d48a1f',
+        font    : { size: 10, weight: 'bold' },
+        padding : 3,
+        backgroundColor: 'rgba(255,255,255,0.75)',
+      }
+    };
+  });
+  return annotations;
+}
+
+function renderBump(bumpData, transitionYears) {
+  const canvas = prepareChartCanvas('chart-bump');
+
+  const years    = [...new Set(bumpData.map(r => Number(r['Year'])))].sort((a, b) => a - b);
+  const carriers = [...new Set(bumpData.map(r => r['carrier']))];
+
+  // Map<carrier, Map<year, rank>>
+  const byCarrier = new Map(carriers.map(c => [c, new Map()]));
+  bumpData.forEach(r => byCarrier.get(r['carrier'])?.set(Number(r['Year']), Number(r['rnk'])));
+
+  const datasets = carriers.map((c, i) => ({
+    label          : c,
+    data           : years.map(y => byCarrier.get(c)?.get(y) ?? null),
+    borderColor    : carrierColor(c, i),
+    backgroundColor: carrierColor(c, i) + '20',
+    borderWidth    : 2.5,
+    pointRadius    : 3.5,
+    pointHoverRadius: 6,
+    spanGaps       : false,
+    tension        : 0.2,
+  }));
+
+  if (bumpChart) { bumpChart.destroy(); bumpChart = null; }
+
+  bumpChart = new Chart(canvas, {
+    type: 'line',
+    data: { labels: years.map(String), datasets },
+    options: {
+      responsive          : true,
+      maintainAspectRatio : false,
+      interaction         : { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          reverse: true,
+          min    : 0.5,
+          max    : Math.min(7.5, carriers.length + 0.5),
+          ticks  : {
+            stepSize: 1,
+            callback: v => Number.isInteger(v) ? '#' + v : '',
+            color   : '#5d7485',
+            font    : { size: 11 },
+          },
+          grid : { color: 'rgba(22,50,68,0.07)' },
+          title: { display: true, text: 'Rank (1 = most flights)', color: '#5d7485', font: { size: 11 } },
+        },
+        x: {
+          ticks: { color: '#5d7485', font: { size: 10 }, maxRotation: 50, autoSkip: true, maxTicksLimit: 14 },
+          grid : { color: 'rgba(22,50,68,0.05)' },
+        },
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels  : { boxWidth: 12, color: '#163244', font: { size: 11 }, padding: 12 },
+        },
+        tooltip: {
+          callbacks: { label: ctx => `${ctx.dataset.label}: Rank #${ctx.parsed.y}` },
+        },
+        annotation: { annotations: buildTransitionAnnotations(transitionYears, 'bt') },
+      },
+    },
+  });
+}
+
+function renderShare(bumpData, transitionYears) {
+  const canvas = prepareChartCanvas('chart-share');
+
+  const years    = [...new Set(bumpData.map(r => Number(r['Year'])))].sort((a, b) => a - b);
+  const carriers = [...new Set(bumpData.map(r => r['carrier']))];
+
+  // Map<carrier, Map<year, share_pct>>
+  const byCarrier = new Map(carriers.map(c => [c, new Map()]));
+  bumpData.forEach(r => byCarrier.get(r['carrier'])?.set(Number(r['Year']), Number(r['share_pct'])));
+
+  // Pick top 5 carriers by average share across the range
+  const top5 = carriers
+    .map(c => {
+      const vals = [...byCarrier.get(c).values()];
+      return { carrier: c, avg: vals.reduce((a, b) => a + b, 0) / vals.length };
+    })
+    .sort((a, b) => b.avg - a.avg)
+    .slice(0, 5)
+    .map(x => x.carrier);
+
+  const datasets = top5.map((c, i) => ({
+    label          : c,
+    data           : years.map(y => byCarrier.get(c)?.get(y) ?? null),
+    borderColor    : carrierColor(c, i),
+    backgroundColor: carrierColor(c, i) + '18',
+    borderWidth    : 2.5,
+    pointRadius    : 3,
+    pointHoverRadius: 5,
+    spanGaps       : false,
+    tension        : 0.25,
+    fill           : false,
+  }));
+
+  if (shareChart) { shareChart.destroy(); shareChart = null; }
+
+  shareChart = new Chart(canvas, {
+    type: 'line',
+    data: { labels: years.map(String), datasets },
+    options: {
+      responsive          : true,
+      maintainAspectRatio : false,
+      interaction         : { mode: 'index', intersect: false },
+      scales: {
+        y: {
+          min  : 0,
+          ticks: {
+            callback: v => v + '%',
+            color   : '#5d7485',
+            font    : { size: 11 },
+          },
+          grid : { color: 'rgba(22,50,68,0.07)' },
+          title: { display: true, text: 'Market share %', color: '#5d7485', font: { size: 11 } },
+        },
+        x: {
+          ticks: { color: '#5d7485', font: { size: 10 }, maxRotation: 50, autoSkip: true, maxTicksLimit: 14 },
+          grid : { color: 'rgba(22,50,68,0.05)' },
+        },
+      },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels  : { boxWidth: 12, color: '#163244', font: { size: 11 }, padding: 12 },
+        },
+        tooltip: {
+          callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(2) ?? '—'}%` },
+        },
+        annotation: { annotations: buildTransitionAnnotations(transitionYears, 'st') },
+      },
+    },
+  });
+}
+
+// ── Keyboard shortcut ─────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    const btn = document.getElementById('btn-run');
+    if (!btn.disabled) runMain();
+  }
+});
+
+// ── Page init ─────────────────────────────────────────────────────────────────
+async function init() {
+  loadAuth();
+
+  const params = new URLSearchParams(window.location.search);
+  const code   = params.get('code');
+  const state  = params.get('state');
+
+  if (code && state) {
+    // Clear OAuth callback params from the visible URL immediately
+    window.history.replaceState({}, '', window.location.pathname);
+
+    if (state !== authState.state) {
+      setAuthUI(false);
+      showStatus('OAuth state mismatch — please sign in again.', 'err');
+      return;
+    }
+
+    try {
+      setRunStatus('Completing sign-in…');
+      const token = await exchangeCode(code);
+      authState.access_token = token.access_token;
+      authState.token_type   = token.token_type ?? 'Bearer';
+      if (token.expires_in) {
+        authState.expires_at = Date.now() + token.expires_in * 1000;
+      }
+      delete authState.code_verifier;
+      delete authState.state;
+      saveAuth();
+    } catch (e) {
+      setAuthUI(false);
+      showStatus('Token exchange failed: ' + e.message, 'err');
+      return;
+    }
+  }
+
+  if (authState.access_token) {
+    if (authState.expires_at && Date.now() > authState.expires_at) {
+      delete authState.access_token;
+      saveAuth();
+      setAuthUI(false);
+      showStatus('Session expired — please sign in again.', 'warn');
+      return;
+    }
+    setAuthUI(true);
+  } else {
+    setAuthUI(false);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

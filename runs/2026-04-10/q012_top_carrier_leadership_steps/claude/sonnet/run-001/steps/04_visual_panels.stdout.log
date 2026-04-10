@@ -1,0 +1,26 @@
+Everything is wired correctly. Here's a summary of all changes made to `visual.html`:
+
+**New CDN** (line 8):
+- `chartjs-plugin-annotation@3.0.1` — auto-registers with Chart.js 4, provides amber dashed vertical lines at transition years on both charts
+
+**New CSS** (lines 366–465):
+- `.kpi-card` / `.kpi-label` / `.kpi-value` / `.kpi-sub` — 4-up KPI card grid
+- `.carrier-chip` — monospace badge for carrier codes
+- `.chart-canvas-wrap` — 270px container so `maintainAspectRatio: false` works
+- `.data-table` — sticky header, row hover, amber left-border on `highlight` rows
+- `.narrative-body` — editorial prose with proper line-height
+
+**New footer section** (line 626): Editable `#sql-bump` textarea with the supporting query that ranks top 7 carriers per year with full market share (joining back to `year_totals` for correct denominators)
+
+**New JS** (lines 1061–1430):
+| Function | Purpose |
+|---|---|
+| `renderKpis(data)` | 4 derived KPI cards from main query rows |
+| `renderTransitionTable(data)` | Filtered to `leadership_changed=1` rows; sharpest row highlighted amber with ★ |
+| `renderNarrative(data)` | Auto-computed era spans, stability verdict, longest reign, widest/closest gaps, peak share |
+| `runBump(rangeLabel, callerRun, transitionYears)` | Executes `#sql-bump`, registers ledger entry, passes transition years to chart renderers |
+| `buildTransitionAnnotations(years, prefix)` | Shared helper — amber dashed vertical lines for both charts |
+| `renderBump(data, transitionYears)` | Chart.js line, Y-axis inverted rank 1–7, per-carrier color, annotation lines |
+| `renderShare(data, transitionYears)` | Chart.js line, top-5 carriers by avg share, same annotations |
+
+**`runMain` wiring** (lines 1011–1017): After successful primary query, extracts transition years, calls all four panel renderers, then fires `runBump` for the charts. The `finally` block bug (`showStatus.running`) is also fixed.
